@@ -6,18 +6,27 @@ using Photon.Realtime;
 
 public class JoinRoomManager : Network
 {
-    [SerializeField] private GameObject roomItemPrefab; // UI prefab for a room
-    [SerializeField] private Transform contentPanel;    // ScrollView Content parent
+    //instance of available room to join button
+    [SerializeField] private GameObject roomItemPrefab;
+    //scroll view of the room list
+    [SerializeField] private Transform contentPanel;
+    //refresh button to refresh room list
     [SerializeField] private Button refreshButton;
+    //button to toggle room list panel
     [SerializeField] private Button toggleRoomListPanelButton;
+    //room list panel
     [SerializeField] private GameObject roomListPanel;
+    //room panel of joined players
     [SerializeField] private GameObject roomPanel;
-
+    //player count in that room
     [SerializeField] private Text playerCountText;
+    //view to store all joined players in that room
     [SerializeField] private Transform playerListContent;
+    //joined player tags
     [SerializeField] private GameObject playerListItemPrefab;
+    //start game button
     [SerializeField] private Button startGameButton;
-
+    //cache room list 
     private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
     private void Start()
@@ -25,7 +34,7 @@ public class JoinRoomManager : Network
         refreshButton.onClick.AddListener(RefreshRoomList);
         startGameButton.onClick.AddListener(StartGame);
 
-        // Toggle visibility of RoomListPanel and CreateRoomPanel
+        //toggle visibility of RoomListPanel 
         toggleRoomListPanelButton.onClick.AddListener(() =>
         {
             roomListPanel.SetActive(!roomListPanel.activeSelf);
@@ -42,6 +51,7 @@ public class JoinRoomManager : Network
         roomListPanel.SetActive(active);
     }
 
+    //update the room list
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         foreach (RoomInfo info in roomList)
@@ -68,11 +78,12 @@ public class JoinRoomManager : Network
 
     void PopulateRoomListUI()
     {
+        //destroy all rooms
         foreach (Transform child in contentPanel)
         {
             Destroy(child.gameObject);
         }
-
+        //reconstruct all available room with its room name and number of players in that room
         foreach (RoomInfo info in cachedRoomList.Values)
         {
             GameObject item = Instantiate(roomItemPrefab, contentPanel);
@@ -95,14 +106,18 @@ public class JoinRoomManager : Network
     public override void OnJoinedRoom()
     {
         Debug.Log($"Joined Room: {PhotonNetwork.CurrentRoom.Name}");
+        //hide room list panel and show current room panel
         toggleRoomListPanelButton.gameObject.SetActive(false);
         roomListPanel.SetActive(false);
         roomPanel.SetActive(true);
 
+        //show the player count and the players in that room
         PopulatePlayerList();
         UpdatePlayerCountUI();
         startGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
     }
+    
+    //function to show the player count in the room
     private void UpdatePlayerCountUI()
     {
         int current = PhotonNetwork.CurrentRoom.PlayerCount;
@@ -124,23 +139,28 @@ public class JoinRoomManager : Network
 
     private void PopulatePlayerList()
     {
+        //remove all player tags
         foreach (Transform child in playerListContent)
         {
             Destroy(child.gameObject);
         }
 
+        //reconstruct all new player tags
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             GameObject item = Instantiate(playerListItemPrefab, playerListContent);
             item.GetComponentInChildren<Text>().text = player.NickName;
         }
     }
+    
+    //function to start game
     void StartGame()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.CurrentRoom.IsOpen = false; // Prevent joining
-            PhotonNetwork.LoadLevel("GameScene");     // Make sure to add GameScene to build settings
+            //prevent anymore player from joining
+            PhotonNetwork.CurrentRoom.IsOpen = false; 
+            PhotonNetwork.LoadLevel("GameScene");    
         }
     }
 
