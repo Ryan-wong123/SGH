@@ -13,7 +13,7 @@ public class JoinRoomManager : Network
     [SerializeField] private GameObject roomListPanel;
     [SerializeField] private GameObject roomPanel;
 
-
+    [SerializeField] private Text playerCountText;
     [SerializeField] private Transform playerListContent;
     [SerializeField] private GameObject playerListItemPrefab;
     [SerializeField] private Button startGameButton;
@@ -100,17 +100,26 @@ public class JoinRoomManager : Network
         roomPanel.SetActive(true);
 
         PopulatePlayerList();
+        UpdatePlayerCountUI();
         startGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
+    }
+    private void UpdatePlayerCountUI()
+    {
+        int current = PhotonNetwork.CurrentRoom.PlayerCount;
+        int max = PhotonNetwork.CurrentRoom.MaxPlayers;
+        playerCountText.text = $"{current} / {max} Players";
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         PopulatePlayerList();
+        UpdatePlayerCountUI();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         PopulatePlayerList();
+        UpdatePlayerCountUI();
     }
 
     private void PopulatePlayerList()
