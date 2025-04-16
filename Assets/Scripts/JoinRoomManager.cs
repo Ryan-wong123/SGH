@@ -13,16 +13,33 @@ public class JoinRoomManager : Network
     [SerializeField] private GameObject roomListPanel;
     [SerializeField] private GameObject roomPanel;
 
+
+    [SerializeField] private Transform playerListContent;
+    [SerializeField] private GameObject playerListItemPrefab;
+    [SerializeField] private Button startGameButton;
+
     private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
     private void Start()
     {
         refreshButton.onClick.AddListener(RefreshRoomList);
+        startGameButton.onClick.AddListener(StartGame);
+
         // Toggle visibility of RoomListPanel and CreateRoomPanel
         toggleRoomListPanelButton.onClick.AddListener(() =>
         {
             roomListPanel.SetActive(!roomListPanel.activeSelf);
         });
+    }
+
+    public void setToggleRoomListPanelButtonActive(bool active)
+    {
+        toggleRoomListPanelButton.gameObject.SetActive(active);
+    }
+
+    public void setRoomListPanelActive(bool active)
+    {
+        roomListPanel.SetActive(active);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -81,7 +98,41 @@ public class JoinRoomManager : Network
         toggleRoomListPanelButton.gameObject.SetActive(false);
         roomListPanel.SetActive(false);
         roomPanel.SetActive(true);
+
+        PopulatePlayerList();
+        startGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
     }
 
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        PopulatePlayerList();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        PopulatePlayerList();
+    }
+
+    private void PopulatePlayerList()
+    {
+        foreach (Transform child in playerListContent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            GameObject item = Instantiate(playerListItemPrefab, playerListContent);
+            item.GetComponentInChildren<Text>().text = player.NickName;
+        }
+    }
+    void StartGame()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false; // Prevent joining
+            PhotonNetwork.LoadLevel("GameScene");     // Make sure to add GameScene to build settings
+        }
+    }
 
 }
