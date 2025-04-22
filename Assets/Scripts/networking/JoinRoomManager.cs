@@ -28,7 +28,8 @@ public class JoinRoomManager : Network
     [SerializeField] private Button startGameButton;
     //cache room list 
     private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
-
+    //Loading Screen component
+    [SerializeField] private LoadingScreenManager loadingScreen;
     private void Start()
     {
         refreshButton.onClick.AddListener(RefreshRoomList);
@@ -159,8 +160,8 @@ public class JoinRoomManager : Network
         if (PhotonNetwork.IsMasterClient)
         {
             //prevent anymore player from joining
-            PhotonNetwork.CurrentRoom.IsOpen = false; 
-            PhotonNetwork.LoadLevel("GameScene");    
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            loadingScreen.StartFadeAndLoad("GameScene");
         }
     }
 
