@@ -21,6 +21,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         if (photonView.IsMine)
         {
+            //fix camera jitter on local player
+            PhotonTransformView photonTransform = GetComponent<PhotonTransformView>();
+            if (photonTransform != null)
+            {
+                photonTransform.enabled = false;
+            }
+
             playerCamera.gameObject.SetActive(true);
             Cursor.lockState = CursorLockMode.Locked;
         }
