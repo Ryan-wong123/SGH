@@ -3,11 +3,13 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
+using TMPro;
+
 
 public class CreateRoomManager : Network
 {
     //room name input field
-    [SerializeField] private InputField roomNameInput;
+    [SerializeField] private TMP_InputField roomNameInput;
     //dropdown field of maximum players allowed per room
     [SerializeField] private Dropdown maxPlayersDropdown;
     //button to go to create room panel
@@ -41,7 +43,7 @@ public class CreateRoomManager : Network
         if (string.IsNullOrEmpty(roomName))
         {
             // Update placeholder text if room name is empty
-            if (roomNameInput.placeholder is Text placeholderText)
+            if (roomNameInput.placeholder is TextMeshProUGUI placeholderText)
             {
                 placeholderText.text = "Room name is required";
             }

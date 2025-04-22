@@ -2,6 +2,8 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using TMPro;
+
 
 public class Network : MonoBehaviourPunCallbacks
 {
@@ -13,7 +15,7 @@ public class Network : MonoBehaviourPunCallbacks
     //home panel 
     [SerializeField] private GameObject homePanel;
     //username input field
-    [SerializeField] private InputField usernameInput;
+    [SerializeField] private TMP_InputField usernameInput;
     //button to go to room list panel
     [SerializeField] private Button goToRoomListButton;
     //join room manager component
@@ -35,7 +37,7 @@ public class Network : MonoBehaviourPunCallbacks
             if (string.IsNullOrEmpty(username))
             {
                 //update placeholder text if username is empty
-                if (usernameInput.placeholder is Text placeholderText)
+                if (usernameInput.placeholder is TextMeshProUGUI placeholderText)
                 {
                     placeholderText.text = "username is required";
                 }
