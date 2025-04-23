@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        PhotonNetwork.AutomaticallySyncScene = true;
+
         if (PhotonNetwork.InRoom && !hasSpawned)
         {
             hasSpawned = true;
@@ -50,5 +52,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         return 0; // fallback
+    }
+
+    public void RestartLevel()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
+        }
+    }
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

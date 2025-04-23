@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Photon.Pun;
+using System.Collections;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviourPunCallbacks
@@ -13,6 +14,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private Animator animator;
 
     [SerializeField] private float verticalRotation = 0f;
+    private bool cursorUnlocked = false;
 
     private void Start()
     {
@@ -39,11 +41,33 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (!photonView.IsMine) return;
+     
+        ToggleCursor();
+        
+        if (!photonView.IsMine || cursorUnlocked) return;
 
         HandleMovement();
         HandleCameraLook();
     }
+    void ToggleCursor()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            cursorUnlocked = !cursorUnlocked;
+        }
+
+        if (cursorUnlocked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+
 
     void HandleMovement()
     {
