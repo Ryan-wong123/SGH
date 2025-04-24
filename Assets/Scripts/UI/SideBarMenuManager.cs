@@ -11,7 +11,12 @@ public class SidebarMenuManager : MonoBehaviour
     [SerializeField] private GameObject popupBlocker;
 
     private GameObject currentPopup = null;
+    private PuzzleTrigger currentPuzzle = null;
 
+    public void SetActivePuzzle(PuzzleTrigger puzzle)
+    {
+        currentPuzzle = puzzle;
+    }
 
     public void TogglePopup(GameObject popup)
     {
@@ -41,7 +46,14 @@ public class SidebarMenuManager : MonoBehaviour
             currentPopup = null;
         }
 
+        if (currentPuzzle != null)
+        {
+            currentPuzzle.ClosePuzzle();
+            currentPuzzle = null;
+        }
+
         popupBlocker.SetActive(false);
     }
+
 
 }
