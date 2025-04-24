@@ -3233,6 +3233,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8317175646752445814, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
+      propertyPath: sceneViewId
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7711,6 +7715,10 @@ PrefabInstance:
     - target: {fileID: 5851892640331436691, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8317175646752445814, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
+      propertyPath: sceneViewId
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15392,6 +15400,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8317175646752445814, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
+      propertyPath: sceneViewId
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16587,6 +16599,10 @@ PrefabInstance:
     - target: {fileID: 5851892640331436691, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8317175646752445814, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
+      propertyPath: sceneViewId
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -19702,6 +19718,10 @@ PrefabInstance:
     - target: {fileID: 5851892640331436691, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8317175646752445814, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
+      propertyPath: sceneViewId
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
