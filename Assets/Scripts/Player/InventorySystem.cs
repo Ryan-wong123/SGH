@@ -8,12 +8,16 @@ public static class InventorySystem
     public static void AddItem(string itemName)
     {
         items.Add(itemName);
-        Debug.Log("Picked up: " + itemName);
+        UnityEngine.Debug.Log("Picked up: " + itemName);
     }
 
     public static bool HasItem(string itemName)
     {
         return items.Contains(itemName);
     }
-}
 
+    public static IEnumerable<string> GetAllItems()
+    {
+        return items;
+    }
+}

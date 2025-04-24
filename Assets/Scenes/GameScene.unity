@@ -9571,7 +9571,7 @@ MonoBehaviour:
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
-  m_ChildControlHeight: 1
+  m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
@@ -17326,6 +17326,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1534838750}
+        m_TargetAssemblyTypeName: InventoryUIManager, Assembly-CSharp
+        m_MethodName: ToggleInventory
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1451200795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18569,6 +18581,7 @@ GameObject:
   - component: {fileID: 1534838747}
   - component: {fileID: 1534838749}
   - component: {fileID: 1534838748}
+  - component: {fileID: 1534838750}
   m_Layer: 5
   m_Name: Inventory Panel
   m_TagString: Untagged
@@ -18635,6 +18648,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534838746}
   m_CullTransparentMesh: 1
+--- !u!114 &1534838750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1534838746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0642f4fba14588842bc331a35f4d1d29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contentParent: {fileID: 734424698}
+  itemPrefab: {fileID: 4157855686233243831, guid: ed5a1816f7c875d4892d226d7d1086de, type: 3}
 --- !u!1 &1535159317
 GameObject:
   m_ObjectHideFlags: 0
@@ -23234,13 +23261,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 896905551938054708, guid: 1738e3851a29cbe47ae1b42aca689ef9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1901594429}
   m_SourcePrefab: {fileID: 100100000, guid: 1738e3851a29cbe47ae1b42aca689ef9, type: 3}
 --- !u!4 &1901594427 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 896905551937566228, guid: 1738e3851a29cbe47ae1b42aca689ef9, type: 3}
   m_PrefabInstance: {fileID: 1901594426}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1901594428 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 896905551938054708, guid: 1738e3851a29cbe47ae1b42aca689ef9, type: 3}
+  m_PrefabInstance: {fileID: 1901594426}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1901594429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901594428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6809dc1d11d554541986c788a43ed622, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: crate
 --- !u!1001 &1903277269
 PrefabInstance:
   m_ObjectHideFlags: 0
