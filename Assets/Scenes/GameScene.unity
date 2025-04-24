@@ -3174,8 +3174,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 465433447}
     m_Modifications:
     - target: {fileID: 3504898680590497188, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
+      propertyPath: keyName
+      value: Key1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504898680590497188, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
       propertyPath: isLocked
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504898680590497188, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
+      propertyPath: requiresKey
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5851892640331206323, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
       propertyPath: m_Name
@@ -15316,8 +15324,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 465433447}
     m_Modifications:
     - target: {fileID: 3504898680590497188, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
+      propertyPath: keyName
+      value: Key2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504898680590497188, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
       propertyPath: isLocked
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504898680590497188, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
+      propertyPath: requiresKey
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5851892640331206323, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
       propertyPath: m_Name
@@ -23261,34 +23277,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 896905551938054708, guid: 1738e3851a29cbe47ae1b42aca689ef9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1901594429}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1738e3851a29cbe47ae1b42aca689ef9, type: 3}
 --- !u!4 &1901594427 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 896905551937566228, guid: 1738e3851a29cbe47ae1b42aca689ef9, type: 3}
   m_PrefabInstance: {fileID: 1901594426}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1901594428 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 896905551938054708, guid: 1738e3851a29cbe47ae1b42aca689ef9, type: 3}
-  m_PrefabInstance: {fileID: 1901594426}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1901594429
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1901594428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6809dc1d11d554541986c788a43ed622, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: crate
 --- !u!1001 &1903277269
 PrefabInstance:
   m_ObjectHideFlags: 0

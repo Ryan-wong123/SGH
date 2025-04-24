@@ -3,9 +3,9 @@ using UnityEngine;
 public class DoorInteractable : MonoBehaviour, IInteractable
 {
     [Header("Door Settings")]
-    public bool isLocked = false;
-    public bool requiresKey = false;
-    public string keyName = "Key";
+    [SerializeField] private bool isLocked = false;
+    [SerializeField] private bool requiresKey = false;
+    [SerializeField] private string keyName = "Key";
 
     private bool isOpen = false;
 
@@ -19,7 +19,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
         if (requiresKey && !InventorySystem.HasItem(keyName))
         {
-            Debug.Log("Door requires a key.");
+            Debug.Log($"Door requires a {keyName}");
             return;
         }
 
@@ -35,7 +35,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
         if (requiresKey && !InventorySystem.HasItem(keyName))
         {
-            return "Requires a key.";
+            return $"Door requires a {keyName}";
         }
 
         return isOpen ? "Press E to close door" : "Press E to open door";
