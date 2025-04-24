@@ -7,10 +7,30 @@ public class PickupItem : MonoBehaviourPun, IInteractable
     [SerializeField] private string itemName = "Key";
     private void Awake()
     {
-        // Attach PhotonView if missing
-        if (GetComponent<PhotonView>() == null)
+        gameObject.layer = LayerMask.NameToLayer("Interactable");
+        SetupPhotonView();
+    }
+
+    void SetupPhotonView()
+    {
+        // Ensure PhotonView exists
+        PhotonView view = GetComponent<PhotonView>();
+        if (view == null)
         {
-            gameObject.AddComponent<PhotonView>();
+            view = gameObject.AddComponent<PhotonView>();
+        }
+
+        // Set Ownership Transfer to Fixed (scene object)
+        view.OwnershipTransfer = OwnershipOption.Fixed;
+
+        // Set Synchronization method (choose one)
+        view.Synchronization = ViewSynchronization.UnreliableOnChange; // or .ReliableOnChange
+
+        // Ensure this scene object is registered at runtime
+        if (PhotonNetwork.IsConnectedAndReady && view.ViewID == 0)
+        {
+            PhotonNetwork.RegisterPhotonView(view);
+            Debug.Log($"Registered scene object with ViewID: {view.ViewID}");
         }
     }
 
@@ -19,12 +39,19 @@ public class PickupItem : MonoBehaviourPun, IInteractable
         Debug.Log($"Picked up: {itemName}");
         InventorySystem.AddItem(itemName);
 
-        if (photonView.IsMine)
+        // Ask the Master Client to destroy it
+        photonView.RPC(nameof(RequestDestroy), RpcTarget.MasterClient);
+
+    }
+    [PunRPC]
+    void RequestDestroy()
+    {
+        // Only MasterClient will execute this
+        if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.Destroy(gameObject);
         }
     }
-
     public string GetInteractionPrompt()
     {
         return $"Press E to pick up {itemName}";

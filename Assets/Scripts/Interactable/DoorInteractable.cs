@@ -13,28 +13,39 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
     private void Awake()
     {
-        // Attach PhotonView if missing
-        if (GetComponent<PhotonView>() == null)
-        {
-            gameObject.AddComponent<PhotonView>();
-        }
-
-        // Optional: Attach PhotonTransformView for syncing position/rotation
-        if (GetComponent<PhotonTransformView>() == null)
-        {
-            gameObject.AddComponent<PhotonTransformView>();
-        }
-
-        // Optional: set observed component (if using sync via TransformView)
-        PhotonView view = GetComponent<PhotonView>();
-        if (view.ObservedComponents.Count == 0)
-        {
-            var transformView = GetComponent<PhotonTransformView>();
-            if (transformView != null)
-                view.ObservedComponents.Add(transformView);
-        }
+        gameObject.layer = LayerMask.NameToLayer("Interactable");
+        SetupPhotonView();
     }
 
+    void SetupPhotonView()
+    {
+        // Ensure PhotonView exists
+        PhotonView view = GetComponent<PhotonView>();
+        if (view == null)
+        {
+            view = gameObject.AddComponent<PhotonView>();
+        }
+
+        // Set Ownership Transfer to Fixed (scene object)
+        view.OwnershipTransfer = OwnershipOption.Fixed;
+
+        // Add PhotonTransformView (optional, if you want to sync movement/rotation)
+        if (GetComponent<PhotonTransformView>() == null)
+        {
+            var transformView = gameObject.AddComponent<PhotonTransformView>();
+            view.ObservedComponents.Add(transformView);
+        }
+
+        // Set Synchronization method (choose one)
+        view.Synchronization = ViewSynchronization.UnreliableOnChange; // or .ReliableOnChange
+
+        // Ensure this scene object is registered at runtime
+        if (PhotonNetwork.IsConnectedAndReady && view.ViewID == 0)
+        {
+            PhotonNetwork.RegisterPhotonView(view);
+            Debug.Log($"Registered scene object with ViewID: {view.ViewID}");
+        }
+    }
 
     public void Interact()
     {

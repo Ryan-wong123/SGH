@@ -1,8 +1,9 @@
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
+using Photon.Pun;
 
-public class CrosshairInteractor : MonoBehaviour
+public class CrosshairInteractor : MonoBehaviourPun
 {
     [SerializeField] private Camera playerCamera;
     [SerializeField] private float interactDistance = 3f;
@@ -14,19 +15,22 @@ public class CrosshairInteractor : MonoBehaviour
 
     private void Start()
     {
+        if (!photonView.IsMine) return;
+
         interactionLabel = GameObject.Find("Cross Hair Text").GetComponent<TextMeshProUGUI>();
         interactionLabel.gameObject.SetActive(false);
     }
 
     private void Update()
     {
+        if (!photonView.IsMine) return;
+
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactableLayer))
         {
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
-                Debug.Log($"colliding with {interactable}");
                 currentTarget = interactable;
                 interactionLabel.gameObject.SetActive(true);
                 interactionLabel.text = interactable.GetInteractionPrompt();
@@ -43,4 +47,5 @@ public class CrosshairInteractor : MonoBehaviour
             interactionLabel.gameObject.SetActive(false);
         }
     }
+
 }

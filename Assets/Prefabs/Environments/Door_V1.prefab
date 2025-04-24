@@ -69,10 +69,10 @@ PrefabInstance:
       addedObject: {fileID: 3504898680590497188}
     - targetCorrespondingSourceObject: {fileID: 100000, guid: 30a37ce794ca1c94192e4d8721b12940, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2171658068074955198}
+      addedObject: {fileID: 8317175646752445814}
     - targetCorrespondingSourceObject: {fileID: 100000, guid: 30a37ce794ca1c94192e4d8721b12940, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1637357380259209365}
+      addedObject: {fileID: 1451241166003879704}
   m_SourcePrefab: {fileID: 100100000, guid: 30a37ce794ca1c94192e4d8721b12940, type: 3}
 --- !u!1 &5851892640331206327 stripped
 GameObject:
@@ -94,7 +94,7 @@ MonoBehaviour:
   isLocked: 0
   requiresKey: 0
   keyName: Key
---- !u!114 &2171658068074955198
+--- !u!114 &8317175646752445814
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -113,11 +113,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 1637357380259209365}
+  - {fileID: 1451241166003879704}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1637357380259209365
+--- !u!114 &1451241166003879704
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -5,6 +5,10 @@ public class PuzzleTrigger : MonoBehaviour, IInteractable
     [Header("Puzzle Panel")]
     [SerializeField] private GameObject puzzleUIPanel;
     [SerializeField] private GameObject closePanelUI;
+    private void Awake()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Interactable");
+    }
 
     public void Interact()
     {

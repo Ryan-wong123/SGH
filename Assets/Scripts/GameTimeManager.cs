@@ -14,10 +14,29 @@ public class GameTimerManager : MonoBehaviourPunCallbacks
     private bool timerRunning = false;
     private void Awake()
     {
-        // Attach PhotonView if missing
-        if (GetComponent<PhotonView>() == null)
+        SetupPhotonView();
+    }
+
+    void SetupPhotonView()
+    {
+        // Ensure PhotonView exists
+        PhotonView view = GetComponent<PhotonView>();
+        if (view == null)
         {
-            gameObject.AddComponent<PhotonView>();
+            view = gameObject.AddComponent<PhotonView>();
+        }
+
+        // Set Ownership Transfer to Fixed (scene object)
+        view.OwnershipTransfer = OwnershipOption.Fixed;
+
+        // Set Synchronization method (choose one)
+        view.Synchronization = ViewSynchronization.UnreliableOnChange; // or .ReliableOnChange
+
+        // Ensure this scene object is registered at runtime
+        if (PhotonNetwork.IsConnectedAndReady && view.ViewID == 0)
+        {
+            PhotonNetwork.RegisterPhotonView(view);
+            Debug.Log($"Registered scene object with ViewID: {view.ViewID}");
         }
     }
     private void Start()
