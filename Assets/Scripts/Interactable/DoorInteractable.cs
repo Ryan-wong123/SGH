@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 public class DoorInteractable : MonoBehaviour, IInteractable
@@ -8,6 +9,32 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     [SerializeField] private string keyName = "Key";
 
     private bool isOpen = false;
+
+
+    private void Awake()
+    {
+        // Attach PhotonView if missing
+        if (GetComponent<PhotonView>() == null)
+        {
+            gameObject.AddComponent<PhotonView>();
+        }
+
+        // Optional: Attach PhotonTransformView for syncing position/rotation
+        if (GetComponent<PhotonTransformView>() == null)
+        {
+            gameObject.AddComponent<PhotonTransformView>();
+        }
+
+        // Optional: set observed component (if using sync via TransformView)
+        PhotonView view = GetComponent<PhotonView>();
+        if (view.ObservedComponents.Count == 0)
+        {
+            var transformView = GetComponent<PhotonTransformView>();
+            if (transformView != null)
+                view.ObservedComponents.Add(transformView);
+        }
+    }
+
 
     public void Interact()
     {
