@@ -4,7 +4,7 @@ using Photon.Pun;
 public class PickupItem : MonoBehaviourPun, IInteractable
 {
     [Header("Pickup Info")]
-    public string itemName = "Key";
+    [SerializeField] private string itemName = "Key";
     private void Awake()
     {
         // Attach PhotonView if missing
