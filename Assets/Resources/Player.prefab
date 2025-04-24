@@ -1677,6 +1677,7 @@ GameObject:
   - component: {fileID: 2805372623996014590}
   - component: {fileID: 3703871457835901102}
   - component: {fileID: 2041811385496091719}
+  - component: {fileID: 4855115040202353019}
   - component: {fileID: 6468581389619444985}
   - component: {fileID: 2794637006574993770}
   - component: {fileID: 2941627848303063049}
@@ -1775,6 +1776,24 @@ MonoBehaviour:
   cameraRoot: {fileID: 6657964749979546334}
   playerCamera: {fileID: 7149756681078602351}
   verticalRotation: 0
+--- !u!114 &4855115040202353019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5986678580140475614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ca73454635d7764abc9797a1731bff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 7149756681078602351}
+  interactDistance: 3
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  interactionUIPanel: {fileID: 0}
 --- !u!114 &6468581389619444985
 MonoBehaviour:
   m_ObjectHideFlags: 0
