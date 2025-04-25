@@ -60,6 +60,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
                 {
                     // Puzzle 2 Logic
                     string bearColor = card.backSprite.name.ToLower();
+
                     if (acceptableBearColors.Contains(bearColor) && !placedCardsPuzzle2.ContainsKey(droppedObj))
                     {
                         placedCardsPuzzle2[droppedObj] = bearColor;

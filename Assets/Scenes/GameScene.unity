@@ -2209,6 +2209,97 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!1 &152139069
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 152139070}
+  - component: {fileID: 152139073}
+  - component: {fileID: 152139072}
+  - component: {fileID: 152139071}
+  m_Layer: 5
+  m_Name: Gummy Bear yellow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &152139070
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152139069}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1055109011}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 250, y: -250}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &152139071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152139069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4593ab7c2c05e1841921dc89a73b9065, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  correctSymptoms: []
+  acceptableBearColors:
+  - gummy bear yellow
+--- !u!114 &152139072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152139069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0.92910844, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 8c82b654a68fa4f4a8de64719d0537bc, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &152139073
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152139069}
+  m_CullTransparentMesh: 1
 --- !u!1001 &154209335
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3728,7 +3819,7 @@ GameObject:
   - component: {fileID: 238649706}
   - component: {fileID: 238649705}
   m_Layer: 5
-  m_Name: Slot_9
+  m_Name: Gummy Bear green
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3750,7 +3841,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -250}
+  m_AnchoredPosition: {x: 350, y: -150}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &238649705
@@ -3767,7 +3858,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear yellow
+  - gummy bear green
 --- !u!114 &238649706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3781,7 +3872,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.92910844, b: 0, a: 1}
+  m_Color: {r: 0.15686275, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6630,7 +6721,7 @@ GameObject:
   - component: {fileID: 416422144}
   - component: {fileID: 416422143}
   m_Layer: 5
-  m_Name: Slot_4
+  m_Name: Gummy Bear red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6669,7 +6760,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear red
+  - gummy bear red
 --- !u!114 &416422144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6801,7 +6892,7 @@ GameObject:
   - component: {fileID: 445352488}
   - component: {fileID: 445352487}
   m_Layer: 5
-  m_Name: Slot_8
+  m_Name: Gummy Bear green
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6823,7 +6914,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 350, y: -150}
+  m_AnchoredPosition: {x: 250, y: -150}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &445352487
@@ -6840,7 +6931,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear green
+  - gummy bear green
 --- !u!114 &445352488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7056,7 +7147,7 @@ GameObject:
   - component: {fileID: 465579883}
   - component: {fileID: 465579882}
   m_Layer: 5
-  m_Name: Slot_2
+  m_Name: Gummy Bear red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7095,7 +7186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear red
+  - gummy bear red
 --- !u!114 &465579883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7566,7 +7657,7 @@ GameObject:
   - component: {fileID: 482276349}
   - component: {fileID: 482276348}
   m_Layer: 5
-  m_Name: Slot_6
+  m_Name: Gummy Bear green
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7588,7 +7679,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 150, y: -150}
+  m_AnchoredPosition: {x: 50, y: -150}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &482276348
@@ -7605,7 +7696,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear green
+  - gummy bear green
 --- !u!114 &482276349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11466,6 +11557,97 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5176895640605593946, guid: 1dcb95069b667784ea129d66a924436d, type: 3}
   m_PrefabInstance: {fileID: 743295868}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &754927421
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 754927422}
+  - component: {fileID: 754927425}
+  - component: {fileID: 754927424}
+  - component: {fileID: 754927423}
+  m_Layer: 5
+  m_Name: Gummy Bear yellow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &754927422
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754927421}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1055109011}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 450, y: -250}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &754927423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754927421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4593ab7c2c05e1841921dc89a73b9065, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  correctSymptoms: []
+  acceptableBearColors:
+  - gummy bear yellow
+--- !u!114 &754927424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754927421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0.92910844, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 8c82b654a68fa4f4a8de64719d0537bc, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &754927425
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754927421}
+  m_CullTransparentMesh: 1
 --- !u!1001 &758472112
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13726,7 +13908,7 @@ GameObject:
   - component: {fileID: 922639427}
   - component: {fileID: 922639426}
   m_Layer: 5
-  m_Name: Slot_1
+  m_Name: Gummy Bear red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13765,7 +13947,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear red
+  - gummy bear red
 --- !u!114 &922639427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15172,12 +15354,15 @@ RectTransform:
   - {fileID: 1559459733}
   - {fileID: 1359663129}
   - {fileID: 1194267928}
+  - {fileID: 152139070}
+  - {fileID: 1878628287}
+  - {fileID: 754927422}
   m_Father: {fileID: 791486486}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 268.9152, y: 0}
-  m_SizeDelta: {x: -550.6304, y: 0}
+  m_AnchoredPosition: {x: 229.64621, y: 0}
+  m_SizeDelta: {x: -472.0923, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1055109012
 MonoBehaviour:
@@ -16867,7 +17052,7 @@ GameObject:
   - component: {fileID: 1194267930}
   - component: {fileID: 1194267929}
   m_Layer: 5
-  m_Name: Slot_12
+  m_Name: Gummy Bear yellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16889,7 +17074,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 350, y: -250}
+  m_AnchoredPosition: {x: 150, y: -250}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1194267929
@@ -16906,7 +17091,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear yellow
+  - gummy bear yellow
 --- !u!114 &1194267930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19451,7 +19636,7 @@ GameObject:
   - component: {fileID: 1359663131}
   - component: {fileID: 1359663130}
   m_Layer: 5
-  m_Name: Slot_11
+  m_Name: Gummy Bear yellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19473,7 +19658,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 250, y: -250}
+  m_AnchoredPosition: {x: 50, y: -250}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1359663130
@@ -19490,7 +19675,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear yellow
+  - gummy bear yellow
 --- !u!114 &1359663131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22253,7 +22438,7 @@ GameObject:
   - component: {fileID: 1530294498}
   - component: {fileID: 1530294497}
   m_Layer: 5
-  m_Name: Slot_7
+  m_Name: Gummy Bear green
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22275,7 +22460,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 250, y: -150}
+  m_AnchoredPosition: {x: 150, y: -150}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1530294497
@@ -22292,7 +22477,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear green
+  - gummy bear green
 --- !u!114 &1530294498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22909,7 +23094,7 @@ GameObject:
   - component: {fileID: 1559459735}
   - component: {fileID: 1559459734}
   m_Layer: 5
-  m_Name: Slot_10
+  m_Name: Gummy Bear green
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22931,7 +23116,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 150, y: -250}
+  m_AnchoredPosition: {x: 450, y: -150}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1559459734
@@ -22948,7 +23133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear yellow
+  - gummy bear green
 --- !u!114 &1559459735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22962,7 +23147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.92910844, b: 0, a: 1}
+  m_Color: {r: 0.15686275, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -23260,7 +23445,7 @@ GameObject:
   - component: {fileID: 1582201782}
   - component: {fileID: 1582201781}
   m_Layer: 5
-  m_Name: Slot_5
+  m_Name: Gummy Bear red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23282,7 +23467,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -150}
+  m_AnchoredPosition: {x: 450, y: -50}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1582201781
@@ -23299,7 +23484,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear green
+  - gummy bear red
 --- !u!114 &1582201782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23313,7 +23498,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.15502894, g: 1, b: 0, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -26887,6 +27072,97 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7603277887058292959, guid: 081dc22a1cb924345977f3aec58e0534, type: 3}
   m_PrefabInstance: {fileID: 8820412834618087276}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1878628286
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1878628287}
+  - component: {fileID: 1878628290}
+  - component: {fileID: 1878628289}
+  - component: {fileID: 1878628288}
+  m_Layer: 5
+  m_Name: Gummy Bear yellow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1878628287
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878628286}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1055109011}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 350, y: -250}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1878628288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878628286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4593ab7c2c05e1841921dc89a73b9065, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  correctSymptoms: []
+  acceptableBearColors:
+  - gummy bear yellow
+--- !u!114 &1878628289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878628286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0.92910844, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 8c82b654a68fa4f4a8de64719d0537bc, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1878628290
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878628286}
+  m_CullTransparentMesh: 1
 --- !u!1 &1879716784
 GameObject:
   m_ObjectHideFlags: 0
@@ -26900,7 +27176,7 @@ GameObject:
   - component: {fileID: 1879716787}
   - component: {fileID: 1879716786}
   m_Layer: 5
-  m_Name: Slot_3
+  m_Name: Gummy Bear red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26939,7 +27215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctSymptoms: []
   acceptableBearColors:
-  - Gummy Bear red
+  - gummy bear red
 --- !u!114 &1879716787
 MonoBehaviour:
   m_ObjectHideFlags: 0
