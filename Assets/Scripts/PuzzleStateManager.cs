@@ -1,9 +1,10 @@
 
 
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PuzzleStateManager : MonoBehaviour
+public class PuzzleStateManager : MonoBehaviourPun
 {
     public static PuzzleStateManager Instance;
 
@@ -16,6 +17,8 @@ public class PuzzleStateManager : MonoBehaviour
     [SerializeField] private GameObject mainminiPuzzle1Panel1;
     [SerializeField] private GameObject miniPuzzle1Panel1;
     [SerializeField] private GameObject miniPuzzle1Panel2;
+
+    [SerializeField] private GameObject puzzle1Object;
 
     private void OnEnable()
     {
@@ -83,5 +86,20 @@ public class PuzzleStateManager : MonoBehaviour
         // Enable puzzle 2 panel/UI
         if (mainminiPuzzle1Panel1 != null)
             mainminiPuzzle1Panel1.SetActive(false);
+
+        // Ask the Master Client to destroy it
+        photonView.RPC(nameof(RPC_DestroyPuzzle1Object), RpcTarget.AllBuffered);
+
     }
+
+    [PunRPC]
+    private void RPC_DestroyPuzzle1Object()
+    {
+        if (puzzle1Object != null && PhotonNetwork.IsMasterClient)
+        {
+            puzzle1Object.SetActive(false);
+            Debug.Log("Puzzle 1 object destroyed across all players.");
+        }
+    }
+
 }

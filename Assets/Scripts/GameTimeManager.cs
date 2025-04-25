@@ -52,7 +52,6 @@ public class GameTimerManager : MonoBehaviourPunCallbacks
         if (!timerRunning) return;
 
         float timeLeft = timerEndTime - (float)PhotonNetwork.Time;
-        Debug.Log($"Timer {timeLeft}");
         if (timeLeft <= 0f)
         {
             timeLeft = 0f;
