@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -37,6 +37,7 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         canvasGroup.blocksRaycasts = false;
         lastSlotOrParent = transform.parent;
+        trueHome = lastSlotOrParent; // Set trueHome to current slot
         transform.SetParent(canvas.transform);
     }
 
@@ -49,12 +50,13 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         canvasGroup.blocksRaycasts = true;
 
-        if (transform.parent == canvas.transform)
+        if (transform.parent == canvas.transform || transform.parent == null)
         {
             transform.SetParent(trueHome);
             rectTransform.anchoredPosition = Vector2.zero;
         }
     }
+
 
     public void OnPointerClick(PointerEventData eventData)
     {
