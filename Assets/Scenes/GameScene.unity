@@ -30307,8 +30307,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPuzzle2Active: 0
-  puzzle1Panel: {fileID: 3431202}
-  puzzle2Panel: {fileID: 1055109010}
+  mainminiPuzzle1Panel1: {fileID: 791486485}
+  miniPuzzle1Panel1: {fileID: 3431202}
+  miniPuzzle1Panel2: {fileID: 1055109010}
 --- !u!1001 &2075718925
 PrefabInstance:
   m_ObjectHideFlags: 0

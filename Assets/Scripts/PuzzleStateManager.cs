@@ -13,9 +13,9 @@ public class PuzzleStateManager : MonoBehaviour
     [Header("Puzzle 1 Correct Symptoms")]
     public HashSet<string> correctSymptomsFromPuzzle1 = new();
 
-    [SerializeField] private GameObject puzzle1Panel;
-    [SerializeField] private GameObject puzzle2Panel;
-
+    [SerializeField] private GameObject mainminiPuzzle1Panel1;
+    [SerializeField] private GameObject miniPuzzle1Panel1;
+    [SerializeField] private GameObject miniPuzzle1Panel2;
 
     private void OnEnable()
     {
@@ -61,12 +61,12 @@ public class PuzzleStateManager : MonoBehaviour
     {
         Debug.Log("Puzzle 1 complete! Now starting Puzzle 2...");
 
-        if (puzzle1Panel != null)
-            puzzle1Panel.SetActive(false);
+        if (miniPuzzle1Panel1 != null)
+            miniPuzzle1Panel1.SetActive(false);
 
         // Enable puzzle 2 panel/UI
-        if (puzzle2Panel != null)
-            puzzle2Panel.SetActive(true);
+        if (miniPuzzle1Panel2 != null)
+            miniPuzzle1Panel2.SetActive(true);
 
        // Mark in state manager
        StartPuzzle2();
@@ -77,7 +77,11 @@ public class PuzzleStateManager : MonoBehaviour
         Debug.Log("Puzzle 2 complete! You win!");
 
         // Enable puzzle 2 panel/UI
-        if (puzzle2Panel != null)
-            puzzle2Panel.SetActive(false);
+        if (miniPuzzle1Panel2 != null)
+            miniPuzzle1Panel2.SetActive(false);
+
+        // Enable puzzle 2 panel/UI
+        if (mainminiPuzzle1Panel1 != null)
+            mainminiPuzzle1Panel1.SetActive(false);
     }
 }
