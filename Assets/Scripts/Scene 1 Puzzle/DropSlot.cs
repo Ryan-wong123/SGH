@@ -1,4 +1,3 @@
-// DropSlot.cs
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
@@ -17,17 +16,21 @@ public class DropSlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (transform.childCount > 0)
+        {
+            Debug.Log("Slot already occupied");
+            return;
+        }
+
         GameObject droppedObj = eventData.pointerDrag;
         if (droppedObj != null)
         {
             DraggableCard card = droppedObj.GetComponent<DraggableCard>();
             if (card != null)
             {
-                // Always allow the drop visually
                 card.transform.SetParent(transform);
                 card.transform.localPosition = Vector3.zero;
 
-                // Check for correctness
                 if (!hasPlacedCorrect && correctSymptoms.Contains(card.symptomName))
                 {
                     hasPlacedCorrect = true;
@@ -36,8 +39,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
 
                     if (correctCount >= requiredCorrect)
                     {
-                        //OnAllCorrectPlaced?.Invoke();
-                        Debug.Log("all correct");
+                        OnAllCorrectPlaced?.Invoke();
                     }
                 }
                 else if (!correctSymptoms.Contains(card.symptomName))
