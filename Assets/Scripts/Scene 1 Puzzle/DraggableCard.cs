@@ -1,15 +1,17 @@
-// DraggableCard.cs
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Canvas canvas;
+
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
-    private Transform originalParent;
 
-    public string symptomName; // For matching
+    [HideInInspector] public Transform trueHome;     // initial draggable panel
+    private Transform lastSlotOrParent;
+
+    public string symptomName;
 
     private void Awake()
     {
@@ -17,11 +19,18 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         canvasGroup = GetComponent<CanvasGroup>();
     }
 
+    private void Start()
+    {
+        // Store the true original panel once
+        if (trueHome == null)
+            trueHome = transform.parent;
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         canvasGroup.blocksRaycasts = false;
-        originalParent = transform.parent;
-        transform.SetParent(canvas.transform); // Move to top for visibility
+        lastSlotOrParent = transform.parent;
+        transform.SetParent(canvas.transform); // move to top
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -33,10 +42,10 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         canvasGroup.blocksRaycasts = true;
 
-        // If not dropped in valid slot
+        // If dropped nowhere (not a slot), return to true home
         if (transform.parent == canvas.transform)
         {
-            transform.SetParent(originalParent);
+            transform.SetParent(trueHome);
             rectTransform.anchoredPosition = Vector2.zero;
         }
     }
