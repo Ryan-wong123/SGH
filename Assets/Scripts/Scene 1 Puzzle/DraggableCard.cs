@@ -1,11 +1,10 @@
-// DraggableCard.cs
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public Canvas canvas;
-
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
 
@@ -14,8 +13,15 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public string symptomName;
 
+    private Image cardImage;               // The Image component to display the sprite
+    public Sprite frontSprite;           // Symptom image
+    public Sprite backSprite;            // Bear image
+
+    private bool isFlipped = false;
+
     private void Awake()
     {
+        cardImage = GetComponent<Image>();
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
     }
@@ -24,6 +30,7 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (trueHome == null)
             trueHome = transform.parent;
+        ShowFront();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -47,5 +54,29 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             transform.SetParent(trueHome);
             rectTransform.anchoredPosition = Vector2.zero;
         }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right &&
+            PuzzleStateManager.Instance.isPuzzle2Active &&
+            PuzzleStateManager.Instance.IsSymptomCorrect(symptomName))
+        {
+            isFlipped = !isFlipped;
+            if (isFlipped) ShowBack();
+            else ShowFront();
+        }
+    }
+
+    private void ShowFront()
+    {
+        if (cardImage != null && frontSprite != null)
+            cardImage.sprite = frontSprite;
+    }
+
+    private void ShowBack()
+    {
+        if (cardImage != null && backSprite != null)
+            cardImage.sprite = backSprite;
     }
 }

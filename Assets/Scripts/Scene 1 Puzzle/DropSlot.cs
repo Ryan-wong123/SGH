@@ -4,15 +4,20 @@ using System.Collections.Generic;
 
 public class DropSlot : MonoBehaviour, IDropHandler
 {
-    [Header("Acceptable Correct Symptoms")]
+    [Header("Puzzle 1 Symptoms")]
     [SerializeField] private List<string> correctSymptoms = new List<string>();
 
-    [Header("Global Configuration")]
-    public static int correctCount = 0;
-    public static int requiredCorrect = 10;
-    public static System.Action OnAllCorrectPlaced;
+    [Header("Puzzle 2 Colors")]
+    [SerializeField] private List<string> acceptableBearColors = new List<string>();
 
-    private bool hasPlacedCorrect = false;
+    public static int puzzle1CorrectCount = 0;
+    public static int puzzle2CorrectCount = 0;
+    public static int requiredCorrect = 10;
+    public static System.Action OnPuzzle1Complete;
+    public static System.Action OnPuzzle2Complete;
+
+    private bool hasPlacedCorrectPuzzle1 = false;
+    private readonly Dictionary<GameObject, string> placedCardsPuzzle2 = new();
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -31,20 +36,45 @@ public class DropSlot : MonoBehaviour, IDropHandler
                 card.transform.SetParent(transform);
                 card.transform.localPosition = Vector3.zero;
 
-                if (!hasPlacedCorrect && correctSymptoms.Contains(card.symptomName))
+                if (!PuzzleStateManager.Instance.isPuzzle2Active)
                 {
-                    hasPlacedCorrect = true;
-                    correctCount++;
-                    Debug.Log("Correct symptom placed: " + card.symptomName);
-
-                    if (correctCount >= requiredCorrect)
+                    // Puzzle 1 Logic
+                    if (!hasPlacedCorrectPuzzle1 && correctSymptoms.Contains(card.symptomName))
                     {
-                        OnAllCorrectPlaced?.Invoke();
+                        hasPlacedCorrectPuzzle1 = true;
+                        puzzle1CorrectCount++;
+                        PuzzleStateManager.Instance.MarkCorrect(card.symptomName);
+                        Debug.Log("Correct Puzzle 1 symptom: " + card.symptomName);
+
+                        if (puzzle1CorrectCount >= requiredCorrect)
+                        {
+                            OnPuzzle1Complete?.Invoke();
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Incorrect Puzzle 1 symptom: " + card.symptomName);
                     }
                 }
-                else if (!correctSymptoms.Contains(card.symptomName))
+                else
                 {
-                    Debug.Log("Incorrect symptom dropped: " + card.symptomName);
+                    // Puzzle 2 Logic
+                    string bearColor = card.backSprite.name.ToLower();
+                    if (acceptableBearColors.Contains(bearColor) && !placedCardsPuzzle2.ContainsKey(droppedObj))
+                    {
+                        placedCardsPuzzle2[droppedObj] = bearColor;
+                        puzzle2CorrectCount++;
+                        Debug.Log("Correct Puzzle 2 bear color: " + bearColor);
+
+                        if (puzzle2CorrectCount >= requiredCorrect)
+                        {
+                            OnPuzzle2Complete?.Invoke();
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Incorrect Puzzle 2 bear color: " + bearColor);
+                    }
                 }
             }
         }
