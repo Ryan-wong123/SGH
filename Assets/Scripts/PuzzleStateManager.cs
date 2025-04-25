@@ -96,18 +96,34 @@ public class PuzzleStateManager : MonoBehaviourPun
             mainminiPuzzle1Panel1.SetActive(false);
 
         // Ask the Master Client to destroy it
-        photonView.RPC(nameof(RPC_DestroyPuzzle1Object), RpcTarget.AllBuffered);
-
+        if (puzzle1Object != null)
+        {
+            PhotonView puzzlePV = puzzle1Object.GetComponent<PhotonView>();
+            if (puzzlePV != null)
+            {
+                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
+            }
+            else
+            {
+                Debug.LogError("Puzzle object does not have a PhotonView component!");
+            }
+        }
     }
 
     [PunRPC]
-    private void RPC_DestroyPuzzle1Object()
+    private void RPC_DestroyPuzzleObjectByID(int photonViewID)
     {
-        if (puzzle1Object != null)
+        PhotonView targetView = PhotonView.Find(photonViewID);
+        if (targetView != null)
         {
-            puzzle1Object.SetActive(false);
-            Debug.Log("Puzzle 1 object destroyed across all players.");
+            targetView.gameObject.SetActive(false);
+            Debug.Log($"Destroyed object {targetView.gameObject.name} across all players.");
+        }
+        else
+        {
+            Debug.LogWarning($"No PhotonView found with ID {photonViewID}.");
         }
     }
+
 
 }
