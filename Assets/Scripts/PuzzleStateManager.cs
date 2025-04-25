@@ -17,6 +17,8 @@ public class PuzzleStateManager : MonoBehaviourPun
     [SerializeField] private GameObject mainminiPuzzle1Panel1;
     [SerializeField] private GameObject miniPuzzle1Panel1;
     [SerializeField] private GameObject miniPuzzle1Panel2;
+    [SerializeField] private GameObject miniPuzzle1Header1;
+    [SerializeField] private GameObject miniPuzzle1Header2;
 
     [SerializeField] private GameObject puzzle1Object;
 
@@ -71,6 +73,10 @@ public class PuzzleStateManager : MonoBehaviourPun
         if (miniPuzzle1Panel2 != null)
             miniPuzzle1Panel2.SetActive(true);
 
+        miniPuzzle1Header1.SetActive(false);
+        miniPuzzle1Header2.SetActive(true);
+
+
        // Mark in state manager
        StartPuzzle2();
     }
@@ -82,6 +88,8 @@ public class PuzzleStateManager : MonoBehaviourPun
         // Enable puzzle 2 panel/UI
         if (miniPuzzle1Panel2 != null)
             miniPuzzle1Panel2.SetActive(false);
+
+        miniPuzzle1Header2.SetActive(false);
 
         // Enable puzzle 2 panel/UI
         if (mainminiPuzzle1Panel1 != null)
