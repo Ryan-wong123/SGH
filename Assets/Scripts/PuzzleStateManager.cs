@@ -103,7 +103,7 @@ public class PuzzleStateManager : MonoBehaviourPun
     [PunRPC]
     private void RPC_DestroyPuzzle1Object()
     {
-        if (puzzle1Object != null && PhotonNetwork.IsMasterClient)
+        if (puzzle1Object != null)
         {
             puzzle1Object.SetActive(false);
             Debug.Log("Puzzle 1 object destroyed across all players.");
