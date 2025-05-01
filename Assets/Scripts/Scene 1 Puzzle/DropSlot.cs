@@ -25,6 +25,22 @@ public class DropSlot : MonoBehaviour, IDropHandler
     private bool hasPlacedCorrectPuzzle1 = false;
     private readonly Dictionary<GameObject, string> placedCardsPuzzle2 = new();
 
+    private Image cardImage;
+    private bool isCorrect;
+    private List<DraggableCard> cardsInSlot = new();
+    public static List<DropSlot> allDropSlots = new();
+    public List<DraggableCard> GetCardsInSlot() => cardsInSlot;
+
+    private void Start()
+    {
+        allDropSlots.Add(this);
+    }
+    private void OnDestroy()
+    {
+        allDropSlots.Remove(this);
+    }
+
+
     public void OnDrop(PointerEventData eventData)
     {
         GameObject droppedObj = eventData.pointerDrag;
@@ -56,11 +72,13 @@ public class DropSlot : MonoBehaviour, IDropHandler
                 // Mark the parent grid layout as the new true home
                 card.trueHome = transform.parent;
 
-                Image cardImage = card.GetComponent<Image>();
+                cardImage = card.GetComponent<Image>();
 
                 if (!PuzzleStateManager.Instance.isPuzzle2Active)
                 {
-                    bool isCorrect = correctSymptoms.Contains(card.symptomName);
+                    isCorrect = correctSymptoms.Contains(card.symptomName);
+
+                    cardsInSlot.Add(card);
 
                     // Puzzle 1 Logic
                     if (!hasPlacedCorrectPuzzle1 && correctSymptoms.Contains(card.symptomName))
@@ -69,24 +87,18 @@ public class DropSlot : MonoBehaviour, IDropHandler
                         puzzle1CorrectCount++;
                         PuzzleStateManager.Instance.MarkCorrect(card.symptomName);
                         Debug.Log("Correct Puzzle 1 symptom: " + card.symptomName);
-
-                        if (puzzle1CorrectCount >= requiredCorrect)
-                        {
-                            OnPuzzle1Complete?.Invoke();
-                        }
                     }
                     else
                     {
                         Debug.Log("Incorrect Puzzle 1 symptom: " + card.symptomName);
                     }
-                    if (cardImage != null)
-                        cardImage.color = isCorrect ? correctColor : wrongColor;
+                  
                 }
                 else
                 {
                     // Puzzle 2 Logic
                     string bearColor = card.backSprite.name.ToLower();
-                    bool isCorrect = acceptableBearColors.Contains(bearColor);
+                    isCorrect = acceptableBearColors.Contains(bearColor);
 
                     if (acceptableBearColors.Contains(bearColor) && !placedCardsPuzzle2.ContainsKey(droppedObj) && isCorrect)
                     {
@@ -109,4 +121,6 @@ public class DropSlot : MonoBehaviour, IDropHandler
             }
         }
     }
+
+
 }

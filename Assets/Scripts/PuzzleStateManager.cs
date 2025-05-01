@@ -4,6 +4,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PuzzleStateManager : MonoBehaviourPun
 {
@@ -141,6 +142,28 @@ public class PuzzleStateManager : MonoBehaviourPun
 
         InventorySystem.Instance.AddItem(itemName);
         InventoryUIManager.Instance.UpdateInventoryUI();
+    }
+
+    public void SubmitPuzzle1()
+    {
+        List<DraggableCard> allCards = new();
+
+        foreach (DropSlot slot in DropSlot.allDropSlots)
+        {
+            allCards.AddRange(slot.GetCardsInSlot());
+        }
+
+        foreach (DraggableCard card in allCards)
+        {
+            bool isCorrect = correctSymptomsFromPuzzle1.Contains(card.symptomName);
+            var cardImage = card.GetComponent<Image>();
+            cardImage.color = isCorrect ? Color.green : Color.red;
+        }
+
+        if (DropSlot.puzzle1CorrectCount >= DropSlot.requiredCorrect)
+        {
+            HandlePuzzle1Complete();
+        }
     }
 
 

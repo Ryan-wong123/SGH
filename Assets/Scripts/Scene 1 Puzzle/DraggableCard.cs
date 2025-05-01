@@ -121,6 +121,8 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 SnapTo(trueHome);
             }
+            var img = GetComponent<Image>();
+            if (img != null) img.color = Color.white;
         }
     }
     public void SnapBack()
