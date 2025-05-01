@@ -22,13 +22,23 @@ public class DropSlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        
+
+        GameObject droppedObj = eventData.pointerDrag;
+
         if (transform.childCount > 0)
         {
             Debug.Log("Slot already occupied");
+
+            if (droppedObj != null)
+            {
+                DraggableCard card = droppedObj.GetComponent<DraggableCard>();
+                card?.SnapBack(); // Return card if slot is full
+            }
+
             return;
         }
 
-        GameObject droppedObj = eventData.pointerDrag;
         if (droppedObj != null)
         {
             DraggableCard card = droppedObj.GetComponent<DraggableCard>();

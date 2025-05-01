@@ -123,7 +123,27 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             }
         }
     }
-
+    public void SnapBack()
+    {
+        if (!panel1GridLayout.gameObject.activeSelf)
+        {
+            Transform slot = FindFirstEmptyChild(trueHome);
+            if (slot != null)
+            {
+                SnapTo(slot);
+                rectTransform.localScale = Vector2.one;
+            }
+            else
+            {
+                SnapTo(panel2GridLayout);
+                rectTransform.localScale = Vector2.one;
+            }
+        }
+        else
+        {
+            SnapTo(trueHome);
+        }
+    }
     private void SnapTo(Transform parent)
     {
         transform.SetParent(parent);
