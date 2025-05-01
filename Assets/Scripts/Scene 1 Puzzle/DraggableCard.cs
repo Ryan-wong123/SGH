@@ -58,33 +58,89 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         if (transform.parent == canvas.transform || transform.parent == null)
         {
-            // Special case 1: dragged out of Panel2 slot and dropped back on Panel2
-            if (IsPointerOverPanel("Panel2") && lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout)
-            {
-                // Came from panel2, dropped outside its slot — go back to panel1
-                SnapTo(panel1GridLayout);
-            }
-            // Special case 2: dragged out of Panel2 slot and dropped onto Panel1
-            else if (IsPointerOverPanel("Panel1") && lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout)
+            bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
+            bool fromPanel3 = lastSlotOrParent != null && lastSlotOrParent.parent == panel3GridLayout;
+
+            // 1. From panel2, dropped on panel1(not a slot) → snap to panel1
+            if (IsPointerOverPanel("Panel1") && fromPanel2)
             {
                 SnapTo(panel1GridLayout);
             }
-            else if (IsPointerOverPanel("Panel2") && lastSlotOrParent != null && lastSlotOrParent.parent == panel3GridLayout)
+            // 2. From panel2, dropped on panel2(not a slot) and panel1 is disabled → snap to panel2
+            else if (IsPointerOverPanel("Panel2") && fromPanel2 && !panel1GridLayout.gameObject.activeSelf)
             {
-                SnapTo(panel2GridLayout);
+                Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+                if (emptySlot != null)
+                {
+                    SnapTo(emptySlot);
+                    rectTransform.localScale = Vector2.one;
+                }
+                else
+                {
+                    SnapTo(panel2GridLayout);
+                    rectTransform.localScale = Vector2.one;
+                }
+
             }
-            else if (IsPointerOverPanel("Panel3") && lastSlotOrParent != null && lastSlotOrParent.parent == panel3GridLayout)
+            // 2. From panel2, dropped on panel2 (not a slot) → snap to panel1 if panel1 is active
+            else if (IsPointerOverPanel("Panel2") && fromPanel2)
             {
-                SnapTo(panel2GridLayout);
+                SnapTo(panel1GridLayout);
+            }
+            // 3. From panel2, dropped on panel3 (not slot) → snap to empty child in panel2
+            else if (IsPointerOverPanel("Panel3") && fromPanel2)
+            {
+                Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+                if (emptySlot != null)
+                {
+                    SnapTo(emptySlot);
+                    rectTransform.localScale = Vector2.one;
+                }
+                else
+                {
+                    SnapTo(panel2GridLayout);
+                    rectTransform.localScale = Vector2.one;
+                }    
+            }
+            // 4. From panel3, dropped on panel3 (not slot) → snap to panel3
+            else if ((IsPointerOverPanel("Panel3") && fromPanel3) || (IsPointerOverPanel("Panel2") && fromPanel3))
+            {
+                Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+                if (emptySlot != null)
+                {
+                    SnapTo(emptySlot);
+                    rectTransform.localScale = Vector2.one;
+                }
+                else
+                {
+                    SnapTo(panel2GridLayout);
+                    rectTransform.localScale = Vector2.one;
+                }
             }
             else
             {
-                // Default: snap back to last known valid panel
                 SnapTo(trueHome);
             }
         }
-
     }
+
+    private void SnapTo(Transform parent)
+    {
+        transform.SetParent(parent);
+        rectTransform.anchoredPosition = new Vector2(100, -110);
+        rectTransform.localScale = new Vector2(0.6409343f, 0.66764f);
+    }
+
+    private Transform FindFirstEmptyChild(Transform gridParent)
+    {
+        foreach (Transform child in gridParent)
+        {
+            if (child.childCount == 0)
+                return child;
+        }
+        return null;
+    }
+
     private bool IsPointerOverPanel(string panelTag)
     {
         var results = new List<RaycastResult>();
@@ -97,12 +153,6 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 return true;
         }
         return false;
-    }
-    private void SnapTo(Transform parent)
-    {
-        transform.SetParent(parent);
-        rectTransform.anchoredPosition = new Vector2(100, -110);
-        rectTransform.localScale = new Vector2(0.6409343f, 0.66764f);
     }
 
     public void OnPointerClick(PointerEventData eventData)
