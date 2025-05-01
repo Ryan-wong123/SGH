@@ -1,3 +1,4 @@
+﻿// DropSlot.cs
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
@@ -34,9 +35,13 @@ public class DropSlot : MonoBehaviour, IDropHandler
             if (card != null)
             {
                 card.transform.SetParent(transform);
+
                 var rect = card.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(100, -110);
                 rect.localScale = Vector2.one;
+
+                // Mark the parent grid layout as the new true home
+                card.trueHome = transform.parent;
 
                 if (!PuzzleStateManager.Instance.isPuzzle2Active)
                 {
