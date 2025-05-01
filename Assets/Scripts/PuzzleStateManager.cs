@@ -11,7 +11,7 @@ public class PuzzleStateManager : MonoBehaviourPun
     public static PuzzleStateManager Instance;
 
     [Header("Puzzle State")]
-    public bool isPuzzle2Active = false;
+    public PuzzleStage CurrentStage = PuzzleStage.Puzzle1;
 
     [Header("Puzzle 1 Correct Symptoms")]
     public HashSet<string> correctSymptomsFromPuzzle1 = new();
@@ -23,6 +23,12 @@ public class PuzzleStateManager : MonoBehaviourPun
     [SerializeField] private GameObject miniPuzzle1Header2;
 
     [SerializeField] private GameObject puzzle1Object;
+    public enum PuzzleStage
+    {
+        Puzzle1,
+        Puzzle2,
+        Puzzle3 
+    }
 
     private void OnEnable()
     {
@@ -59,11 +65,6 @@ public class PuzzleStateManager : MonoBehaviourPun
         return correctSymptomsFromPuzzle1.Contains(symptom);
     }
 
-    public void StartPuzzle2()
-    {
-        isPuzzle2Active = true;
-    }
-
     private void HandlePuzzle1Complete()
     {
         Debug.Log("Puzzle 1 complete! Now starting Puzzle 2...");
@@ -78,9 +79,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         miniPuzzle1Header1.SetActive(false);
         miniPuzzle1Header2.SetActive(true);
 
-
-       // Mark in state manager
-       StartPuzzle2();
+        CurrentStage = PuzzleStage.Puzzle2;
     }
 
     private void HandlePuzzle2Complete()
@@ -112,6 +111,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
         photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal");
 
+        CurrentStage = PuzzleStage.Puzzle3;
     }
 
     [PunRPC]
@@ -168,9 +168,73 @@ public class PuzzleStateManager : MonoBehaviourPun
         Debug.Log($"correct puzzle1 score: {DropSlot.puzzle1CorrectCount} ");
         if (DropSlot.puzzle1CorrectCount >= DropSlot.requiredCorrect)
         {
+            foreach (DraggableCard card in allCards)
+            {
+                // Ensure card is still actually inside a DropSlot
+                if (card.transform.parent != null && card.transform.parent.GetComponent<DropSlot>() != null)
+                {
+                    var cardImage = card.GetComponent<Image>();
+                    if (cardImage != null)
+                        cardImage.color = Color.white;
+                }
+            }
             HandlePuzzle1Complete();
         }
     }
+
+    public void SubmitPuzzle2()
+    {
+        List<DraggableCard> allCards = new();
+
+        foreach (DropSlot slot in DropSlot.allDropSlots)
+        {
+            allCards.AddRange(slot.GetCardsInSlot());
+        }
+
+        foreach (DraggableCard card in allCards)
+        {
+            // Ensure card is still in a slot
+            if (card.transform.parent != null && card.transform.parent.GetComponent<DropSlot>() != null)
+            {
+                string bearColor = card.backSprite.name.ToLower();
+                DropSlot slot = card.transform.parent.GetComponent<DropSlot>();
+                bool isCorrect = slot != null && slot.acceptableBearColors.Contains(bearColor);
+
+                var cardImage = card.GetComponent<Image>();
+                if (cardImage != null)
+                    cardImage.color = isCorrect ? Color.green : Color.red;
+            }
+        }
+
+        Debug.Log($"correct puzzle2 score: {DropSlot.puzzle2CorrectCount} ");
+        if (DropSlot.puzzle2CorrectCount >= DropSlot.requiredCorrect)
+        {
+            HandlePuzzle2Complete();
+        }
+    }
+
+    public void Submit()
+    {
+        switch (CurrentStage)
+        {
+            case PuzzleStage.Puzzle1:
+                SubmitPuzzle1();
+                break;
+
+            case PuzzleStage.Puzzle2:
+                SubmitPuzzle2();
+                break;
+
+            // case PuzzleStage.Puzzle3:
+            //     SubmitPuzzle3();
+            //     break;
+
+            default:
+                Debug.LogWarning("Unknown puzzle stage!");
+                break;
+        }
+    }
+
 
 
 }

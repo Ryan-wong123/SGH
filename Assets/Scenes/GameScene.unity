@@ -21910,7 +21910,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2075314851}
         m_TargetAssemblyTypeName: PuzzleStateManager, Assembly-CSharp
-        m_MethodName: SubmitPuzzle1
+        m_MethodName: Submit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -31019,9 +31019,6 @@ MonoBehaviour:
   miniPuzzle1Header1: {fileID: 448308555}
   miniPuzzle1Header2: {fileID: 1764953782}
   puzzle1Object: {fileID: 1547783179}
-  panel1GridLayout: {fileID: 3431203}
-  panel2GridLayout: {fileID: 1945308135}
-  panel3GridLayout: {fileID: 1055109011}
 --- !u!114 &2075314852
 MonoBehaviour:
   m_ObjectHideFlags: 0

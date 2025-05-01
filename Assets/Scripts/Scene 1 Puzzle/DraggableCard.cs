@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using static PuzzleStateManager;
 
 public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
@@ -64,7 +65,7 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             bool wasCorrect = previousSlot.correctSymptoms.Contains(symptomName);
             bool droppedOutsideSlot = transform.parent == canvas.transform || transform.parent.GetComponent<DropSlot>() == null;
 
-            if (!PuzzleStateManager.Instance.isPuzzle2Active && wasCorrect && droppedOutsideSlot)
+            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle1 && wasCorrect && droppedOutsideSlot)
             {
                 DropSlot.puzzle1CorrectCount = Mathf.Max(0, DropSlot.puzzle1CorrectCount - 1);
                 Debug.Log($"Correct card removed. New count: {DropSlot.puzzle1CorrectCount}");
@@ -197,7 +198,7 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Right &&
-            PuzzleStateManager.Instance.isPuzzle2Active &&
+            PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle2 &&
             PuzzleStateManager.Instance.IsSymptomCorrect(symptomName))
         {
             isFlipped = !isFlipped;

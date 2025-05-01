@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using static PuzzleStateManager;
 
 public class DropSlot : MonoBehaviour, IDropHandler
 {
@@ -10,7 +11,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
     [SerializeField] public List<string> correctSymptoms = new List<string>();
 
     [Header("Puzzle 2 Colors")]
-    [SerializeField] private List<string> acceptableBearColors = new List<string>();
+    [SerializeField] public List<string> acceptableBearColors = new List<string>();
 
     [Header("Tint Colors")]
     [SerializeField] private Color correctColor = Color.green;
@@ -77,7 +78,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
 
                 cardImage = card.GetComponent<Image>();
 
-                if (!PuzzleStateManager.Instance.isPuzzle2Active)
+                if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle1)
                 {
                     isCorrect = correctSymptoms.Contains(card.symptomName);
 
@@ -97,7 +98,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
                     }
                   
                 }
-                else
+                else if(PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle2)
                 {
                     // Puzzle 2 Logic
                     string bearColor = card.backSprite.name.ToLower();
@@ -107,19 +108,12 @@ public class DropSlot : MonoBehaviour, IDropHandler
                     {
                         placedCardsPuzzle2[droppedObj] = bearColor;
                         puzzle2CorrectCount++;
-                        Debug.Log("Correct Puzzle 2 bear color: " + bearColor);
-
-                        if (puzzle2CorrectCount >= requiredCorrect)
-                        {
-                            OnPuzzle2Complete?.Invoke();
-                        }
+                        Debug.Log("Correct Puzzle 2 bear color: " + bearColor);                      
                     }
                     else
                     {
                         Debug.Log("Incorrect Puzzle 2 bear color: " + bearColor);
                     }
-                    if (cardImage != null)
-                        cardImage.color = isCorrect ? correctColor : wrongColor;
                 }
             }
         }
