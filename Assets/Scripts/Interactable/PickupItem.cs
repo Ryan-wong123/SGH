@@ -36,13 +36,31 @@ public class PickupItem : MonoBehaviourPun, IInteractable
 
     public void Interact()
     {
-        Debug.Log($"Picked up: {itemName}");
-        InventorySystem.AddItem(itemName);
-
-        // Ask the Master Client to destroy it
+        photonView.RPC(nameof(SyncItemPickup), RpcTarget.AllBuffered, itemName);
         photonView.RPC(nameof(RequestDestroy), RpcTarget.MasterClient);
 
     }
+
+    [PunRPC]
+    void SyncItemPickup(string itemName)
+    {
+        StartCoroutine(SafeSync(itemName));
+    }
+
+    System.Collections.IEnumerator SafeSync(string itemName)
+    {
+        while (InventorySystem.Instance == null || InventoryUIManager.Instance == null)
+        {
+            Debug.Log("[Sync] Still null...");
+            yield return null;
+        }
+
+        Debug.Log($"Adding {itemName}");
+
+        InventorySystem.Instance.AddItem(itemName);
+        InventoryUIManager.Instance.UpdateInventoryUI();
+    }
+
     [PunRPC]
     void RequestDestroy()
     {

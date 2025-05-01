@@ -55,7 +55,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
             return;
         }
 
-        if (requiresKey && !InventorySystem.HasItem(keyName))
+        if (requiresKey && !InventorySystem.Instance.HasItem(keyName))
         {
             Debug.Log($"Door requires a {keyName}");
             return;
@@ -71,7 +71,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
             return "This door is locked.";
         }
 
-        if (requiresKey && !InventorySystem.HasItem(keyName))
+        if (requiresKey && !InventorySystem.Instance.HasItem(keyName))
         {
             return $"Door requires a {keyName}";
         }

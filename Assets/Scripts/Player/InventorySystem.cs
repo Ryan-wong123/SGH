@@ -1,22 +1,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class InventorySystem
+public class InventorySystem : MonoBehaviour
 {
-    private static HashSet<string> items = new HashSet<string>();
+    public static InventorySystem Instance;
 
-    public static void AddItem(string itemName)
+    private HashSet<string> items = new HashSet<string>();
+
+    private void Awake()
     {
-        items.Add(itemName);
-        UnityEngine.Debug.Log("Picked up: " + itemName);
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
     }
 
-    public static bool HasItem(string itemName)
+    public void AddItem(string itemName)
+    {
+        Debug.Log($"[InventorySystem] Add: {itemName}");
+        items.Add(itemName);
+    }
+
+
+    public bool HasItem(string itemName)
     {
         return items.Contains(itemName);
     }
 
-    public static IEnumerable<string> GetAllItems()
+    public IEnumerable<string> GetAllItems()
     {
         return items;
     }

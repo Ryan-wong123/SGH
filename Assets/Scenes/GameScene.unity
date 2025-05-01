@@ -21175,18 +21175,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1534838750}
-        m_TargetAssemblyTypeName: InventoryUIManager, Assembly-CSharp
-        m_MethodName: ToggleInventory
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1451200795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22727,7 +22715,6 @@ GameObject:
   - component: {fileID: 1534838747}
   - component: {fileID: 1534838749}
   - component: {fileID: 1534838748}
-  - component: {fileID: 1534838750}
   m_Layer: 5
   m_Name: Inventory Panel
   m_TagString: Untagged
@@ -22794,20 +22781,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534838746}
   m_CullTransparentMesh: 1
---- !u!114 &1534838750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1534838746}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0642f4fba14588842bc331a35f4d1d29, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  contentParent: {fileID: 734424698}
-  itemPrefab: {fileID: 4157855686233243831, guid: ed5a1816f7c875d4892d226d7d1086de, type: 3}
 --- !u!1 &1535159317
 GameObject:
   m_ObjectHideFlags: 0
@@ -30500,6 +30473,8 @@ GameObject:
   - component: {fileID: 2075314849}
   - component: {fileID: 2075314850}
   - component: {fileID: 2075314851}
+  - component: {fileID: 2075314852}
+  - component: {fileID: 2075314853}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -30612,6 +30587,32 @@ MonoBehaviour:
   miniPuzzle1Header1: {fileID: 448308555}
   miniPuzzle1Header2: {fileID: 1764953782}
   puzzle1Object: {fileID: 1547783179}
+--- !u!114 &2075314852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075314845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 007d8dcd3b81a024ab28b0e5e91cbb07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2075314853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075314845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0642f4fba14588842bc331a35f4d1d29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contentParent: {fileID: 734424698}
+  itemPrefab: {fileID: 4157855686233243831, guid: ed5a1816f7c875d4892d226d7d1086de, type: 3}
 --- !u!1001 &2075718925
 PrefabInstance:
   m_ObjectHideFlags: 0
