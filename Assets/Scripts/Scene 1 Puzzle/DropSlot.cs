@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class DropSlot : MonoBehaviour, IDropHandler
 {
     [Header("Puzzle 1 Symptoms")]
-    [SerializeField] private List<string> correctSymptoms = new List<string>();
+    [SerializeField] public List<string> correctSymptoms = new List<string>();
 
     [Header("Puzzle 2 Colors")]
     [SerializeField] private List<string> acceptableBearColors = new List<string>();
@@ -22,7 +22,6 @@ public class DropSlot : MonoBehaviour, IDropHandler
     public static System.Action OnPuzzle1Complete;
     public static System.Action OnPuzzle2Complete;
 
-    private bool hasPlacedCorrectPuzzle1 = false;
     private readonly Dictionary<GameObject, string> placedCardsPuzzle2 = new();
 
     private Image cardImage;
@@ -38,6 +37,10 @@ public class DropSlot : MonoBehaviour, IDropHandler
     private void OnDestroy()
     {
         allDropSlots.Remove(this);
+    }
+    public void RemoveCard(DraggableCard card)
+    {
+        cardsInSlot.Remove(card);
     }
 
 
@@ -81,9 +84,9 @@ public class DropSlot : MonoBehaviour, IDropHandler
                     cardsInSlot.Add(card);
 
                     // Puzzle 1 Logic
-                    if (!hasPlacedCorrectPuzzle1 && correctSymptoms.Contains(card.symptomName))
+                    if (correctSymptoms.Contains(card.symptomName))
                     {
-                        hasPlacedCorrectPuzzle1 = true;
+                        
                         puzzle1CorrectCount++;
                         PuzzleStateManager.Instance.MarkCorrect(card.symptomName);
                         Debug.Log("Correct Puzzle 1 symptom: " + card.symptomName);

@@ -155,11 +155,17 @@ public class PuzzleStateManager : MonoBehaviourPun
 
         foreach (DraggableCard card in allCards)
         {
-            bool isCorrect = correctSymptomsFromPuzzle1.Contains(card.symptomName);
-            var cardImage = card.GetComponent<Image>();
-            cardImage.color = isCorrect ? Color.green : Color.red;
+            // Ensure card is still actually inside a DropSlot
+            if (card.transform.parent != null && card.transform.parent.GetComponent<DropSlot>() != null)
+            {
+                bool isCorrect = correctSymptomsFromPuzzle1.Contains(card.symptomName);
+                var cardImage = card.GetComponent<Image>();
+                if (cardImage != null)
+                    cardImage.color = isCorrect ? Color.green : Color.red;
+            }
         }
 
+        Debug.Log($"correct puzzle1 score: {DropSlot.puzzle1CorrectCount} ");
         if (DropSlot.puzzle1CorrectCount >= DropSlot.requiredCorrect)
         {
             HandlePuzzle1Complete();

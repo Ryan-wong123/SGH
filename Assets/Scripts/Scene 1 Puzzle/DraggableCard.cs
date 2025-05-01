@@ -56,6 +56,23 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         canvasGroup.blocksRaycasts = true;
 
+        // Check if dragged out of a slot
+        if (lastSlotOrParent != null && lastSlotOrParent.GetComponent<DropSlot>() != null)
+        {
+            DropSlot previousSlot = lastSlotOrParent.GetComponent<DropSlot>();
+
+            bool wasCorrect = previousSlot.correctSymptoms.Contains(symptomName);
+            bool droppedOutsideSlot = transform.parent == canvas.transform || transform.parent.GetComponent<DropSlot>() == null;
+
+            if (!PuzzleStateManager.Instance.isPuzzle2Active && wasCorrect && droppedOutsideSlot)
+            {
+                DropSlot.puzzle1CorrectCount = Mathf.Max(0, DropSlot.puzzle1CorrectCount - 1);
+                Debug.Log($"Correct card removed. New count: {DropSlot.puzzle1CorrectCount}");
+
+                previousSlot.RemoveCard(this); // Optional: clean tracking
+            }
+        }
+
         if (transform.parent == canvas.transform || transform.parent == null)
         {
             bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
