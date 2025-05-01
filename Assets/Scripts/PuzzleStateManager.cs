@@ -1,6 +1,7 @@
 
 
 using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -108,6 +109,8 @@ public class PuzzleStateManager : MonoBehaviourPun
                 Debug.LogError("Puzzle object does not have a PhotonView component!");
             }
         }
+        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal");
+
     }
 
     [PunRPC]
@@ -123,6 +126,21 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
             Debug.LogWarning($"No PhotonView found with ID {photonViewID}.");
         }
+    }
+
+    [PunRPC]
+    void RPC_AddSharedInventoryItem(string itemName)
+    {
+        StartCoroutine(DelayedAddItem(itemName));
+    }
+
+    IEnumerator DelayedAddItem(string itemName)
+    {
+        while (InventorySystem.Instance == null || InventoryUIManager.Instance == null)
+            yield return null;
+
+        InventorySystem.Instance.AddItem(itemName);
+        InventoryUIManager.Instance.UpdateInventoryUI();
     }
 
 
