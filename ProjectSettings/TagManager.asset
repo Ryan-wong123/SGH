@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Panel3
+  - Panel2
+  - Panel1
   layers:
   - Default
   - TransparentFX

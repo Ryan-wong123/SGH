@@ -45,6 +45,7 @@ MonoBehaviour:
   - RPC_DestroyPuzzleObject
   - RPC_DestroyPuzzleObjectByID
   - SyncItemPickup
+  - RPC_AddSharedInventoryItem
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

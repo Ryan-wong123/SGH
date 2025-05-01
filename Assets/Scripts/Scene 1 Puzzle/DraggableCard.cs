@@ -1,10 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public Canvas canvas;
+
+    [Header("Panel References")]
+    public Transform panel1GridLayout;  // Right Slot All Symptoms
+    public Transform panel2GridLayout;  // Left Slot Correct Symptom
+    public Transform panel3GridLayout;  // Right Colored Slot Bear
+
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
 
@@ -13,10 +20,9 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public string symptomName;
 
-    private Image cardImage;               // The Image component to display the sprite
-    public Sprite frontSprite;           // Symptom image
-    public Sprite backSprite;            // Bear image
-
+    private Image cardImage; // The Image component to display the sprite
+    public Sprite frontSprite; // Symptom image
+    public Sprite backSprite; // Bear image
     private bool isFlipped = false;
 
     private void Awake()
@@ -50,13 +56,42 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         canvasGroup.blocksRaycasts = true;
 
+        // If dropped outside of a valid DropSlot
         if (transform.parent == canvas.transform || transform.parent == null)
         {
-            transform.SetParent(trueHome);
-            rectTransform.anchoredPosition = Vector2.zero;
+            if (IsPointerOverPanel("Panel1"))
+                SnapTo(panel1GridLayout);
+            else if (IsPointerOverPanel("Panel2"))
+                SnapTo(panel2GridLayout);
+            else if (IsPointerOverPanel("Panel3"))
+                SnapTo(panel3GridLayout);
+            else
+                SnapTo(trueHome);
         }
     }
 
+    private void SnapTo(Transform parent)
+    {
+        transform.SetParent(parent);
+        rectTransform.anchoredPosition = new Vector2(100, -110);
+        rectTransform.localScale = new Vector2(0.6409343f, 0.66764f);
+    }
+
+    private bool IsPointerOverPanel(string panelTag)
+    {
+        var results = new List<RaycastResult>();
+        var eventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
+        EventSystem.current.RaycastAll(eventData, results);
+
+        foreach (var result in results)
+        {
+            Debug.Log(result.gameObject.tag);
+
+            if (result.gameObject.CompareTag(panelTag))
+                return true;
+        }
+        return false;
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {

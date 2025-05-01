@@ -204,9 +204,10 @@ GameObject:
   - component: {fileID: 3431203}
   - component: {fileID: 3431205}
   - component: {fileID: 3431204}
+  - component: {fileID: 3431206}
   m_Layer: 5
   m_Name: Right Slot All Symptons
-  m_TagString: Untagged
+  m_TagString: Panel1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -266,7 +267,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 220}
@@ -281,6 +282,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3431202}
   m_CullTransparentMesh: 1
+--- !u!114 &3431206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3431202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1001 &12043780
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2139,7 +2170,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -770}
+  m_AnchoredPosition: {x: 302.53433, y: -801.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &143838284
@@ -2155,7 +2186,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Anxious
   frontSprite: {fileID: 21300000, guid: 1ba9cfa659cb7e04783ef6839bb6b89b, type: 3}
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
@@ -2244,7 +2279,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -550}
+  m_AnchoredPosition: {x: 508.1256, y: -691.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &152139071
@@ -2581,7 +2616,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 900, y: -330}
+  m_AnchoredPosition: {x: 902.5343, y: -361.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &168943986
@@ -2597,7 +2632,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Irritable
   frontSprite: {fileID: 21300000, guid: 81ff19e587f5b254c929c37a6b8a5263, type: 3}
   backSprite: {fileID: 21300000, guid: 32df19571ff61db439b638d6791b20fc, type: 3}
@@ -3223,7 +3262,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -110}
+  m_AnchoredPosition: {x: 102.53433, y: -141.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &206797492
@@ -3239,7 +3278,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Slow Wound
   frontSprite: {fileID: 21300000, guid: d2fcc228c3bd4bf468a00cee19357099, type: 3}
   backSprite: {fileID: 0}
@@ -3841,7 +3884,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -330}
+  m_AnchoredPosition: {x: 708.1256, y: -471.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &238649705
@@ -4606,7 +4649,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -770}
+  m_AnchoredPosition: {x: 102.53433, y: -801.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &292843701
@@ -4622,7 +4665,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Dizziness
   frontSprite: {fileID: 21300000, guid: 47a073de6f58d34449c5a39c41bf05fe, type: 3}
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
@@ -5855,7 +5902,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 900, y: -550}
+  m_AnchoredPosition: {x: 902.5343, y: -581.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &383393038
@@ -5871,7 +5918,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Blurry Eyes
   frontSprite: {fileID: 21300000, guid: 0608788293e6a5d4fa8649a5ff1e68b5, type: 3}
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
@@ -6743,7 +6794,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -110}
+  m_AnchoredPosition: {x: 708.1256, y: -251.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &416422143
@@ -6914,7 +6965,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -330}
+  m_AnchoredPosition: {x: 508.1256, y: -471.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &445352487
@@ -7305,7 +7356,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -110}
+  m_AnchoredPosition: {x: 308.1256, y: -251.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &465579882
@@ -7529,7 +7580,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -490}
+  m_AnchoredPosition: {x: 390.365, y: -542.9951}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &472814645
@@ -7815,7 +7866,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -330}
+  m_AnchoredPosition: {x: 108.12561, y: -471.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &482276348
@@ -8507,7 +8558,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -330}
+  m_AnchoredPosition: {x: 502.53433, y: -361.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &544743747
@@ -8523,7 +8574,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Shakiness
   frontSprite: {fileID: 21300000, guid: e9bd65b31cd505d45a30f3a791e2cfdd, type: 3}
   backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
@@ -9309,7 +9364,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -110}
+  m_AnchoredPosition: {x: 702.5343, y: -141.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &612382125
@@ -9325,7 +9380,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Fruity Breath
   frontSprite: {fileID: 21300000, guid: 67abe01c4e4db9d4a859993ccd7ca800, type: 3}
   backSprite: {fileID: 0}
@@ -10705,7 +10764,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -300}
+  m_AnchoredPosition: {x: 390.365, y: -352.9951}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &693815590
@@ -11113,7 +11172,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -110}
+  m_AnchoredPosition: {x: 502.53433, y: -141.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &716920877
@@ -11129,7 +11188,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Abdominal Pain
   frontSprite: {fileID: 21300000, guid: 95a5cb2948380f64bafa36f0f9136e95, type: 3}
   backSprite: {fileID: 0}
@@ -11728,7 +11791,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 900, y: -550}
+  m_AnchoredPosition: {x: 908.1256, y: -691.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &754927423
@@ -11881,7 +11944,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -110}
+  m_AnchoredPosition: {x: 190.36499, y: -162.99509}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &759318940
@@ -12973,7 +13036,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -330}
+  m_AnchoredPosition: {x: 102.53433, y: -361.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &843600297
@@ -12989,7 +13052,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Frequent
   frontSprite: {fileID: 21300000, guid: 0a43e94ee0256dd48ab96efdf7d5bfd2, type: 3}
   backSprite: {fileID: 0}
@@ -14068,7 +14135,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -110}
+  m_AnchoredPosition: {x: 108.12561, y: -251.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &922639426
@@ -14287,7 +14354,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -110}
+  m_AnchoredPosition: {x: 590.365, y: -162.99509}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &928786073
@@ -14450,7 +14517,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -330}
+  m_AnchoredPosition: {x: 302.53433, y: -361.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &936852558
@@ -14466,7 +14533,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Unexplained
   frontSprite: {fileID: 21300000, guid: 1cfd3752635cf6f41ad2f870a95d9455, type: 3}
   backSprite: {fileID: 0}
@@ -14935,7 +15006,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -680}
+  m_AnchoredPosition: {x: 190.36499, y: -732.9951}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1008955438
@@ -15461,9 +15532,10 @@ GameObject:
   - component: {fileID: 1055109011}
   - component: {fileID: 1055109013}
   - component: {fileID: 1055109012}
+  - component: {fileID: 1055109014}
   m_Layer: 5
   m_Name: Right Colored Slot Bear
-  m_TagString: Untagged
+  m_TagString: Panel3
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -15499,8 +15571,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 355.9856, y: -68.42102}
-  m_SizeDelta: {x: -722.3309, y: -136.84}
+  m_AnchoredPosition: {x: 379.59265, y: -68.42102}
+  m_SizeDelta: {x: -769.5449, y: -136.84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1055109012
 MonoBehaviour:
@@ -15519,7 +15591,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 220}
@@ -15534,6 +15606,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1055109010}
   m_CullTransparentMesh: 1
+--- !u!114 &1055109014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055109010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1001 &1056105717
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15640,7 +15742,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -550}
+  m_AnchoredPosition: {x: 102.53433, y: -581.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1056254389
@@ -15656,7 +15758,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Headache
   frontSprite: {fileID: 21300000, guid: 34a1e95a3aa596345b5ddf2fb777d739, type: 3}
   backSprite: {fileID: 21300000, guid: 32df19571ff61db439b638d6791b20fc, type: 3}
@@ -15807,7 +15913,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -300}
+  m_AnchoredPosition: {x: 190.36499, y: -352.9951}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1094541106
@@ -16652,7 +16758,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 900, y: -110}
+  m_AnchoredPosition: {x: 902.5343, y: -141.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1167287923
@@ -16668,7 +16774,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Dry Skin
   frontSprite: {fileID: 21300000, guid: dede98463ecca384b80d04dbf4e01f10, type: 3}
   backSprite: {fileID: 0}
@@ -17212,7 +17322,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -550}
+  m_AnchoredPosition: {x: 308.1256, y: -691.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1194267929
@@ -18299,7 +18409,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -550}
+  m_AnchoredPosition: {x: 502.53433, y: -581.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1254255059
@@ -18315,7 +18425,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Sweating
   frontSprite: {fileID: 21300000, guid: e2bf5b9b77f2d97429a3c370b36ec0c6, type: 3}
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
@@ -18404,7 +18518,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -110}
+  m_AnchoredPosition: {x: 390.365, y: -162.99509}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1274244526
@@ -19696,7 +19810,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -490}
+  m_AnchoredPosition: {x: 190.36499, y: -542.9951}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1344591464
@@ -19796,7 +19910,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -550}
+  m_AnchoredPosition: {x: 108.12561, y: -691.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1359663130
@@ -20556,7 +20670,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -330}
+  m_AnchoredPosition: {x: 702.5343, y: -361.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1405390084
@@ -20572,7 +20686,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Palpitations
   frontSprite: {fileID: 21300000, guid: 80a1d28708da9894eafb6ef132ca6578, type: 3}
   backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
@@ -20848,7 +20966,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -550}
+  m_AnchoredPosition: {x: 702.5343, y: -581.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1420566420
@@ -20864,7 +20982,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Fatigue
   frontSprite: {fileID: 21300000, guid: 2b1c6941183dd8947bc08352246596c4, type: 3}
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
@@ -21248,7 +21370,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -490}
+  m_AnchoredPosition: {x: 590.365, y: -542.9951}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1455492228
@@ -22225,7 +22347,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -110}
+  m_AnchoredPosition: {x: 302.53433, y: -141.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1510928820
@@ -22241,7 +22363,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Hungry
   frontSprite: {fileID: 21300000, guid: 563f6840a6d22124a911e3dd9dd5c58d, type: 3}
   backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
@@ -22586,7 +22712,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -330}
+  m_AnchoredPosition: {x: 308.1256, y: -471.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1530294497
@@ -23252,7 +23378,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 900, y: -330}
+  m_AnchoredPosition: {x: 908.1256, y: -471.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1559459734
@@ -23603,7 +23729,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 900, y: -110}
+  m_AnchoredPosition: {x: 908.1256, y: -251.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1582201781
@@ -27379,7 +27505,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -550}
+  m_AnchoredPosition: {x: 708.1256, y: -691.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1878628288
@@ -27470,7 +27596,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -110}
+  m_AnchoredPosition: {x: 508.1256, y: -251.58002}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1879716786
@@ -28834,9 +28960,10 @@ GameObject:
   - component: {fileID: 1945308135}
   - component: {fileID: 1945308137}
   - component: {fileID: 1945308136}
+  - component: {fileID: 1945308138}
   m_Layer: 5
   m_Name: Left Slot Correct Sympton
-  m_TagString: Untagged
+  m_TagString: Panel2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28887,7 +29014,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 220}
@@ -28902,6 +29029,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1945308134}
   m_CullTransparentMesh: 1
+--- !u!114 &1945308138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945308134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1001 &1967635094
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29182,7 +29339,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -300}
+  m_AnchoredPosition: {x: 590.365, y: -352.9951}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1998683744
@@ -29591,7 +29748,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -550}
+  m_AnchoredPosition: {x: 302.53433, y: -581.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2021751252
@@ -29607,7 +29764,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Extreme Thirst
   frontSprite: {fileID: 21300000, guid: bab01356e5fc98843b0cbcda2739831c, type: 3}
   backSprite: {fileID: 0}
@@ -29759,7 +29920,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 700, y: -770}
+  m_AnchoredPosition: {x: 702.5343, y: -801.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2027945689
@@ -29775,7 +29936,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Peripheral
   frontSprite: {fileID: 21300000, guid: 823825939b217344ca1def38ea1e22c5, type: 3}
   backSprite: {fileID: 0}
@@ -30257,7 +30422,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -770}
+  m_AnchoredPosition: {x: 502.53433, y: -801.58}
   m_SizeDelta: {x: 200, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2069310563
@@ -30273,7 +30438,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 3431203}
+  panel2GridLayout: {fileID: 1945308135}
+  panel3GridLayout: {fileID: 1055109011}
   trueHome: {fileID: 0}
+  lastSlotOrParent: {fileID: 0}
   symptomName: Sexual
   frontSprite: {fileID: 21300000, guid: 853569e528db8334c954c44d63a3de19, type: 3}
   backSprite: {fileID: 0}

@@ -34,7 +34,9 @@ public class DropSlot : MonoBehaviour, IDropHandler
             if (card != null)
             {
                 card.transform.SetParent(transform);
-                card.transform.localPosition = Vector3.zero;
+                var rect = card.GetComponent<RectTransform>();
+                rect.anchoredPosition = new Vector2(100, -110);
+                rect.localScale = Vector2.one;
 
                 if (!PuzzleStateManager.Instance.isPuzzle2Active)
                 {
