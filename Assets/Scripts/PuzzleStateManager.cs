@@ -1,4 +1,4 @@
-
+﻿
 
 using Photon.Pun;
 using System.Collections;
@@ -54,7 +54,23 @@ public class PuzzleStateManager : MonoBehaviourPun
 
         DontDestroyOnLoad(gameObject); // optional if changing scenes
     }
+    public void OnTimerExpired()
+    {
+        Debug.Log("Timer expired — reloading current puzzle stage.");
 
+        switch (CurrentStage)
+        {
+            case PuzzleStage.Puzzle1:
+                Debug.Log("Restarting Puzzle 1");
+                break;
+
+            case PuzzleStage.Puzzle2:
+                Debug.Log("Restarting Puzzle 2");
+                break;
+        }
+    }
+
+   
     public void MarkCorrect(string symptom)
     {
         correctSymptomsFromPuzzle1.Add(symptom);
@@ -112,7 +128,34 @@ public class PuzzleStateManager : MonoBehaviourPun
         photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal");
 
         CurrentStage = PuzzleStage.Puzzle3;
+
+        ResetTimer();
+       
     }
+
+    public void ResetTimer()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
+            if (timerManager != null)
+            {
+                Debug.Log("Reset timer");
+                timerManager.StartTimer(); // This already syncs the timer
+
+                PhotonView timerView = timerManager.GetComponent<PhotonView>();
+                if (timerView != null)
+                {
+                    timerView.RPC("HideTimeWarning", RpcTarget.All);
+                }
+                else
+                {
+                    Debug.LogError("GameTimerManager has no PhotonView attached!");
+                }
+            }
+        }
+    }
+
 
     [PunRPC]
     private void RPC_DestroyPuzzleObjectByID(int photonViewID)
