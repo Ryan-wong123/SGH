@@ -2297,6 +2297,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear yellow
+  slotImage: {fileID: 152139072}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &152139072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3902,6 +3906,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear green
+  slotImage: {fileID: 238649706}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &238649706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6812,6 +6820,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear red
+  slotImage: {fileID: 416422144}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &416422144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6983,6 +6995,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear green
+  slotImage: {fileID: 445352488}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &445352488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7374,6 +7390,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear red
+  slotImage: {fileID: 465579883}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &465579883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7645,6 +7665,10 @@ MonoBehaviour:
   - Dizziness
   - Anxious
   acceptableBearColors: []
+  slotImage: {fileID: 472814645}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &473806260
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7884,6 +7908,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear green
+  slotImage: {fileID: 482276349}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &482276349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10829,6 +10857,10 @@ MonoBehaviour:
   - Dizziness
   - Anxious
   acceptableBearColors: []
+  slotImage: {fileID: 693815590}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &699413702
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11809,6 +11841,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear yellow
+  slotImage: {fileID: 754927424}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &754927424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12009,6 +12045,10 @@ MonoBehaviour:
   - Dizziness
   - Anxious
   acceptableBearColors: []
+  slotImage: {fileID: 759318940}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &769828603
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14153,6 +14193,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear red
+  slotImage: {fileID: 922639427}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &922639427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14419,6 +14463,10 @@ MonoBehaviour:
   - Dizziness
   - Anxious
   acceptableBearColors: []
+  slotImage: {fileID: 928786073}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &930309306
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15071,6 +15119,10 @@ MonoBehaviour:
   - Dizziness
   - Anxious
   acceptableBearColors: []
+  slotImage: {fileID: 1008955438}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1019528083
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15978,6 +16030,10 @@ MonoBehaviour:
   - Dizziness
   - Anxious
   acceptableBearColors: []
+  slotImage: {fileID: 1094541106}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1098494943
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17340,6 +17396,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear yellow
+  slotImage: {fileID: 1194267930}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &1194267930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18583,6 +18643,10 @@ MonoBehaviour:
   - Dizziness
   - Anxious
   acceptableBearColors: []
+  slotImage: {fileID: 1274244526}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1275686451
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19875,6 +19939,10 @@ MonoBehaviour:
   - Dizziness
   - Anxious
   acceptableBearColors: []
+  slotImage: {fileID: 1344591464}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1359663128
 GameObject:
   m_ObjectHideFlags: 0
@@ -19928,6 +19996,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear yellow
+  slotImage: {fileID: 1359663131}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &1359663131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21435,6 +21507,10 @@ MonoBehaviour:
   - Dizziness
   - Anxious
   acceptableBearColors: []
+  slotImage: {fileID: 1455492228}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &1457726145
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22730,6 +22806,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear green
+  slotImage: {fileID: 1530294498}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &1530294498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23396,6 +23476,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear green
+  slotImage: {fileID: 1559459735}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &1559459735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23747,6 +23831,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear red
+  slotImage: {fileID: 1582201782}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &1582201782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27523,6 +27611,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear yellow
+  slotImage: {fileID: 1878628289}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &1878628289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27614,6 +27706,10 @@ MonoBehaviour:
   correctSymptoms: []
   acceptableBearColors:
   - gummy bear red
+  slotImage: {fileID: 1879716787}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &1879716787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29404,6 +29500,10 @@ MonoBehaviour:
   - Dizziness
   - Anxious
   acceptableBearColors: []
+  slotImage: {fileID: 1998683744}
+  correctColor: {r: 0, g: 1, b: 0, a: 1}
+  wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &2000244102
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class DropSlot : MonoBehaviour, IDropHandler
 {
@@ -10,6 +11,10 @@ public class DropSlot : MonoBehaviour, IDropHandler
 
     [Header("Puzzle 2 Colors")]
     [SerializeField] private List<string> acceptableBearColors = new List<string>();
+
+    [Header("Tint Colors")]
+    [SerializeField] private Color correctColor = Color.green;
+    [SerializeField] private Color wrongColor = Color.red;
 
     public static int puzzle1CorrectCount = 0;
     public static int puzzle2CorrectCount = 0;
@@ -22,8 +27,6 @@ public class DropSlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        
-
         GameObject droppedObj = eventData.pointerDrag;
 
         if (transform.childCount > 0)
@@ -53,8 +56,12 @@ public class DropSlot : MonoBehaviour, IDropHandler
                 // Mark the parent grid layout as the new true home
                 card.trueHome = transform.parent;
 
+                Image cardImage = card.GetComponent<Image>();
+
                 if (!PuzzleStateManager.Instance.isPuzzle2Active)
                 {
+                    bool isCorrect = correctSymptoms.Contains(card.symptomName);
+
                     // Puzzle 1 Logic
                     if (!hasPlacedCorrectPuzzle1 && correctSymptoms.Contains(card.symptomName))
                     {
@@ -72,13 +79,16 @@ public class DropSlot : MonoBehaviour, IDropHandler
                     {
                         Debug.Log("Incorrect Puzzle 1 symptom: " + card.symptomName);
                     }
+                    if (cardImage != null)
+                        cardImage.color = isCorrect ? correctColor : wrongColor;
                 }
                 else
                 {
                     // Puzzle 2 Logic
                     string bearColor = card.backSprite.name.ToLower();
+                    bool isCorrect = acceptableBearColors.Contains(bearColor);
 
-                    if (acceptableBearColors.Contains(bearColor) && !placedCardsPuzzle2.ContainsKey(droppedObj))
+                    if (acceptableBearColors.Contains(bearColor) && !placedCardsPuzzle2.ContainsKey(droppedObj) && isCorrect)
                     {
                         placedCardsPuzzle2[droppedObj] = bearColor;
                         puzzle2CorrectCount++;
@@ -93,6 +103,8 @@ public class DropSlot : MonoBehaviour, IDropHandler
                     {
                         Debug.Log("Incorrect Puzzle 2 bear color: " + bearColor);
                     }
+                    if (cardImage != null)
+                        cardImage.color = isCorrect ? correctColor : wrongColor;
                 }
             }
         }
