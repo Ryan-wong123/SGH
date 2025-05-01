@@ -72,6 +72,19 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
                 previousSlot.RemoveCard(this); // Optional: clean tracking
             }
+
+            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle2 && droppedOutsideSlot)
+            {
+                string bearColor = backSprite.name.ToLower();
+                if (previousSlot.acceptableBearColors.Contains(bearColor))
+                {
+                    DropSlot.puzzle2CorrectCount = Mathf.Max(0, DropSlot.puzzle2CorrectCount - 1);
+                    Debug.Log($"Correct Puzzle 2 card removed. New count: {DropSlot.puzzle2CorrectCount}");
+
+                    previousSlot.RemoveCard(this);
+                }
+            }
+
         }
 
         if (transform.parent == canvas.transform || transform.parent == null)

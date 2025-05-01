@@ -30,7 +30,8 @@ public class DropSlot : MonoBehaviour, IDropHandler
     private List<DraggableCard> cardsInSlot = new();
     public static List<DropSlot> allDropSlots = new();
     public List<DraggableCard> GetCardsInSlot() => cardsInSlot;
-
+    private DraggableCard currentCorrectCard = null;
+    private DraggableCard currentCorrectBearCard = null;
     private void Start()
     {
         allDropSlots.Add(this);
@@ -42,6 +43,27 @@ public class DropSlot : MonoBehaviour, IDropHandler
     public void RemoveCard(DraggableCard card)
     {
         cardsInSlot.Remove(card);
+
+
+        if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle1)
+        {
+            if (currentCorrectCard == card)
+            {
+                puzzle1CorrectCount = Mathf.Max(0, puzzle1CorrectCount - 1);
+                Debug.Log("Correct Puzzle 1 card removed. Decremented count.");
+                currentCorrectCard = null;
+            }
+        }
+        else if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle2)
+        {
+            string bearColor = card.backSprite.name.ToLower();
+            if (acceptableBearColors.Contains(bearColor) && currentCorrectBearCard == card)
+            {
+                puzzle2CorrectCount = Mathf.Max(0, puzzle2CorrectCount - 1);
+                Debug.Log("Correct Puzzle 2 card removed. Decremented count.");
+                currentCorrectBearCard = null;
+            }
+        }
     }
 
 
@@ -85,14 +107,14 @@ public class DropSlot : MonoBehaviour, IDropHandler
                     cardsInSlot.Add(card);
 
                     // Puzzle 1 Logic
-                    if (correctSymptoms.Contains(card.symptomName))
+                    if (isCorrect && (currentCorrectCard == null || currentCorrectCard != card))
                     {
-                        
+                        currentCorrectCard = card;
                         puzzle1CorrectCount++;
                         PuzzleStateManager.Instance.MarkCorrect(card.symptomName);
                         Debug.Log("Correct Puzzle 1 symptom: " + card.symptomName);
                     }
-                    else
+                    else if(!isCorrect)
                     {
                         Debug.Log("Incorrect Puzzle 1 symptom: " + card.symptomName);
                     }
@@ -104,7 +126,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
                     string bearColor = card.backSprite.name.ToLower();
                     isCorrect = acceptableBearColors.Contains(bearColor);
 
-                    if (acceptableBearColors.Contains(bearColor) && !placedCardsPuzzle2.ContainsKey(droppedObj) && isCorrect)
+                    if (isCorrect && (currentCorrectBearCard == null || currentCorrectBearCard != card))
                     {
                         placedCardsPuzzle2[droppedObj] = bearColor;
                         puzzle2CorrectCount++;
