@@ -22,6 +22,9 @@ public class PuzzleStateManager : MonoBehaviourPun
     [SerializeField] private GameObject miniPuzzle1Header1;
     [SerializeField] private GameObject miniPuzzle1Header2;
 
+    [SerializeField] private GameObject Puzzle2Panel;
+    [SerializeField] private PictureGridManager pictureGridManager;
+
     [SerializeField] private GameObject puzzle1Object;
     public enum PuzzleStage
     {
@@ -128,6 +131,8 @@ public class PuzzleStateManager : MonoBehaviourPun
         photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal");
 
         CurrentStage = PuzzleStage.Puzzle3;
+
+        Puzzle2Panel.SetActive(true);
 
         ResetTimer();
        
@@ -256,6 +261,33 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
+    public void HandlePuzzle3Complete()
+    {
+        Puzzle2Panel.SetActive(false);
+    }
+
+    public void SubmitPuzzle3()
+    {
+        if (pictureGridManager != null)
+        {
+           if(pictureGridManager.CheckAnswers())
+            {
+                HandlePuzzle3Complete(); // Call this after checking
+            }
+
+            // Optionally check if the selected answers were correct before continuing
+            // You can add logic here based on the result if needed
+            Debug.Log("Puzzle 3 answer check completed.");
+        }
+        else
+        {
+            Debug.LogWarning("PictureGridManager reference is missing!");
+        }
+
+       
+    }
+
+
     public void Submit()
     {
         switch (CurrentStage)
@@ -268,9 +300,9 @@ public class PuzzleStateManager : MonoBehaviourPun
                 SubmitPuzzle2();
                 break;
 
-            // case PuzzleStage.Puzzle3:
-            //     SubmitPuzzle3();
-            //     break;
+            case PuzzleStage.Puzzle3:
+                SubmitPuzzle3();
+                break;
 
             default:
                 Debug.LogWarning("Unknown puzzle stage!");
