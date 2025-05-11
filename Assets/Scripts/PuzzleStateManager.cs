@@ -22,15 +22,23 @@ public class PuzzleStateManager : MonoBehaviourPun
     [SerializeField] private GameObject miniPuzzle1Header1;
     [SerializeField] private GameObject miniPuzzle1Header2;
 
-    [SerializeField] private GameObject Puzzle2Panel;
+    [SerializeField] private GameObject Puzzle3Panel;
     [SerializeField] private PictureGridManager pictureGridManager;
+
+    [SerializeField] private GameObject Puzzle4Panel;
 
     [SerializeField] private GameObject puzzle1Object;
     public enum PuzzleStage
     {
         Puzzle1,
         Puzzle2,
-        Puzzle3 
+        Puzzle3,
+        Puzzle4,
+        Puzzle5,
+        Puzzle6,
+        Puzzle7,
+        Puzzle8,
+        Puzzle9
     }
 
     private void OnEnable()
@@ -66,13 +74,32 @@ public class PuzzleStateManager : MonoBehaviourPun
             case PuzzleStage.Puzzle1:
                 Debug.Log("Restarting Puzzle 1");
                 break;
-
             case PuzzleStage.Puzzle2:
                 Debug.Log("Restarting Puzzle 2");
                 break;
+            case PuzzleStage.Puzzle3:
+                Debug.Log("Restarting Puzzle 3");
+                break;
+            case PuzzleStage.Puzzle4:
+                Debug.Log("Restarting Puzzle 4");
+                break;
+            case PuzzleStage.Puzzle5:
+                Debug.Log("Restarting Puzzle 5");
+                break;
+            case PuzzleStage.Puzzle6:
+                Debug.Log("Restarting Puzzle 6");
+                break;
+            case PuzzleStage.Puzzle7:
+                Debug.Log("Restarting Puzzle 7");
+                break;
+            case PuzzleStage.Puzzle8:
+                Debug.Log("Restarting Puzzle 8");
+                break;
+            case PuzzleStage.Puzzle9:
+                Debug.Log("Restarting Puzzle 9");
+                break;
         }
     }
-
    
     public void MarkCorrect(string symptom)
     {
@@ -132,10 +159,28 @@ public class PuzzleStateManager : MonoBehaviourPun
 
         CurrentStage = PuzzleStage.Puzzle3;
 
-        Puzzle2Panel.SetActive(true);
+        Puzzle3Panel.SetActive(true);
 
         ResetTimer();
        
+    }
+
+    public void HandlePuzzle3Complete()
+    {
+        Debug.Log("Puzzle 3 completed correctly!");
+        Puzzle3Panel.SetActive(false);
+        Puzzle4Panel.SetActive(true);
+        CurrentStage = PuzzleStage.Puzzle4;
+    }
+
+    public void HandlePuzzle4Complete()
+    {
+        Debug.Log("Puzzle 4 completed correctly!");
+        Puzzle4Panel.SetActive(false);
+        CurrentStage = PuzzleStage.Puzzle5;
+
+        ResetTimer();
+
     }
 
     public void ResetTimer()
@@ -261,11 +306,6 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
-    public void HandlePuzzle3Complete()
-    {
-        Puzzle2Panel.SetActive(false);
-    }
-
     public void SubmitPuzzle3()
     {
         if (pictureGridManager != null)
@@ -283,10 +323,21 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
             Debug.LogWarning("PictureGridManager reference is missing!");
         }
-
-       
     }
 
+    public void SubmitPuzzle4()
+    {
+        bool isCorrect = PuzzleManager.Instance.CheckPuzzleSolved();
+        if (isCorrect)
+        {
+            HandlePuzzle4Complete();
+        }
+        else
+        {
+            Debug.Log("Not all tiles are correctly rotated.");
+            // Optional: feedback UI
+        }
+    }
 
     public void Submit()
     {
@@ -303,13 +354,27 @@ public class PuzzleStateManager : MonoBehaviourPun
             case PuzzleStage.Puzzle3:
                 SubmitPuzzle3();
                 break;
-
+            case PuzzleStage.Puzzle4:
+                SubmitPuzzle4();
+                break;
+            //case PuzzleStage.Puzzle5:
+            //    SubmitPuzzle5();
+            //    break;
+            //case PuzzleStage.Puzzle6:
+            //    SubmitPuzzle6();
+            //    break;
+            //case PuzzleStage.Puzzle7:
+            //    SubmitPuzzle7();
+            //    break;
+            //case PuzzleStage.Puzzle8:
+            //    SubmitPuzzle8();
+            //    break;
+            //case PuzzleStage.Puzzle9:
+            //    SubmitPuzzle9();
+            //    break;
             default:
                 Debug.LogWarning("Unknown puzzle stage!");
                 break;
         }
     }
-
-
-
 }
