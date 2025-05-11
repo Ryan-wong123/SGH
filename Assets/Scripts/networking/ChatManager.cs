@@ -21,7 +21,8 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private string[] chatChannels;
     private string selectedChannel;
     public string chatAppId = "41ecc5f0-2661-4f08-9c6b-3567bc7d495d";
-
+    private bool isVisible = true;
+    public GameObject chatPanel;
     void Start()
     {
         userName = PhotonNetwork.NickName;
@@ -41,6 +42,12 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     void Update()
     {
         chatClient?.Service();
+    }
+
+    public void ToggleChatPanel()
+    {
+        isVisible = !isVisible;
+        chatPanel.SetActive(isVisible);
     }
     void SetupDropdown()
     {
