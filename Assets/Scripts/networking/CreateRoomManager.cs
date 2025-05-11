@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using TMPro;
+using System.Collections.Generic;
 
 
 public class CreateRoomManager : Network
@@ -18,10 +19,12 @@ public class CreateRoomManager : Network
     [SerializeField] private Button togglecreateRoomPanelButton;
     //create room panel
     [SerializeField] private GameObject createRoomPanel;
-
+    //cache the room list
+    private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
     //cache value of room name and max players of that room
     private string cachedRoomName;
     private byte cachedMaxPlayers;
+
     private void Start()
     {
         //button listener to create room
@@ -31,6 +34,16 @@ public class CreateRoomManager : Network
         {
             createRoomPanel.SetActive(!createRoomPanel.activeSelf);
         });
+    }
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        foreach (RoomInfo info in roomList)
+        {
+            if (info.RemovedFromList)
+                cachedRoomList.Remove(info.Name);
+            else
+                cachedRoomList[info.Name] = info;
+        }
     }
 
     private void CreateRoom()
@@ -45,10 +58,20 @@ public class CreateRoomManager : Network
             // Update placeholder text if room name is empty
             if (roomNameInput.placeholder is TextMeshProUGUI placeholderText)
             {
-                placeholderText.text = "Room name is required";
+                placeholderText.text = "Room name required";
             }
 
             // Clear the input field to show the new placeholder
+            roomNameInput.text = "";
+            return;
+        }
+
+        //Check if room already exists
+        if (cachedRoomList.ContainsKey(roomName))
+        {
+            if (roomNameInput.placeholder is TextMeshProUGUI placeholderText)
+                placeholderText.text = "Room name exists";
+
             roomNameInput.text = "";
             return;
         }
