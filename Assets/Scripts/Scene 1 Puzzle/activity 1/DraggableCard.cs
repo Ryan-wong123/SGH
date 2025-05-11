@@ -218,6 +218,13 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             if (isFlipped) ShowBack();
             else ShowFront();
         }
+
+        if (eventData.button == PointerEventData.InputButton.Middle)
+        {
+            Sprite spriteToShow = isFlipped ? backSprite : frontSprite;
+            CardPopupManager.Instance.ShowCard(spriteToShow);
+        }
+
     }
 
     private void ShowFront()
