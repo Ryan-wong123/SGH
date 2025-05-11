@@ -23,12 +23,10 @@ public class PuzzleTile : MonoBehaviour
     {
         currentRotation = (currentRotation + rotationStep) % 360;
         rectTransform.rotation = Quaternion.Euler(0, 0, currentRotation);
-        PuzzleManager.Instance.CheckPuzzleSolved();
     }
 
     public bool IsCorrect()
     {
-        Debug.Log($"{gameObject.name} is {currentRotation == correctRotation}");
         return currentRotation == correctRotation;
     }
 }

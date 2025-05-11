@@ -327,7 +327,7 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     public void SubmitPuzzle4()
     {
-        bool isCorrect = PuzzleManager.Instance.CheckPuzzleSolved();
+        bool isCorrect = PuzzleTileManager.Instance.CheckPuzzleSolved();
         if (isCorrect)
         {
             HandlePuzzle4Complete();
