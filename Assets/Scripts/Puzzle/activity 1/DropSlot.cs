@@ -50,7 +50,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
             if (currentCorrectCard == card)
             {
                 puzzle1CorrectCount = Mathf.Max(0, puzzle1CorrectCount - 1);
-                Debug.Log("Correct Puzzle 1 card removed. Decremented count.");
+                Debug.Log($"Correct Puzzle 1 card removed. Decremented count {puzzle1CorrectCount}");
                 currentCorrectCard = null;
             }
         }
@@ -60,7 +60,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
             if (acceptableBearColors.Contains(bearColor) && currentCorrectBearCard == card)
             {
                 puzzle2CorrectCount = Mathf.Max(0, puzzle2CorrectCount - 1);
-                Debug.Log("Correct Puzzle 2 card removed. Decremented count.");
+                Debug.Log($"Correct Puzzle 2 card removed. Decremented count {puzzle2CorrectCount}");
                 currentCorrectBearCard = null;
             }
         }

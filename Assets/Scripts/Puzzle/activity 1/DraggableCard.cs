@@ -72,13 +72,10 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
             if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle1 && wasCorrect && droppedOutsideSlot)
             {
-                DropSlot.puzzle1CorrectCount = Mathf.Max(0, DropSlot.puzzle1CorrectCount - 1);
-                Debug.Log($"Correct card removed. New count: {DropSlot.puzzle1CorrectCount}");
-
                 previousSlot.RemoveCard(this); // Optional: clean tracking
             }
 
-            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle2 && droppedOutsideSlot)
+            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle2)
             {
                 string bearColor = backSprite.name.ToLower();
                 if (previousSlot.acceptableBearColors.Contains(bearColor))
