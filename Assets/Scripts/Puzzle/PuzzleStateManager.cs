@@ -72,10 +72,10 @@ public class PuzzleStateManager : MonoBehaviourPun
         switch (CurrentStage)
         {
             case PuzzleStage.Puzzle1:
-                ReloadPuzzle1();
+                ReloadPuzzle1and2();
                 break;
             case PuzzleStage.Puzzle2:
-                ReloadPuzzle1();
+                ReloadPuzzle1and2();
                 break;
             case PuzzleStage.Puzzle3:
                 Debug.Log("Restarting Puzzle 3");
@@ -100,9 +100,9 @@ public class PuzzleStateManager : MonoBehaviourPun
                 break;
         }
     }
-    public void ReloadPuzzle1()
+    public void ReloadPuzzle1and2()
     {
-        Debug.Log("Reloading Puzzle 1");
+        Debug.Log("Reloading Puzzle 1 and 2");
 
         // 1. Clear all drop slots
         DropSlot.ResetAllSlots();
@@ -116,6 +116,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         // 3. Reset puzzle tracking
         correctSymptomsFromPuzzle1.Clear();
         DropSlot.puzzle1CorrectCount = 0;
+        DropSlot.puzzle2CorrectCount = 0;
 
         // 4. Set UI and timer
         miniPuzzle1Panel1?.SetActive(true);
