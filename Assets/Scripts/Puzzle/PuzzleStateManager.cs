@@ -75,7 +75,7 @@ public class PuzzleStateManager : MonoBehaviourPun
                 ReloadPuzzle1();
                 break;
             case PuzzleStage.Puzzle2:
-                Debug.Log("Restarting Puzzle 2");
+                ReloadPuzzle1();
                 break;
             case PuzzleStage.Puzzle3:
                 Debug.Log("Restarting Puzzle 3");
@@ -118,7 +118,12 @@ public class PuzzleStateManager : MonoBehaviourPun
         DropSlot.puzzle1CorrectCount = 0;
 
         // 4. Set UI and timer
+        miniPuzzle1Panel1?.SetActive(true);
+        miniPuzzle1Header1?.SetActive(true);
+        miniPuzzle1Panel2?.SetActive(false);
+        miniPuzzle1Header2?.SetActive(false);
         mainminiPuzzle1Panel1?.SetActive(false);
+    
         CurrentStage = PuzzleStage.Puzzle1;
 
         if (PhotonNetwork.IsMasterClient)
