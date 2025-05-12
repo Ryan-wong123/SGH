@@ -141,5 +141,21 @@ public class DropSlot : MonoBehaviour, IDropHandler
         }
     }
 
+    public static void ResetAllSlots()
+    {
+        foreach (DropSlot slot in allDropSlots)
+        {
+            slot.ClearSlot();
+        }
+    }
+
+    public void ClearSlot()
+    {
+        foreach (Transform child in transform)
+        {
+            child.SetParent(null); // Detach
+        }
+    }
+
 
 }

@@ -72,7 +72,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         switch (CurrentStage)
         {
             case PuzzleStage.Puzzle1:
-                Debug.Log("Restarting Puzzle 1");
+                ReloadPuzzle1();
                 break;
             case PuzzleStage.Puzzle2:
                 Debug.Log("Restarting Puzzle 2");
@@ -100,7 +100,35 @@ public class PuzzleStateManager : MonoBehaviourPun
                 break;
         }
     }
-   
+    public void ReloadPuzzle1()
+    {
+        Debug.Log("Reloading Puzzle 1");
+
+        // 1. Clear all drop slots
+        DropSlot.ResetAllSlots();
+
+        // 2. Reset draggable cards
+        foreach (var card in FindObjectsOfType<DraggableCard>())
+        {
+            card.ResetCard(); // Reset position and parent
+        }
+
+        // 3. Reset puzzle tracking
+        correctSymptomsFromPuzzle1.Clear();
+        DropSlot.puzzle1CorrectCount = 0;
+
+        // 4. Set UI and timer
+        mainminiPuzzle1Panel1?.SetActive(false);
+        CurrentStage = PuzzleStage.Puzzle1;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
+            if (timerManager != null)
+                timerManager.StartTimer();
+        }
+    }
+
     public void MarkCorrect(string symptom)
     {
         correctSymptomsFromPuzzle1.Add(symptom);

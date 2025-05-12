@@ -27,6 +27,9 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Sprite backSprite;
     private bool isFlipped = false;
 
+    private Vector3 originalPosition;
+    private Transform originalParent;
+
     private void Awake()
     {
         cardImage = GetComponent<Image>();
@@ -38,6 +41,8 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (trueHome == null)
             trueHome = transform.parent;
+        originalParent = transform.parent;
+        originalPosition = transform.position;
         ShowFront();
     }
 
@@ -238,4 +243,17 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (cardImage != null && backSprite != null)
             cardImage.sprite = backSprite;
     }
+
+    public void ResetCard()
+    {
+        isFlipped = false;
+        ShowFront();
+
+        transform.SetParent(originalParent);
+        transform.position = originalPosition;
+
+        if (cardImage != null)
+            cardImage.color = Color.white;
+    }
+
 }
