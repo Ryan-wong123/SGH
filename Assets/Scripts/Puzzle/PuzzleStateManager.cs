@@ -27,7 +27,13 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     [SerializeField] private GameObject Puzzle4Panel;
 
+    [SerializeField] private CrosswordManager crosswordManager;
+    [SerializeField] private GameObject Puzzle5Panel;
+
     [SerializeField] private GameObject puzzle1Object;
+
+    
+
     public enum PuzzleStage
     {
         Puzzle1,
@@ -211,11 +217,23 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         Debug.Log("Puzzle 4 completed correctly!");
         Puzzle4Panel.SetActive(false);
+        Puzzle5Panel.SetActive(true);
         CurrentStage = PuzzleStage.Puzzle5;
 
         ResetTimer();
 
     }
+
+    public void HandlePuzzle5Complete()
+    {
+        Debug.Log("Puzzle 5 completed correctly!");
+        Puzzle5Panel.SetActive(false);
+        CurrentStage = PuzzleStage.Puzzle6;
+
+        ResetTimer();
+
+    }
+
 
     public void ResetTimer()
     {
@@ -373,6 +391,22 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
+    public void SubmitPuzzle5()
+    {
+        if (crosswordManager != null)
+        {
+            if(crosswordManager.CheckPuzzle())
+            {
+                HandlePuzzle5Complete();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("CrosswordManager is not assigned!");
+        }
+    }
+
+
     public void Submit()
     {
         switch (CurrentStage)
@@ -391,9 +425,9 @@ public class PuzzleStateManager : MonoBehaviourPun
             case PuzzleStage.Puzzle4:
                 SubmitPuzzle4();
                 break;
-            //case PuzzleStage.Puzzle5:
-            //    SubmitPuzzle5();
-            //    break;
+            case PuzzleStage.Puzzle5:
+                SubmitPuzzle5();
+                break;
             //case PuzzleStage.Puzzle6:
             //    SubmitPuzzle6();
             //    break;
