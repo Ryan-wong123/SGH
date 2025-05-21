@@ -32,8 +32,8 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     [SerializeField] private GameObject puzzle1Object;
 
-    
-
+    [SerializeField] private DiaryPuzzleManager diaryPuzzleManager;
+    [SerializeField] private GameObject Puzzle6Panel;
     public enum PuzzleStage
     {
         Puzzle1,
@@ -106,6 +106,7 @@ public class PuzzleStateManager : MonoBehaviourPun
                 break;
         }
     }
+
     public void ReloadPuzzle1and2()
     {
         Debug.Log("Reloading Puzzle 1 and 2");
@@ -228,12 +229,21 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         Debug.Log("Puzzle 5 completed correctly!");
         Puzzle5Panel.SetActive(false);
+        Puzzle6Panel.SetActive(true);
         CurrentStage = PuzzleStage.Puzzle6;
 
         ResetTimer();
 
     }
+    public void HandlePuzzle6Complete()
+    {
+        Debug.Log("Puzzle 6 completed correctly!");
+        Puzzle6Panel.SetActive(false);
+        CurrentStage = PuzzleStage.Puzzle7;
 
+        ResetTimer();
+
+    }
 
     public void ResetTimer()
     {
@@ -406,6 +416,21 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
+    public void SubmitPuzzle6()
+    {
+        if (diaryPuzzleManager != null)
+        {
+            if (diaryPuzzleManager.SubmitDiary())
+            {
+                HandlePuzzle6Complete();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("diaryPuzzleManager is not assigned!");
+        }
+    }
+
 
     public void Submit()
     {
@@ -428,9 +453,9 @@ public class PuzzleStateManager : MonoBehaviourPun
             case PuzzleStage.Puzzle5:
                 SubmitPuzzle5();
                 break;
-            //case PuzzleStage.Puzzle6:
-            //    SubmitPuzzle6();
-            //    break;
+            case PuzzleStage.Puzzle6:
+                SubmitPuzzle6();
+                break;
             //case PuzzleStage.Puzzle7:
             //    SubmitPuzzle7();
             //    break;
