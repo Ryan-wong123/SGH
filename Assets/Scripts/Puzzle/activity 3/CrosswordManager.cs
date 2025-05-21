@@ -85,17 +85,18 @@ public class CrosswordManager : MonoBehaviour
 
     public void ResetPuzzle()
     {
-        foreach (var cell in grid) // assuming you have a 2D crossword cell array
+        // Destroy old grid first
+        foreach (Transform child in gridParent)
         {
-            if (cell != null)
-            {
-                cell.inputField.text = "";
-                cell.inputField.image.color = Color.white;
-            }
+            Destroy(child.gameObject);
         }
+
+        // Recreate the grid fresh
+        GenerateGrid();
 
         Debug.Log("Crossword puzzle reset.");
     }
+
 
 
 }

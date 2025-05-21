@@ -31,6 +31,8 @@ public class PuzzleStateManager : MonoBehaviourPun
     [SerializeField] private GameObject Puzzle5Panel;
 
     [SerializeField] private GameObject puzzle1Object;
+    [SerializeField] private GameObject puzzle2Object;
+    [SerializeField] private GameObject puzzle3Object;
 
     [SerializeField] private DiaryPuzzleManager diaryPuzzleManager;
     [SerializeField] private GameObject Puzzle6Panel;
@@ -87,12 +89,14 @@ public class PuzzleStateManager : MonoBehaviourPun
                 ReloadPuzzle3();
                 break;
             case PuzzleStage.Puzzle4:
+                ReloadPuzzle3();
                 ReloadPuzzle4();
                 break;
             case PuzzleStage.Puzzle5:
                 ReloadPuzzle5();
                 break;
             case PuzzleStage.Puzzle6:
+                ReloadPuzzle5();
                 ReloadPuzzle6();
                 break;
             case PuzzleStage.Puzzle7:
@@ -179,7 +183,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         if (Puzzle4Panel != null) Puzzle4Panel.SetActive(false);
 
         // 3. Update stage
-        CurrentStage = PuzzleStage.Puzzle4;
+        CurrentStage = PuzzleStage.Puzzle3;
 
         // 4. Restart timer
         if (PhotonNetwork.IsMasterClient)
@@ -227,7 +231,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         if (Puzzle6Panel != null) Puzzle6Panel.SetActive(false);
 
         // 3. Update current stage
-        CurrentStage = PuzzleStage.Puzzle6;
+        CurrentStage = PuzzleStage.Puzzle5;
 
         // 4. Restart timer
         if (PhotonNetwork.IsMasterClient)
@@ -296,8 +300,6 @@ public class PuzzleStateManager : MonoBehaviourPun
 
         CurrentStage = PuzzleStage.Puzzle3;
 
-        Puzzle3Panel.SetActive(true);
-
         ResetTimer();
        
     }
@@ -314,7 +316,22 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         Debug.Log("Puzzle 4 completed correctly!");
         Puzzle4Panel.SetActive(false);
-        Puzzle5Panel.SetActive(true);
+
+        // Ask the Master Client to destroy it
+        if (puzzle2Object != null)
+        {
+            PhotonView puzzlePV = puzzle2Object.GetComponent<PhotonView>();
+            if (puzzlePV != null)
+            {
+                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
+            }
+            else
+            {
+                Debug.LogError("Puzzle object does not have a PhotonView component!");
+            }
+        }
+        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal2");
+
         CurrentStage = PuzzleStage.Puzzle5;
 
         ResetTimer();
@@ -335,6 +352,22 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         Debug.Log("Puzzle 6 completed correctly!");
         Puzzle6Panel.SetActive(false);
+
+        // Ask the Master Client to destroy it
+        if (puzzle3Object != null)
+        {
+            PhotonView puzzlePV = puzzle3Object.GetComponent<PhotonView>();
+            if (puzzlePV != null)
+            {
+                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
+            }
+            else
+            {
+                Debug.LogError("Puzzle object does not have a PhotonView component!");
+            }
+        }
+        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal3");
+
         CurrentStage = PuzzleStage.Puzzle7;
 
         ResetTimer();
