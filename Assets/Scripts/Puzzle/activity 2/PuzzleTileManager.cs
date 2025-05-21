@@ -31,4 +31,17 @@ public class PuzzleTileManager : MonoBehaviour
 
         return allCorrect;
     }
+
+    public void ResetPuzzle()
+    {
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            float currentRotation = 90 * Random.Range(0, 4);
+            tiles[i].transform.localRotation = Quaternion.Euler(0f, 0f, currentRotation);
+        }
+
+
+        Debug.Log("Tile Rotation Puzzle reset.");
+    }
+
 }

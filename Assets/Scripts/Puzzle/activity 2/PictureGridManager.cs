@@ -94,4 +94,31 @@ public class PictureGridManager : MonoBehaviour
             SetButtonColor(i, defaultColor);
         }
     }
+
+    public void ResetPuzzle()
+    {
+        selectedIndexes.Clear();
+
+        for (int i = 0; i < pictureButtons.Count; i++)
+        {
+            ResetSelection(i); // Handles reset logic per button
+        }
+
+        submitButton.SetActive(false);
+
+        Debug.Log("Picture Grid Puzzle reset.");
+    }
+    private void ResetSelection(int index)
+    {
+        if (index < 0 || index >= pictureButtons.Count) return;
+
+        Button btn = pictureButtons[index];
+        btn.interactable = true;
+
+        var img = btn.GetComponent<Image>();
+        if (img != null)
+            img.color = defaultColor;
+    }
+
+
 }
