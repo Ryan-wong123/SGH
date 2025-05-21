@@ -83,4 +83,19 @@ public class CrosswordManager : MonoBehaviour
         return correct; // return result
     }
 
+    public void ResetPuzzle()
+    {
+        foreach (var cell in grid) // assuming you have a 2D crossword cell array
+        {
+            if (cell != null)
+            {
+                cell.inputField.text = "";
+                cell.inputField.image.color = Color.white;
+            }
+        }
+
+        Debug.Log("Crossword puzzle reset.");
+    }
+
+
 }

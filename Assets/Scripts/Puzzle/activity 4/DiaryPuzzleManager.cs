@@ -138,5 +138,52 @@ public class DiaryPuzzleManager : MonoBehaviour
 
         return c1 && c2 && c3 && c4 && c5;
     }
+    public void ResetPuzzle()
+    {
+        // Reset Diary 1 Inputs
+        diary1input1.text = "";
+        diary1input2.text = "";
+        diary1input1.image.color = Color.white;
+        diary1input2.image.color = Color.white;
+
+        // Reset Diary 2 Inputs
+        diary2input1.text = "";
+        diary2input2.text = "";
+        diary2input3.text = "";
+        diary2input4.text = "";
+        diary2input5.text = "";
+        diary2input6.text = "";
+
+        diary2input1.image.color = Color.white;
+        diary2input2.image.color = Color.white;
+        diary2input3.image.color = Color.white;
+        diary2input4.image.color = Color.white;
+        diary2input5.image.color = Color.white;
+        diary2input6.image.color = Color.white;
+
+        // Reset Diary 3 Inputs
+        diary3input1.text = "";
+        diary3input2.text = "";
+        diary3input3.text = "";
+        diary3input4.text = "";
+        diary3input5.text = "";
+
+        diary3input1.image.color = Color.white;
+        diary3input2.image.color = Color.white;
+        diary3input3.image.color = Color.white;
+        diary3input4.image.color = Color.white;
+        diary3input5.image.color = Color.white;
+
+        // Reset panels
+        diaryPanel1.SetActive(true);
+        diaryPanel2.SetActive(false);
+        diaryPanel3.SetActive(false);
+
+        // Reset stage tracker
+        currentStage = 1;
+
+        Debug.Log("Diary puzzle reset.");
+    }
+
 
 }

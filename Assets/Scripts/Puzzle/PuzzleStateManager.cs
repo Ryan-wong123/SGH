@@ -90,10 +90,10 @@ public class PuzzleStateManager : MonoBehaviourPun
                 ReloadPuzzle4();
                 break;
             case PuzzleStage.Puzzle5:
-                Debug.Log("Restarting Puzzle 5");
+                ReloadPuzzle5();
                 break;
             case PuzzleStage.Puzzle6:
-                Debug.Log("Restarting Puzzle 6");
+                ReloadPuzzle6();
                 break;
             case PuzzleStage.Puzzle7:
                 Debug.Log("Restarting Puzzle 7");
@@ -180,6 +180,54 @@ public class PuzzleStateManager : MonoBehaviourPun
 
         // 3. Update stage
         CurrentStage = PuzzleStage.Puzzle4;
+
+        // 4. Restart timer
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
+            if (timerManager != null)
+                timerManager.StartTimer();
+        }
+    }
+    public void ReloadPuzzle5()
+    {
+        Debug.Log("Reloading Puzzle 5");
+
+        // 1. Reset crossword puzzle state
+        if (crosswordManager != null)
+        {
+            crosswordManager.ResetPuzzle(); // You must implement this method in CrosswordManager
+        }
+
+        // 2. Show Puzzle 5 Panel, hide Puzzle 6 Panel if needed
+        if (Puzzle5Panel != null) Puzzle5Panel.SetActive(false);
+
+        // 3. Update current stage
+        CurrentStage = PuzzleStage.Puzzle5;
+
+        // 4. Restart timer
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
+            if (timerManager != null)
+                timerManager.StartTimer();
+        }
+    }
+    public void ReloadPuzzle6()
+    {
+        Debug.Log("Reloading Puzzle 6");
+
+        // 1. Reset diary puzzle
+        if (diaryPuzzleManager != null)
+        {
+            diaryPuzzleManager.ResetPuzzle(); // You must implement this method in DiaryPuzzleManager
+        }
+
+        // 2. Show Puzzle 6 panel
+        if (Puzzle6Panel != null) Puzzle6Panel.SetActive(false);
+
+        // 3. Update current stage
+        CurrentStage = PuzzleStage.Puzzle6;
 
         // 4. Restart timer
         if (PhotonNetwork.IsMasterClient)
