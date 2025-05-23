@@ -13,12 +13,15 @@ public class DiaryPuzzleManager : MonoBehaviour
     [SerializeField] TMP_InputField diary2input4;
     [SerializeField] TMP_InputField diary2input5;
     [SerializeField] TMP_InputField diary2input6;
+    [SerializeField] TMP_InputField diary2input7;
+    [SerializeField] TMP_InputField diary2input8;
 
     [SerializeField] TMP_InputField diary3input1;
     [SerializeField] TMP_InputField diary3input2;
     [SerializeField] TMP_InputField diary3input3;
     [SerializeField] TMP_InputField diary3input4;
     [SerializeField] TMP_InputField diary3input5;
+    [SerializeField] TMP_InputField diary3input6;
 
     private int currentStage = 1;
 
@@ -81,8 +84,8 @@ public class DiaryPuzzleManager : MonoBehaviour
         string input1 = diary1input1.text.Trim().ToLower();
         string input2 = diary1input2.text.Trim().ToLower();
 
-        bool correct1 = input1 == "lantus 32";
-        bool correct2 = input2 == "lantus 32";
+        bool correct1 = input1 == "32";
+        bool correct2 = input2 == "32";
 
         diary1input1.image.color = correct1 ? Color.green : Color.red;
         diary1input2.image.color = correct2 ? Color.green : Color.red;
@@ -98,13 +101,17 @@ public class DiaryPuzzleManager : MonoBehaviour
         string i4 = diary2input4.text.Trim().ToLower();
         string i5 = diary2input5.text.Trim().ToLower();
         string i6 = diary2input6.text.Trim().ToLower();
+        string i7 = diary2input7.text.Trim().ToLower();
+        string i8 = diary2input8.text.Trim().ToLower();
 
-        bool c1 = i1 == "lantus 24 novorapid 8";
-        bool c2 = i2 == "novorapid 8";
-        bool c3 = i3 == "novorapid 8";
-        bool c4 = i4 == "lantus 24 novorapid 8";
-        bool c5 = i5 == "novorapid 8";
-        bool c6 = i6 == "novorapid 8";
+        bool c1 = i1 == "24";
+        bool c2 = i2 == "8";
+        bool c3 = i3 == "8";
+        bool c4 = i4 == "8";
+        bool c5 = i5 == "24";
+        bool c6 = i6 == "8";
+        bool c7 = i7 == "8";
+        bool c8 = i8 == "8";
 
         diary2input1.image.color = c1 ? Color.green : Color.red;
         diary2input2.image.color = c2 ? Color.green : Color.red;
@@ -123,12 +130,14 @@ public class DiaryPuzzleManager : MonoBehaviour
         string i3 = diary3input3.text.Trim().ToLower();
         string i4 = diary3input4.text.Trim().ToLower();
         string i5 = diary3input5.text.Trim().ToLower();
+        string i6 = diary3input6.text.Trim().ToLower();
 
-        bool c1 = i1 == "novomix 40";
-        bool c2 = i2 == "novomix 40";
-        bool c3 = i3 == "novomix 40";
-        bool c4 = i4 == "novomix 40";
-        bool c5 = i5 == "insulin 75";
+        bool c1 = i1 == "40";
+        bool c2 = i2 == "40";
+        bool c3 = i3 == "40";
+        bool c4 = i4 == "40";
+        bool c5 = i5 == "40";
+        bool c6 = i6 == "75";
 
         diary3input1.image.color = c1 ? Color.green : Color.red;
         diary3input2.image.color = c2 ? Color.green : Color.red;
