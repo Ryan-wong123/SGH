@@ -16,12 +16,32 @@ public class GameTimerManager : MonoBehaviourPunCallbacks
 
     [SerializeField] private GameObject timeWarningPanel;
     [SerializeField] private float warningThreshold = 10f; // seconds
-    private bool warningShown = false;
+    private bool warningShown = false; 
+
+    [SerializeField] private float warningThreshold2 = 5f; // seconds
+    private bool warningShown2 = false;
+
+    private RectTransform warningRect;
+    private CanvasGroup warningCanvasGroup;
+    [SerializeField] private float slideDuration = 10f; // shorter = faster
+
+    [SerializeField] private TMP_Text warningText;
 
     private void Awake()
     {
         SetupPhotonView();
-        timeWarningPanel.SetActive(false);
+        if (timeWarningPanel != null)
+        {
+            timeWarningPanel.SetActive(false);
+            warningRect = timeWarningPanel.GetComponent<RectTransform>();
+
+            // Add a CanvasGroup for fade control if it doesn't exist
+            warningCanvasGroup = timeWarningPanel.GetComponent<CanvasGroup>();
+            if (warningCanvasGroup == null)
+            {
+                warningCanvasGroup = timeWarningPanel.AddComponent<CanvasGroup>();
+            }
+        }
     }
 
     void SetupPhotonView()
@@ -63,8 +83,16 @@ public class GameTimerManager : MonoBehaviourPunCallbacks
         if (timeLeft <= warningThreshold && !warningShown)
         {
             warningShown = true;
-            photonView.RPC(nameof(ShowTimeWarning), RpcTarget.All);
+            photonView.RPC(nameof(ShowTimeWarning), RpcTarget.All, "Time’s almost up!");
         }
+
+
+        if (timeLeft <= warningThreshold2 && !warningShown2)
+        {
+            warningShown2 = true;
+            photonView.RPC(nameof(ShowTimeWarning), RpcTarget.All, "Puzzle is going to reset!");
+        }
+
 
         if (timeLeft <= 0f)
         {
@@ -89,6 +117,8 @@ public class GameTimerManager : MonoBehaviourPunCallbacks
     {
         // Only master client starts timer and sends to others
         timerEndTime = (float)PhotonNetwork.Time + countdownDuration;
+        warningShown = false;
+        warningShown2 = false;
         photonView.RPC(nameof(SyncTimer), RpcTarget.AllBuffered, timerEndTime);
     }
 
@@ -97,15 +127,42 @@ public class GameTimerManager : MonoBehaviourPunCallbacks
     {
         timerEndTime = endTime;
         timerRunning = true;
+        warningShown = false;
+        warningShown2 = false;
     }
 
     [PunRPC]
-    void ShowTimeWarning()
+    void ShowTimeWarning(string message)
     {
-        if (timeWarningPanel != null)
-        {
-            timeWarningPanel.SetActive(true);
-        }
+        if (timeWarningPanel == null || warningRect == null || warningCanvasGroup == null)
+            return;
+
+        // Reactivate and reset
+        timeWarningPanel.SetActive(true);
+
+        // Kill any existing tweens
+        LeanTween.cancel(warningRect.gameObject);
+        LeanTween.cancel(warningCanvasGroup.gameObject);
+
+        // Reset position and alpha
+        float screenWidth = Screen.width;
+        warningRect.anchoredPosition = new Vector2(screenWidth, warningRect.anchoredPosition.y);
+        warningCanvasGroup.alpha = 1;
+
+        // Update the text dynamically here
+        if (warningText != null)
+            warningText.text = message;
+
+        // Move to left and fade
+        LeanTween.moveX(warningRect, -screenWidth, slideDuration)
+            .setEase(LeanTweenType.easeInOutQuad);
+
+        LeanTween.alphaCanvas(warningCanvasGroup, 0f, 1.5f)
+            .setDelay(slideDuration - 1.5f)
+            .setOnComplete(() =>
+            {
+                timeWarningPanel.SetActive(false);
+            });
     }
 
     [PunRPC]

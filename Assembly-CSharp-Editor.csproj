@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\TutorialInfo\Scripts\Editor\ReadmeEditor.cs" />
+    <Compile Include="Assets\LeanTween\Editor\LeanTweenDocumentationEditor.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\Editor\ChatEditor.cs" />
   </ItemGroup>
   <ItemGroup>
