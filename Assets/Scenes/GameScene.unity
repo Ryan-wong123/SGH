@@ -24310,6 +24310,63 @@ MonoBehaviour:
   diaryPanel1: {fileID: 980202699}
   diaryPanel2: {fileID: 1037636554}
   diaryPanel3: {fileID: 521481521}
+  dateEntries:
+  - dateText: {fileID: 2082326223}
+    daysBack: 469
+  - dateText: {fileID: 759765860}
+    daysBack: 467
+  - dateText: {fileID: 1826731457}
+    daysBack: 465
+  - dateText: {fileID: 1922303263}
+    daysBack: 462
+  - dateText: {fileID: 1543595293}
+    daysBack: 459
+  - dateText: {fileID: 786970194}
+    daysBack: 457
+  - dateText: {fileID: 2091570431}
+    daysBack: 457
+  - dateText: {fileID: 680788283}
+    daysBack: 455
+  - dateText: {fileID: 442641340}
+    daysBack: 453
+  - dateText: {fileID: 1496923182}
+    daysBack: 451
+  - dateText: {fileID: 698908646}
+    daysBack: 449
+  - dateText: {fileID: 1476995122}
+    daysBack: 385
+  - dateText: {fileID: 1816587239}
+    daysBack: 378
+  - dateText: {fileID: 128055684}
+    daysBack: 371
+  - dateText: {fileID: 42088180}
+    daysBack: 364
+  - dateText: {fileID: 696707552}
+    daysBack: 355
+  - dateText: {fileID: 517117574}
+    daysBack: 348
+  - dateText: {fileID: 589376685}
+    daysBack: 344
+  - dateText: {fileID: 2104447739}
+    daysBack: 335
+  - dateText: {fileID: 242066028}
+    daysBack: 333
+  - dateText: {fileID: 466012307}
+    daysBack: 54
+  - dateText: {fileID: 665796480}
+    daysBack: 40
+  - dateText: {fileID: 1182064206}
+    daysBack: 27
+  - dateText: {fileID: 611092379}
+    daysBack: 21
+  - dateText: {fileID: 1090565299}
+    daysBack: 11
+  - dateText: {fileID: 846879154}
+    daysBack: 2
+  - dateText: {fileID: 647457283}
+    daysBack: 1
+  - dateText: {fileID: 1154416283}
+    daysBack: 0
 --- !u!1 &510176917
 GameObject:
   m_ObjectHideFlags: 0
@@ -60869,81 +60926,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7000191367813686699, guid: 4a5feb043d474144192adbf0f30e3b7c, type: 3}
   m_PrefabInstance: {fileID: 1275686451}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1276128590
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1276128591}
-  - component: {fileID: 1276128593}
-  - component: {fileID: 1276128592}
-  m_Layer: 5
-  m_Name: Panel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1276128591
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1276128590}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1427835991}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 60, y: -125}
-  m_SizeDelta: {x: 118, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1276128592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1276128590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1276128593
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1276128590}
-  m_CullTransparentMesh: 1
 --- !u!1 &1277874340
 GameObject:
   m_ObjectHideFlags: 0
@@ -69327,7 +69309,6 @@ RectTransform:
   - {fileID: 1102434889}
   - {fileID: 1241583434}
   - {fileID: 800151670}
-  - {fileID: 1276128591}
   m_Father: {fileID: 1919901763}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

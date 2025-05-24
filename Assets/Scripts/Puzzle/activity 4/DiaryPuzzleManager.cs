@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System;
 
 public class DiaryPuzzleManager : MonoBehaviour
 {
@@ -28,6 +30,29 @@ public class DiaryPuzzleManager : MonoBehaviour
     [SerializeField] GameObject diaryPanel1;
     [SerializeField] GameObject diaryPanel2;
     [SerializeField] GameObject diaryPanel3;
+
+    [System.Serializable]
+    public class DateTextEntry
+    {
+        public TMP_Text dateText;      // The UI Text Component
+        public int daysBack;           // How many days to go back from today
+    }
+
+    [SerializeField] private List<DateTextEntry> dateEntries;
+
+    private void OnEnable()
+    {
+        DateTime today = DateTime.Today;
+
+        foreach (var entry in dateEntries)
+        {
+            if (entry.dateText != null)
+            {
+                DateTime targetDate = today.AddDays(-entry.daysBack);
+                entry.dateText.text = targetDate.ToString("dd MMM yyyy"); // Example format: 21 May 2025
+            }
+        }
+    }
 
     public bool SubmitDiary()
     {
