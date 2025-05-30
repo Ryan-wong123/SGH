@@ -134,6 +134,7 @@ public class GameTimerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void ShowTimeWarning(string message)
     {
+        Debug.Log("showing warning message");
         if (timeWarningPanel == null || warningRect == null || warningCanvasGroup == null)
             return;
 

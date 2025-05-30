@@ -18,7 +18,6 @@ public class PuzzleTrigger : MonoBehaviour, IInteractable
             closePanelUI.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            Time.timeScale = 0f; // Optional: Pause game
             // Register this puzzle with the SidebarMenuManager
             FindObjectOfType<SidebarMenuManager>().SetActivePuzzle(this);
         }

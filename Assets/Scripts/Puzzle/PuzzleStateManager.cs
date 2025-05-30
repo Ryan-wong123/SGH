@@ -36,6 +36,9 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     [SerializeField] private DiaryPuzzleManager diaryPuzzleManager;
     [SerializeField] private GameObject Puzzle6Panel;
+
+    [SerializeField] private PrescriptionManager prescriptionManager;
+    [SerializeField] private GameObject Puzzle7Panel;
     public enum PuzzleStage
     {
         Puzzle1,
@@ -100,10 +103,10 @@ public class PuzzleStateManager : MonoBehaviourPun
                 ReloadPuzzle6();
                 break;
             case PuzzleStage.Puzzle7:
-                Debug.Log("Restarting Puzzle 7");
+                ReloadPuzzle7();
                 break;
             case PuzzleStage.Puzzle8:
-                Debug.Log("Restarting Puzzle 8");
+                ReloadPuzzle7();
                 break;
             case PuzzleStage.Puzzle9:
                 Debug.Log("Restarting Puzzle 9");
@@ -242,6 +245,31 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
+    public void ReloadPuzzle7()
+    {
+        Debug.Log("Reloading Puzzle 7");
+
+        // 1. Reset prescription inut field
+        if (prescriptionManager != null)
+        {
+            prescriptionManager.ResetPuzzle(); // You must implement this method in prescriptionManager
+        }
+
+        if (Puzzle7Panel != null) Puzzle7Panel.SetActive(false);
+
+        // 3. Update current stage
+        CurrentStage = PuzzleStage.Puzzle7;
+
+        // 4. Restart timer
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
+            if (timerManager != null)
+                timerManager.StartTimer();
+        }
+    }
+
+
     public void MarkCorrect(string symptom)
     {
         correctSymptomsFromPuzzle1.Add(symptom);
@@ -369,6 +397,17 @@ public class PuzzleStateManager : MonoBehaviourPun
         photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal3");
 
         CurrentStage = PuzzleStage.Puzzle7;
+
+        ResetTimer();
+
+    }
+
+    public void HandlePuzzle7Complete()
+    {
+        Debug.Log("Puzzle 7 completed correctly!");
+        Puzzle7Panel.SetActive(false);
+
+        CurrentStage = PuzzleStage.Puzzle8;
 
         ResetTimer();
 
@@ -503,11 +542,8 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
            if(pictureGridManager.CheckAnswers())
             {
-                HandlePuzzle3Complete(); // Call this after checking
+                HandlePuzzle3Complete();
             }
-
-            // Optionally check if the selected answers were correct before continuing
-            // You can add logic here based on the result if needed
             Debug.Log("Puzzle 3 answer check completed.");
         }
         else
@@ -526,7 +562,6 @@ public class PuzzleStateManager : MonoBehaviourPun
         else
         {
             Debug.Log("Not all tiles are correctly rotated.");
-            // Optional: feedback UI
         }
     }
 
@@ -560,6 +595,20 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
+    public void SubmitPuzzle7()
+    {
+        if (prescriptionManager != null)
+        {
+            if (prescriptionManager.CheckPrescriptionAmount())
+            {
+                HandlePuzzle7Complete();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("prescriptionManager is not assigned!");
+        }
+    }
 
     public void Submit()
     {
@@ -585,9 +634,9 @@ public class PuzzleStateManager : MonoBehaviourPun
             case PuzzleStage.Puzzle6:
                 SubmitPuzzle6();
                 break;
-            //case PuzzleStage.Puzzle7:
-            //    SubmitPuzzle7();
-            //    break;
+            case PuzzleStage.Puzzle7:
+                SubmitPuzzle7();
+                break;
             //case PuzzleStage.Puzzle8:
             //    SubmitPuzzle8();
             //    break;

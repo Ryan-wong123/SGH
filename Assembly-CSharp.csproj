@@ -76,6 +76,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
     <Compile Include="Assets\Scripts\networking\JoinRoomManager.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\activity 5\PrescriptionManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 2\PictureGridManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 1\DraggableCard.cs" />
     <Compile Include="Assets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
