@@ -7,58 +7,50 @@ using static PuzzleStateManager;
 
 public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
-    public Canvas canvas;
+    [SerializeField] protected Canvas canvas;
 
-    [Header("Panel References")]
-    public Transform panel1GridLayout;  // Right Slot All Symptoms
-    public Transform panel2GridLayout;  // Left Slot Correct Symptom
-    public Transform panel3GridLayout;  // Right Colored Slot Bear
+    [SerializeField] protected Transform panel1GridLayout;  // Right Slot All Symptoms
+    [SerializeField] protected Transform panel2GridLayout;  // Left Slot Correct Symptom
 
-    private RectTransform rectTransform;
-    private CanvasGroup canvasGroup;
+    protected Image cardImage;
+    [SerializeField] protected Sprite frontSprite;
+
+    protected RectTransform rectTransform;
+    protected CanvasGroup canvasGroup;
 
     [HideInInspector] public Transform trueHome; // last successful grid parent
     public Transform lastSlotOrParent;
+    protected Vector3 originalPosition;
+    protected Transform originalParent;
 
-    public string symptomName;
-
-    private Image cardImage;
-    public Sprite frontSprite;
-    public Sprite backSprite;
-    private bool isFlipped = false;
-
-    private Vector3 originalPosition;
-    private Transform originalParent;
-
-    private void Awake()
+    protected virtual void Awake()
     {
         cardImage = GetComponent<Image>();
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         if (trueHome == null)
             trueHome = transform.parent;
         originalParent = transform.parent;
         originalPosition = transform.position;
-        ShowFront();
     }
-
-    public void OnBeginDrag(PointerEventData eventData)
+    
+    public virtual void OnBeginDrag(PointerEventData eventData)
     {
         canvasGroup.blocksRaycasts = false;
         lastSlotOrParent = transform.parent;
         transform.SetParent(canvas.transform);
     }
 
-    public void OnDrag(PointerEventData eventData)
+    public virtual void OnDrag(PointerEventData eventData)
     {
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
-    public void OnEndDrag(PointerEventData eventData)
+    public virtual void OnEndDrag(PointerEventData eventData)
     {
         canvasGroup.blocksRaycasts = true;
 
@@ -67,126 +59,78 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         {
             DropSlot previousSlot = lastSlotOrParent.GetComponent<DropSlot>();
 
-            bool wasCorrect = previousSlot.correctSymptoms.Contains(symptomName);
             bool droppedOutsideSlot = transform.parent == canvas.transform || transform.parent.GetComponent<DropSlot>() == null;
 
-            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle1 && wasCorrect && droppedOutsideSlot)
+            if (droppedOutsideSlot)
             {
-                previousSlot.RemoveCard(this); // Optional: clean tracking
-            }
-
-            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle2)
-            {
-                string bearColor = backSprite.name.ToLower();
-                if (previousSlot.acceptableBearColors.Contains(bearColor))
-                {
-                    DropSlot.puzzle2CorrectCount = Mathf.Max(0, DropSlot.puzzle2CorrectCount - 1);
-                    Debug.Log($"Correct Puzzle 2 card removed. New count: {DropSlot.puzzle2CorrectCount}");
-
-                    previousSlot.RemoveCard(this);
-                }
-            }
-
+                OnCardRemovedFromSlot(previousSlot);
+            }   
         }
 
         if (transform.parent == canvas.transform || transform.parent == null)
         {
             bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
-            bool fromPanel3 = lastSlotOrParent != null && lastSlotOrParent.parent == panel3GridLayout;
 
             // 1. From panel2, dropped on panel1(not a slot) → snap to panel1
             if (IsPointerOverPanel("Panel1") && fromPanel2)
             {
-                SnapTo(panel1GridLayout);
+                SnapTo(panel1GridLayout, 100, -100, 0.6409343f ,0.66764f);
             }
-            // 2. From panel2, dropped on panel2(not a slot) and panel1 is disabled → snap to panel2
-            else if (IsPointerOverPanel("Panel2") && fromPanel2 && !panel1GridLayout.gameObject.activeSelf)
-            {
-                Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
-                if (emptySlot != null)
-                {
-                    SnapTo(emptySlot);
-                    rectTransform.localScale = Vector2.one;
-                }
-                else
-                {
-                    SnapTo(panel2GridLayout);
-                    rectTransform.localScale = Vector2.one;
-                }
-
-            }
-            // 2. From panel2, dropped on panel2 (not a slot) → snap to panel1 if panel1 is active
+            // 2. From panel2, dropped on panel2(not a slot)
             else if (IsPointerOverPanel("Panel2") && fromPanel2)
             {
-                SnapTo(panel1GridLayout);
-            }
-            // 3. From panel2, dropped on panel3 (not slot) → snap to empty child in panel2
-            else if (IsPointerOverPanel("Panel3") && fromPanel2)
-            {
                 Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
                 if (emptySlot != null)
                 {
-                    SnapTo(emptySlot);
+                    SnapTo(emptySlot, 100, -100, 0.6409343f, 0.66764f);
                     rectTransform.localScale = Vector2.one;
                 }
                 else
                 {
-                    SnapTo(panel2GridLayout);
-                    rectTransform.localScale = Vector2.one;
-                }    
-            }
-            // 4. From panel3, dropped on panel3 (not slot) → snap to panel3
-            else if ((IsPointerOverPanel("Panel3") && fromPanel3) || (IsPointerOverPanel("Panel2") && fromPanel3))
-            {
-                Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
-                if (emptySlot != null)
-                {
-                    SnapTo(emptySlot);
-                    rectTransform.localScale = Vector2.one;
-                }
-                else
-                {
-                    SnapTo(panel2GridLayout);
+                    SnapTo(panel2GridLayout, 100, -100, 0.6409343f, 0.66764f);
                     rectTransform.localScale = Vector2.one;
                 }
             }
             else
             {
-                SnapTo(trueHome);
+                SnapTo(trueHome, 100, -100, 0.6409343f, 0.66764f);
             }
             var img = GetComponent<Image>();
             if (img != null) img.color = Color.white;
         }
     }
+
     public void SnapBack()
     {
         if (!panel1GridLayout.gameObject.activeSelf)
         {
             Transform slot = FindFirstEmptyChild(trueHome);
+
             if (slot != null)
             {
-                SnapTo(slot);
+                SnapTo(slot, 100, -100, 0.6409343f, 0.66764f);
                 rectTransform.localScale = Vector2.one;
             }
             else
             {
-                SnapTo(panel2GridLayout);
+                SnapTo(panel2GridLayout, 100, -100, 0.6409343f, 0.66764f);
                 rectTransform.localScale = Vector2.one;
             }
         }
         else
         {
-            SnapTo(trueHome);
+            SnapTo(trueHome, 100, -100, 0.6409343f, 0.66764f);
         }
     }
-    private void SnapTo(Transform parent)
+
+    protected virtual void SnapTo(Transform parent, float xPos, float yPos, float xScale, float yScale )
     {
         transform.SetParent(parent);
-        rectTransform.anchoredPosition = new Vector2(100, -110);
-        rectTransform.localScale = new Vector2(0.6409343f, 0.66764f);
+        rectTransform.anchoredPosition = new Vector2(xPos, yPos);
+        rectTransform.localScale = new Vector2(xScale, yScale);
     }
 
-    private Transform FindFirstEmptyChild(Transform gridParent)
+    protected Transform FindFirstEmptyChild(Transform gridParent)
     {
         foreach (Transform child in gridParent)
         {
@@ -196,7 +140,7 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         return null;
     }
 
-    private bool IsPointerOverPanel(string panelTag)
+    protected bool IsPointerOverPanel(string panelTag)
     {
         var results = new List<RaycastResult>();
         var eventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
@@ -210,42 +154,17 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         return false;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public virtual void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Right &&
-            PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle2 &&
-            PuzzleStateManager.Instance.IsSymptomCorrect(symptomName))
-        {
-            isFlipped = !isFlipped;
-            if (isFlipped) ShowBack();
-            else ShowFront();
-        }
-
         if (eventData.button == PointerEventData.InputButton.Middle)
         {
-            Sprite spriteToShow = isFlipped ? backSprite : frontSprite;
+            Sprite spriteToShow =  frontSprite;
             CardPopupManager.Instance.ShowCard(spriteToShow);
         }
-
     }
 
-    private void ShowFront()
+    public virtual void ResetCard()
     {
-        if (cardImage != null && frontSprite != null)
-            cardImage.sprite = frontSprite;
-    }
-
-    private void ShowBack()
-    {
-        if (cardImage != null && backSprite != null)
-            cardImage.sprite = backSprite;
-    }
-
-    public void ResetCard()
-    {
-        isFlipped = false;
-        ShowFront();
-
         transform.SetParent(originalParent);
         transform.position = originalPosition;
 
@@ -253,4 +172,8 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             cardImage.color = Color.white;
     }
 
+    protected virtual void OnCardRemovedFromSlot(DropSlot previousSlot)
+    {
+        // To be overridden by child class
+    }
 }

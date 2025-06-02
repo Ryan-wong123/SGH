@@ -3,6 +3,7 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,7 @@ public class PuzzleStateManager : MonoBehaviourPun
     [SerializeField] private GameObject miniPuzzle1Panel2;
     [SerializeField] private GameObject miniPuzzle1Header1;
     [SerializeField] private GameObject miniPuzzle1Header2;
+    [SerializeField] private SymptomsCardManager symptomsCardManager;
 
     [SerializeField] private GameObject Puzzle3Panel;
     [SerializeField] private PictureGridManager pictureGridManager;
@@ -50,18 +52,6 @@ public class PuzzleStateManager : MonoBehaviourPun
         Puzzle7,
         Puzzle8,
         Puzzle9
-    }
-
-    private void OnEnable()
-    {
-        DropSlot.OnPuzzle1Complete += HandlePuzzle1Complete;
-        DropSlot.OnPuzzle2Complete += HandlePuzzle2Complete;
-    }
-
-    private void OnDisable()
-    {
-        DropSlot.OnPuzzle1Complete -= HandlePuzzle1Complete;
-        DropSlot.OnPuzzle2Complete -= HandlePuzzle2Complete;
     }
 
     private void Awake()
@@ -119,18 +109,20 @@ public class PuzzleStateManager : MonoBehaviourPun
         Debug.Log("Reloading Puzzle 1 and 2");
 
         // 1. Clear all drop slots
-        DropSlot.ResetAllSlots();
+        DropSlot.ResetAllSlots(); // removes child cards from slots
 
-        // 2. Reset draggable cards
-        foreach (var card in FindObjectsOfType<DraggableCard>())
+        // 2. Reset draggable card visuals
+        foreach (var card in FindObjectsOfType<Activity1DraggableCard>())
         {
-            card.ResetCard(); // Reset position and parent
-        }
+            Image img = card.GetComponent<Image>();
+            if (img != null) img.color = Color.white;
 
-        // 3. Reset puzzle tracking
-        correctSymptomsFromPuzzle1.Clear();
-        DropSlot.puzzle1CorrectCount = 0;
-        DropSlot.puzzle2CorrectCount = 0;
+            card.ResetCard(); // Snap back to original position
+        }
+        foreach (Activity1DraggableCard card in FindObjectsOfType<Activity1DraggableCard>())
+        {
+            card.ShowFront(); // ✅ Show symptom sprite again
+        }
 
         // 4. Set UI and timer
         miniPuzzle1Panel1?.SetActive(true);
@@ -283,6 +275,20 @@ public class PuzzleStateManager : MonoBehaviourPun
     private void HandlePuzzle1Complete()
     {
         Debug.Log("Puzzle 1 complete! Now starting Puzzle 2...");
+        // Reset card visuals before showing Puzzle 2
+        foreach (DropSlot slot in DropSlot.allDropSlots)
+        {
+            foreach (DraggableCard card in slot.GetCardsInSlot())
+            {
+                Image img = card.GetComponent<Image>();
+                if (img != null) img.color = Color.white;
+            }
+        }
+
+        foreach (Activity1DraggableCard card in FindObjectsOfType<Activity1DraggableCard>())
+        {
+            card.ShowBack(); // Show bear sprite
+        }
 
         if (miniPuzzle1Panel1 != null)
             miniPuzzle1Panel1.SetActive(false);
@@ -293,7 +299,7 @@ public class PuzzleStateManager : MonoBehaviourPun
 
         miniPuzzle1Header1.SetActive(false);
         miniPuzzle1Header2.SetActive(true);
-
+       
         CurrentStage = PuzzleStage.Puzzle2;
     }
 
@@ -469,72 +475,28 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     public void SubmitPuzzle1()
     {
-        List<DraggableCard> allCards = new();
-
-        foreach (DropSlot slot in DropSlot.allDropSlots)
+        if (symptomsCardManager.AreAllPuzzle1CardsCorrect())
         {
-            allCards.AddRange(slot.GetCardsInSlot());
-        }
-
-        foreach (DraggableCard card in allCards)
-        {
-            // Ensure card is still actually inside a DropSlot
-            if (card.transform.parent != null && card.transform.parent.GetComponent<DropSlot>() != null)
-            {
-                bool isCorrect = correctSymptomsFromPuzzle1.Contains(card.symptomName);
-                var cardImage = card.GetComponent<Image>();
-                if (cardImage != null)
-                    cardImage.color = isCorrect ? Color.green : Color.red;
-            }
-        }
-
-        Debug.Log($"correct puzzle1 score: {DropSlot.puzzle1CorrectCount} ");
-        if (DropSlot.puzzle1CorrectCount >= DropSlot.requiredCorrect)
-        {
-            foreach (DraggableCard card in allCards)
-            {
-                // Ensure card is still actually inside a DropSlot
-                if (card.transform.parent != null && card.transform.parent.GetComponent<DropSlot>() != null)
-                {
-                    var cardImage = card.GetComponent<Image>();
-                    if (cardImage != null)
-                        cardImage.color = Color.white;
-                }
-            }
             HandlePuzzle1Complete();
+        }
+        else
+        {
+            Debug.Log("Puzzle 1 incomplete or incorrect.");
         }
     }
 
     public void SubmitPuzzle2()
     {
-        List<DraggableCard> allCards = new();
-
-        foreach (DropSlot slot in DropSlot.allDropSlots)
-        {
-            allCards.AddRange(slot.GetCardsInSlot());
-        }
-
-        foreach (DraggableCard card in allCards)
-        {
-            // Ensure card is still in a slot
-            if (card.transform.parent != null && card.transform.parent.GetComponent<DropSlot>() != null)
-            {
-                string bearColor = card.backSprite.name.ToLower();
-                DropSlot slot = card.transform.parent.GetComponent<DropSlot>();
-                bool isCorrect = slot != null && slot.acceptableBearColors.Contains(bearColor);
-
-                var cardImage = card.GetComponent<Image>();
-                if (cardImage != null)
-                    cardImage.color = isCorrect ? Color.green : Color.red;
-            }
-        }
-
-        Debug.Log($"correct puzzle2 score: {DropSlot.puzzle2CorrectCount} ");
-        if (DropSlot.puzzle2CorrectCount >= DropSlot.requiredCorrect)
+        if (symptomsCardManager.AreAllPuzzle2CardsCorrect())
         {
             HandlePuzzle2Complete();
         }
+        else
+        {
+            Debug.Log("Puzzle 2 incomplete or incorrect.");
+        }
     }
+
 
     public void SubmitPuzzle3()
     {
