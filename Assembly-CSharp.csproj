@@ -77,8 +77,8 @@
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
     <Compile Include="Assets\Scripts\networking\JoinRoomManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 5\PrescriptionManager.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\Draggable\DraggableCard.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 2\PictureGridManager.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\activity 1\DraggableCard.cs" />
     <Compile Include="Assets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
@@ -113,6 +113,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\TextToggleIsOnTransition.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\Draggable\DropSlot.cs" />
     <Compile Include="Assets\Scripts\UI\SideBarMenuManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanTweenExt.cs" />
@@ -127,7 +128,7 @@
     <Compile Include="Assets\Scripts\Puzzle\activity 2\PuzzleTile.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\activity 1\CardPopupManager.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\Draggable\CardPopupManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
@@ -141,7 +142,6 @@
     <Compile Include="Assets\Scripts\Puzzle\activity 1\Activity1DraggableCard.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\LeanTween\Framework\LTSeq.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\activity 1\DropSlot.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
     <Compile Include="Assets\Scripts\Interactable\IInteractable.cs" />
     <Compile Include="Assets\Scripts\networking\Network.cs" />
