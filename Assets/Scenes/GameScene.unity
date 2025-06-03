@@ -1839,10 +1839,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 545, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &39374693
 CanvasGroup:
@@ -1908,7 +1908,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 12e61b0f6f1767f49a14eb7a9fb34c8c, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -3601,12 +3601,12 @@ RectTransform:
   m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 866878998}
+  m_Father: {fileID: 1064109160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1090, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &96390483
 MonoBehaviour:
@@ -4664,10 +4664,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1545, y: -340}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &107259311
 CanvasGroup:
@@ -4733,7 +4733,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 9c50d6000001faa4e8b3d51c30a66335, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -5237,12 +5237,12 @@ RectTransform:
   m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 866878998}
+  m_Father: {fileID: 1064109160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1288, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &118133042
 MonoBehaviour:
@@ -21085,12 +21085,12 @@ RectTransform:
   m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 866878998}
+  m_Father: {fileID: 1064109160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 892, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &421340476
 MonoBehaviour:
@@ -25726,10 +25726,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 345, y: -580}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &512882005
 CanvasGroup:
@@ -25795,7 +25795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 0c12ea78968f96142b266d10874aa0d1, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -26437,12 +26437,12 @@ RectTransform:
   m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 866878998}
+  m_Father: {fileID: 1064109160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 298, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &520851766
 MonoBehaviour:
@@ -31121,10 +31121,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1145, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &628841545
 CanvasGroup:
@@ -31190,7 +31190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: b7ce66a987730cd41ad21089f4b770c1, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -32480,10 +32480,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 145, y: -340}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &643503753
 CanvasGroup:
@@ -32549,7 +32549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 9ddf0c2b87d60ab4f8a0937b66bb12c9, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -34495,10 +34495,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1145, y: -580}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &683897060
 CanvasGroup:
@@ -34564,7 +34564,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 78f25a2404351614b8bdd8cf5e44a122, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -37287,10 +37287,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1345, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &719114442
 CanvasGroup:
@@ -37356,7 +37356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 7a901b3e4086a634ea2aebd865afde74, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -44385,10 +44385,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 745, y: -580}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &862475565
 CanvasGroup:
@@ -44454,120 +44454,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: c3fb3e48209806f478ed9865f08e41ae, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 20
---- !u!1 &866878997
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 866878998}
-  - component: {fileID: 866879001}
-  - component: {fileID: 866879000}
-  - component: {fileID: 866878999}
-  m_Layer: 5
-  m_Name: Bottom Correct Steps
-  m_TagString: Panel2
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &866878998
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 866878997}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1875856135}
-  - {fileID: 520851764}
-  - {fileID: 1814828460}
-  - {fileID: 1065121923}
-  - {fileID: 421340474}
-  - {fileID: 96390481}
-  - {fileID: 118133040}
-  - {fileID: 2127237506}
-  - {fileID: 1023515040}
-  m_Father: {fileID: 1067863175}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 254.5425}
-  m_Pivot: {x: 0.5, y: 0}
---- !u!114 &866878999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 866878997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &866879000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 866878997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: -50
-    m_Right: -80
-    m_Top: -50
-    m_Bottom: 0
-  m_ChildAlignment: 0
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 300, y: 300}
-  m_Spacing: {x: -102, y: -110}
-  m_Constraint: 0
-  m_ConstraintCount: 2
---- !u!222 &866879001
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 866878997}
-  m_CullTransparentMesh: 1
 --- !u!1 &867492674
 GameObject:
   m_ObjectHideFlags: 0
@@ -45010,10 +44901,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 345, y: -340}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &870812151
 CanvasGroup:
@@ -45079,7 +44970,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 735236a131571dc4cb017394e2daf4cf, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -51680,12 +51571,12 @@ RectTransform:
   m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 866878998}
+  m_Father: {fileID: 1064109160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1684, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1023515041
 MonoBehaviour:
@@ -53304,6 +53195,115 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7000191367813686699, guid: 4a5feb043d474144192adbf0f30e3b7c, type: 3}
   m_PrefabInstance: {fileID: 1063337801}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1064109159
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1064109160}
+  - component: {fileID: 1064109163}
+  - component: {fileID: 1064109162}
+  - component: {fileID: 1064109161}
+  m_Layer: 5
+  m_Name: Bottom Slot
+  m_TagString: Panel2
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1064109160
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064109159}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1875856135}
+  - {fileID: 520851764}
+  - {fileID: 1814828460}
+  - {fileID: 1065121923}
+  - {fileID: 421340474}
+  - {fileID: 96390481}
+  - {fileID: 118133040}
+  - {fileID: 2127237506}
+  - {fileID: 1023515040}
+  m_Father: {fileID: 1067863175}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 3, y: -403}
+  m_SizeDelta: {x: 1787.4749, y: 239.915}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1064109161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064109159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1064109162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064109159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: -80
+    m_Right: -80
+    m_Top: -50
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 300, y: 300}
+  m_Spacing: {x: -102, y: -110}
+  m_Constraint: 0
+  m_ConstraintCount: 2
+--- !u!222 &1064109163
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064109159}
+  m_CullTransparentMesh: 1
 --- !u!1 &1064214697
 GameObject:
   m_ObjectHideFlags: 0
@@ -53710,12 +53710,12 @@ RectTransform:
   m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 866878998}
+  m_Father: {fileID: 1064109160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 694, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1065121925
 MonoBehaviour:
@@ -54061,7 +54061,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1067863175
 RectTransform:
   m_ObjectHideFlags: 0
@@ -54074,7 +54074,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 866878998}
+  - {fileID: 1064109160}
   - {fileID: 1283897281}
   - {fileID: 348971610}
   - {fileID: 1222929133}
@@ -58090,10 +58090,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1545, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1149908851
 CanvasGroup:
@@ -58159,7 +58159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: f2e108d5702c49a40b8b739d3c1b56cc, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -66812,10 +66812,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 745, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1322126564
 CanvasGroup:
@@ -66881,7 +66881,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 6677bc48d285d8c48952888a3df9ce13, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -71102,10 +71102,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 945, y: -340}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1403568192
 CanvasGroup:
@@ -71171,7 +71171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 83c0e0c79028eec4ab121cb6d40cf734, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -80283,10 +80283,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 945, y: -580}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1532583506
 CanvasGroup:
@@ -80352,7 +80352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: f1657bc30db5d0548a5dad3e94122bc4, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -80391,10 +80391,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 945, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1533712707
 CanvasGroup:
@@ -80460,7 +80460,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 972fc88f4531ecd49b7b66f8039da007, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -95214,12 +95214,12 @@ RectTransform:
   m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 866878998}
+  m_Father: {fileID: 1064109160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 496, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1814828462
 MonoBehaviour:
@@ -96368,10 +96368,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1145, y: -340}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1822759100
 CanvasGroup:
@@ -96437,7 +96437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 1ed9b88abaa3e5b48a60146023455cdf, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -99843,12 +99843,12 @@ RectTransform:
   m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 866878998}
+  m_Father: {fileID: 1064109160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1875856137
 MonoBehaviour:
@@ -100534,10 +100534,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 745, y: -340}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1883393581
 CanvasGroup:
@@ -100603,7 +100603,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 72877dc363a5b5749b4592e3989e053f, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -101038,10 +101038,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 545, y: -580}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1890673698
 CanvasGroup:
@@ -101107,7 +101107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 1967b9932887fa047a4469bfd062dec1, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -102268,10 +102268,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 145, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1913724030
 CanvasGroup:
@@ -102337,7 +102337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 9351c03a8d801d24fae6f8ad3aa69171, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -106415,10 +106415,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 145, y: -580}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1976127337
 CanvasGroup:
@@ -106484,7 +106484,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 6577d6ba0463bce4da2b8282f1675a06, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -107413,10 +107413,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 545, y: -340}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &2000895857
 CanvasGroup:
@@ -107482,7 +107482,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: dbe7764c72be6dd4880875138a3cb6c7, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -113168,10 +113168,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1345, y: -340}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &2098151719
 CanvasGroup:
@@ -113237,7 +113237,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: 7079fcb6888e3d844bef2536a09a9591, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -113548,10 +113548,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1283897281}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 345, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &2101223949
 CanvasGroup:
@@ -113617,7 +113617,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
-  panel2GridLayout: {fileID: 866878998}
+  panel2GridLayout: {fileID: 1064109160}
   frontSprite: {fileID: 21300000, guid: ae8db83e1c1f43f4f8544649f23fd974, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -116535,12 +116535,12 @@ RectTransform:
   m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 866878998}
+  m_Father: {fileID: 1064109160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1486, y: -100}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2127237508
 MonoBehaviour:

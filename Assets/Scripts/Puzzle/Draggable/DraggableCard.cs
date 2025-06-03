@@ -54,19 +54,6 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         canvasGroup.blocksRaycasts = true;
 
-        // Check if dragged out of a slot
-        if (lastSlotOrParent != null && lastSlotOrParent.GetComponent<DropSlot>() != null)
-        {
-            DropSlot previousSlot = lastSlotOrParent.GetComponent<DropSlot>();
-
-            bool droppedOutsideSlot = transform.parent == canvas.transform || transform.parent.GetComponent<DropSlot>() == null;
-
-            if (droppedOutsideSlot)
-            {
-                OnCardRemovedFromSlot(previousSlot);
-            }   
-        }
-
         if (transform.parent == canvas.transform || transform.parent == null)
         {
             bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
@@ -172,8 +159,5 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             cardImage.color = Color.white;
     }
 
-    protected virtual void OnCardRemovedFromSlot(DropSlot previousSlot)
-    {
-        // To be overridden by child class
-    }
+  
 }

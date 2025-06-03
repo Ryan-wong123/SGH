@@ -21,18 +21,7 @@ public class Activity1DraggableCard : DraggableCard
     {
         canvasGroup.blocksRaycasts = true;
 
-        if (lastSlotOrParent != null && lastSlotOrParent.GetComponent<DropSlot>() != null)
-        {
-            DropSlot previousSlot = lastSlotOrParent.GetComponent<DropSlot>();
-
-            bool droppedOutsideSlot = transform.parent == canvas.transform || transform.parent.GetComponent<DropSlot>() == null;
-
-            if (droppedOutsideSlot)
-            {
-                OnCardRemovedFromSlot(previousSlot);
-            }
-        }
-
+    
         if (transform.parent == canvas.transform || transform.parent == null)
         {
             bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
