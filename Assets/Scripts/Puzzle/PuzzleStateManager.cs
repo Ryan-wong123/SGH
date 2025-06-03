@@ -41,6 +41,10 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     [SerializeField] private PrescriptionManager prescriptionManager;
     [SerializeField] private GameObject Puzzle7Panel;
+
+    [SerializeField] private InsulinPuzzleManager insulinPuzzleManager;
+    [SerializeField] private GameObject Puzzle8Panel;
+    
     public enum PuzzleStage
     {
         Puzzle1,
@@ -412,11 +416,22 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         Debug.Log("Puzzle 7 completed correctly!");
         Puzzle7Panel.SetActive(false);
+        Puzzle8Panel.SetActive(true);
 
         CurrentStage = PuzzleStage.Puzzle8;
 
         ResetTimer();
 
+    }
+
+    public void HandlePuzzle8Complete()
+    {
+        Debug.Log("Puzzle 8 completed correctly!");
+        Puzzle8Panel.SetActive(false);
+
+        CurrentStage = PuzzleStage.Puzzle9;
+
+        ResetTimer();
     }
 
     public void ResetTimer()
@@ -572,6 +587,21 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
+    public void SubmitPuzzle8()
+    {
+        if (insulinPuzzleManager != null)
+        {
+            if (insulinPuzzleManager.AreAllPuzzle8CardsCorrect())
+            {
+                HandlePuzzle8Complete();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("insulinPuzzleManager is not assigned!");
+        }
+    }
+
     public void Submit()
     {
         switch (CurrentStage)
@@ -599,9 +629,9 @@ public class PuzzleStateManager : MonoBehaviourPun
             case PuzzleStage.Puzzle7:
                 SubmitPuzzle7();
                 break;
-            //case PuzzleStage.Puzzle8:
-            //    SubmitPuzzle8();
-            //    break;
+            case PuzzleStage.Puzzle8:
+                SubmitPuzzle8();
+                break;
             //case PuzzleStage.Puzzle9:
             //    SubmitPuzzle9();
             //    break;

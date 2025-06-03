@@ -38,7 +38,7 @@ public class SymptomsCardManager : MonoBehaviour
                 if (isCorrect) correct++;
             }
         }
-
+        StartCoroutine(ResetIncorrectCardColorsAfterDelay(1f));
         Debug.Log($"[Puzzle 1] Filled: {filled}/{totalSlots}, Correct: {correct}/{totalSlots}");
         return filled == totalSlots && correct == totalSlots;
     }

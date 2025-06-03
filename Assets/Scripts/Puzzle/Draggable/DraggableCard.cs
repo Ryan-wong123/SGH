@@ -156,7 +156,7 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public virtual void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Middle)
+        if (eventData.button == PointerEventData.InputButton.Right)
         {
             Sprite spriteToShow =  frontSprite;
             CardPopupManager.Instance.ShowCard(spriteToShow);
