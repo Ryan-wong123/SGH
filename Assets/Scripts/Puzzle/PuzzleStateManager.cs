@@ -27,6 +27,7 @@ public class PuzzleStateManager : MonoBehaviourPun
     [SerializeField] private GameObject Puzzle3Panel;
     [SerializeField] private PictureGridManager pictureGridManager;
 
+    [SerializeField] private Activity2PuzzleManager activity2PuzzleManager;
     [SerializeField] private GameObject Puzzle4Panel;
 
     [SerializeField] private CrosswordManager crosswordManager;
@@ -531,8 +532,8 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     public void SubmitPuzzle4()
     {
-        bool isCorrect = PuzzleTileManager.Instance.CheckPuzzleSolved();
-        if (isCorrect)
+        
+        if (activity2PuzzleManager.AreAllPuzzle4CardsCorrect())
         {
             HandlePuzzle4Complete();
         }
