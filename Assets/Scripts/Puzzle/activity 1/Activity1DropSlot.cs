@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using static PuzzleStateManager;
+using UnityEngine.UI;
 
 public class Activity1DropSlot : DropSlot
 {
@@ -34,13 +35,17 @@ public class Activity1DropSlot : DropSlot
         return false;
     }
 
-
-
-    protected override void AcceptCard(DraggableCard baseCard)
+    protected override void AcceptCard(DraggableCard card)
     {
-        base.AcceptCard(baseCard);
-    }
+        card.transform.SetParent(transform);
 
+        var rect = card.GetComponent<RectTransform>();
+        rect.anchoredPosition = new Vector2(140, -160);
+        rect.localScale = Vector2.one;
+
+        card.trueHome = transform.parent;
+        cardImage = card.GetComponent<Image>();
+    }
     protected override void TrySnapBack(GameObject droppedObj)
     {
         Activity1DraggableCard card = droppedObj?.GetComponent<Activity1DraggableCard>();
