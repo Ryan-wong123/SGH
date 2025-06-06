@@ -61,6 +61,7 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.0.37f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Puzzle\Rotating Puzzle\PuzzleTile.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 3\CrosswordManager.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryUIManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
@@ -71,19 +72,20 @@
     <Compile Include="Assets\Scripts\GameTimeManager.cs" />
     <Compile Include="Assets\Scripts\networking\ChatManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\puzzle 2 test\Activity2DropSlot.cs" />
     <Compile Include="Assets\Scripts\Interactable\PuzzlePanelTrigger.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 4\DiaryPuzzleManager.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\puzzle 2 test\Activity2DraggableCard.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\activity 9\Activity9DropSlot.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\activity 9\Activity9DraggableCard.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 6\InsulinPuzzleManager.cs" />
     <Compile Include="Assets\Scripts\networking\JoinRoomManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 5\PrescriptionManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\Draggable\DraggableCard.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\activity 2\PictureGridManager.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\Rotating Puzzle\PictureGridManager.cs" />
     <Compile Include="Assets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\activity 2\Activity2PuzzleManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
@@ -92,7 +94,9 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\ChatAppIdCheckerUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\Rotating Puzzle\PuzzleTileManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\activity 2\Activity2DraggableCard.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
     <Compile Include="Assets\Scripts\Player\InventorySystem.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
@@ -105,7 +109,6 @@
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\activity 2\PuzzleTileManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
@@ -125,13 +128,12 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 1\SymptomsCardManager.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\activity 9\DeathLapsesManager.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanAudio.cs" />
     <Compile Include="Assets\Scripts\Player\CrossHairInteractor.cs" />
     <Compile Include="Assets\LeanTween\Framework\LTDescrOptional.cs" />
     <Compile Include="Assets\Scripts\networking\CreateRoomManager.cs" />
     <Compile Include="Assets\LeanTween\Framework\LTDescr.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\activity 2\PuzzleTile.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\puzzle 2 test\Activity2PuzzleManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
     <Compile Include="Assets\Scripts\Puzzle\Draggable\CardPopupManager.cs" />
@@ -146,6 +148,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 1\Activity1DraggableCard.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\activity 2\Activity2DropSlot.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\LeanTween\Framework\LTSeq.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
