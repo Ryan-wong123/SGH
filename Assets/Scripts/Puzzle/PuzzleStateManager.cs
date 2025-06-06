@@ -56,7 +56,9 @@ public class PuzzleStateManager : MonoBehaviourPun
         Puzzle6,
         Puzzle7,
         Puzzle8,
-        Puzzle9
+        Puzzle9,
+        Puzzle10,
+        Puzzle11
     }
 
     private void Awake()
@@ -635,6 +637,12 @@ public class PuzzleStateManager : MonoBehaviourPun
                 break;
             //case PuzzleStage.Puzzle9:
             //    SubmitPuzzle9();
+            //    break;
+            //case PuzzleStage.Puzzle10:
+            //    SubmitPuzzle10();
+            //    break;
+            //case PuzzleStage.Puzzle11:
+            //    SubmitPuzzle11();
             //    break;
             default:
                 Debug.LogWarning("Unknown puzzle stage!");

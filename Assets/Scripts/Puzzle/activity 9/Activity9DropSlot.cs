@@ -6,32 +6,26 @@ using UnityEngine.UI;
 
 public class Activity9DropSlot : DropSlot
 {
-    [Header("Puzzle 1 Settings")]
-    [SerializeField] public List<string> correctAnswers = new();
-
-    [Header("Puzzle 2 Settings")]
-    [SerializeField] private string slotColorName = ""; // set in Inspector or auto-extract from name
-
-
-    [SerializeField] private int requiredCorrect = 10; // set this in Inspector
-
+    [Header("Puzzle 9 answers")]
+    [SerializeField] private string lapsesAnswer = ""; // set in Inspector or auto-extract from name
+    [SerializeField] private int requiredCorrect = 5; // set this in Inspector
     public override int GetRequiredCount() => requiredCorrect;
+
     public override bool IsCardCorrect(DraggableCard card)
     {
-        if (card is Activity1DraggableCard a1Card)
+        if (card is Activity9DraggableCard a1Card)
         {
-            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle1)
-                return correctAnswers.Contains(a1Card.symptomName);
-            else if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle2)
+            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle11)
             {
-                string spriteName = a1Card.backSprite != null ? a1Card.backSprite.name.ToLower() : "";
+                string cardStep = a1Card.lapsesAnswer?.Trim().ToLower() ?? "";
+                string slotStep = lapsesAnswer.Trim().ToLower();
 
-                Debug.Log($"[IsCardCorrect - Puzzle2] Card Sprite: {spriteName}, Slot expects: {slotColorName}");
+                Debug.Log($"[IsCardCorrect - Puzzle11] Card Step: {cardStep}, Slot Expects: {slotStep}");
 
-                return spriteName.Contains(slotColorName.ToLower()); // fuzzy match: "greenbear" contains "green"
+                return cardStep == slotStep;
             }
-              
         }
+
         return false;
     }
 
@@ -40,15 +34,10 @@ public class Activity9DropSlot : DropSlot
         card.transform.SetParent(transform);
 
         var rect = card.GetComponent<RectTransform>();
-        rect.anchoredPosition = new Vector2(140, -160);
-        rect.localScale = Vector2.one;
+        rect.anchoredPosition = new Vector2(90, -90);
+        rect.localScale = new Vector2(0.66f, 0.66f);
 
         card.trueHome = transform.parent;
         cardImage = card.GetComponent<Image>();
-    }
-    protected override void TrySnapBack(GameObject droppedObj)
-    {
-        Activity1DraggableCard card = droppedObj?.GetComponent<Activity1DraggableCard>();
-        card?.SnapBack();
     }
 }
