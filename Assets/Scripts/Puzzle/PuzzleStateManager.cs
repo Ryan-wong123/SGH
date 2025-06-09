@@ -36,6 +36,8 @@ public class PuzzleStateManager : MonoBehaviourPun
     [SerializeField] private GameObject puzzle1Object;
     [SerializeField] private GameObject puzzle2Object;
     [SerializeField] private GameObject puzzle3Object;
+    [SerializeField] private GameObject puzzle4Object;
+    [SerializeField] private GameObject puzzle5Object;
 
     [SerializeField] private DiaryPuzzleManager diaryPuzzleManager;
     [SerializeField] private GameObject Puzzle6Panel;
@@ -45,6 +47,9 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     [SerializeField] private InsulinPuzzleManager insulinPuzzleManager;
     [SerializeField] private GameObject Puzzle8Panel;
+
+    [SerializeField] private DeathLapsesManager deathLapsesManager;
+    [SerializeField] private GameObject Puzzle11Panel;
     
     public enum PuzzleStage
     {
@@ -434,8 +439,48 @@ public class PuzzleStateManager : MonoBehaviourPun
 
         CurrentStage = PuzzleStage.Puzzle9;
 
+        // Ask the Master Client to destroy it
+        if (puzzle4Object != null)
+        {
+            PhotonView puzzlePV = puzzle4Object.GetComponent<PhotonView>();
+            if (puzzlePV != null)
+            {
+                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
+            }
+            else
+            {
+                Debug.LogError("Puzzle object does not have a PhotonView component!");
+            }
+        }
+        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal4");
+
         ResetTimer();
     }
+
+    public void HandlePuzzle11Complete()
+    {
+        Debug.Log("Puzzle 11 completed correctly!");
+        Puzzle11Panel.SetActive(false);
+
+
+        // Ask the Master Client to destroy it
+        if (puzzle5Object != null)
+        {
+            PhotonView puzzlePV = puzzle5Object.GetComponent<PhotonView>();
+            if (puzzlePV != null)
+            {
+                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
+            }
+            else
+            {
+                Debug.LogError("Puzzle object does not have a PhotonView component!");
+            }
+        }
+        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal5");
+
+        ResetTimer();
+    }
+
 
     public void ResetTimer()
     {
@@ -605,6 +650,23 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
+    public void SubmitPuzzle11()
+    {
+        if (deathLapsesManager != null)
+        {
+          
+            if (deathLapsesManager.AreAllPuzzle11CardsCorrect())
+            {
+                HandlePuzzle11Complete();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("deathLapsesManager is not assigned!");
+        }
+    }
+
+
     public void Submit()
     {
         switch (CurrentStage)
@@ -641,9 +703,9 @@ public class PuzzleStateManager : MonoBehaviourPun
             //case PuzzleStage.Puzzle10:
             //    SubmitPuzzle10();
             //    break;
-            //case PuzzleStage.Puzzle11:
-            //    SubmitPuzzle11();
-            //    break;
+            case PuzzleStage.Puzzle11:
+                SubmitPuzzle11();
+                break;
             default:
                 Debug.LogWarning("Unknown puzzle stage!");
                 break;

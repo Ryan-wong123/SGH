@@ -6,6 +6,15 @@ using System.Collections.Generic;
 public class Activity9DraggableCard : DraggableCard
 {
     [SerializeField] public string lapsesAnswer;
+    public bool isLocked = false;
+
+    public override void OnBeginDrag(PointerEventData eventData)
+    {
+        if (isLocked) return; // ❌ prevent drag if locked
+
+        base.OnBeginDrag(eventData); // ✅ default drag
+    }
+
 
     public override void OnEndDrag(PointerEventData eventData)
     {
@@ -47,5 +56,12 @@ public class Activity9DraggableCard : DraggableCard
             if (img != null) img.color = Color.white;
 
         }
+    }
+
+    public override void ResetCard()
+    {
+        base.ResetCard();
+        isLocked = false;
+        GetComponent<Image>().color = Color.white; // reset color when reused
     }
 }

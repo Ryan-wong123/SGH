@@ -1039,13 +1039,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  panel1GridLayout: {fileID: 0}
-  panel2GridLayout: {fileID: 0}
-  frontSprite: {fileID: 0}
+  canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 2010036956}
+  panel2GridLayout: {fileID: 1505633663}
+  frontSprite: {fileID: 21300000, guid: 241d029883683bc47b9d7aa7de0f78a8, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: 
+  lapsesAnswer: insulin
+  isLocked: 0
 --- !u!1 &19547981
 GameObject:
   m_ObjectHideFlags: 0
@@ -1318,100 +1319,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 20264668}
   m_CullTransparentMesh: 1
---- !u!1 &22125985
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 22125986}
-  - component: {fileID: 22125988}
-  - component: {fileID: 22125987}
-  - component: {fileID: 22125989}
-  m_Layer: 5
-  m_Name: Slot_5
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &22125986
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 22125985}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.64093435, y: 0.66764, z: 0.66764}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1673625621}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1315, y: 270}
-  m_SizeDelta: {x: 420, y: 240}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &22125987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 22125985}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8c82b654a68fa4f4a8de64719d0537bc, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &22125988
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 22125985}
-  m_CullTransparentMesh: 1
---- !u!114 &22125989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 22125985}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eeec17e718e20bd40a7badc18b9acd4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  correctColor: {r: 0, g: 1, b: 0, a: 1}
-  wrongColor: {r: 1, g: 0, b: 0, a: 1}
-  positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 0.66, y: 0.66}
-  lapsesAnswer: 
-  requiredCorrect: 5
 --- !u!1001 &22405069
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6752,7 +6659,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 10
   requiredCorrect: 20
 --- !u!114 &144205723
@@ -8576,7 +8483,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 15
   requiredCorrect: 20
 --- !u!114 &178750943
@@ -9210,7 +9117,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 18
   requiredCorrect: 20
 --- !u!114 &194840527
@@ -13102,13 +13009,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  panel1GridLayout: {fileID: 0}
-  panel2GridLayout: {fileID: 0}
-  frontSprite: {fileID: 0}
+  canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 1200996390}
+  panel2GridLayout: {fileID: 1673625621}
+  frontSprite: {fileID: 21300000, guid: 934e21ff35429fe4081c1d929b2f8985, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: 
+  lapsesAnswer: inappropriate management
+  isLocked: 0
 --- !u!1 &273688574
 GameObject:
   m_ObjectHideFlags: 0
@@ -13476,8 +13384,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 394a5dbb28c54c543875a7bd1a11fc13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  requiredAnswer1: 0
-  requiredAnswer2: 0
+  requiredAnswer1: 5
+  requiredAnswer2: 4
+  answer2Cards: {fileID: 1200996389}
+  answer2Slots: {fileID: 1673625620}
 --- !u!1 &281231957
 GameObject:
   m_ObjectHideFlags: 0
@@ -16350,7 +16260,7 @@ GameObject:
   - component: {fileID: 329484966}
   m_Layer: 5
   m_Name: Slot_2
-  m_TagString: Untagged
+  m_TagString: Stage1Slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16428,7 +16338,7 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
   scaleSnap: {x: 0.66, y: 0.66}
-  lapsesAnswer: 
+  lapsesAnswer: drug interaction
   requiredCorrect: 5
 --- !u!1 &331054876
 GameObject:
@@ -17294,6 +17204,146 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 348971609}
   m_CullTransparentMesh: 1
+--- !u!1001 &349866972
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7.9414625
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 7.9414625
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 7.9414625
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.163
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.034
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_Name
+      value: phone (4)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 349866976}
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 349866975}
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 349866974}
+  m_SourcePrefab: {fileID: 100100000, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+--- !u!1 &349866973 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+  m_PrefabInstance: {fileID: 349866972}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &349866974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349866973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 11
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &349866975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349866973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d7ba20456adc6f49abfc9133af4a20b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  puzzleUIPanel: {fileID: 280907644}
+  closePanelUI: {fileID: 856606430}
+--- !u!65 &349866976
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349866973}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.070084825, y: 0.14368325, z: 0.0065494576}
+  m_Center: {x: 0, y: 3.3512933e-18, z: -0.00047165249}
 --- !u!1 &353294866
 GameObject:
   m_ObjectHideFlags: 0
@@ -18380,7 +18430,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 3
   requiredCorrect: 20
 --- !u!114 &373559436
@@ -19352,7 +19402,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 4
   requiredCorrect: 20
 --- !u!114 &391965946
@@ -19446,7 +19496,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: dup
   requiredCorrect: 20
 --- !u!114 &394660900
@@ -30106,7 +30156,7 @@ GameObject:
   - component: {fileID: 600653986}
   m_Layer: 5
   m_Name: Slot_3
-  m_TagString: Untagged
+  m_TagString: Stage1Slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30184,7 +30234,7 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
   scaleSnap: {x: 0.66, y: 0.66}
-  lapsesAnswer: 
+  lapsesAnswer: apparatus
   requiredCorrect: 5
 --- !u!1 &602558409
 GameObject:
@@ -33476,7 +33526,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 12
   requiredCorrect: 20
 --- !u!114 &660052792
@@ -38791,13 +38841,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  panel1GridLayout: {fileID: 0}
-  panel2GridLayout: {fileID: 0}
-  frontSprite: {fileID: 0}
+  canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 2010036956}
+  panel2GridLayout: {fileID: 1505633663}
+  frontSprite: {fileID: 21300000, guid: f912f0d2344eaa34ab2dc1244a207156, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: 
+  lapsesAnswer: drug interaction
+  isLocked: 0
 --- !u!1 &744877783
 GameObject:
   m_ObjectHideFlags: 0
@@ -43015,13 +43066,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  panel1GridLayout: {fileID: 0}
-  panel2GridLayout: {fileID: 0}
-  frontSprite: {fileID: 0}
+  canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 1200996390}
+  panel2GridLayout: {fileID: 1673625621}
+  frontSprite: {fileID: 21300000, guid: 037bfa0b408ecb943bc22c484600ebd3, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: 
+  lapsesAnswer: inappropriate syringe
+  isLocked: 0
 --- !u!1001 &832903779
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45861,7 +45913,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 5
   requiredCorrect: 20
 --- !u!114 &883236837
@@ -46785,13 +46837,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  panel1GridLayout: {fileID: 0}
-  panel2GridLayout: {fileID: 0}
-  frontSprite: {fileID: 0}
+  canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 1200996390}
+  panel2GridLayout: {fileID: 1673625621}
+  frontSprite: {fileID: 21300000, guid: c2ffef2eac104aa458df50a9783df0ea, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: 
+  lapsesAnswer: fluconazole
+  isLocked: 0
 --- !u!1 &908294280
 GameObject:
   m_ObjectHideFlags: 0
@@ -49064,7 +49117,7 @@ GameObject:
   - component: {fileID: 963652177}
   m_Layer: 5
   m_Name: Slot_4
-  m_TagString: Untagged
+  m_TagString: Stage2Slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49142,7 +49195,7 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
   scaleSnap: {x: 0.66, y: 0.66}
-  lapsesAnswer: 
+  lapsesAnswer: injection
   requiredCorrect: 5
 --- !u!1 &975676977
 GameObject:
@@ -56593,7 +56646,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 13
   requiredCorrect: 20
 --- !u!114 &1097283935
@@ -57123,13 +57176,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  panel1GridLayout: {fileID: 0}
-  panel2GridLayout: {fileID: 0}
-  frontSprite: {fileID: 0}
+  canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 2010036956}
+  panel2GridLayout: {fileID: 1505633663}
+  frontSprite: {fileID: 21300000, guid: 1557ddf8d6f11b64e9646c110e2befcb, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: 
+  lapsesAnswer: management
+  isLocked: 0
 --- !u!1 &1112146532
 GameObject:
   m_ObjectHideFlags: 0
@@ -57144,7 +57198,7 @@ GameObject:
   - component: {fileID: 1112146537}
   m_Layer: 5
   m_Name: Slot_4
-  m_TagString: Untagged
+  m_TagString: Stage1Slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -57222,7 +57276,7 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
   scaleSnap: {x: 0.66, y: 0.66}
-  lapsesAnswer: 
+  lapsesAnswer: insulin
   requiredCorrect: 5
 --- !u!1001 &1112336088
 PrefabInstance:
@@ -57483,7 +57537,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: dup
   requiredCorrect: 20
 --- !u!114 &1115832043
@@ -57741,13 +57795,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  panel1GridLayout: {fileID: 0}
-  panel2GridLayout: {fileID: 0}
-  frontSprite: {fileID: 0}
+  canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 2010036956}
+  panel2GridLayout: {fileID: 1505633663}
+  frontSprite: {fileID: 21300000, guid: 481fbde59fb9429438e1bc6a10b39e7a, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: 
+  lapsesAnswer: death
+  isLocked: 0
 --- !u!1 &1124813487
 GameObject:
   m_ObjectHideFlags: 0
@@ -61519,7 +61574,7 @@ GameObject:
   - component: {fileID: 1194063769}
   m_Layer: 5
   m_Name: Slot_3
-  m_TagString: Untagged
+  m_TagString: Stage2Slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -61597,7 +61652,7 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
   scaleSnap: {x: 0.66, y: 0.66}
-  lapsesAnswer: 
+  lapsesAnswer: inappropriate syringe
   requiredCorrect: 5
 --- !u!1 &1194267927
 GameObject:
@@ -65534,7 +65589,7 @@ GameObject:
   - component: {fileID: 1274369867}
   m_Layer: 5
   m_Name: Slot_1
-  m_TagString: Untagged
+  m_TagString: Stage1Slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -65612,7 +65667,7 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
   scaleSnap: {x: 0.66, y: 0.66}
-  lapsesAnswer: 
+  lapsesAnswer: management
   requiredCorrect: 5
 --- !u!1001 &1275686451
 PrefabInstance:
@@ -69854,7 +69909,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 1
   requiredCorrect: 20
 --- !u!114 &1351318954
@@ -75606,7 +75661,7 @@ GameObject:
   - component: {fileID: 1449842829}
   m_Layer: 5
   m_Name: Slot_2
-  m_TagString: Untagged
+  m_TagString: Stage2Slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75684,7 +75739,7 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
   scaleSnap: {x: 0.66, y: 0.66}
-  lapsesAnswer: 
+  lapsesAnswer: fluconazole
   requiredCorrect: 5
 --- !u!1 &1450423470
 GameObject:
@@ -77158,7 +77213,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 6
   requiredCorrect: 20
 --- !u!114 &1464331186
@@ -81447,7 +81502,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 9
   requiredCorrect: 20
 --- !u!114 &1521302159
@@ -82066,7 +82121,7 @@ GameObject:
   - component: {fileID: 1532754804}
   m_Layer: 5
   m_Name: Slot_1
-  m_TagString: Untagged
+  m_TagString: Stage2Slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -82144,7 +82199,7 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
   scaleSnap: {x: 0.66, y: 0.66}
-  lapsesAnswer: 
+  lapsesAnswer: inappropriate management
   requiredCorrect: 5
 --- !u!1 &1533712705
 GameObject:
@@ -84597,7 +84652,7 @@ GameObject:
   - component: {fileID: 1577112023}
   m_Layer: 5
   m_Name: Slot_5
-  m_TagString: Untagged
+  m_TagString: Stage1Slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -84675,7 +84730,7 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
   scaleSnap: {x: 0.66, y: 0.66}
-  lapsesAnswer: 
+  lapsesAnswer: death
   requiredCorrect: 5
 --- !u!1 &1577182241
 GameObject:
@@ -87307,13 +87362,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  panel1GridLayout: {fileID: 0}
-  panel2GridLayout: {fileID: 0}
-  frontSprite: {fileID: 0}
+  canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 1200996390}
+  panel2GridLayout: {fileID: 1673625621}
+  frontSprite: {fileID: 21300000, guid: c40c57e7f5cf98f4a8e78aec6d487cb5, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: 
+  lapsesAnswer: injection
+  isLocked: 0
 --- !u!1 &1632282165
 GameObject:
   m_ObjectHideFlags: 0
@@ -89657,7 +89713,6 @@ RectTransform:
   - {fileID: 1449842826}
   - {fileID: 1194063766}
   - {fileID: 963652174}
-  - {fileID: 22125986}
   m_Father: {fileID: 280907645}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -92757,7 +92812,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 7
   requiredCorrect: 20
 --- !u!114 &1730462148
@@ -96059,7 +96114,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 2
   requiredCorrect: 20
 --- !u!114 &1794939793
@@ -98529,7 +98584,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 19
   requiredCorrect: 20
 --- !u!114 &1821247447
@@ -100057,7 +100112,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 8
   requiredCorrect: 20
 --- !u!114 &1844829535
@@ -101321,7 +101376,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 14
   requiredCorrect: 20
 --- !u!114 &1857285668
@@ -102018,7 +102073,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 11
   requiredCorrect: 20
 --- !u!114 &1874056120
@@ -110215,7 +110270,7 @@ MonoBehaviour:
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 1, y: 1}
+  scaleSnap: {x: 0.66, y: 0.66}
   stepName: 16
   requiredCorrect: 20
 --- !u!114 &2009576717
@@ -114466,6 +114521,8 @@ MonoBehaviour:
   Puzzle7Panel: {fileID: 1064947403}
   insulinPuzzleManager: {fileID: 1067863178}
   Puzzle8Panel: {fileID: 1067863174}
+  deathLapsesManager: {fileID: 280907649}
+  Puzzle11Panel: {fileID: 280907644}
 --- !u!114 &2075314852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115573,13 +115630,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  panel1GridLayout: {fileID: 0}
-  panel2GridLayout: {fileID: 0}
-  frontSprite: {fileID: 0}
+  canvas: {fileID: 889139441}
+  panel1GridLayout: {fileID: 2010036956}
+  panel2GridLayout: {fileID: 1505633663}
+  frontSprite: {fileID: 21300000, guid: 66e220120438912498a30b40e347b542, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: 
+  lapsesAnswer: apparatus
+  isLocked: 0
 --- !u!1001 &2097774268
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -120412,3 +120470,4 @@ SceneRoots:
   - {fileID: 1325465233}
   - {fileID: 2030812223}
   - {fileID: 500324022}
+  - {fileID: 349866972}
