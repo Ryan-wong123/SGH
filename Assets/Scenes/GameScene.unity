@@ -16336,8 +16336,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
-  positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 0.66, y: 0.66}
+  positionSnap: {x: 210, y: -126}
+  scaleSnap: {x: 0.85, y: 0.8}
   lapsesAnswer: drug interaction
   requiredCorrect: 5
 --- !u!1 &331054876
@@ -30232,8 +30232,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
-  positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 0.66, y: 0.66}
+  positionSnap: {x: 210, y: -126}
+  scaleSnap: {x: 0.85, y: 0.8}
   lapsesAnswer: apparatus
   requiredCorrect: 5
 --- !u!1 &602558409
@@ -49193,8 +49193,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
-  positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 0.66, y: 0.66}
+  positionSnap: {x: 210, y: -126}
+  scaleSnap: {x: 0.85, y: 0.8}
   lapsesAnswer: injection
   requiredCorrect: 5
 --- !u!1 &975676977
@@ -57274,8 +57274,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
-  positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 0.66, y: 0.66}
+  positionSnap: {x: 210, y: -126}
+  scaleSnap: {x: 0.85, y: 0.8}
   lapsesAnswer: insulin
   requiredCorrect: 5
 --- !u!1001 &1112336088
@@ -61650,8 +61650,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
-  positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 0.66, y: 0.66}
+  positionSnap: {x: 210, y: -126}
+  scaleSnap: {x: 0.85, y: 0.8}
   lapsesAnswer: inappropriate syringe
   requiredCorrect: 5
 --- !u!1 &1194267927
@@ -65665,8 +65665,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
-  positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 0.66, y: 0.66}
+  positionSnap: {x: 210, y: -126}
+  scaleSnap: {x: 0.85, y: 0.8}
   lapsesAnswer: management
   requiredCorrect: 5
 --- !u!1001 &1275686451
@@ -75737,8 +75737,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
-  positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 0.66, y: 0.66}
+  positionSnap: {x: 210, y: -126}
+  scaleSnap: {x: 0.85, y: 0.8}
   lapsesAnswer: fluconazole
   requiredCorrect: 5
 --- !u!1 &1450423470
@@ -82197,8 +82197,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
-  positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 0.66, y: 0.66}
+  positionSnap: {x: 210, y: -126}
+  scaleSnap: {x: 0.85, y: 0.8}
   lapsesAnswer: inappropriate management
   requiredCorrect: 5
 --- !u!1 &1533712705
@@ -84728,8 +84728,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
-  positionSnap: {x: 90, y: -90}
-  scaleSnap: {x: 0.66, y: 0.66}
+  positionSnap: {x: 210, y: -126}
+  scaleSnap: {x: 0.85, y: 0.8}
   lapsesAnswer: death
   requiredCorrect: 5
 --- !u!1 &1577182241
@@ -114515,6 +114515,8 @@ MonoBehaviour:
   puzzle1Object: {fileID: 1547783179}
   puzzle2Object: {fileID: 1325465234}
   puzzle3Object: {fileID: 2030812224}
+  puzzle4Object: {fileID: 500324023}
+  puzzle5Object: {fileID: 349866973}
   diaryPuzzleManager: {fileID: 509120715}
   Puzzle6Panel: {fileID: 509120711}
   prescriptionManager: {fileID: 1064947408}
