@@ -28,16 +28,4 @@ public class Activity9DropSlot : DropSlot
 
         return false;
     }
-
-    protected override void AcceptCard(DraggableCard card)
-    {
-        card.transform.SetParent(transform);
-
-        var rect = card.GetComponent<RectTransform>();
-        rect.anchoredPosition = new Vector2(90, -90);
-        rect.localScale = new Vector2(0.66f, 0.66f);
-
-        card.trueHome = transform.parent;
-        cardImage = card.GetComponent<Image>();
-    }
 }

@@ -972,10 +972,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2010036956}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 543.00256, y: -119.545}
+  m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &15199538
 CanvasGroup:
@@ -1408,6 +1408,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 0.66, y: 0.66}
   lapsesAnswer: 
   requiredCorrect: 5
 --- !u!1001 &22405069
@@ -3828,6 +3830,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 150, y: -150}
+  scaleSnap: {x: 1, y: 1}
   stepName: 10
   requiredCorrect: 9
 --- !u!1 &100647290
@@ -5464,6 +5468,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 150, y: -150}
+  scaleSnap: {x: 1, y: 1}
   stepName: 6
   requiredCorrect: 9
 --- !u!1 &119066307
@@ -6745,6 +6751,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 10
   requiredCorrect: 20
 --- !u!114 &144205723
@@ -7486,6 +7494,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers: []
   slotColorName: Gummy Bear Yellow
   requiredCorrect: 10
@@ -8565,6 +8575,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 15
   requiredCorrect: 20
 --- !u!114 &178750943
@@ -9197,6 +9209,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 18
   requiredCorrect: 20
 --- !u!114 &194840527
@@ -11290,6 +11304,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - 
   slotColorName: Gummy Bear Green
@@ -13383,7 +13399,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &280907645
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16410,6 +16426,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 0.66, y: 0.66}
   lapsesAnswer: 
   requiredCorrect: 5
 --- !u!1 &331054876
@@ -18361,6 +18379,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 3
   requiredCorrect: 20
 --- !u!114 &373559436
@@ -19331,6 +19351,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 4
   requiredCorrect: 20
 --- !u!114 &391965946
@@ -19423,6 +19445,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: dup
   requiredCorrect: 20
 --- !u!114 &394660900
@@ -20849,6 +20873,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers: []
   slotColorName: Gummy Bear red
   requiredCorrect: 10
@@ -21256,6 +21282,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 150, y: -150}
+  scaleSnap: {x: 1, y: 1}
   stepName: 5
   requiredCorrect: 9
 --- !u!1 &423621685
@@ -22216,6 +22244,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - 
   slotColorName: Gummy Bear Green
@@ -23081,6 +23111,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers: []
   slotColorName: Gummy Bear red
   requiredCorrect: 10
@@ -23851,6 +23883,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - shakiness
   - palpitations
@@ -24412,6 +24446,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - 
   slotColorName: Gummy Bear Green
@@ -26645,6 +26681,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 150, y: -150}
+  scaleSnap: {x: 1, y: 1}
   stepName: 2
   requiredCorrect: 9
 --- !u!1 &521481521
@@ -30144,6 +30182,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 0.66, y: 0.66}
   lapsesAnswer: 
   requiredCorrect: 5
 --- !u!1 &602558409
@@ -33435,6 +33475,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 12
   requiredCorrect: 20
 --- !u!114 &660052792
@@ -35608,6 +35650,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - shakiness
   - palpitations
@@ -38680,10 +38724,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2010036956}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1243.0026, y: -119.545}
+  m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &743652111
 CanvasGroup:
@@ -39444,6 +39488,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers: []
   slotColorName: Gummy Bear Yellow
   requiredCorrect: 10
@@ -39599,6 +39645,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - shakiness
   - palpitations
@@ -45812,6 +45860,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 5
   requiredCorrect: 20
 --- !u!114 &883236837
@@ -47236,6 +47286,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers: []
   slotColorName: Gummy Bear red
   requiredCorrect: 10
@@ -47593,6 +47645,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - shakiness
   - palpitations
@@ -49086,6 +49140,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 0.66, y: 0.66}
   lapsesAnswer: 
   requiredCorrect: 5
 --- !u!1 &975676977
@@ -51287,6 +51343,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - shakiness
   - palpitations
@@ -52283,6 +52341,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 150, y: -150}
+  scaleSnap: {x: 1, y: 1}
   stepName: 8
   requiredCorrect: 9
 --- !u!114 &1023515042
@@ -54604,6 +54664,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 150, y: -150}
+  scaleSnap: {x: 1, y: 1}
   stepName: 4
   requiredCorrect: 9
 --- !u!1 &1065696053
@@ -56319,6 +56381,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - shakiness
   - palpitations
@@ -56528,6 +56592,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 13
   requiredCorrect: 20
 --- !u!114 &1097283935
@@ -56990,10 +57056,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2010036956}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1593.0026, y: -119.545}
+  m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1111495342
 CanvasGroup:
@@ -57154,6 +57220,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 0.66, y: 0.66}
   lapsesAnswer: 
   requiredCorrect: 5
 --- !u!1001 &1112336088
@@ -57414,6 +57482,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: dup
   requiredCorrect: 20
 --- !u!114 &1115832043
@@ -57604,10 +57674,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2010036956}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 193.00256, y: -119.545}
+  m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1123054293
 CanvasGroup:
@@ -61525,6 +61595,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 0.66, y: 0.66}
   lapsesAnswer: 
   requiredCorrect: 5
 --- !u!1 &1194267927
@@ -61617,6 +61689,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers: []
   slotColorName: Gummy Bear Yellow
   requiredCorrect: 10
@@ -65431,6 +65505,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - shakiness
   - palpitations
@@ -65534,6 +65610,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 0.66, y: 0.66}
   lapsesAnswer: 
   requiredCorrect: 5
 --- !u!1001 &1275686451
@@ -69292,6 +69370,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - shakiness
   - palpitations
@@ -69773,6 +69853,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 1
   requiredCorrect: 20
 --- !u!114 &1351318954
@@ -70083,6 +70165,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers: []
   slotColorName: Gummy Bear Yellow
   requiredCorrect: 10
@@ -75598,6 +75682,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 0.66, y: 0.66}
   lapsesAnswer: 
   requiredCorrect: 5
 --- !u!1 &1450423470
@@ -76447,6 +76533,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - shakiness
   - palpitations
@@ -77069,6 +77157,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 6
   requiredCorrect: 20
 --- !u!114 &1464331186
@@ -81356,6 +81446,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 9
   requiredCorrect: 20
 --- !u!114 &1521302159
@@ -81846,6 +81938,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - 
   slotColorName: Gummy Bear Green
@@ -82048,6 +82142,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 0.66, y: 0.66}
   lapsesAnswer: 
   requiredCorrect: 5
 --- !u!1 &1533712705
@@ -83777,6 +83873,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - 
   slotColorName: Gummy Bear Green
@@ -84575,6 +84673,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 0.66, y: 0.66}
   lapsesAnswer: 
   requiredCorrect: 5
 --- !u!1 &1577182241
@@ -85100,6 +85200,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers: []
   slotColorName: Gummy Bear red
   requiredCorrect: 10
@@ -92654,6 +92756,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 7
   requiredCorrect: 20
 --- !u!114 &1730462148
@@ -95954,6 +96058,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 2
   requiredCorrect: 20
 --- !u!114 &1794939793
@@ -97508,6 +97614,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 150, y: -150}
+  scaleSnap: {x: 1, y: 1}
   stepName: 3
   requiredCorrect: 9
 --- !u!1001 &1815760913
@@ -98420,6 +98528,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 19
   requiredCorrect: 20
 --- !u!114 &1821247447
@@ -99946,6 +100056,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 8
   requiredCorrect: 20
 --- !u!114 &1844829535
@@ -101208,6 +101320,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 14
   requiredCorrect: 20
 --- !u!114 &1857285668
@@ -101903,6 +102017,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 11
   requiredCorrect: 20
 --- !u!114 &1874056120
@@ -102025,6 +102141,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 150, y: -150}
+  scaleSnap: {x: 1, y: 1}
   stepName: 1
   requiredCorrect: 9
 --- !u!1 &1876294972
@@ -102391,6 +102509,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers: []
   slotColorName: Gummy Bear Yellow
   requiredCorrect: 10
@@ -102484,6 +102604,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers: []
   slotColorName: Gummy Bear red
   requiredCorrect: 10
@@ -109439,6 +109561,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 140, y: -160}
+  scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - shakiness
   - palpitations
@@ -110090,6 +110214,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 90, y: -90}
+  scaleSnap: {x: 1, y: 1}
   stepName: 16
   requiredCorrect: 20
 --- !u!114 &2009576717
@@ -115380,10 +115506,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2010036956}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 893.00256, y: -119.545}
+  m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &2097181833
 CanvasGroup:
@@ -119092,6 +119218,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctColor: {r: 0, g: 1, b: 0, a: 1}
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
+  positionSnap: {x: 150, y: -150}
+  scaleSnap: {x: 1, y: 1}
   stepName: 7
   requiredCorrect: 9
 --- !u!1001 &2132232160

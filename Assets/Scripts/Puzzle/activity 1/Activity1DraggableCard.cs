@@ -29,26 +29,31 @@ public class Activity1DraggableCard : DraggableCard
 
             if (IsPointerOverPanel("Panel1") && fromPanel2)
             {
+                Debug.Log("snap back to panel 1");
                 SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
             }
             else if (IsPointerOverPanel("Panel2") && fromPanel2 && !panel1GridLayout.gameObject.activeSelf)
             {
+                Debug.Log("snap back to panel 2 and panel 1 is not active");
                 Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
-                SnapTo(emptySlot ?? panel2GridLayout, 100, -100, 0.6409343f, 0.66764f);
+                SnapTo(emptySlot ?? panel2GridLayout, 140, -160, 1, 1);
             }
             else if (IsPointerOverPanel("Panel2") && fromPanel2)
             {
+                Debug.Log("snap back to panel 2 from panel 2");
                 SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
             }
             else if (IsPointerOverPanel("Panel3") && fromPanel2)
             {
+                Debug.Log("snap back to panel 2 from panel 3");
                 Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
-                SnapTo(emptySlot ?? panel2GridLayout, 100, -100, 0.6409343f, 0.66764f);
+                SnapTo(emptySlot ?? panel2GridLayout, 140, -160, 1, 1);
             }
             else if ((IsPointerOverPanel("Panel3") && fromPanel3) || (IsPointerOverPanel("Panel2") && fromPanel3))
             {
+                Debug.Log("snap back to panel 2 or panel 3 from panel 3 ");
                 Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
-                SnapTo(emptySlot ?? panel2GridLayout, 100, -100, 0.6409343f, 0.66764f);
+                SnapTo(emptySlot ?? panel2GridLayout, 140, -160, 1, 1);
             }
             else
             {

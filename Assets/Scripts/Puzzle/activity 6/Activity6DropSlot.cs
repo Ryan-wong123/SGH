@@ -27,16 +27,4 @@ public class Activity6DropSlot : DropSlot
 
         return false;
     }
-
-    protected override void AcceptCard(DraggableCard card)
-    {
-        card.transform.SetParent(transform);
-
-        var rect = card.GetComponent<RectTransform>();
-        rect.anchoredPosition = new Vector2(150, -150);
-        rect.localScale = Vector2.one;
-
-        card.trueHome = transform.parent;
-        cardImage = card.GetComponent<Image>();
-    }
 }
