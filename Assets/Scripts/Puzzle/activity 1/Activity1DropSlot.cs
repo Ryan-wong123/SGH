@@ -34,10 +34,4 @@ public class Activity1DropSlot : DropSlot
         }
         return false;
     }
-
-    protected override void TrySnapBack(GameObject droppedObj)
-    {
-        Activity1DraggableCard card = droppedObj?.GetComponent<Activity1DraggableCard>();
-        card?.SnapBack();
-    }
 }
