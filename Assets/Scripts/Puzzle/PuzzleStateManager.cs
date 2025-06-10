@@ -332,20 +332,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         if (mainminiPuzzle1Panel1 != null)
             mainminiPuzzle1Panel1.SetActive(false);
 
-        // Ask the Master Client to destroy it
-        if (puzzle1Object != null)
-        {
-            PhotonView puzzlePV = puzzle1Object.GetComponent<PhotonView>();
-            if (puzzlePV != null)
-            {
-                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
-            }
-            else
-            {
-                Debug.LogError("Puzzle object does not have a PhotonView component!");
-            }
-        }
-        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal");
+        GetKeyUponCompletion(puzzle1Object, "Time Crystal1");
 
         CurrentStage = PuzzleStage.Puzzle3;
 
@@ -366,20 +353,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         Debug.Log("Puzzle 4 completed correctly!");
         Puzzle4Panel.SetActive(false);
 
-        // Ask the Master Client to destroy it
-        if (puzzle2Object != null)
-        {
-            PhotonView puzzlePV = puzzle2Object.GetComponent<PhotonView>();
-            if (puzzlePV != null)
-            {
-                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
-            }
-            else
-            {
-                Debug.LogError("Puzzle object does not have a PhotonView component!");
-            }
-        }
-        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal2");
+        GetKeyUponCompletion(puzzle2Object, "Time Crystal2");
 
         CurrentStage = PuzzleStage.Puzzle5;
 
@@ -402,20 +376,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         Debug.Log("Puzzle 6 completed correctly!");
         Puzzle6Panel.SetActive(false);
 
-        // Ask the Master Client to destroy it
-        if (puzzle3Object != null)
-        {
-            PhotonView puzzlePV = puzzle3Object.GetComponent<PhotonView>();
-            if (puzzlePV != null)
-            {
-                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
-            }
-            else
-            {
-                Debug.LogError("Puzzle object does not have a PhotonView component!");
-            }
-        }
-        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal3");
+        GetKeyUponCompletion(puzzle3Object, "Time Crystal3");
 
         CurrentStage = PuzzleStage.Puzzle7;
 
@@ -442,20 +403,7 @@ public class PuzzleStateManager : MonoBehaviourPun
 
         CurrentStage = PuzzleStage.Puzzle9;
 
-        // Ask the Master Client to destroy it
-        if (puzzle4Object != null)
-        {
-            PhotonView puzzlePV = puzzle4Object.GetComponent<PhotonView>();
-            if (puzzlePV != null)
-            {
-                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
-            }
-            else
-            {
-                Debug.LogError("Puzzle object does not have a PhotonView component!");
-            }
-        }
-        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal4");
+        GetKeyUponCompletion(puzzle4Object, "Time Crystal4");
 
         ResetTimer();
     }
@@ -465,21 +413,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         Debug.Log("Puzzle 11 completed correctly!");
         Puzzle11Panel.SetActive(false);
 
-
-        // Ask the Master Client to destroy it
-        if (puzzle5Object != null)
-        {
-            PhotonView puzzlePV = puzzle5Object.GetComponent<PhotonView>();
-            if (puzzlePV != null)
-            {
-                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
-            }
-            else
-            {
-                Debug.LogError("Puzzle object does not have a PhotonView component!");
-            }
-        }
-        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal5");
+        GetKeyUponCompletion(puzzle5Object, "Time Crystal5");
 
         ResetTimer();
     }
@@ -506,6 +440,24 @@ public class PuzzleStateManager : MonoBehaviourPun
                 }
             }
         }
+    }
+
+    private void GetKeyUponCompletion(GameObject puzzleTriggerObject, string keyName)
+    {
+        // Ask the Master Client to destroy it
+        if (puzzleTriggerObject != null)
+        {
+            PhotonView puzzlePV = puzzleTriggerObject.GetComponent<PhotonView>();
+            if (puzzlePV != null)
+            {
+                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
+            }
+            else
+            {
+                Debug.LogError("Puzzle object does not have a PhotonView component!");
+            }
+        }
+        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, keyName);
     }
 
 
