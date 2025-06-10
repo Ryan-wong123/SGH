@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-public class Activity2PuzzleManager : MonoBehaviour
+public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
 {
     [SerializeField] private int required;
 
@@ -40,6 +40,11 @@ public class Activity2PuzzleManager : MonoBehaviour
         Debug.Log($"[Puzzle 4] Correct: {correct} / Required: {required}");
 
         return correct >= required;
+    }
+
+    public bool IsSolved()
+    {
+        return AreAllPuzzle4CardsCorrect(); 
     }
 
     private IEnumerator ResetIncorrectCardColorsAfterDelay(float delaySeconds)

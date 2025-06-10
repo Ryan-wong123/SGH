@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 
-public class DeathLapsesManager : MonoBehaviour
+public class DeathLapsesManager : MonoBehaviour, IPuzzle
 {
     [SerializeField] private int requiredAnswer1;
     [SerializeField] private int requiredAnswer2;
@@ -79,7 +79,10 @@ public class DeathLapsesManager : MonoBehaviour
 
         return stage2Correct >= requiredAnswer2;
     }
-
+    public bool IsSolved()
+    {
+        return AreAllPuzzle11CardsCorrect();
+    }
     private IEnumerator ResetIncorrectCardColorsAfterDelay(float delaySeconds)
     {
         yield return new WaitForSeconds(delaySeconds);

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
 
-public class DiaryPuzzleManager : MonoBehaviour
+public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
 {
     [SerializeField] TMP_InputField diary1input1;
     [SerializeField] TMP_InputField diary1input2;
@@ -92,7 +92,7 @@ public class DiaryPuzzleManager : MonoBehaviour
                 if (CheckDiary3Ans())
                 {
                     Debug.Log("Diary 3 correct. All stages complete!");
-                    diaryPanel3.SetActive(false);
+  
                     return true;
                 }
                 else
@@ -172,6 +172,11 @@ public class DiaryPuzzleManager : MonoBehaviour
 
         return c1 && c2 && c3 && c4 && c5;
     }
+    public bool IsSolved()
+    {
+        return SubmitDiary();
+    }
+
     public void ResetPuzzle()
     {
         // Reset Diary 1 Inputs

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 
-public class PictureGridManager : MonoBehaviour
+public class PictureGridManager : MonoBehaviour, IPuzzle
 {
     [Header("Grid Settings")]
     public List<Button> pictureButtons; // Assign all 20 buttons
@@ -84,7 +84,10 @@ public class PictureGridManager : MonoBehaviour
         return allCorrect;
     }
 
-
+    public bool IsSolved()
+    {
+        return CheckAnswers();
+    }
     public void ResetGrid()
     {
         selectedIndexes.Clear();

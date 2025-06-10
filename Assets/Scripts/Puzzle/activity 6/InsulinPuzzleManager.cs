@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
-public class InsulinPuzzleManager : MonoBehaviour
+public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
 {
     [SerializeField] private int required;
 
@@ -42,7 +42,10 @@ public class InsulinPuzzleManager : MonoBehaviour
 
         return correct >= required;
     }
-
+    public bool IsSolved()
+    {
+        return AreAllPuzzle8CardsCorrect();
+    }
     private IEnumerator ResetIncorrectCardColorsAfterDelay(float delaySeconds)
     {
         yield return new WaitForSeconds(delaySeconds);

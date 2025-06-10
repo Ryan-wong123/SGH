@@ -53,7 +53,24 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     [SerializeField] private DeathLapsesManager deathLapsesManager;
     [SerializeField] private GameObject Puzzle11Panel;
-    
+    private Dictionary<PuzzleStage, IPuzzle> puzzleHandlers;
+
+    private void Start()
+    {
+        puzzleHandlers = new Dictionary<PuzzleStage, IPuzzle>
+    {
+        { PuzzleStage.Puzzle1, symptomsCardManager },
+        { PuzzleStage.Puzzle2, symptomsCardManager },
+        { PuzzleStage.Puzzle3, pictureGridManager },
+        { PuzzleStage.Puzzle4, activity2PuzzleManager },
+        { PuzzleStage.Puzzle5, crosswordManager },
+        { PuzzleStage.Puzzle6, diaryPuzzleManager },
+        { PuzzleStage.Puzzle7, prescriptionManager },
+        { PuzzleStage.Puzzle8, insulinPuzzleManager },
+        { PuzzleStage.Puzzle11, deathLapsesManager }
+    };
+    }
+
     public enum PuzzleStage
     {
         Puzzle1,
@@ -491,136 +508,6 @@ public class PuzzleStateManager : MonoBehaviourPun
         InventoryUIManager.Instance.UpdateInventoryUI();
     }
 
-    public void SubmitPuzzle1()
-    {
-        if (symptomsCardManager.AreAllPuzzle1CardsCorrect())
-        {
-            DelayThen(HandlePuzzle1Complete, delayTransition);
-        }
-        else
-        {
-            Debug.Log("Puzzle 1 incomplete or incorrect.");
-        }
-    }
-
-    public void SubmitPuzzle2()
-    {
-        if (symptomsCardManager.AreAllPuzzle2CardsCorrect())
-        {
-            DelayThen(HandlePuzzle2Complete, delayTransition);
-        }
-        else
-        {
-            Debug.Log("Puzzle 2 incomplete or incorrect.");
-        }
-    }
-
-
-    public void SubmitPuzzle3()
-    {
-        if (pictureGridManager != null)
-        {
-           if(pictureGridManager.CheckAnswers())
-            {
-                DelayThen(HandlePuzzle3Complete, delayTransition);
-            }
-            Debug.Log("Puzzle 3 answer check completed.");
-        }
-        else
-        {
-            Debug.LogWarning("PictureGridManager reference is missing!");
-        }
-    }
-
-    public void SubmitPuzzle4()
-    {
-        
-        if (activity2PuzzleManager.AreAllPuzzle4CardsCorrect())
-        {
-            DelayThen(HandlePuzzle4Complete, delayTransition);
-        }
-        else
-        {
-            Debug.Log("Not all tiles are correctly rotated.");
-        }
-    }
-
-    public void SubmitPuzzle5()
-    {
-        if (crosswordManager != null)
-        {
-            if(crosswordManager.CheckPuzzle())
-            {
-                DelayThen(HandlePuzzle5Complete, delayTransition);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("CrosswordManager is not assigned!");
-        }
-    }
-
-    public void SubmitPuzzle6()
-    {
-        if (diaryPuzzleManager != null)
-        {
-            if (diaryPuzzleManager.SubmitDiary())
-            {
-                DelayThen(HandlePuzzle6Complete, delayTransition);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("diaryPuzzleManager is not assigned!");
-        }
-    }
-
-    public void SubmitPuzzle7()
-    {
-        if (prescriptionManager != null)
-        {
-            if (prescriptionManager.CheckPrescriptionAmount())
-            {
-                DelayThen(HandlePuzzle7Complete, delayTransition);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("prescriptionManager is not assigned!");
-        }
-    }
-
-    public void SubmitPuzzle8()
-    {
-        if (insulinPuzzleManager != null)
-        {
-            if (insulinPuzzleManager.AreAllPuzzle8CardsCorrect())
-            {
-                DelayThen(HandlePuzzle8Complete, delayTransition);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("insulinPuzzleManager is not assigned!");
-        }
-    }
-
-    public void SubmitPuzzle11()
-    {
-        if (deathLapsesManager != null)
-        {
-          
-            if (deathLapsesManager.AreAllPuzzle11CardsCorrect())
-            {
-                DelayThen(HandlePuzzle11Complete, delayTransition);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("deathLapsesManager is not assigned!");
-        }
-    }
-
     public void DelayThen(Action callback, float delay = 10f)
     {
         StartCoroutine(DelayedCallback(callback, delay));
@@ -631,49 +518,40 @@ public class PuzzleStateManager : MonoBehaviourPun
         yield return new WaitForSeconds(delay);
         callback?.Invoke();
     }
+    private void HandlePuzzleCompletion(PuzzleStage stage)
+    {
+        switch (stage)
+        {
+            case PuzzleStage.Puzzle1: HandlePuzzle1Complete(); break;
+            case PuzzleStage.Puzzle2: HandlePuzzle2Complete(); break;
+            case PuzzleStage.Puzzle3: HandlePuzzle3Complete(); break;
+            case PuzzleStage.Puzzle4: HandlePuzzle4Complete(); break;
+            case PuzzleStage.Puzzle5: HandlePuzzle5Complete(); break;
+            case PuzzleStage.Puzzle6: HandlePuzzle6Complete(); break;
+            case PuzzleStage.Puzzle7: HandlePuzzle7Complete(); break;
+            case PuzzleStage.Puzzle8: HandlePuzzle8Complete(); break;
+            case PuzzleStage.Puzzle11: HandlePuzzle11Complete(); break;
+            default: Debug.LogWarning("Unhandled puzzle completion"); break;
+        }
+    }
 
     public void Submit()
     {
-        switch (CurrentStage)
+        if (puzzleHandlers.TryGetValue(CurrentStage, out IPuzzle puzzle))
         {
-            case PuzzleStage.Puzzle1:
-                SubmitPuzzle1();
-                break;
-
-            case PuzzleStage.Puzzle2:
-                SubmitPuzzle2();
-                break;
-
-            case PuzzleStage.Puzzle3:
-                SubmitPuzzle3();
-                break;
-            case PuzzleStage.Puzzle4:
-                SubmitPuzzle4();
-                break;
-            case PuzzleStage.Puzzle5:
-                SubmitPuzzle5();
-                break;
-            case PuzzleStage.Puzzle6:
-                SubmitPuzzle6();
-                break;
-            case PuzzleStage.Puzzle7:
-                SubmitPuzzle7();
-                break;
-            case PuzzleStage.Puzzle8:
-                SubmitPuzzle8();
-                break;
-            //case PuzzleStage.Puzzle9:
-            //    SubmitPuzzle9();
-            //    break;
-            //case PuzzleStage.Puzzle10:
-            //    SubmitPuzzle10();
-            //    break;
-            case PuzzleStage.Puzzle11:
-                SubmitPuzzle11();
-                break;
-            default:
-                Debug.LogWarning("Unknown puzzle stage!");
-                break;
+            if (puzzle.IsSolved())
+            {
+                DelayThen(() => HandlePuzzleCompletion(CurrentStage), delayTransition);
+            }
+            else
+            {
+                Debug.Log($"Puzzle {CurrentStage} incomplete or incorrect.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"No handler found for puzzle stage {CurrentStage}");
         }
     }
+
 }

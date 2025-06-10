@@ -2,7 +2,7 @@
 using UnityEngine;
 using TMPro;
 
-public class CrosswordManager : MonoBehaviour
+public class CrosswordManager : MonoBehaviour, IPuzzle
 {
     public GameObject cellPrefab;
     public Transform gridParent; // A GridLayoutGroup
@@ -56,6 +56,7 @@ public class CrosswordManager : MonoBehaviour
     }
 
 
+
     public bool CheckPuzzle()
     {
         bool correct = true;
@@ -82,7 +83,10 @@ public class CrosswordManager : MonoBehaviour
 
         return correct; // return result
     }
-
+    public bool IsSolved()
+    {
+        return CheckPuzzle();
+    }
     public void ResetPuzzle()
     {
         // Destroy old grid first

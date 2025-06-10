@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 
-public class SymptomsCardManager : MonoBehaviour
+public class SymptomsCardManager : MonoBehaviour, IPuzzle
 {
     [SerializeField] private int required;
 
@@ -84,7 +84,19 @@ public class SymptomsCardManager : MonoBehaviour
 
         return correct >= required;
     }
+    public bool IsSolved()
+    {
+        if (AreAllPuzzle1CardsCorrect())
+        {
+            return true;
+        }
+        else if (AreAllPuzzle2CardsCorrect())
+        {
+            return true;
+        }
 
+        return false;
+    }
     private IEnumerator ResetIncorrectCardColorsAfterDelay(float delaySeconds)
     {
         yield return new WaitForSeconds(delaySeconds);

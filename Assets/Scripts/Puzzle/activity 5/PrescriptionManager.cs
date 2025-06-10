@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
 
-public class PrescriptionManager : MonoBehaviour
+public class PrescriptionManager : MonoBehaviour, IPuzzle
 {
 
 
@@ -42,7 +42,10 @@ public class PrescriptionManager : MonoBehaviour
 
         return correct1;
     }
-
+    public bool IsSolved()
+    {
+        return CheckPrescriptionAmount();
+    }
     public void ResetPuzzle()
     {
         // Reset Diary 1 Inputs
