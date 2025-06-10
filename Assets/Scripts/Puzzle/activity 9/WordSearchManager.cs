@@ -3,14 +3,14 @@ using TMPro;
 using UnityEngine;
 
 
-public class WordSearchManager : MonoBehaviour
+public class WordSearchManager : MonoBehaviour, IPuzzle
 {
     public GameObject gridPanel;
     public GameObject cellPrefab;
     public int gridSize = 15;
 
     private LetterCell[,] grid;
-    private List<string> wordsToFind = new List<string>();
+    [SerializeField] private List<string> wordsToFind = new List<string>();
     private List<string> foundWords = new List<string>();
     private List<LetterCell> selectedCells = new List<LetterCell>();
     private bool isSelecting = false;
@@ -168,16 +168,50 @@ public class WordSearchManager : MonoBehaviour
 
     private bool CheckWord(string selected)
     {
-        if (wordsToFind.Contains(selected) && !foundWords.Contains(selected))
+        string upper = selected.ToUpper();
+
+        foreach (string word in wordsToFind)
         {
-            foundWords.Add(selected);
-            return true;
+            if (word.ToUpper() == upper && !foundWords.Contains(word))
+            {
+                foundWords.Add(word);
+                return true;
+            }
         }
         return false;
     }
 
+    private void ApplyColorFeedback()
+    {
+        foreach (LetterCell cell in grid)
+        {
+            if (cell.isLocked)
+            {
+                cell.Highlight(true, Color.green); // ✅ correct = green
+            }
+            else if (selectedCells.Contains(cell))
+            {
+                cell.Highlight(true, Color.red);   // ❌ incorrect selection = red
+            }
+        }
+    }
+
     private bool AllWordsFound()
     {
-        return foundWords.Count == wordsToFind.Count;
+        Debug.Log($"word found {foundWords.Count} words to find count {wordsToFind.Count}");
+
+        if (foundWords.Count == wordsToFind.Count)
+        {
+            ApplyColorFeedback(); // 🎯 feedback only now
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public bool IsSolved()
+    {
+        return AllWordsFound();
     }
 }

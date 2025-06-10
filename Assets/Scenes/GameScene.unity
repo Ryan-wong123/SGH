@@ -17405,7 +17405,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.2
+      value: 2.131
       objectReference: {fileID: 0}
     - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -17413,7 +17413,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.034
+      value: -5.78
       objectReference: {fileID: 0}
     - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -17500,7 +17500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7ba20456adc6f49abfc9133af4a20b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puzzleUIPanel: {fileID: 280907644}
+  puzzleUIPanel: {fileID: 1628483216}
   closePanelUI: {fileID: 856606430}
 --- !u!65 &349866976
 BoxCollider:
@@ -87597,7 +87597,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1628483217
 RectTransform:
   m_ObjectHideFlags: 0
@@ -87674,13 +87674,9 @@ MonoBehaviour:
   cellPrefab: {fileID: 7512843899243525254, guid: 170fa6abb03edbb41abef45f0fd48b15, type: 3}
   gridSize: 15
   wordsToFind:
-  - Fluoroquinolones
-  - Sulfonylureas
-  - Linezolid
-  - Azoles
-  - Elderly
-  - Impaired
-  - reduction
+  - eyev
+  - twice
+  - third
 --- !u!1 &1629859606
 GameObject:
   m_ObjectHideFlags: 0
@@ -90512,6 +90508,146 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7384438955498483505, guid: 48834e5707a87334290a96e8fcde8994, type: 3}
   m_PrefabInstance: {fileID: 1677607338}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1678213337
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7.9414625
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 7.9414625
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 7.9414625
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.163
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.034
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233637995868, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      propertyPath: m_Name
+      value: phone (5)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1678213341}
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1678213340}
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1678213339}
+  m_SourcePrefab: {fileID: 100100000, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+--- !u!1 &1678213338 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+  m_PrefabInstance: {fileID: 1678213337}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1678213339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678213338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 12
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &1678213340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678213338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d7ba20456adc6f49abfc9133af4a20b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  puzzleUIPanel: {fileID: 280907644}
+  closePanelUI: {fileID: 856606430}
+--- !u!65 &1678213341
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678213338}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.070084825, y: 0.14368325, z: 0.0065494576}
+  m_Center: {x: 0, y: 3.3512933e-18, z: -0.00047165249}
 --- !u!1 &1680019159
 GameObject:
   m_ObjectHideFlags: 0
@@ -114878,7 +115014,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b58adc5bb70781b4bbf63c8f8f43f5d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  countdownDuration: 120
+  countdownDuration: 380
   timerText: {fileID: 1823339984}
   timeWarningPanel: {fileID: 326284108}
   warningThreshold: 20
@@ -114944,6 +115080,8 @@ MonoBehaviour:
   Puzzle7Panel: {fileID: 1064947403}
   insulinPuzzleManager: {fileID: 1067863178}
   Puzzle8Panel: {fileID: 1067863174}
+  wordSearchManager: {fileID: 1628483221}
+  Puzzle9Panel: {fileID: 1628483216}
   deathLapsesManager: {fileID: 280907649}
   Puzzle11Panel: {fileID: 280907644}
 --- !u!114 &2075314852
@@ -121027,3 +121165,4 @@ SceneRoots:
   - {fileID: 2030812223}
   - {fileID: 500324022}
   - {fileID: 349866972}
+  - {fileID: 1678213337}

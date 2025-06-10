@@ -27,10 +27,14 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         return letterText.text[0];
     }
 
-    public void Highlight(bool status)
+    public void Highlight(bool status, Color? customColor = null)
     {
         if (isLocked) return;
-        backgroundImage.color = status ? Color.yellow : Color.white;
+
+        if (status)
+            backgroundImage.color = customColor ?? Color.yellow;
+        else
+            backgroundImage.color = Color.white;
     }
 
     public void OnPointerDown(PointerEventData eventData)
