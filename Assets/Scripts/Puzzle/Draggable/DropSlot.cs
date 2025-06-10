@@ -14,6 +14,9 @@ public class DropSlot : MonoBehaviour, IDropHandler
     public static List<DropSlot> allDropSlots = new();
     protected Image cardImage;
 
+    [SerializeField] private Vector2 positionSnap;
+    [SerializeField] private Vector2 scaleSnap;
+
     public virtual bool IsCardCorrect(DraggableCard card) => false;
     public virtual int GetCorrectCount() => 0;
     public virtual int GetRequiredCount() => 0;
@@ -60,8 +63,8 @@ public class DropSlot : MonoBehaviour, IDropHandler
         card.transform.SetParent(transform);
 
         var rect = card.GetComponent<RectTransform>();
-        rect.anchoredPosition = new Vector2(100, -110);
-        rect.localScale = Vector2.one;
+        rect.anchoredPosition = positionSnap;
+        rect.localScale = scaleSnap;
 
         card.trueHome = transform.parent;
         cardImage = card.GetComponent<Image>();

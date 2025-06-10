@@ -1,6 +1,7 @@
 ﻿
 
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -9,6 +10,8 @@ using UnityEngine.UI;
 
 public class PuzzleStateManager : MonoBehaviourPun
 {
+    [SerializeField] private float delayTransition;
+
     public static PuzzleStateManager Instance;
 
     [Header("Puzzle State")]
@@ -36,6 +39,8 @@ public class PuzzleStateManager : MonoBehaviourPun
     [SerializeField] private GameObject puzzle1Object;
     [SerializeField] private GameObject puzzle2Object;
     [SerializeField] private GameObject puzzle3Object;
+    [SerializeField] private GameObject puzzle4Object;
+    [SerializeField] private GameObject puzzle5Object;
 
     [SerializeField] private DiaryPuzzleManager diaryPuzzleManager;
     [SerializeField] private GameObject Puzzle6Panel;
@@ -45,6 +50,9 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     [SerializeField] private InsulinPuzzleManager insulinPuzzleManager;
     [SerializeField] private GameObject Puzzle8Panel;
+
+    [SerializeField] private DeathLapsesManager deathLapsesManager;
+    [SerializeField] private GameObject Puzzle11Panel;
     
     public enum PuzzleStage
     {
@@ -56,7 +64,9 @@ public class PuzzleStateManager : MonoBehaviourPun
         Puzzle6,
         Puzzle7,
         Puzzle8,
-        Puzzle9
+        Puzzle9,
+        Puzzle10,
+        Puzzle11
     }
 
     private void Awake()
@@ -432,8 +442,48 @@ public class PuzzleStateManager : MonoBehaviourPun
 
         CurrentStage = PuzzleStage.Puzzle9;
 
+        // Ask the Master Client to destroy it
+        if (puzzle4Object != null)
+        {
+            PhotonView puzzlePV = puzzle4Object.GetComponent<PhotonView>();
+            if (puzzlePV != null)
+            {
+                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
+            }
+            else
+            {
+                Debug.LogError("Puzzle object does not have a PhotonView component!");
+            }
+        }
+        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal4");
+
         ResetTimer();
     }
+
+    public void HandlePuzzle11Complete()
+    {
+        Debug.Log("Puzzle 11 completed correctly!");
+        Puzzle11Panel.SetActive(false);
+
+
+        // Ask the Master Client to destroy it
+        if (puzzle5Object != null)
+        {
+            PhotonView puzzlePV = puzzle5Object.GetComponent<PhotonView>();
+            if (puzzlePV != null)
+            {
+                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
+            }
+            else
+            {
+                Debug.LogError("Puzzle object does not have a PhotonView component!");
+            }
+        }
+        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, "Time Crystal5");
+
+        ResetTimer();
+    }
+
 
     public void ResetTimer()
     {
@@ -493,7 +543,7 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         if (symptomsCardManager.AreAllPuzzle1CardsCorrect())
         {
-            HandlePuzzle1Complete();
+            DelayThen(HandlePuzzle1Complete, delayTransition);
         }
         else
         {
@@ -505,7 +555,7 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         if (symptomsCardManager.AreAllPuzzle2CardsCorrect())
         {
-            HandlePuzzle2Complete();
+            DelayThen(HandlePuzzle2Complete, delayTransition);
         }
         else
         {
@@ -520,7 +570,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
            if(pictureGridManager.CheckAnswers())
             {
-                HandlePuzzle3Complete();
+                DelayThen(HandlePuzzle3Complete, delayTransition);
             }
             Debug.Log("Puzzle 3 answer check completed.");
         }
@@ -535,7 +585,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         
         if (activity2PuzzleManager.AreAllPuzzle4CardsCorrect())
         {
-            HandlePuzzle4Complete();
+            DelayThen(HandlePuzzle4Complete, delayTransition);
         }
         else
         {
@@ -549,7 +599,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
             if(crosswordManager.CheckPuzzle())
             {
-                HandlePuzzle5Complete();
+                DelayThen(HandlePuzzle5Complete, delayTransition);
             }
         }
         else
@@ -564,7 +614,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
             if (diaryPuzzleManager.SubmitDiary())
             {
-                HandlePuzzle6Complete();
+                DelayThen(HandlePuzzle6Complete, delayTransition);
             }
         }
         else
@@ -579,7 +629,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
             if (prescriptionManager.CheckPrescriptionAmount())
             {
-                HandlePuzzle7Complete();
+                DelayThen(HandlePuzzle7Complete, delayTransition);
             }
         }
         else
@@ -594,13 +644,40 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
             if (insulinPuzzleManager.AreAllPuzzle8CardsCorrect())
             {
-                HandlePuzzle8Complete();
+                DelayThen(HandlePuzzle8Complete, delayTransition);
             }
         }
         else
         {
             Debug.LogWarning("insulinPuzzleManager is not assigned!");
         }
+    }
+
+    public void SubmitPuzzle11()
+    {
+        if (deathLapsesManager != null)
+        {
+          
+            if (deathLapsesManager.AreAllPuzzle11CardsCorrect())
+            {
+                DelayThen(HandlePuzzle11Complete, delayTransition);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("deathLapsesManager is not assigned!");
+        }
+    }
+
+    public void DelayThen(Action callback, float delay = 10f)
+    {
+        StartCoroutine(DelayedCallback(callback, delay));
+    }
+
+    private IEnumerator DelayedCallback(Action callback, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        callback?.Invoke();
     }
 
     public void Submit()
@@ -636,6 +713,12 @@ public class PuzzleStateManager : MonoBehaviourPun
             //case PuzzleStage.Puzzle9:
             //    SubmitPuzzle9();
             //    break;
+            //case PuzzleStage.Puzzle10:
+            //    SubmitPuzzle10();
+            //    break;
+            case PuzzleStage.Puzzle11:
+                SubmitPuzzle11();
+                break;
             default:
                 Debug.LogWarning("Unknown puzzle stage!");
                 break;

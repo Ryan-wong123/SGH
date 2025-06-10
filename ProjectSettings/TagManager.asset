@@ -7,6 +7,8 @@ TagManager:
   - Panel3
   - Panel2
   - Panel1
+  - Stage1Slot
+  - Stage2Slot
   layers:
   - Default
   - TransparentFX
