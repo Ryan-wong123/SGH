@@ -1,6 +1,7 @@
 ﻿
 
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -9,6 +10,8 @@ using UnityEngine.UI;
 
 public class PuzzleStateManager : MonoBehaviourPun
 {
+    [SerializeField] private float delayTransition;
+
     public static PuzzleStateManager Instance;
 
     [Header("Puzzle State")]
@@ -540,7 +543,7 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         if (symptomsCardManager.AreAllPuzzle1CardsCorrect())
         {
-            HandlePuzzle1Complete();
+            DelayThen(HandlePuzzle1Complete, delayTransition);
         }
         else
         {
@@ -552,7 +555,7 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         if (symptomsCardManager.AreAllPuzzle2CardsCorrect())
         {
-            HandlePuzzle2Complete();
+            DelayThen(HandlePuzzle2Complete, delayTransition);
         }
         else
         {
@@ -567,7 +570,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
            if(pictureGridManager.CheckAnswers())
             {
-                HandlePuzzle3Complete();
+                DelayThen(HandlePuzzle3Complete, delayTransition);
             }
             Debug.Log("Puzzle 3 answer check completed.");
         }
@@ -582,7 +585,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         
         if (activity2PuzzleManager.AreAllPuzzle4CardsCorrect())
         {
-            HandlePuzzle4Complete();
+            DelayThen(HandlePuzzle4Complete, delayTransition);
         }
         else
         {
@@ -596,7 +599,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
             if(crosswordManager.CheckPuzzle())
             {
-                HandlePuzzle5Complete();
+                DelayThen(HandlePuzzle5Complete, delayTransition);
             }
         }
         else
@@ -611,7 +614,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
             if (diaryPuzzleManager.SubmitDiary())
             {
-                HandlePuzzle6Complete();
+                DelayThen(HandlePuzzle6Complete, delayTransition);
             }
         }
         else
@@ -626,7 +629,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
             if (prescriptionManager.CheckPrescriptionAmount())
             {
-                HandlePuzzle7Complete();
+                DelayThen(HandlePuzzle7Complete, delayTransition);
             }
         }
         else
@@ -641,7 +644,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         {
             if (insulinPuzzleManager.AreAllPuzzle8CardsCorrect())
             {
-                HandlePuzzle8Complete();
+                DelayThen(HandlePuzzle8Complete, delayTransition);
             }
         }
         else
@@ -657,7 +660,7 @@ public class PuzzleStateManager : MonoBehaviourPun
           
             if (deathLapsesManager.AreAllPuzzle11CardsCorrect())
             {
-                HandlePuzzle11Complete();
+                DelayThen(HandlePuzzle11Complete, delayTransition);
             }
         }
         else
@@ -666,6 +669,16 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
+    public void DelayThen(Action callback, float delay = 10f)
+    {
+        StartCoroutine(DelayedCallback(callback, delay));
+    }
+
+    private IEnumerator DelayedCallback(Action callback, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        callback?.Invoke();
+    }
 
     public void Submit()
     {

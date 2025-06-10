@@ -114499,6 +114499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a958ac903aba70a448a6661ad2e32876, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  delayTransition: 2
   CurrentStage: 0
   mainminiPuzzle1Panel1: {fileID: 791486485}
   miniPuzzle1Panel1: {fileID: 3431202}
