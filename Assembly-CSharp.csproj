@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\networking\ChatManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
     <Compile Include="Assets\Scripts\Interactable\PuzzlePanelTrigger.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\Activity 7\PictureGridManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 4\DiaryPuzzleManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 9\Activity9DropSlot.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
@@ -83,7 +84,6 @@
     <Compile Include="Assets\Scripts\networking\JoinRoomManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 5\PrescriptionManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\Draggable\DraggableCard.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\Rotating Puzzle\PictureGridManager.cs" />
     <Compile Include="Assets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 2\Activity2PuzzleManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
