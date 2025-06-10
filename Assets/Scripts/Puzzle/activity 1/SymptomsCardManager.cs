@@ -5,6 +5,9 @@ using System.Collections;
 
 public class SymptomsCardManager : MonoBehaviour
 {
+    [SerializeField] private int required;
+
+
     public bool AreAllPuzzle1CardsCorrect()
     {
         int totalSlots = DropSlot.allDropSlots.Count;
@@ -45,9 +48,6 @@ public class SymptomsCardManager : MonoBehaviour
 
     public bool AreAllPuzzle2CardsCorrect()
     {
-        int required = DropSlot.allDropSlots.Count > 0
-             ? DropSlot.allDropSlots[0].GetRequiredCount()
-             : 0;
 
         int correct = 0;
 

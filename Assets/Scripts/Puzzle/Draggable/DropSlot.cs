@@ -18,8 +18,6 @@ public class DropSlot : MonoBehaviour, IDropHandler
     [SerializeField] private Vector2 scaleSnap;
 
     public virtual bool IsCardCorrect(DraggableCard card) => false;
-    public virtual int GetCorrectCount() => 0;
-    public virtual int GetRequiredCount() => 0;
 
     protected virtual void Start()
     {

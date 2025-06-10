@@ -8,7 +8,6 @@ public class Activity6DropSlot : DropSlot
     [SerializeField] private string stepName = ""; // set in Inspector or auto-extract from name
     [SerializeField] private int requiredCorrect = 9; // set this in Inspector
 
-    public override int GetRequiredCount() => requiredCorrect;
 
     public override bool IsCardCorrect(DraggableCard card)
     {

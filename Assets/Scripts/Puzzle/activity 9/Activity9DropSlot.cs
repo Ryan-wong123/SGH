@@ -9,7 +9,6 @@ public class Activity9DropSlot : DropSlot
     [Header("Puzzle 11 answers")]
     [SerializeField] private string lapsesAnswer = ""; // set in Inspector or auto-extract from name
     [SerializeField] private int requiredCorrect = 5; // set this in Inspector
-    public override int GetRequiredCount() => requiredCorrect;
 
     public override bool IsCardCorrect(DraggableCard card)
     {

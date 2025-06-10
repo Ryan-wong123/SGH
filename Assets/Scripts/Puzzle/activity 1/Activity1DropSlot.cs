@@ -15,7 +15,6 @@ public class Activity1DropSlot : DropSlot
 
     [SerializeField] private int requiredCorrect = 10; // set this in Inspector
 
-    public override int GetRequiredCount() => requiredCorrect;
     public override bool IsCardCorrect(DraggableCard card)
     {
         if (card is Activity1DraggableCard a1Card)
