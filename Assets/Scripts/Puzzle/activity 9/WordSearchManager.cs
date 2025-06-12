@@ -17,7 +17,6 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
 
     void Start()
     {
-      
         GenerateGrid();
         PlaceWords();
         FillRandomLetters();
@@ -111,11 +110,8 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     public void StartSelection(LetterCell start)
     {
         isSelecting = true;
-
-        // Do NOT clear — let UpdateSelection handle toggling
         UpdateSelection(start);
     }
-
 
     public void UpdateSelection(LetterCell current)
     {
@@ -133,51 +129,67 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         }
     }
 
-
     public void EndSelection()
     {
         isSelecting = false;
 
-        string word = "";
-        foreach (LetterCell c in selectedCells)
-            word += c.GetLetter();
+        //foreach (LetterCell c in selectedCells)
+        //    c.Highlight(true); // temporary highlight only
 
-        if (CheckWord(word))
-        {
-            foreach (LetterCell c in selectedCells)
-            {
-                c.isLocked = true;
-                c.Highlight(true);  // make sure it stays highlighted
-            }
-
-            if (AllWordsFound())
-                Debug.Log("win");
-
-            selectedCells.Clear(); // Clear selection for correct words
-        }
-        // ❌ NO ELSE BLOCK — don't clear or unhighlight incorrect selections
+        // Do not lock cells — final check will validate and lock them
     }
 
-
-    private void AddToSelection(LetterCell cell)
+    private bool MatchesWordFromCell(LetterCell start, string word, Vector2Int dir)
     {
-        selectedCells.Add(cell);
-        cell.Highlight(true);
+        int x = start.gridPosition.x;
+        int y = start.gridPosition.y;
+
+        for (int i = 0; i < word.Length; i++)
+        {
+            int xi = x + dir.x * i;
+            int yi = y + dir.y * i;
+
+            if (xi < 0 || yi < 0 || xi >= gridSize || yi >= gridSize)
+                return false;
+
+            LetterCell cell = grid[xi, yi];
+
+            if (!cell.isLocked || cell.GetLetter() != word[i])
+                return false;
+        }
+
+        int endX = x + dir.x * word.Length;
+        int endY = y + dir.y * word.Length;
+
+        if (endX >= 0 && endY >= 0 && endX < gridSize && endY < gridSize)
+        {
+            if (grid[endX, endY].isLocked)
+                return false;
+        }
+
+        return true;
     }
 
-
-    private bool CheckWord(string selected)
+    private bool IsWordInLockedCells(string word)
     {
-        string upper = selected.ToUpper();
+        word = word.ToUpper();
 
-        foreach (string word in wordsToFind)
+        foreach (LetterCell cell in grid)
         {
-            if (word.ToUpper() == upper && !foundWords.Contains(word))
+            if (!cell.isLocked) continue;
+
+            foreach (Vector2Int dir in new Vector2Int[] {
+                new Vector2Int(1, 0), new Vector2Int(0, 1),
+                new Vector2Int(1, 1), new Vector2Int(-1, 1),
+                new Vector2Int(-1, 0), new Vector2Int(0, -1),
+                new Vector2Int(-1, -1), new Vector2Int(1, -1)
+            })
             {
-                foundWords.Add(word);
-                return true;
+                if (MatchesWordFromCell(cell, word, dir))
+                    return true;
             }
         }
+
         return false;
     }
 
@@ -185,30 +197,51 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     {
         foreach (LetterCell cell in grid)
         {
-            if (cell.isLocked)
+            if (!cell.isLocked) continue;
+
+            bool isCorrect = false;
+
+            foreach (string word in foundWords)
             {
-                cell.Highlight(true, Color.green); // ✅ correct = green
+                if (IsWordInLockedCells(word))
+                {
+                    isCorrect = true;
+                    break;
+                }
             }
-            else if (selectedCells.Contains(cell))
+
+            if (isCorrect)
             {
-                cell.Highlight(true, Color.red);   // ❌ incorrect selection = red
+                cell.isLocked = true;
+                cell.Highlight(true, Color.green);
+            }
+            else
+            {
+                cell.Highlight(true, Color.red);
             }
         }
     }
 
     private bool AllWordsFound()
     {
-        Debug.Log($"word found {foundWords.Count} words to find count {wordsToFind.Count}");
+        Debug.Log($"Checking all words...");
 
-        if (foundWords.Count == wordsToFind.Count)
+        foundWords.Clear();
+
+        foreach (string word in wordsToFind)
         {
-            ApplyColorFeedback(); // 🎯 feedback only now
-            return true;
+            if (IsWordInLockedCells(word))
+            {
+                foundWords.Add(word);
+            }
         }
 
-        return false;
-    }
+        Debug.Log($"Found {foundWords.Count} of {wordsToFind.Count}");
 
+        ApplyColorFeedback();
+
+        return foundWords.Count == wordsToFind.Count;
+    }
 
     public bool IsSolved()
     {
