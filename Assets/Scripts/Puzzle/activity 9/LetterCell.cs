@@ -14,7 +14,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
 
     private void Start()
     {
-        game = FindObjectOfType<WordSearchManager>();
+        game = FindAnyObjectByType<WordSearchManager>();
     }
 
     public void SetLetter(char c)
