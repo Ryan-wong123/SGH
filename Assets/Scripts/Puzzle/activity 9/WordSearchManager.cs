@@ -87,14 +87,14 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
 
     Vector2Int RandomDirection(System.Random rand)
     {
+        // Only allow horizontal (→) and vertical (↓) directions
         Vector2Int[] directions = {
-            new Vector2Int(1, 0), new Vector2Int(0, 1),
-            new Vector2Int(1, 1), new Vector2Int(-1, 1),
-            new Vector2Int(-1, 0), new Vector2Int(0, -1),
-            new Vector2Int(-1, -1), new Vector2Int(1, -1)
-        };
+        new Vector2Int(1, 0),  // right
+        new Vector2Int(0, 1),  // down
+    };
         return directions[rand.Next(directions.Length)];
     }
+
 
     void FillRandomLetters()
     {
@@ -160,24 +160,22 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         {
             string selectedWord = BuildOrderedWordFromSelection(finalSelection);
 
-            if (!string.IsNullOrEmpty(selectedWord) &&
-                wordsToFind.Contains(selectedWord) &&
-                !foundWords.Contains(selectedWord))
-            {
-                wordToCells[selectedWord] = new List<LetterCell>(finalSelection);
-                foundWords.Add(selectedWord);
 
-                foreach (var c in finalSelection)
+            string sortedSelected = SortString(selectedWord);
+
+            foreach (string word in wordsToFind)
+            {
+                if (SortString(word) == sortedSelected && !foundWords.Contains(word))
                 {
-                    c.Highlight(true, Color.green);
-                    c.isLocked = true;
+                    wordToCells[word] = new List<LetterCell>(finalSelection);
+                    foundWords.Add(word);
+                    break;
                 }
             }
         }
 
         selectedCells.Clear();
     }
-
     public void ToggleSelection(LetterCell cell)
     {
         if (cell.isLocked) return;
@@ -197,34 +195,40 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     }
     private void CheckTappedWord()
     {
-        List<LetterCell> tempList = new(permanentSelectedCells);
-        if (tempList.Count < 2) return;
+        string selectedWord = "";
+        List<LetterCell> tempList = new();
 
-        string selectedWord = BuildOrderedWordFromSelection(tempList);
-
-        if (!string.IsNullOrEmpty(selectedWord) &&
-            wordsToFind.Contains(selectedWord) &&
-            !foundWords.Contains(selectedWord))
+        foreach (var cell in permanentSelectedCells)
         {
-            wordToCells[selectedWord] = new List<LetterCell>(tempList);
-            foundWords.Add(selectedWord);
-
-            foreach (var c in tempList)
-            {
-                c.Highlight(true, Color.green);
-                c.isLocked = true;
-            }
-
-            permanentSelectedCells.Clear();
+            selectedWord += cell.GetLetter();
+            tempList.Add(cell);
         }
-        else if (selectedWord.Length >= 3) // Optional feedback
+
+        // Optionally sort by position if you want (for anagram prevention)
+
+        if (!string.IsNullOrEmpty(selectedWord))
         {
-            foreach (var c in tempList)
-                c.Highlight(false);
-            permanentSelectedCells.Clear();
+            if (wordsToFind.Contains(selectedWord) && !foundWords.Contains(selectedWord))
+            {
+                wordToCells[selectedWord] = new List<LetterCell>(tempList);
+                foundWords.Add(selectedWord);
+
+                foreach (var c in tempList)
+                {
+                    c.Highlight(true, Color.green);
+                    c.isLocked = true;
+                }
+
+                permanentSelectedCells.Clear(); // Clear for next word
+            }
+            else if (selectedWord.Length >= 3) // optional: auto reset if wrong
+            {
+                foreach (var c in tempList)
+                    c.Highlight(false);
+                permanentSelectedCells.Clear();
+            }
         }
     }
-
     private string BuildOrderedWordFromSelection(List<LetterCell> cells)
     {
         if (cells.Count < 2)
