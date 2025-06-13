@@ -51,8 +51,12 @@ public class PuzzleStateManager : MonoBehaviourPun
     [SerializeField] private InsulinPuzzleManager insulinPuzzleManager;
     [SerializeField] private GameObject Puzzle8Panel;
 
+    [SerializeField] private WordSearchManager wordSearchManager;
+    [SerializeField] private GameObject Puzzle9Panel;
+
     [SerializeField] private DeathLapsesManager deathLapsesManager;
     [SerializeField] private GameObject Puzzle11Panel;
+
     private Dictionary<PuzzleStage, IPuzzle> puzzleHandlers;
 
     private void Start()
@@ -67,6 +71,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         { PuzzleStage.Puzzle6, diaryPuzzleManager },
         { PuzzleStage.Puzzle7, prescriptionManager },
         { PuzzleStage.Puzzle8, insulinPuzzleManager },
+        { PuzzleStage.Puzzle9, wordSearchManager },
         { PuzzleStage.Puzzle11, deathLapsesManager }
     };
     }
@@ -425,6 +430,16 @@ public class PuzzleStateManager : MonoBehaviourPun
         ResetTimer();
     }
 
+    public void HandlePuzzle9Complete()
+    {
+        Debug.Log("Puzzle 9 completed correctly!");
+        Puzzle9Panel.SetActive(false);
+
+        CurrentStage = PuzzleStage.Puzzle10;
+
+        ResetTimer();
+    }
+
     public void HandlePuzzle11Complete()
     {
         Debug.Log("Puzzle 11 completed correctly!");
@@ -530,6 +545,7 @@ public class PuzzleStateManager : MonoBehaviourPun
             case PuzzleStage.Puzzle6: HandlePuzzle6Complete(); break;
             case PuzzleStage.Puzzle7: HandlePuzzle7Complete(); break;
             case PuzzleStage.Puzzle8: HandlePuzzle8Complete(); break;
+            case PuzzleStage.Puzzle9: HandlePuzzle9Complete(); break;
             case PuzzleStage.Puzzle11: HandlePuzzle11Complete(); break;
             default: Debug.LogWarning("Unhandled puzzle completion"); break;
         }
