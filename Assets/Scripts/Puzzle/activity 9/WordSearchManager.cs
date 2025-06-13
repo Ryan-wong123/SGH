@@ -146,7 +146,6 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         {
             if (permanentSelectedCells.Contains(cell))
             {
-                // Unselect (toggle off)
                 permanentSelectedCells.Remove(cell);
                 cell.Highlight(false);
             }
@@ -163,15 +162,29 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
             foreach (var cell in finalSelection)
                 selectedWord += cell.GetLetter();
 
-            if (!string.IsNullOrEmpty(selectedWord) && !wordToCells.ContainsKey(selectedWord))
+            string sortedSelected = SortString(selectedWord);
+
+            foreach (string word in wordsToFind)
             {
-                wordToCells[selectedWord] = new List<LetterCell>(finalSelection);
-                foundWords.Add(selectedWord);
+                if (SortString(word) == sortedSelected && !foundWords.Contains(word))
+                {
+                    wordToCells[word] = new List<LetterCell>(finalSelection);
+                    foundWords.Add(word);
+                    break;
+                }
             }
         }
 
         selectedCells.Clear();
     }
+
+    private string SortString(string input)
+    {
+        char[] chars = input.ToCharArray();
+        System.Array.Sort(chars);
+        return new string(chars);
+    }
+
 
     private List<LetterCell> GetCellsFromWord(string word)
     {
@@ -188,6 +201,8 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         {
             bool isValid = wordsToFind.Contains(word);
 
+            Debug.Log($"{word} is valid {isValid}");
+
             foreach (LetterCell cell in GetCellsFromWord(word))
             {
                 if (isValid)
@@ -202,7 +217,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
                 }
             }
         }
-
+        Debug.Log($"all correct {allCorrect} foundwords count {foundWords.Count} wordstofind count {wordsToFind.Count} ");
         return allCorrect && foundWords.Count == wordsToFind.Count;
     }
 
