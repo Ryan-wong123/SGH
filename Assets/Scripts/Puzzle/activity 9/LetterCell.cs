@@ -40,7 +40,18 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
     public void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
-            game.StartSelection(this);
+        {
+            if (Input.GetMouseButton(0))
+            {
+                // Drag-based
+                game.StartSelection(this);
+            }
+            else
+            {
+                // Tap-based
+                game.ToggleSelection(this);
+            }
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -48,6 +59,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         if (Input.GetMouseButton(0)) // ✅ Important: only act while dragging
             game.UpdateSelection(this);
     }
+
 
 
     public void OnPointerUp(PointerEventData eventData)

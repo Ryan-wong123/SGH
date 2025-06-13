@@ -158,24 +158,99 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
 
         if (finalSelection.Count > 0)
         {
-            string selectedWord = "";
-            foreach (var cell in finalSelection)
-                selectedWord += cell.GetLetter();
+            string selectedWord = BuildOrderedWordFromSelection(finalSelection);
 
-            string sortedSelected = SortString(selectedWord);
-
-            foreach (string word in wordsToFind)
+            if (!string.IsNullOrEmpty(selectedWord) &&
+                wordsToFind.Contains(selectedWord) &&
+                !foundWords.Contains(selectedWord))
             {
-                if (SortString(word) == sortedSelected && !foundWords.Contains(word))
+                wordToCells[selectedWord] = new List<LetterCell>(finalSelection);
+                foundWords.Add(selectedWord);
+
+                foreach (var c in finalSelection)
                 {
-                    wordToCells[word] = new List<LetterCell>(finalSelection);
-                    foundWords.Add(word);
-                    break;
+                    c.Highlight(true, Color.green);
+                    c.isLocked = true;
                 }
             }
         }
 
         selectedCells.Clear();
+    }
+
+    public void ToggleSelection(LetterCell cell)
+    {
+        if (cell.isLocked) return;
+
+        if (permanentSelectedCells.Contains(cell))
+        {
+            permanentSelectedCells.Remove(cell);
+            cell.Highlight(false);
+        }
+        else
+        {
+            permanentSelectedCells.Add(cell);
+            cell.Highlight(true);
+        }
+
+        CheckTappedWord();
+    }
+    private void CheckTappedWord()
+    {
+        List<LetterCell> tempList = new(permanentSelectedCells);
+        if (tempList.Count < 2) return;
+
+        string selectedWord = BuildOrderedWordFromSelection(tempList);
+
+        if (!string.IsNullOrEmpty(selectedWord) &&
+            wordsToFind.Contains(selectedWord) &&
+            !foundWords.Contains(selectedWord))
+        {
+            wordToCells[selectedWord] = new List<LetterCell>(tempList);
+            foundWords.Add(selectedWord);
+
+            foreach (var c in tempList)
+            {
+                c.Highlight(true, Color.green);
+                c.isLocked = true;
+            }
+
+            permanentSelectedCells.Clear();
+        }
+        else if (selectedWord.Length >= 3) // Optional feedback
+        {
+            foreach (var c in tempList)
+                c.Highlight(false);
+            permanentSelectedCells.Clear();
+        }
+    }
+
+    private string BuildOrderedWordFromSelection(List<LetterCell> cells)
+    {
+        if (cells.Count < 2)
+            return "";
+
+        // Get direction from first two cells
+        Vector2Int dir = cells[1].gridPosition - cells[0].gridPosition;
+
+        if (dir == Vector2Int.zero) return "";
+
+        List<LetterCell> ordered = new() { cells[0] };
+        Vector2Int currentPos = cells[0].gridPosition;
+
+        for (int i = 1; i < cells.Count; i++)
+        {
+            currentPos += dir;
+            LetterCell next = cells.Find(c => c.gridPosition == currentPos);
+            if (next == null) return ""; // Broken sequence
+            ordered.Add(next);
+        }
+
+        string word = "";
+        foreach (var cell in ordered)
+            word += cell.GetLetter();
+
+        return word;
     }
 
     private string SortString(string input)
