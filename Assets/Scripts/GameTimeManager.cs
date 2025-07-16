@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using Photon.Pun;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameTimerManager : MonoBehaviourPunCallbacks
 {
@@ -83,14 +84,14 @@ public class GameTimerManager : MonoBehaviourPunCallbacks
         if (timeLeft <= warningThreshold && !warningShown)
         {
             warningShown = true;
-            photonView.RPC(nameof(ShowTimeWarning), RpcTarget.All, "Time’s almost up!");
+            photonView.RPC(nameof(ShowTimeWarning), RpcTarget.All, "Time’s almost up!", Color.yellow.r, Color.yellow.g, Color.yellow.b, Color.yellow.a);
         }
 
 
         if (timeLeft <= warningThreshold2 && !warningShown2)
         {
             warningShown2 = true;
-            photonView.RPC(nameof(ShowTimeWarning), RpcTarget.All, "Puzzle is going to reset!");
+            photonView.RPC(nameof(ShowTimeWarning), RpcTarget.All, "Puzzle is going to reset!", Color.red.r, Color.red.g, Color.red.b, Color.red.a);
         }
 
 
@@ -132,7 +133,7 @@ public class GameTimerManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void ShowTimeWarning(string message)
+    void ShowTimeWarning(string message, float colorR, float colorG, float colorB, float colorA)
     {
         Debug.Log("showing warning message");
         if (timeWarningPanel == null || warningRect == null || warningCanvasGroup == null)
@@ -140,6 +141,7 @@ public class GameTimerManager : MonoBehaviourPunCallbacks
 
         // Reactivate and reset
         timeWarningPanel.SetActive(true);
+        timeWarningPanel.GetComponent<Image>().color = new Color(colorR, colorG, colorB, colorA);
 
         // Kill any existing tweens
         LeanTween.cancel(warningRect.gameObject);
