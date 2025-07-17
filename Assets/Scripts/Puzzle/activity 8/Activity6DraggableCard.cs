@@ -19,7 +19,7 @@ public class Activity6DraggableCard : DraggableCard
             if (IsPointerOverPanel("Panel1") && fromPanel2)
             {
                 Debug.Log("snap to panel 1");
-                SnapTo(panel1GridLayout, 150, -150, 0.6409343f, 0.66764f);
+                SnapTo(panel1GridLayout, 150, -150, 0.6409343f, 0.6409343f);
             }
             // 2. From panel2, dropped on panel2(not a slot)
             else if (IsPointerOverPanel("Panel2") && fromPanel2)
@@ -28,20 +28,20 @@ public class Activity6DraggableCard : DraggableCard
                 if (emptySlot != null)
                 {
                     Debug.Log("snap to empty slot");
-                    SnapTo(emptySlot, 150, -150, 0.6409343f, 0.66764f);
-                    rectTransform.localScale = Vector2.one;
+                    SnapTo(emptySlot, 225, -230, 1.55f, 1.55f);
+                    rectTransform.localScale = new Vector2(1.55f, 1.55f);
                 }
                 else
                 {
                     Debug.Log("snap to panel 2");
-                    SnapTo(panel2GridLayout, 150, -150, 0.6409343f, 0.66764f);
+                    SnapTo(panel2GridLayout, 150, -150, 1.55f, 1.55f);
                     rectTransform.localScale = Vector2.one;
                 }
             }
             else
             {
                 Debug.Log("snap to true home");
-                SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
+                SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.6409343f);
             }
             var img = GetComponent<Image>();
             if (img != null) img.color = Color.white;
