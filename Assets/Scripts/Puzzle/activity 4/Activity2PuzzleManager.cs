@@ -1,9 +1,17 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using TMPro;
+using WebSocketSharp;
+
 public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
 {
     [SerializeField] private int required;
+    [SerializeField] private TMP_InputField input1;
+    [SerializeField] private TMP_InputField input2;
+    [SerializeField] private GameObject panel1;
+    [SerializeField] private GameObject panel2;
+
 
     public bool AreAllPuzzle4CardsCorrect()
     {
@@ -44,7 +52,29 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
 
     public bool IsSolved()
     {
-        return AreAllPuzzle4CardsCorrect(); 
+         if(AreAllPuzzle4CardsCorrect())
+        {
+            panel1.SetActive(false);
+            panel2.SetActive(true);
+
+            if (CheckActivity2Part2Correct())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool CheckActivity2Part2Correct()
+    {
+        if (input1.text.IsNullOrEmpty() || input2.text.IsNullOrEmpty())
+        {
+            return false;
+        }
+        input1.GetComponent<Image>().color = input1.text == "15" ? Color.green : Color.red;
+        input2.GetComponent<Image>().color = input2.text == "4" ? Color.green : Color.red;
+        return input1.text == "15" && input2.text == "4";
+  
     }
 
     private IEnumerator ResetIncorrectCardColorsAfterDelay(float delaySeconds)
