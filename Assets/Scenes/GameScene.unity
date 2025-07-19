@@ -696,8 +696,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -372.82764, y: 66}
-  m_SizeDelta: {x: 1040.3499, y: 715.5}
+  m_AnchoredPosition: {x: -431.89618, y: -37.817413}
+  m_SizeDelta: {x: 922.2128, y: 923.1348}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4821344
 MonoBehaviour:
@@ -749,10 +749,10 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 60, y: 60}
+  m_CellSize: {x: 46, y: 46}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 1
-  m_ConstraintCount: 15
+  m_ConstraintCount: 20
 --- !u!222 &4821346
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -27925,8 +27925,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 520, y: 289}
-  m_SizeDelta: {x: 728.658, y: 155.2532}
+  m_AnchoredPosition: {x: 456.77, y: 153.98053}
+  m_SizeDelta: {x: 855.12, y: 425.2921}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &570888065
 MonoBehaviour:
@@ -28020,7 +28020,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: -265.65887}
+  m_margin: {x: 0, y: 0, z: 0, w: -0.74542236}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -83234,7 +83234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPanel: {fileID: 4821342}
   cellPrefab: {fileID: 7512843899243525254, guid: 170fa6abb03edbb41abef45f0fd48b15, type: 3}
-  gridSize: 15
+  gridSize: 20
   wordsToFind:
   - Fluoroquinolones
   - Sulfonylureas
@@ -83243,6 +83243,7 @@ MonoBehaviour:
   - Elderly
   - Impaired
   - reduction
+  useFixedPlacement: 1
 --- !u!1 &1629859606
 GameObject:
   m_ObjectHideFlags: 0

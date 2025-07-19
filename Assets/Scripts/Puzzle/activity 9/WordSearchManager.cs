@@ -6,7 +6,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
 {
     public GameObject gridPanel;
     public GameObject cellPrefab;
-    public int gridSize = 15;
+    public int gridSize = 20;
 
     private LetterCell[,] grid;
     [SerializeField] private List<string> wordsToFind = new List<string>();
@@ -17,14 +17,70 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     private HashSet<LetterCell> permanentSelectedCells = new();     // Across all drags
     private bool isSelecting = false;
 
+    [SerializeField] private bool useFixedPlacement = false;
+
+    private char[,] solution = new char[20, 20]
+    {
+        { 'S','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L' ,'I' ,'N' ,'E' ,'Z' ,'O' ,'L' ,'I' ,'D'   },
+        { 'E','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','\0','\0','\0','\0','\0','S'  },
+        { 'L','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','\0','\0','\0','\0','\0','A'  },
+        { 'O','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','\0','\0','\0','\0','\0','E'  },
+        { 'Z','\0','F' ,'L' ,'U' ,'O' ,'R' ,'O' ,'Q' ,'U' ,'I'  ,'N' ,'O' ,'L' ,'O' ,'N' ,'E' ,'S' ,'\0','R'  },
+        { 'A','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','\0','\0','\0','N','\0','U'  },
+        { 'I' ,'M' ,'P' ,'A' ,'I' ,'R' ,'E' ,'D' ,'\0','\0','\0','\0','\0','\0','\0','\0','\0','O','\0','L'  },
+        { '\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0' ,'\0','\0','\0','\0','\0','\0','I','\0','Y'  },
+        { '\0','\0','\0','\0','\0','\0','D','\0','\0','\0','\0' ,'\0','\0','\0','\0','\0','\0','T','\0','N'  },
+        { '\0','\0','\0','\0','\0','\0','E','\0','\0','\0','\0' ,'\0','\0','\0','\0','\0','\0','C','\0','O'  },
+        { '\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0' ,'\0','\0','\0','\0','\0','\0','U','\0','F'  },
+        { '\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0' ,'\0','\0','\0','\0','\0','\0','D','\0','L'  },
+        { '\0','\0','\0','\0','\0','\0','Y','\0','\0','\0','\0' ,'\0','\0','\0','\0','\0','\0','E','\0','U'  },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','R','\0','S'  },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' }
+    };
+
     void Start()
     {
         for (int i = 0; i < wordsToFind.Count; i++)
             wordsToFind[i] = wordsToFind[i].ToUpper();
 
         GenerateGrid();
-        PlaceWords();
+
+        if (useFixedPlacement)
+        {
+            PlaceFixedWords();
+        }
+        else
+        {
+            PlaceWords();
+        }
+
         FillRandomLetters();
+
+    }
+    private void PlaceFixedWords()
+    {
+        int size = Mathf.Min(gridSize, solution.GetLength(0));
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                char c = solution[y, x];
+                if (c != '\0')
+                {
+                    grid[x, y].SetLetter(c);
+
+                    // ✅ Highlight in green and lock
+                    grid[x, y].Highlight(true, Color.grey);
+       
+                }
+            }
+        }
     }
 
     void GenerateGrid()
@@ -81,6 +137,10 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
             int xi = x + i * dir.x;
             int yi = y + i * dir.y;
             grid[xi, yi].SetLetter(word[i]);
+
+            // ✅ Highlight in green and lock
+            grid[xi, yi].Highlight(true, Color.blue);
+       
         }
         return true;
     }
