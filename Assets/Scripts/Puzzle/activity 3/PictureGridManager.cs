@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using TMPro;
 
 public class PictureGridManager : MonoBehaviour, IPuzzle
 {
@@ -17,6 +18,7 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
     public Color wrongColor = Color.red;
 
     [SerializeField] GameObject submitButton;
+    [SerializeField] private TMP_Text selectedCountText;
 
     public void Start()
     {
@@ -27,6 +29,8 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
         }
 
         submitButton.SetActive(false);
+        UpdateSelectedCountText();
+
     }
 
     void OnPictureClick(int index)
@@ -41,13 +45,20 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
             selectedIndexes.Add(index);
             SetButtonColor(index, selectedColor);
         }
-
+        UpdateSelectedCountText();
         // Log when exactly 6 buttons are selected
         if (selectedIndexes.Count == correctIndexes.Count)
         {
             Debug.Log($"{correctIndexes.Count} buttons selected. Ready to check answers!");
 
             submitButton.SetActive(true);
+        }
+    }
+    void UpdateSelectedCountText()
+    {
+        if (selectedCountText != null)
+        {
+            selectedCountText.text = $"Selected: {selectedIndexes.Count}/{correctIndexes.Count}";
         }
     }
 
