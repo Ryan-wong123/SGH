@@ -23,6 +23,11 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public string chatAppId = "41ecc5f0-2661-4f08-9c6b-3567bc7d495d";
     private bool isVisible = true;
     public GameObject chatPanel;
+
+    public GameObject unreadBadge; // Badge panel with TMP_Text inside
+    public TMP_Text unreadText;
+    private int unreadCount = 0;
+
     void Start()
     {
         userName = PhotonNetwork.NickName;
@@ -37,6 +42,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         channelDropdown.onValueChanged.AddListener(OnChannelChanged);
 
         SetupDropdown();
+        unreadBadge.SetActive(false);
     }
 
     void Update()
@@ -48,7 +54,13 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         isVisible = !isVisible;
         chatPanel.SetActive(isVisible);
+
+        if (isVisible)
+        {
+            ResetUnreadCount();
+        }
     }
+
     void SetupDropdown()
     {
         channelDropdown.ClearOptions();
@@ -84,8 +96,33 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         for (int i = 0; i < senders.Length; i++)
         {
             AddChatMessage($"<b><color=#00ffff>[{channelName}]</color> <color=#00ffcc>{senders[i]}</color></b>: {messages[i]}");
+
+            if (!isVisible)
+            {
+                unreadCount++;
+                UpdateUnreadUI();
+            }
         }
     }
+    private void UpdateUnreadUI()
+    {
+        if (unreadCount > 0)
+        {
+            unreadBadge.SetActive(true);
+            unreadText.text = unreadCount.ToString();
+        }
+        else
+        {
+            unreadBadge.SetActive(false);
+        }
+    }
+
+    private void ResetUnreadCount()
+    {
+        unreadCount = 0;
+        UpdateUnreadUI();
+    }
+
 
     public void OnPrivateMessage(string sender, object message, string channelName) { }
 
