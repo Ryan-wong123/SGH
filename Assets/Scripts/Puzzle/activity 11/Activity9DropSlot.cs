@@ -1,30 +1,36 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections.Generic;
-using static PuzzleStateManager;
 using UnityEngine.UI;
+using static PuzzleStateManager;
 
 public class Activity9DropSlot : DropSlot
 {
     [Header("Puzzle 11 answers")]
-    [SerializeField] private string lapsesAnswer = ""; // set in Inspector or auto-extract from name
-    [SerializeField] private int requiredCorrect = 5; // set this in Inspector
+    [SerializeField] private int requiredCorrect = 5;
+    [HideInInspector] public string stage1Answer = "";
+
+    [Header("Optional Stage 2 linking")]
+    public Activity9DropSlot linkedStage1Slot; // ✅ assign for Stage 2 slots
 
     public override bool IsCardCorrect(DraggableCard card)
     {
         if (card is Activity9DraggableCard a1Card)
         {
-            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle11)
+            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStage.Puzzle11)
             {
-                string cardStep = a1Card.lapsesAnswer?.Trim().ToLower() ?? "";
-                string slotStep = lapsesAnswer.Trim().ToLower();
+                string stage2Answer = a1Card.lapsesAnswer.Trim().ToLower();
 
-                Debug.Log($"[IsCardCorrect - Puzzle11] Card Step: {cardStep}, Slot Expects: {slotStep}");
+                string expectedAnswer = stage1Answer.Trim().ToLower();
 
-                return cardStep == slotStep;
+                // ✅ For Stage 2, use linked Stage 1 slot
+                if (linkedStage1Slot != null)
+                    expectedAnswer = linkedStage1Slot.stage1Answer.Trim().ToLower();
+
+                Debug.Log($"[IsCardCorrect] Stage 2 Card '{stage2Answer}' vs Expected '{expectedAnswer}'");
+
+                return stage2Answer == expectedAnswer;
             }
         }
-
         return false;
     }
 }

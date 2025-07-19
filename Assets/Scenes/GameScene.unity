@@ -15825,8 +15825,9 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 210, y: -126}
   scaleSnap: {x: 0.85, y: 0.8}
-  lapsesAnswer: drug interaction
   requiredCorrect: 5
+  stage1Answer: 
+  linkedStage1Slot: {fileID: 0}
 --- !u!1 &331054876
 GameObject:
   m_ObjectHideFlags: 0
@@ -29040,8 +29041,9 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 210, y: -126}
   scaleSnap: {x: 0.85, y: 0.8}
-  lapsesAnswer: apparatus
   requiredCorrect: 5
+  stage1Answer: 
+  linkedStage1Slot: {fileID: 0}
 --- !u!1 &602558409
 GameObject:
   m_ObjectHideFlags: 0
@@ -41381,7 +41383,7 @@ MonoBehaviour:
   frontSprite: {fileID: 21300000, guid: 037bfa0b408ecb943bc22c484600ebd3, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: inappropriate syringe
+  lapsesAnswer: apparatus
   isLocked: 0
 --- !u!1001 &832903779
 PrefabInstance:
@@ -45150,7 +45152,7 @@ MonoBehaviour:
   frontSprite: {fileID: 21300000, guid: c2ffef2eac104aa458df50a9783df0ea, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: fluconazole
+  lapsesAnswer: drug interaction
   isLocked: 0
 --- !u!1 &908294280
 GameObject:
@@ -47092,8 +47094,9 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 210, y: -126}
   scaleSnap: {x: 0.85, y: 0.8}
-  lapsesAnswer: injection
   requiredCorrect: 5
+  stage1Answer: 
+  linkedStage1Slot: {fileID: 1112146537}
 --- !u!1 &977454308
 GameObject:
   m_ObjectHideFlags: 0
@@ -54473,7 +54476,7 @@ MonoBehaviour:
   frontSprite: {fileID: 21300000, guid: 1557ddf8d6f11b64e9646c110e2befcb, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: management
+  lapsesAnswer: inappropriate management
   isLocked: 0
 --- !u!1 &1112146532
 GameObject:
@@ -54567,8 +54570,9 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 210, y: -126}
   scaleSnap: {x: 0.85, y: 0.8}
-  lapsesAnswer: insulin
   requiredCorrect: 5
+  stage1Answer: 
+  linkedStage1Slot: {fileID: 0}
 --- !u!1001 &1112336088
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58396,8 +58400,9 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 210, y: -126}
   scaleSnap: {x: 0.85, y: 0.8}
-  lapsesAnswer: inappropriate syringe
   requiredCorrect: 5
+  stage1Answer: 
+  linkedStage1Slot: {fileID: 600653986}
 --- !u!1 &1194267927
 GameObject:
   m_ObjectHideFlags: 0
@@ -62277,8 +62282,9 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 210, y: -126}
   scaleSnap: {x: 0.85, y: 0.8}
-  lapsesAnswer: management
   requiredCorrect: 5
+  stage1Answer: 
+  linkedStage1Slot: {fileID: 0}
 --- !u!1001 &1275686451
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72009,8 +72015,9 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 210, y: -126}
   scaleSnap: {x: 0.85, y: 0.8}
-  lapsesAnswer: fluconazole
   requiredCorrect: 5
+  stage1Answer: 
+  linkedStage1Slot: {fileID: 329484966}
 --- !u!1 &1450423470
 GameObject:
   m_ObjectHideFlags: 0
@@ -78350,8 +78357,9 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 210, y: -126}
   scaleSnap: {x: 0.85, y: 0.8}
-  lapsesAnswer: inappropriate management
   requiredCorrect: 5
+  stage1Answer: 
+  linkedStage1Slot: {fileID: 1274369867}
 --- !u!1 &1533712705
 GameObject:
   m_ObjectHideFlags: 0
@@ -80609,8 +80617,9 @@ MonoBehaviour:
   wrongColor: {r: 1, g: 0, b: 0, a: 1}
   positionSnap: {x: 210, y: -126}
   scaleSnap: {x: 0.85, y: 0.8}
-  lapsesAnswer: death
   requiredCorrect: 5
+  stage1Answer: 
+  linkedStage1Slot: {fileID: 0}
 --- !u!1 &1577182241
 GameObject:
   m_ObjectHideFlags: 0
@@ -83351,7 +83360,7 @@ MonoBehaviour:
   frontSprite: {fileID: 21300000, guid: c40c57e7f5cf98f4a8e78aec6d487cb5, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
-  lapsesAnswer: injection
+  lapsesAnswer: insulin
   isLocked: 0
 --- !u!1 &1632282165
 GameObject:
