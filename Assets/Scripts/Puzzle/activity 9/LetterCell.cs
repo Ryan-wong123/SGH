@@ -67,4 +67,17 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         if (eventData.button == PointerEventData.InputButton.Left)
             game.EndSelection();
     }
+    public void DisableCellUI()
+    {
+        backgroundImage.enabled = false;
+    }
+    public void SetTextColor(Color color)
+    {
+        letterText.color = color;
+    }
+    public void SetLetterString(string s)
+    {
+        letterText.text = s;
+    }
+
 }

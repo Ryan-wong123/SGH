@@ -749,10 +749,10 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 46, y: 46}
+  m_CellSize: {x: 40, y: 40}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 1
-  m_ConstraintCount: 20
+  m_ConstraintCount: 21
 --- !u!222 &4821346
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -83234,7 +83234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPanel: {fileID: 4821342}
   cellPrefab: {fileID: 7512843899243525254, guid: 170fa6abb03edbb41abef45f0fd48b15, type: 3}
-  gridSize: 20
+  gridSize: 21
   wordsToFind:
   - Fluoroquinolones
   - Sulfonylureas
