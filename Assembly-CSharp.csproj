@@ -125,6 +125,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 1\SymptomsCardManager.cs" />
+    <Compile Include="Assets\Scripts\CharacterSelection.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanAudio.cs" />
     <Compile Include="Assets\Scripts\Player\CrossHairInteractor.cs" />
     <Compile Include="Assets\LeanTween\Framework\LTDescrOptional.cs" />
