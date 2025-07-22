@@ -12,13 +12,14 @@ public class CrosshairInteractor : MonoBehaviourPun
     private TextMeshProUGUI interactionLabel; // optional: display "Press E to Interact"
 
     private IInteractable currentTarget;
+    private IHighlightable currentHighlight;
 
     private void Start()
     {
         if (!photonView.IsMine) return;
 
         interactionLabel = GameObject.Find("Cross Hair Text").GetComponent<TextMeshProUGUI>();
-        interactionLabel.gameObject.SetActive(false);
+        interactionLabel?.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -26,25 +27,57 @@ public class CrosshairInteractor : MonoBehaviourPun
         if (!photonView.IsMine) return;
 
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactableLayer))
         {
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            IHighlightable highlightable = hit.collider.GetComponent<IHighlightable>();
+
             if (interactable != null)
             {
                 currentTarget = interactable;
-                interactionLabel.gameObject.SetActive(true);
-                interactionLabel.text = interactable.GetInteractionPrompt();
+                if (interactionLabel != null)
+                {
+                    interactionLabel.gameObject.SetActive(true);
+                    interactionLabel.text = interactable.GetInteractionPrompt();
+                }
+
+                // Handle highlighting
+                if (highlightable != null && currentHighlight != highlightable)
+                {
+                    if (currentHighlight != null) currentHighlight.Unhighlight();
+                    currentHighlight = highlightable;
+                    currentHighlight.Highlight();
+                }
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     currentTarget.Interact();
                 }
             }
+            else
+            {
+                ClearInteraction();
+            }
         }
         else
         {
-            currentTarget = null;
+            ClearInteraction();
+        }
+    }
+
+    private void ClearInteraction()
+    {
+        currentTarget = null;
+        if (interactionLabel != null)
+        {
             interactionLabel.gameObject.SetActive(false);
+        }
+
+        if (currentHighlight != null)
+        {
+            currentHighlight.Unhighlight();
+            currentHighlight = null;
         }
     }
 
