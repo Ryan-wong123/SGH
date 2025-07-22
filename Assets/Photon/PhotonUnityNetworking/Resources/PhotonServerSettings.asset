@@ -48,6 +48,7 @@ MonoBehaviour:
   - RPC_AddSharedInventoryItem
   - ShowTimeWarning
   - HideTimeWarning
+  - RPC_UpdateStatusText
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

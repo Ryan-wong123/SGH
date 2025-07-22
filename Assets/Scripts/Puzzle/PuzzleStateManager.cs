@@ -4,6 +4,7 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -59,6 +60,8 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     private Dictionary<PuzzleStage, IPuzzle> puzzleHandlers;
 
+    [SerializeField] private TMP_Text statusText;
+
     private void Start()
     {
         puzzleHandlers = new Dictionary<PuzzleStage, IPuzzle>
@@ -74,6 +77,10 @@ public class PuzzleStateManager : MonoBehaviourPun
         { PuzzleStage.Puzzle9, wordSearchManager },
         { PuzzleStage.Puzzle11, deathLapsesManager }
     };
+
+        string todayDate = DateTime.Now.ToString("dd MMM yyyy");
+        photonView.RPC(nameof(RPC_UpdateStatusText), RpcTarget.All, $"{todayDate}");
+
     }
 
     public enum PuzzleStage
@@ -138,6 +145,14 @@ public class PuzzleStateManager : MonoBehaviourPun
             case PuzzleStage.Puzzle9:
                 Debug.Log("Restarting Puzzle 9");
                 break;
+        }
+    }
+    [PunRPC]
+    private void RPC_UpdateStatusText(string message)
+    {
+        if (statusText != null)
+        {
+            statusText.text = message;
         }
     }
 
@@ -353,6 +368,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         // Enable puzzle 2 panel/UI
         if (mainminiPuzzle1Panel1 != null)
             mainminiPuzzle1Panel1.SetActive(false);
+        photonView.RPC(nameof(RPC_UpdateStatusText), RpcTarget.All, "2h before death");
 
         GetKeyUponCompletion(puzzle1Object, "Time Crystal1");
 
@@ -375,6 +391,7 @@ public class PuzzleStateManager : MonoBehaviourPun
         Debug.Log("Puzzle 4 completed correctly!");
         Puzzle4Panel.SetActive(false);
 
+        photonView.RPC(nameof(RPC_UpdateStatusText), RpcTarget.All, "2 weeks before death");
         GetKeyUponCompletion(puzzle2Object, "Time Crystal2");
 
         CurrentStage = PuzzleStage.Puzzle5;
