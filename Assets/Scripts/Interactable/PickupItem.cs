@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Photon.Pun;
+using System.Collections;
 
 public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
 {
@@ -11,6 +12,10 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
     [SerializeField] private Color highlightColor = Color.yellow;
     [SerializeField] private float emissionIntensity = 1.5f;
 
+    private Vector3 originalScale;
+    private Coroutine scaleCoroutine;
+    [SerializeField] private float highlightScaleMultiplier = 1.1f;
+    [SerializeField] private float scaleSpeed = 5f;
     private void Awake()
     {
         gameObject.layer = LayerMask.NameToLayer("Interactable");
@@ -20,6 +25,7 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
         {
             material = rend.material;
         }
+        originalScale = transform.localScale;
     }
 
     void SetupPhotonView()
@@ -91,11 +97,24 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
         if (material == null) return;
         material.EnableKeyword("_EMISSION");
         material.SetColor("_EmissionColor", highlightColor * emissionIntensity);
+        if (scaleCoroutine != null) StopCoroutine(scaleCoroutine);
+        scaleCoroutine = StartCoroutine(ScaleTo(originalScale * highlightScaleMultiplier));
     }
 
     public void Unhighlight()
     {
         if (material == null) return;
         material.SetColor("_EmissionColor", Color.black);
+        if (scaleCoroutine != null) StopCoroutine(scaleCoroutine);
+        scaleCoroutine = StartCoroutine(ScaleTo(originalScale));
+    }
+    private IEnumerator ScaleTo(Vector3 targetScale)
+    {
+        while (Vector3.Distance(transform.localScale, targetScale) > 0.01f)
+        {
+            transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * scaleSpeed);
+            yield return null;
+        }
+        transform.localScale = targetScale;
     }
 }
