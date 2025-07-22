@@ -22,6 +22,7 @@ public class CrosshairInteractor : MonoBehaviourPun
         interactionLabel?.gameObject.SetActive(false);
     }
 
+
     private void Update()
     {
         if (!photonView.IsMine) return;
@@ -30,34 +31,43 @@ public class CrosshairInteractor : MonoBehaviourPun
 
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactableLayer))
         {
-            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
-            IHighlightable highlightable = hit.collider.GetComponent<IHighlightable>();
+            HandleInteractable(hit);
+        }
+        else
+        {
+            ClearInteraction();
+        }
+    }
 
-            if (interactable != null)
+    private void HandleInteractable(RaycastHit hit)
+    {
+        IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+        IHighlightable highlightable = hit.collider.GetComponent<IHighlightable>();
+
+        if (interactable != null)
+        {
+            if (currentTarget != interactable)
             {
                 currentTarget = interactable;
+
                 if (interactionLabel != null)
                 {
                     interactionLabel.gameObject.SetActive(true);
                     interactionLabel.text = interactable.GetInteractionPrompt();
                 }
 
-                // Handle highlighting
-                if (highlightable != null && currentHighlight != highlightable)
+                // Update highlight
+                if (currentHighlight != highlightable)
                 {
-                    if (currentHighlight != null) currentHighlight.Unhighlight();
+                    currentHighlight?.Unhighlight();
                     currentHighlight = highlightable;
-                    currentHighlight.Highlight();
-                }
-
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    currentTarget.Interact();
+                    currentHighlight?.Highlight();
                 }
             }
-            else
+
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                ClearInteraction();
+                currentTarget.Interact();
             }
         }
         else
@@ -69,6 +79,7 @@ public class CrosshairInteractor : MonoBehaviourPun
     private void ClearInteraction()
     {
         currentTarget = null;
+
         if (interactionLabel != null)
         {
             interactionLabel.gameObject.SetActive(false);

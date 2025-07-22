@@ -17036,6 +17036,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 349866974}
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 349866977}
   m_SourcePrefab: {fileID: 100100000, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
 --- !u!1 &349866973 stripped
 GameObject:
@@ -17078,8 +17081,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 1628483216}
   closePanelUI: {fileID: 856606430}
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
 --- !u!65 &349866976
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17101,6 +17102,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.070084825, y: 0.14368325, z: 0.0065494576}
   m_Center: {x: 0, y: 3.3512933e-18, z: -0.00047165249}
+--- !u!114 &349866977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349866973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  emissionIntensity: 1.5
+  highlightScaleMultiplier: 1.2
+  scaleSpeed: 10
 --- !u!1 &353294866
 GameObject:
   m_ObjectHideFlags: 0
@@ -24536,6 +24553,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 500324024}
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 500324027}
   m_SourcePrefab: {fileID: 100100000, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
 --- !u!1 &500324023 stripped
 GameObject:
@@ -24578,8 +24598,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 1064947403}
   closePanelUI: {fileID: 856606430}
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
 --- !u!65 &500324026
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24601,6 +24619,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.070084825, y: 0.14368325, z: 0.0065494576}
   m_Center: {x: 0, y: 3.3512933e-18, z: -0.00047165249}
+--- !u!114 &500324027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 500324023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  emissionIntensity: 1.5
+  highlightScaleMultiplier: 1.2
+  scaleSpeed: 10
 --- !u!1 &506040874
 GameObject:
   m_ObjectHideFlags: 0
@@ -66600,6 +66634,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1325465235}
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1325465238}
   m_SourcePrefab: {fileID: 100100000, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
 --- !u!1 &1325465234 stripped
 GameObject:
@@ -66642,8 +66679,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 1409617926}
   closePanelUI: {fileID: 856606430}
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
 --- !u!65 &1325465237
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -66665,6 +66700,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.070084825, y: 0.14368325, z: 0.0065494576}
   m_Center: {x: 0, y: 3.3512933e-18, z: -0.00047165249}
+--- !u!114 &1325465238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325465234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  emissionIntensity: 1.5
+  highlightScaleMultiplier: 1.2
+  scaleSpeed: 10
 --- !u!1001 &1330506204
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -80916,6 +80967,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1547783182}
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1547783183}
   m_SourcePrefab: {fileID: 100100000, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
 --- !u!1 &1547783179 stripped
 GameObject:
@@ -80936,8 +80990,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 791486485}
   closePanelUI: {fileID: 856606430}
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
 --- !u!65 &1547783181
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -80981,6 +81033,22 @@ MonoBehaviour:
   sceneViewId: 7
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &1547783183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547783179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  emissionIntensity: 1.5
+  highlightScaleMultiplier: 1.2
+  scaleSpeed: 10
 --- !u!1 &1548348293
 GameObject:
   m_ObjectHideFlags: 0
@@ -87414,6 +87482,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1678213339}
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1678213342}
   m_SourcePrefab: {fileID: 100100000, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
 --- !u!1 &1678213338 stripped
 GameObject:
@@ -87456,8 +87527,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 280907644}
   closePanelUI: {fileID: 856606430}
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
 --- !u!65 &1678213341
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -87479,6 +87548,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.070084825, y: 0.14368325, z: 0.0065494576}
   m_Center: {x: 0, y: 3.3512933e-18, z: -0.00047165249}
+--- !u!114 &1678213342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678213338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  emissionIntensity: 1.5
+  highlightScaleMultiplier: 1.2
+  scaleSpeed: 10
 --- !u!1 &1680019159
 GameObject:
   m_ObjectHideFlags: 0
@@ -108617,6 +108702,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2030812225}
+    - targetCorrespondingSourceObject: {fileID: 1417474233638099324, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2030812228}
   m_SourcePrefab: {fileID: 100100000, guid: 34943b8ca5e91d1488346d3e8bdc60c3, type: 3}
 --- !u!1 &2030812224 stripped
 GameObject:
@@ -108659,8 +108747,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 1061063798}
   closePanelUI: {fileID: 856606430}
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
 --- !u!65 &2030812227
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -108682,6 +108768,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.070084825, y: 0.14368325, z: 0.0065494576}
   m_Center: {x: 0, y: 3.3512933e-18, z: -0.00047165249}
+--- !u!114 &2030812228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030812224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  emissionIntensity: 1.5
+  highlightScaleMultiplier: 1.2
+  scaleSpeed: 10
 --- !u!1 &2032246486
 GameObject:
   m_ObjectHideFlags: 0

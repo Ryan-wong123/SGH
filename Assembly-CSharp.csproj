@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\Puzzle\activity 8\Activity6DraggableCard.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanTest.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
+    <Compile Include="Assets\Scripts\Interactable\HighlightEffect.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
     <Compile Include="Assets\Scripts\GameTimeManager.cs" />
     <Compile Include="Assets\Scripts\networking\ChatManager.cs" />
