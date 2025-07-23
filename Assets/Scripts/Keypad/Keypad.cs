@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using TMPro;
@@ -6,7 +7,7 @@ using UnityEngine.Events;
 
 namespace NavKeypad
 {
-    public class Keypad : MonoBehaviour
+    public class Keypad : MonoBehaviourPun
     {
         [Header("Events")]
         [SerializeField] private UnityEvent onAccessGranted;
@@ -43,8 +44,12 @@ namespace NavKeypad
         private bool displayingResult = false;
         private bool accessWasGranted = false;
 
+        [SerializeField] private string keyName;
+        [SerializeField] private PhotonView photonView;
+
         private void Awake()
         {
+
             ClearInput();
             panelMesh.material.SetVector("_EmissionColor", screenNormalColor * screenIntensity);
         }
@@ -125,7 +130,26 @@ namespace NavKeypad
             onAccessGranted?.Invoke();
             panelMesh.material.SetVector("_EmissionColor", screenGrantedColor * screenIntensity);
             audioSource.PlayOneShot(accessGrantedSfx);
+
+            Debug.Log("access granted");
+
+            photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, keyName);
         }
 
+        [PunRPC]
+        public void RPC_AddSharedInventoryItem(string itemName)
+        {
+            StartCoroutine(DelayedAddItem(itemName));
+        }
+
+        IEnumerator DelayedAddItem(string itemName)
+        {
+            while (InventorySystem.Instance == null || InventoryUIManager.Instance == null)
+                yield return null;
+
+            Debug.Log($"added {itemName}");
+            InventorySystem.Instance.AddItem(itemName);
+            InventoryUIManager.Instance.UpdateInventoryUI();
+        }
     }
 }
