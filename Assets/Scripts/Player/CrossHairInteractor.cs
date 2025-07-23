@@ -32,6 +32,16 @@ public class CrosshairInteractor : MonoBehaviourPun
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactableLayer))
         {
             HandleInteractable(hit);
+            if (Input.GetMouseButtonDown(0)) // LMB
+            {
+                // Try to press keypad button
+                var button = hit.collider.GetComponent<NavKeypad.KeypadButton>();
+                if (button != null)
+                {
+                    button.PressButton();
+                    return; // stop here if we clicked a button
+                }
+            }
         }
         else
         {
