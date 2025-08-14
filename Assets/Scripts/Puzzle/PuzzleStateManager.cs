@@ -62,6 +62,10 @@ public class PuzzleStateManager : MonoBehaviourPun
 
     [SerializeField] private TMP_Text statusText;
 
+    // Tracks which panel belongs to which stage
+    private readonly Dictionary<PuzzleStage, GameObject> stagePanels = new();
+    private GameObject currentPuzzlePanel;
+
     private void Start()
     {
         puzzleHandlers = new Dictionary<PuzzleStage, IPuzzle>
@@ -97,7 +101,24 @@ public class PuzzleStateManager : MonoBehaviourPun
         Puzzle10,
         Puzzle11
     }
+    private void InitStagePanels()
+    {
+        stagePanels.Clear();
 
+        // Map each stage to its main panel GameObject
+        // ✅ Choose the single panel you consider "the puzzle panel" for that stage
+        stagePanels[PuzzleStage.Puzzle1] = mainminiPuzzle1Panel1; // stage 1 UI
+        stagePanels[PuzzleStage.Puzzle2] = mainminiPuzzle1Panel1; // stage 2 UI
+        stagePanels[PuzzleStage.Puzzle3] = Puzzle3Panel;
+        stagePanels[PuzzleStage.Puzzle4] = Puzzle4Panel;
+        stagePanels[PuzzleStage.Puzzle5] = Puzzle5Panel;
+        stagePanels[PuzzleStage.Puzzle6] = Puzzle6Panel;
+        stagePanels[PuzzleStage.Puzzle7] = Puzzle7Panel;
+        stagePanels[PuzzleStage.Puzzle8] = Puzzle8Panel;
+        stagePanels[PuzzleStage.Puzzle9] = Puzzle9Panel;
+        // Puzzle10 not shown in your fields; add if you have one
+        stagePanels[PuzzleStage.Puzzle11] = Puzzle11Panel;
+    }
     private void Awake()
     {
         if (Instance == null)
@@ -108,6 +129,7 @@ public class PuzzleStateManager : MonoBehaviourPun
             return;
         }
 
+        InitStagePanels();
         DontDestroyOnLoad(gameObject); // optional if changing scenes
     }
     public void OnTimerExpired()
@@ -586,5 +608,27 @@ public class PuzzleStateManager : MonoBehaviourPun
             Debug.LogWarning($"No handler found for puzzle stage {CurrentStage}");
         }
     }
+
+    private GameObject GetPanelForStage(PuzzleStage stage)
+    {
+        return (stagePanels != null && stagePanels.TryGetValue(stage, out var panel)) ? panel : null;
+    }
+
+    public void CloseCurrentPuzzle()
+    {
+        // Uses enum → panel map; no need to maintain per-handler code
+        var panel = GetPanelForStage(CurrentStage);
+        if (panel != null && panel.activeSelf)
+        {
+            panel.SetActive(false);
+            Debug.Log($"Closed {panel.name}");
+        }
+        else
+        {
+            Debug.Log("No current puzzle panel to close.");
+        }
+    }
+
+
 
 }
