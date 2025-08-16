@@ -87,6 +87,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     void GenerateGrid()
     {
         grid = new LetterCell[gridSize, gridSize];
+
         for (int y = 0; y < gridSize; y++)
         {
             for (int x = 0; x < gridSize; x++)
@@ -95,38 +96,40 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
                 LetterCell cell = obj.GetComponent<LetterCell>();
                 cell.gridPosition = new Vector2Int(x, y);
 
+                // Top-left corner (0,0)
                 if (x == 0 && y == 0)
                 {
-                    // Corner cell blank
                     cell.SetLetter(' ');
                     cell.DisableCellUI();
-                    cell.SetTextColor(Color.clear);  // or grey
+                    cell.SetTextColor(Color.clear);
                 }
+                // Top row (A to T)
                 else if (y == 0)
                 {
-                    // Top row numbers
-                    cell.SetLetterString((x - 1).ToString());
-                    cell.SetTextColor(Color.white);  // or grey
+                    char letter = (char)('A' + x - 1); // A = 65
+                    cell.SetLetter(letter);
+                    cell.SetTextColor(Color.white);
                     cell.DisableCellUI();
                 }
+                // First column (1 to 20)
                 else if (x == 0)
                 {
-                    // First column numbers
-                    cell.SetLetterString((y - 1).ToString());
+                    cell.SetLetterString(y.ToString());
                     cell.SetTextColor(Color.white);
                     cell.DisableCellUI();
                 }
                 else
                 {
-                    // Playable cells
+                    // Playable grid cells
                     cell.SetLetter(' ');
-                    cell.SetTextColor(Color.black);  // game letters white
+                    cell.SetTextColor(Color.black); // change to white if desired
                 }
 
                 grid[x, y] = cell;
             }
         }
     }
+
 
 
 
