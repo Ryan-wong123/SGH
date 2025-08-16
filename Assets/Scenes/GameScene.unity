@@ -17781,8 +17781,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7ba20456adc6f49abfc9133af4a20b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puzzleUIPanel: {fileID: 1628483216}
-  closePanelUI: {fileID: 856606430}
   puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &349866976
 BoxCollider:
@@ -25645,8 +25643,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7ba20456adc6f49abfc9133af4a20b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puzzleUIPanel: {fileID: 1064947403}
-  closePanelUI: {fileID: 856606430}
   puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &500324026
 BoxCollider:
@@ -67809,8 +67805,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7ba20456adc6f49abfc9133af4a20b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puzzleUIPanel: {fileID: 1409617926}
-  closePanelUI: {fileID: 856606430}
   puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &1325465237
 BoxCollider:
@@ -82682,8 +82676,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7ba20456adc6f49abfc9133af4a20b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puzzleUIPanel: {fileID: 791486485}
-  closePanelUI: {fileID: 856606430}
   puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &1547783181
 BoxCollider:
@@ -89534,8 +89526,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7ba20456adc6f49abfc9133af4a20b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puzzleUIPanel: {fileID: 280907644}
-  closePanelUI: {fileID: 856606430}
   puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &1678213341
 BoxCollider:
@@ -111026,8 +111016,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7ba20456adc6f49abfc9133af4a20b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puzzleUIPanel: {fileID: 1061063798}
-  closePanelUI: {fileID: 856606430}
   puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &2030812227
 BoxCollider:
@@ -113276,6 +113264,7 @@ MonoBehaviour:
   characterPrefabs:
   - {fileID: 5986678580140475614, guid: 76549867e3e730f4788d67e3acb635f9, type: 3}
   - {fileID: 3034905122024234597, guid: 089c6b48b1f7bfb46a1788b6f8e2a43d, type: 3}
+  - {fileID: 2158395937471200602, guid: 30f44c8a26e63ec468e7571d42e62f51, type: 3}
   spawnPoints:
   - {fileID: 119066308}
   - {fileID: 630996028}
