@@ -614,6 +614,16 @@ public class PuzzleStateManager : MonoBehaviourPun
         return (stagePanels != null && stagePanels.TryGetValue(stage, out var panel)) ? panel : null;
     }
 
+    public void OpenCurrentStagePanel()
+    {
+        var panel = GetPanelForStage(CurrentStage);
+        if (panel != null)
+        {
+            panel.SetActive(true);
+            currentPuzzlePanel = panel;
+        }
+    }
+
     public void CloseCurrentPuzzle()
     {
         // Uses enum → panel map; no need to maintain per-handler code

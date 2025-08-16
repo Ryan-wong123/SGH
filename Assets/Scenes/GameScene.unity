@@ -17783,6 +17783,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 1628483216}
   closePanelUI: {fileID: 856606430}
+  puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &349866976
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25646,6 +25647,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 1064947403}
   closePanelUI: {fileID: 856606430}
+  puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &500324026
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -67809,6 +67811,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 1409617926}
   closePanelUI: {fileID: 856606430}
+  puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &1325465237
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -82681,6 +82684,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 791486485}
   closePanelUI: {fileID: 856606430}
+  puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &1547783181
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -89532,6 +89536,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 280907644}
   closePanelUI: {fileID: 856606430}
+  puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &1678213341
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -111023,6 +111028,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleUIPanel: {fileID: 1061063798}
   closePanelUI: {fileID: 856606430}
+  puzzleStateManager: {fileID: 2075314851}
 --- !u!65 &2030812227
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -4,9 +4,8 @@ using UnityEngine;
 public class PuzzleTrigger : MonoBehaviour, IInteractable, IHighlightable
 {
     [Header("Puzzle Panel")]
-    [SerializeField] private GameObject puzzleUIPanel;
-    [SerializeField] private GameObject closePanelUI;
     private HighlightEffect highlightEffect;
+    [SerializeField] private PuzzleStateManager puzzleStateManager;
 
     private void Awake()
     {
@@ -18,15 +17,11 @@ public class PuzzleTrigger : MonoBehaviour, IInteractable, IHighlightable
 
     public void Interact()
     {
-        if (puzzleUIPanel != null)
-        {
-            puzzleUIPanel.SetActive(true);
-            closePanelUI.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            // Register this puzzle with the SidebarMenuManager
-            FindObjectOfType<SidebarMenuManager>().SetActivePuzzle(this);
-        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        // Register this puzzle with the SidebarMenuManager
+        FindObjectOfType<SidebarMenuManager>().SetActivePuzzle(this);
+        puzzleStateManager.OpenCurrentStagePanel();
     }
 
     public string GetInteractionPrompt()
@@ -39,7 +34,6 @@ public class PuzzleTrigger : MonoBehaviour, IInteractable, IHighlightable
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        puzzleUIPanel.SetActive(false); // hide this specific panel
     }
 
 }
