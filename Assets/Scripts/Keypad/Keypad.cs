@@ -60,6 +60,9 @@ namespace NavKeypad
                 case "enter":
                     CheckCombo();
                     break;
+                case "back":
+                    Backspace();
+                    break;
                 default:
                     if (currentInput != null && currentInput.Length == 9) // 9 max passcode size 
                     {
@@ -71,6 +74,15 @@ namespace NavKeypad
             }
 
         }
+        private void Backspace()
+        {
+            if (!string.IsNullOrEmpty(currentInput))
+            {
+                currentInput = currentInput.Substring(0, currentInput.Length - 1);
+                keypadDisplayText.text = currentInput;
+            }
+        }
+
         public void CheckCombo()
         {
             if (int.TryParse(currentInput, out var currentKombo))
