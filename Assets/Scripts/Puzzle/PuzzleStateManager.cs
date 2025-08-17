@@ -1,6 +1,6 @@
-﻿
-
-using Photon.Pun;
+﻿using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;                      // keep Photon namespace
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,8 +8,9 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Hashtable = ExitGames.Client.Photon.Hashtable; // alias Photon Hashtable
 
-public class PuzzleStateManager : MonoBehaviourPun
+public class PuzzleStateManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private float delayTransition;
 
@@ -66,26 +67,11 @@ public class PuzzleStateManager : MonoBehaviourPun
     private readonly Dictionary<PuzzleStage, GameObject> stagePanels = new();
     private GameObject currentPuzzlePanel;
 
-    private void Start()
-    {
-        puzzleHandlers = new Dictionary<PuzzleStage, IPuzzle>
-    {
-        { PuzzleStage.Puzzle1, symptomsCardManager },
-        { PuzzleStage.Puzzle2, symptomsCardManager },
-        { PuzzleStage.Puzzle3, pictureGridManager },
-        { PuzzleStage.Puzzle4, activity2PuzzleManager },
-        { PuzzleStage.Puzzle5, crosswordManager },
-        { PuzzleStage.Puzzle6, diaryPuzzleManager },
-        { PuzzleStage.Puzzle7, prescriptionManager },
-        { PuzzleStage.Puzzle8, insulinPuzzleManager },
-        { PuzzleStage.Puzzle9, wordSearchManager },
-        { PuzzleStage.Puzzle11, deathLapsesManager }
-    };
-
-        string todayDate = DateTime.Now.ToString("dd MMM yyyy");
-        photonView.RPC(nameof(RPC_UpdateStatusText), RpcTarget.All, $"{todayDate}");
-
-    }
+    // ===== Room / Player property keys =====
+    private const string RP_PUZZLE_LOCKED = "PuzzleLocked";   // bool
+    private const string RP_LOCK_OWNER = "LockOwner";       // int ActorNumber
+    private const string RP_ROUND = "Round";           // int; increments to signal a reset
+    private const string PP_PLAYED_ROUND = "PlayedRound";     // bool on each player
 
     public enum PuzzleStage
     {
@@ -101,14 +87,43 @@ public class PuzzleStateManager : MonoBehaviourPun
         Puzzle10,
         Puzzle11
     }
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else { Destroy(gameObject); return; }
+
+        InitStagePanels();
+        DontDestroyOnLoad(gameObject); // optional if changing scenes
+    }
+
+    private void Start()
+    {
+        puzzleHandlers = new Dictionary<PuzzleStage, IPuzzle>
+        {
+            { PuzzleStage.Puzzle1, symptomsCardManager },
+            { PuzzleStage.Puzzle2, symptomsCardManager },
+            { PuzzleStage.Puzzle3, pictureGridManager },
+            { PuzzleStage.Puzzle4, activity2PuzzleManager },
+            { PuzzleStage.Puzzle5, crosswordManager },
+            { PuzzleStage.Puzzle6, diaryPuzzleManager },
+            { PuzzleStage.Puzzle7, prescriptionManager },
+            { PuzzleStage.Puzzle8, insulinPuzzleManager },
+            { PuzzleStage.Puzzle9, wordSearchManager },
+            { PuzzleStage.Puzzle11, deathLapsesManager }
+        };
+
+        string todayDate = DateTime.Now.ToString("dd MMM yyyy");
+        photonView.RPC(nameof(RPC_UpdateStatusText), RpcTarget.All, $"{todayDate}");
+
+        EnsureRoomProps(); // initialize fair-turn props in room
+    }
+
     private void InitStagePanels()
     {
         stagePanels.Clear();
-
-        // Map each stage to its main panel GameObject
-        // ✅ Choose the single panel you consider "the puzzle panel" for that stage
-        stagePanels[PuzzleStage.Puzzle1] = mainminiPuzzle1Panel1; // stage 1 UI
-        stagePanels[PuzzleStage.Puzzle2] = mainminiPuzzle1Panel1; // stage 2 UI
+        stagePanels[PuzzleStage.Puzzle1] = mainminiPuzzle1Panel1;
+        stagePanels[PuzzleStage.Puzzle2] = mainminiPuzzle1Panel1;
         stagePanels[PuzzleStage.Puzzle3] = Puzzle3Panel;
         stagePanels[PuzzleStage.Puzzle4] = Puzzle4Panel;
         stagePanels[PuzzleStage.Puzzle5] = Puzzle5Panel;
@@ -116,65 +131,31 @@ public class PuzzleStateManager : MonoBehaviourPun
         stagePanels[PuzzleStage.Puzzle7] = Puzzle7Panel;
         stagePanels[PuzzleStage.Puzzle8] = Puzzle8Panel;
         stagePanels[PuzzleStage.Puzzle9] = Puzzle9Panel;
-        // Puzzle10 not shown in your fields; add if you have one
         stagePanels[PuzzleStage.Puzzle11] = Puzzle11Panel;
     }
-    private void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
 
-        InitStagePanels();
-        DontDestroyOnLoad(gameObject); // optional if changing scenes
-    }
-    public void OnTimerExpired()
-    {
-        Debug.Log("Timer expired — reloading current puzzle stage.");
-
-        switch (CurrentStage)
-        {
-            case PuzzleStage.Puzzle1:
-                ReloadPuzzle1and2();
-                break;
-            case PuzzleStage.Puzzle2:
-                ReloadPuzzle1and2();
-                break;
-            case PuzzleStage.Puzzle3:
-                ReloadPuzzle3();
-                break;
-            case PuzzleStage.Puzzle4:
-                ReloadPuzzle3();
-                ReloadPuzzle4();
-                break;
-            case PuzzleStage.Puzzle5:
-                ReloadPuzzle5();
-                break;
-            case PuzzleStage.Puzzle6:
-                ReloadPuzzle5();
-                ReloadPuzzle6();
-                break;
-            case PuzzleStage.Puzzle7:
-                ReloadPuzzle7();
-                break;
-            case PuzzleStage.Puzzle8:
-                ReloadPuzzle7();
-                break;
-            case PuzzleStage.Puzzle9:
-                Debug.Log("Restarting Puzzle 9");
-                break;
-        }
-    }
     [PunRPC]
     private void RPC_UpdateStatusText(string message)
     {
-        if (statusText != null)
+        if (statusText != null) statusText.text = message;
+    }
+
+    // ===== Timer-driven reloads =====
+
+    public void OnTimerExpired()
+    {
+        Debug.Log("Timer expired — reloading current puzzle stage.");
+        switch (CurrentStage)
         {
-            statusText.text = message;
+            case PuzzleStage.Puzzle1: ReloadPuzzle1and2(); break;
+            case PuzzleStage.Puzzle2: ReloadPuzzle1and2(); break;
+            case PuzzleStage.Puzzle3: ReloadPuzzle3(); break;
+            case PuzzleStage.Puzzle4: ReloadPuzzle4(); break;
+            case PuzzleStage.Puzzle5: ReloadPuzzle5(); break;
+            case PuzzleStage.Puzzle6: ReloadPuzzle6(); break;
+            case PuzzleStage.Puzzle7: ReloadPuzzle7(); break;
+            case PuzzleStage.Puzzle8: ReloadPuzzle7(); break; // if intended to go back
+            case PuzzleStage.Puzzle9: Debug.Log("Restarting Puzzle 9"); break;
         }
     }
 
@@ -182,198 +163,109 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         Debug.Log("Reloading Puzzle 1 and 2");
 
-        // 1. Clear all drop slots
-        DropSlot.ResetAllSlots(); // removes child cards from slots
+        DropSlot.ResetAllSlots();
 
-        // 2. Reset draggable card visuals
         foreach (var card in FindObjectsOfType<Activity1DraggableCard>())
         {
             Image img = card.GetComponent<Image>();
             if (img != null) img.color = Color.white;
-
-            card.ResetCard(); // Snap back to original position
-        }
-        foreach (Activity1DraggableCard card in FindObjectsOfType<Activity1DraggableCard>())
-        {
-            card.ShowFront(); // ✅ Show symptom sprite again
+            card.ResetCard();
+            card.ShowFront();
         }
 
-        // 4. Set UI and timer
         miniPuzzle1Panel1?.SetActive(true);
         miniPuzzle1Header1?.SetActive(true);
         miniPuzzle1Panel2?.SetActive(false);
         miniPuzzle1Header2?.SetActive(false);
         mainminiPuzzle1Panel1?.SetActive(false);
-    
+
         CurrentStage = PuzzleStage.Puzzle1;
 
         if (PhotonNetwork.IsMasterClient)
-        {
-            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
-            if (timerManager != null)
-                timerManager.StartTimer();
-        }
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
     }
+
     public void ReloadPuzzle3()
     {
         Debug.Log("Reloading Puzzle 3");
-
-        // 1. Reset the Picture Grid puzzle data
-        if (pictureGridManager != null)
-        {
-            pictureGridManager.ResetPuzzle(); // ← You must implement this in PictureGridManager
-        }
-
-        // 2. Show Puzzle 3 Panel, hide Puzzle 4 if necessary
-        if (Puzzle3Panel != null) Puzzle3Panel.SetActive(false);
-
-        // 3. Update stage
+        pictureGridManager?.ResetPuzzle();
+        if (Puzzle3Panel != null) Puzzle3Panel.SetActive(true);
         CurrentStage = PuzzleStage.Puzzle3;
 
-        // 4. Restart timer
         if (PhotonNetwork.IsMasterClient)
-        {
-            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
-            if (timerManager != null)
-                timerManager.StartTimer();
-        }
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
     }
+
     public void ReloadPuzzle4()
     {
         Debug.Log("Reloading Puzzle 4");
+        PuzzleTileManager.Instance?.ResetPuzzle();
+        if (Puzzle4Panel != null) Puzzle4Panel.SetActive(true);
+        CurrentStage = PuzzleStage.Puzzle4; // fix
 
-        // 1. Reset the tile rotation puzzle
-        if (PuzzleTileManager.Instance != null)
-        {
-            PuzzleTileManager.Instance.ResetPuzzle(); // ← You must implement this in PuzzleTileManager
-        }
-
-        // 2. Show Puzzle 4 Panel, hide Puzzle 5 if necessary
-        if (Puzzle4Panel != null) Puzzle4Panel.SetActive(false);
-
-        // 3. Update stage
-        CurrentStage = PuzzleStage.Puzzle3;
-
-        // 4. Restart timer
         if (PhotonNetwork.IsMasterClient)
-        {
-            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
-            if (timerManager != null)
-                timerManager.StartTimer();
-        }
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
     }
+
     public void ReloadPuzzle5()
     {
         Debug.Log("Reloading Puzzle 5");
-
-        // 1. Reset crossword puzzle state
-        if (crosswordManager != null)
-        {
-            crosswordManager.ResetPuzzle(); // You must implement this method in CrosswordManager
-        }
-
-        // 2. Show Puzzle 5 Panel, hide Puzzle 6 Panel if needed
-        if (Puzzle5Panel != null) Puzzle5Panel.SetActive(false);
-
-        // 3. Update current stage
+        crosswordManager?.ResetPuzzle();
+        if (Puzzle5Panel != null) Puzzle5Panel.SetActive(true);
         CurrentStage = PuzzleStage.Puzzle5;
 
-        // 4. Restart timer
         if (PhotonNetwork.IsMasterClient)
-        {
-            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
-            if (timerManager != null)
-                timerManager.StartTimer();
-        }
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
     }
+
     public void ReloadPuzzle6()
     {
         Debug.Log("Reloading Puzzle 6");
+        diaryPuzzleManager?.ResetPuzzle();
+        if (Puzzle6Panel != null) Puzzle6Panel.SetActive(true);
+        CurrentStage = PuzzleStage.Puzzle6; // fix
 
-        // 1. Reset diary puzzle
-        if (diaryPuzzleManager != null)
-        {
-            diaryPuzzleManager.ResetPuzzle(); // You must implement this method in DiaryPuzzleManager
-        }
-
-        // 2. Show Puzzle 6 panel
-        if (Puzzle6Panel != null) Puzzle6Panel.SetActive(false);
-
-        // 3. Update current stage
-        CurrentStage = PuzzleStage.Puzzle5;
-
-        // 4. Restart timer
         if (PhotonNetwork.IsMasterClient)
-        {
-            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
-            if (timerManager != null)
-                timerManager.StartTimer();
-        }
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
     }
 
     public void ReloadPuzzle7()
     {
         Debug.Log("Reloading Puzzle 7");
-
-        // 1. Reset prescription inut field
-        if (prescriptionManager != null)
-        {
-            prescriptionManager.ResetPuzzle(); // You must implement this method in prescriptionManager
-        }
-
-        if (Puzzle7Panel != null) Puzzle7Panel.SetActive(false);
-
-        // 3. Update current stage
+        prescriptionManager?.ResetPuzzle();
+        if (Puzzle7Panel != null) Puzzle7Panel.SetActive(true);
         CurrentStage = PuzzleStage.Puzzle7;
 
-        // 4. Restart timer
         if (PhotonNetwork.IsMasterClient)
-        {
-            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
-            if (timerManager != null)
-                timerManager.StartTimer();
-        }
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
     }
 
+    // ===== Stage completion handlers =====
 
-    public void MarkCorrect(string symptom)
-    {
-        correctSymptomsFromPuzzle1.Add(symptom);
-    }
-
-    public bool IsSymptomCorrect(string symptom)
-    {
-        return correctSymptomsFromPuzzle1.Contains(symptom);
-    }
+    public void MarkCorrect(string symptom) => correctSymptomsFromPuzzle1.Add(symptom);
+    public bool IsSymptomCorrect(string symptom) => correctSymptomsFromPuzzle1.Contains(symptom);
 
     private void HandlePuzzle1Complete()
     {
         Debug.Log("Puzzle 1 complete! Now starting Puzzle 2...");
-        // Reset card visuals before showing Puzzle 2
+
         foreach (DropSlot slot in DropSlot.allDropSlots)
         {
             foreach (DraggableCard card in slot.GetCardsInSlot())
             {
-                Image img = card.GetComponent<Image>();
+                var img = card.GetComponent<Image>();
                 if (img != null) img.color = Color.white;
             }
         }
 
         foreach (Activity1DraggableCard card in FindObjectsOfType<Activity1DraggableCard>())
-        {
-            card.ShowBack(); // Show bear sprite
-        }
+            card.ShowBack();
 
-        if (miniPuzzle1Panel1 != null)
-            miniPuzzle1Panel1.SetActive(false);
+        miniPuzzle1Panel1?.SetActive(false);
+        miniPuzzle1Panel2?.SetActive(true);
+        if (miniPuzzle1Header1) miniPuzzle1Header1.SetActive(false);
+        if (miniPuzzle1Header2) miniPuzzle1Header2.SetActive(true);
 
-        // Enable puzzle 2 panel/UI
-        if (miniPuzzle1Panel2 != null)
-            miniPuzzle1Panel2.SetActive(true);
-
-        miniPuzzle1Header1.SetActive(false);
-        miniPuzzle1Header2.SetActive(true);
-       
         CurrentStage = PuzzleStage.Puzzle2;
     }
 
@@ -381,156 +273,124 @@ public class PuzzleStateManager : MonoBehaviourPun
     {
         Debug.Log("Puzzle 2 complete! You win!");
 
-        // Enable puzzle 2 panel/UI
-        if (miniPuzzle1Panel2 != null)
-            miniPuzzle1Panel2.SetActive(false);
+        miniPuzzle1Panel2?.SetActive(false);
+        if (miniPuzzle1Header2) miniPuzzle1Header2.SetActive(false);
+        mainminiPuzzle1Panel1?.SetActive(false);
 
-        miniPuzzle1Header2.SetActive(false);
-
-        // Enable puzzle 2 panel/UI
-        if (mainminiPuzzle1Panel1 != null)
-            mainminiPuzzle1Panel1.SetActive(false);
         photonView.RPC(nameof(RPC_UpdateStatusText), RpcTarget.All, "2h before death");
-
         GetKeyUponCompletion(puzzle1Object, "Time Crystal1");
 
         CurrentStage = PuzzleStage.Puzzle3;
-
         ResetTimer();
-       
     }
 
     public void HandlePuzzle3Complete()
     {
         Debug.Log("Puzzle 3 completed correctly!");
-        Puzzle3Panel.SetActive(false);
-        Puzzle4Panel.SetActive(true);
+        Puzzle3Panel?.SetActive(false);
+        Puzzle4Panel?.SetActive(true);
         CurrentStage = PuzzleStage.Puzzle4;
     }
 
     public void HandlePuzzle4Complete()
     {
         Debug.Log("Puzzle 4 completed correctly!");
-        Puzzle4Panel.SetActive(false);
+        Puzzle4Panel?.SetActive(false);
 
         photonView.RPC(nameof(RPC_UpdateStatusText), RpcTarget.All, "2 weeks before death");
         GetKeyUponCompletion(puzzle2Object, "Time Crystal2");
 
         CurrentStage = PuzzleStage.Puzzle5;
-
         ResetTimer();
-
     }
 
     public void HandlePuzzle5Complete()
     {
         Debug.Log("Puzzle 5 completed correctly!");
-        Puzzle5Panel.SetActive(false);
-        Puzzle6Panel.SetActive(true);
+        Puzzle5Panel?.SetActive(false);
+        Puzzle6Panel?.SetActive(true);
         CurrentStage = PuzzleStage.Puzzle6;
-
         ResetTimer();
-
     }
+
     public void HandlePuzzle6Complete()
     {
         Debug.Log("Puzzle 6 completed correctly!");
-        Puzzle6Panel.SetActive(false);
+        Puzzle6Panel?.SetActive(false);
 
         GetKeyUponCompletion(puzzle3Object, "Time Crystal3");
 
         CurrentStage = PuzzleStage.Puzzle7;
-
         ResetTimer();
-
     }
 
     public void HandlePuzzle7Complete()
     {
         Debug.Log("Puzzle 7 completed correctly!");
-        Puzzle7Panel.SetActive(false);
-        Puzzle8Panel.SetActive(true);
+        Puzzle7Panel?.SetActive(false);
+        Puzzle8Panel?.SetActive(true);
 
         CurrentStage = PuzzleStage.Puzzle8;
-
         ResetTimer();
-
     }
 
     public void HandlePuzzle8Complete()
     {
         Debug.Log("Puzzle 8 completed correctly!");
-        Puzzle8Panel.SetActive(false);
+        Puzzle8Panel?.SetActive(false);
 
         CurrentStage = PuzzleStage.Puzzle9;
 
         GetKeyUponCompletion(puzzle4Object, "Time Crystal4");
-
         ResetTimer();
     }
 
     public void HandlePuzzle9Complete()
     {
         Debug.Log("Puzzle 9 completed correctly!");
-        Puzzle9Panel.SetActive(false);
+        Puzzle9Panel?.SetActive(false);
 
         CurrentStage = PuzzleStage.Puzzle10;
-
         ResetTimer();
     }
 
     public void HandlePuzzle11Complete()
     {
         Debug.Log("Puzzle 11 completed correctly!");
-        Puzzle11Panel.SetActive(false);
+        Puzzle11Panel?.SetActive(false);
 
         GetKeyUponCompletion(puzzle5Object, "Time Crystal5");
-
         ResetTimer();
     }
 
-
     public void ResetTimer()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            GameTimerManager timerManager = FindObjectOfType<GameTimerManager>();
-            if (timerManager != null)
-            {
-                Debug.Log("Reset timer");
-                timerManager.StartTimer(); // This already syncs the timer
+        if (!PhotonNetwork.IsMasterClient) return;
 
-                PhotonView timerView = timerManager.GetComponent<PhotonView>();
-                if (timerView != null)
-                {
-                    timerView.RPC("HideTimeWarning", RpcTarget.All);
-                }
-                else
-                {
-                    Debug.LogError("GameTimerManager has no PhotonView attached!");
-                }
-            }
-        }
+        var timerManager = FindObjectOfType<GameTimerManager>();
+        if (timerManager == null) return;
+
+        Debug.Log("Reset timer");
+        timerManager.StartTimer();
+
+        PhotonView timerView = timerManager.GetComponent<PhotonView>();
+        if (timerView != null) timerView.RPC("HideTimeWarning", RpcTarget.All);
+        else Debug.LogError("GameTimerManager has no PhotonView attached!");
     }
 
     private void GetKeyUponCompletion(GameObject puzzleTriggerObject, string keyName)
     {
-        // Ask the Master Client to destroy it
         if (puzzleTriggerObject != null)
         {
             PhotonView puzzlePV = puzzleTriggerObject.GetComponent<PhotonView>();
             if (puzzlePV != null)
-            {
                 photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
-            }
             else
-            {
                 Debug.LogError("Puzzle object does not have a PhotonView component!");
-            }
         }
+
         photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, keyName);
     }
-
 
     [PunRPC]
     private void RPC_DestroyPuzzleObjectByID(int photonViewID)
@@ -547,31 +407,18 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
-    void RPC_AddSharedInventoryItem(string itemName)
-    {
-        StartCoroutine(DelayedAddItem(itemName));
-    }
+    [PunRPC] private void RPC_AddSharedInventoryItem(string itemName) => StartCoroutine(DelayedAddItem(itemName));
 
-    IEnumerator DelayedAddItem(string itemName)
+    private IEnumerator DelayedAddItem(string itemName)
     {
-        while (InventorySystem.Instance == null || InventoryUIManager.Instance == null)
-            yield return null;
-
+        while (InventorySystem.Instance == null || InventoryUIManager.Instance == null) yield return null;
         InventorySystem.Instance.AddItem(itemName);
         InventoryUIManager.Instance.UpdateInventoryUI();
     }
 
-    public void DelayThen(Action callback, float delay = 10f)
-    {
-        StartCoroutine(DelayedCallback(callback, delay));
-    }
+    public void DelayThen(Action callback, float delay = 10f) => StartCoroutine(DelayedCallback(callback, delay));
+    private IEnumerator DelayedCallback(Action callback, float delay) { yield return new WaitForSeconds(delay); callback?.Invoke(); }
 
-    private IEnumerator DelayedCallback(Action callback, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        callback?.Invoke();
-    }
     private void HandlePuzzleCompletion(PuzzleStage stage)
     {
         switch (stage)
@@ -590,18 +437,15 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
+    // Use RPC to advance for everyone after delay (fair-turn compatible)
     public void Submit()
     {
         if (puzzleHandlers.TryGetValue(CurrentStage, out IPuzzle puzzle))
         {
             if (puzzle.IsSolved())
-            {
-                DelayThen(() => HandlePuzzleCompletion(CurrentStage), delayTransition);
-            }
+                StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition)); // RPC
             else
-            {
                 Debug.Log($"Puzzle {CurrentStage} incomplete or incorrect.");
-            }
         }
         else
         {
@@ -609,36 +453,185 @@ public class PuzzleStateManager : MonoBehaviourPun
         }
     }
 
-    private GameObject GetPanelForStage(PuzzleStage stage)
+    private IEnumerator DelayAndAdvance(PuzzleStage stage, float delay)
     {
-        return (stagePanels != null && stagePanels.TryGetValue(stage, out var panel)) ? panel : null;
+        yield return new WaitForSeconds(delay);
+        photonView.RPC(nameof(RPC_AdvanceStageForAll), RpcTarget.AllBuffered, (int)stage);
     }
+
+    [PunRPC]
+    private void RPC_AdvanceStageForAll(int stageInt)
+    {
+        var stage = (PuzzleStage)stageInt;
+        HandlePuzzleCompletion(stage);
+
+        // Master clears room lock & bumps round (resets per-player tries)
+        if (PhotonNetwork.IsMasterClient)
+        {
+            var room = PhotonNetwork.CurrentRoom;
+            int round = room.CustomProperties.ContainsKey(RP_ROUND)
+                        ? (int)room.CustomProperties[RP_ROUND] : 1;
+
+            var ht = new Hashtable
+            {
+                [RP_PUZZLE_LOCKED] = false,
+                [RP_LOCK_OWNER] = -1,
+                [RP_ROUND] = round + 1
+            };
+            room.SetCustomProperties(ht);
+        }
+    }
+
+    private GameObject GetPanelForStage(PuzzleStage stage) =>
+        (stagePanels != null && stagePanels.TryGetValue(stage, out var panel)) ? panel : null;
 
     public void OpenCurrentStagePanel()
     {
         var panel = GetPanelForStage(CurrentStage);
-        if (panel != null)
-        {
-            panel.SetActive(true);
-            currentPuzzlePanel = panel;
-        }
+        if (panel != null) { panel.SetActive(true); currentPuzzlePanel = panel; }
     }
 
     public void CloseCurrentPuzzle()
     {
-        // Uses enum → panel map; no need to maintain per-handler code
         var panel = GetPanelForStage(CurrentStage);
-        if (panel != null && panel.activeSelf)
+        if (panel != null && panel.activeSelf) { panel.SetActive(false); Debug.Log($"Closed {panel.name}"); }
+        else Debug.Log("No current puzzle panel to close.");
+    }
+
+    // ==== Fair-turn system additions ====
+
+    private void EnsureRoomProps()
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        var room = PhotonNetwork.CurrentRoom;
+        var changed = new Hashtable();
+
+        if (!room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED)) changed[RP_PUZZLE_LOCKED] = false;
+        if (!room.CustomProperties.ContainsKey(RP_LOCK_OWNER)) changed[RP_LOCK_OWNER] = -1;
+        if (!room.CustomProperties.ContainsKey(RP_ROUND)) changed[RP_ROUND] = 1;
+
+        if (changed.Count > 0) room.SetCustomProperties(changed);
+    }
+
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+    {
+        if (propertiesThatChanged.ContainsKey(RP_ROUND))
         {
-            panel.SetActive(false);
-            Debug.Log($"Closed {panel.name}");
-        }
-        else
-        {
-            Debug.Log("No current puzzle panel to close.");
+            var me = PhotonNetwork.LocalPlayer;
+            var meProps = new Hashtable { [PP_PLAYED_ROUND] = false };
+            me.SetCustomProperties(meProps);
         }
     }
 
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
 
+        var room = PhotonNetwork.CurrentRoom;
 
+        int owner = -1;
+        if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER))
+            owner = (int)room.CustomProperties[RP_LOCK_OWNER];
+
+        if (owner == otherPlayer.ActorNumber)
+        {
+            var ht = new Hashtable { [RP_PUZZLE_LOCKED] = false, [RP_LOCK_OWNER] = -1 };
+            room.SetCustomProperties(ht);
+        }
+
+        MaybeAdvanceRoundIfEveryonePlayed();
+    }
+
+    // Gate attempt; called by triggers
+    public bool TryBeginAttempt(out string reason)
+    {
+        reason = null;
+
+        var me = PhotonNetwork.LocalPlayer;
+        var room = PhotonNetwork.CurrentRoom;
+
+        bool locked = room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED) &&
+                      (bool)room.CustomProperties[RP_PUZZLE_LOCKED];
+
+        int owner = -1;
+        if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER))
+            owner = (int)room.CustomProperties[RP_LOCK_OWNER];
+
+        bool iPlayed = me.CustomProperties != null &&
+                       me.CustomProperties.ContainsKey(PP_PLAYED_ROUND) &&
+                       (bool)me.CustomProperties[PP_PLAYED_ROUND];
+
+        if (iPlayed)
+        {
+            reason = "You’ve already taken your turn this round.";
+            MaybeAdvanceRoundIfEveryonePlayed();
+            return false;
+        }
+
+        if (locked && owner != me.ActorNumber)
+        {
+            reason = "Another player is currently holding this puzzle.";
+            return false;
+        }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            var ht = new Hashtable { [RP_PUZZLE_LOCKED] = true, [RP_LOCK_OWNER] = me.ActorNumber };
+            room.SetCustomProperties(ht);
+        }
+        else
+        {
+            photonView.RPC(nameof(RPC_RequestLockFromMaster), RpcTarget.MasterClient, me.ActorNumber);
+        }
+
+        me.SetCustomProperties(new Hashtable { [PP_PLAYED_ROUND] = true });
+        return true;
+    }
+
+    [PunRPC]
+    private void RPC_RequestLockFromMaster(int actorNumber)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        var room = PhotonNetwork.CurrentRoom;
+
+        bool locked = room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED) &&
+                      (bool)room.CustomProperties[RP_PUZZLE_LOCKED];
+
+        int owner = -1;
+        if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER))
+            owner = (int)room.CustomProperties[RP_LOCK_OWNER];
+
+        if (!locked || owner == actorNumber)
+        {
+            var ht = new Hashtable { [RP_PUZZLE_LOCKED] = true, [RP_LOCK_OWNER] = actorNumber };
+            room.SetCustomProperties(ht);
+        }
+    }
+
+    private void MaybeAdvanceRoundIfEveryonePlayed()
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        foreach (var p in PhotonNetwork.PlayerList)
+        {
+            bool played = p.CustomProperties != null &&
+                          p.CustomProperties.ContainsKey(PP_PLAYED_ROUND) &&
+                          (bool)p.CustomProperties[PP_PLAYED_ROUND];
+            if (!played) return; // someone still hasn't had a turn
+        }
+
+        var room = PhotonNetwork.CurrentRoom;
+        int round = room.CustomProperties.ContainsKey(RP_ROUND)
+                    ? (int)room.CustomProperties[RP_ROUND] : 1;
+
+        var ht = new Hashtable
+        {
+            [RP_ROUND] = round + 1,
+            [RP_PUZZLE_LOCKED] = false,
+            [RP_LOCK_OWNER] = -1
+        };
+        room.SetCustomProperties(ht);
+    }
 }
