@@ -544,6 +544,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     }
 
     // Gate attempt; called by triggers
+    // Gate attempt; called by triggers
     public bool TryBeginAttempt(out string reason)
     {
         reason = null;
@@ -562,6 +563,20 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
                        me.CustomProperties.ContainsKey(PP_PLAYED_ROUND) &&
                        (bool)me.CustomProperties[PP_PLAYED_ROUND];
 
+        // ✅ 1) If the puzzle is locked by ME, always allow me to reopen/close/reopen.
+        if (locked && owner == me.ActorNumber)
+        {
+            return true; // don't change any props; I still hold the lock
+        }
+
+        // 2) If someone else holds it, block.
+        if (locked && owner != me.ActorNumber)
+        {
+            reason = "Another player is currently holding this puzzle.";
+            return false;
+        }
+
+        // 3) If it's not locked and I've already taken my turn this round, block starting a (new) attempt.
         if (iPlayed)
         {
             reason = "You’ve already taken your turn this round.";
@@ -569,15 +584,14 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             return false;
         }
 
-        if (locked && owner != me.ActorNumber)
-        {
-            reason = "Another player is currently holding this puzzle.";
-            return false;
-        }
-
+        // 4) Otherwise acquire the lock and mark my turn as spent.
         if (PhotonNetwork.IsMasterClient)
         {
-            var ht = new Hashtable { [RP_PUZZLE_LOCKED] = true, [RP_LOCK_OWNER] = me.ActorNumber };
+            var ht = new Hashtable
+            {
+                [RP_PUZZLE_LOCKED] = true,
+                [RP_LOCK_OWNER] = me.ActorNumber
+            };
             room.SetCustomProperties(ht);
         }
         else
@@ -588,6 +602,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         me.SetCustomProperties(new Hashtable { [PP_PLAYED_ROUND] = true });
         return true;
     }
+
 
     [PunRPC]
     private void RPC_RequestLockFromMaster(int actorNumber)
