@@ -141,7 +141,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     }
 
     // ===== Timer-driven reloads =====
-
     public void OnTimerExpired()
     {
         Debug.Log("Timer expired — reloading current puzzle stage.");
@@ -241,7 +240,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     }
 
     // ===== Stage completion handlers =====
-
     public void MarkCorrect(string symptom) => correctSymptomsFromPuzzle1.Add(symptom);
     public bool IsSymptomCorrect(string symptom) => correctSymptomsFromPuzzle1.Contains(symptom);
 
@@ -465,20 +463,22 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         var stage = (PuzzleStage)stageInt;
         HandlePuzzleCompletion(stage);
 
-        // Master clears room lock & bumps round (resets per-player tries)
+        // === CHANGE: Do NOT bump the round here ===
+        // Master only unlocks and checks if everyone has played. Round will bump inside MaybeAdvanceRoundIfEveryonePlayed().
         if (PhotonNetwork.IsMasterClient)
         {
             var room = PhotonNetwork.CurrentRoom;
-            int round = room.CustomProperties.ContainsKey(RP_ROUND)
-                        ? (int)room.CustomProperties[RP_ROUND] : 1;
 
-            var ht = new Hashtable
+            // release lock for next player
+            var unlock = new Hashtable
             {
                 [RP_PUZZLE_LOCKED] = false,
-                [RP_LOCK_OWNER] = -1,
-                [RP_ROUND] = round + 1
+                [RP_LOCK_OWNER] = -1
             };
-            room.SetCustomProperties(ht);
+            room.SetCustomProperties(unlock);
+
+            // If everyone has taken a turn, bump the round (which resets PP_PLAYED_ROUND on all via OnRoomPropertiesUpdate).
+            MaybeAdvanceRoundIfEveryonePlayed();
         }
     }
 
