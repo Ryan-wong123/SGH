@@ -1,33 +1,47 @@
-using System.Collections;
 using UnityEngine;
 
 public class PuzzleTrigger : MonoBehaviour, IInteractable, IHighlightable
 {
-    [Header("Puzzle Panel")]
-    private HighlightEffect highlightEffect;
+    [Header("Refs")]
     [SerializeField] private PuzzleStateManager puzzleStateManager;
+
+    private HighlightEffect highlightEffect;
 
     private void Awake()
     {
         gameObject.layer = LayerMask.NameToLayer("Interactable");
         highlightEffect = GetComponent<HighlightEffect>();
     }
-    public void Highlight() => highlightEffect?.Highlight();
-    public void Unhighlight() => highlightEffect?.Unhighlight();
 
+    // IInteractable
     public void Interact()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        // Register this puzzle with the SidebarMenuManager
-        FindObjectOfType<SidebarMenuManager>().SetActivePuzzle(this);
-        puzzleStateManager.OpenCurrentStagePanel();
+        if (puzzleStateManager == null)
+        {
+            Debug.LogWarning("PuzzleTrigger: PuzzleStateManager is not assigned.");
+            return;
+        }
+
+        if (puzzleStateManager.TryBeginAttempt(out string reason))
+        {
+            // Allow cursor and open panel for current stage
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            puzzleStateManager.OpenCurrentStagePanel();
+        }
+        else
+        {
+            Debug.Log(reason);
+            // Optionally show a UI toast here
+        }
     }
 
-    public string GetInteractionPrompt()
-    {
-        return "Press E to start puzzle";
-    }
+    public string GetInteractionPrompt() => "Press E to start puzzle";
+
+    // IHighlightable
+    public void Highlight() => highlightEffect?.Highlight();
+    public void Unhighlight() => highlightEffect?.Unhighlight();
 
     public void ClosePuzzle()
     {
@@ -35,5 +49,4 @@ public class PuzzleTrigger : MonoBehaviour, IInteractable, IHighlightable
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-
 }

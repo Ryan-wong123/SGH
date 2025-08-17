@@ -49,6 +49,8 @@ MonoBehaviour:
   - ShowTimeWarning
   - HideTimeWarning
   - RPC_UpdateStatusText
+  - RPC_AdvanceStageForAll
+  - RPC_RequestLockFromMaster
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
