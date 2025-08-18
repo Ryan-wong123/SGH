@@ -280,6 +280,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         CurrentStage = PuzzleStage.Puzzle3;
         ResetTimer();
+
+       
     }
 
     public void HandlePuzzle3Complete()
@@ -359,6 +361,9 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         GetKeyUponCompletion(puzzle5Object, "Time Crystal5");
         ResetTimer();
+
+        if (PuzzleScoreTracker.Instance != null)
+            PuzzleScoreTracker.Instance.ShowEndScreen();
     }
 
     public void ResetTimer()
@@ -441,15 +446,24 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         if (puzzleHandlers.TryGetValue(CurrentStage, out IPuzzle puzzle))
         {
             if (puzzle.IsSolved())
-                StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition)); // RPC
+            {
+                StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
+            }
             else
+            {
+                // 🔴 Record a wrong attempt with the scoreboard
+                if (PuzzleScoreTracker.Instance != null)
+                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
+
                 Debug.Log($"Puzzle {CurrentStage} incomplete or incorrect.");
+            }
         }
         else
         {
             Debug.LogWarning($"No handler found for puzzle stage {CurrentStage}");
         }
     }
+
 
     private IEnumerator DelayAndAdvance(PuzzleStage stage, float delay)
     {
