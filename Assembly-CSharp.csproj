@@ -72,6 +72,7 @@
     <Compile Include="Assets\Scripts\GameTimeManager.cs" />
     <Compile Include="Assets\Scripts\networking\ChatManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
+    <Compile Include="Assets\Scripts\Player\ClueSystem.cs" />
     <Compile Include="Assets\Scripts\Interactable\PuzzlePanelTrigger.cs" />
     <Compile Include="Assets\Scripts\Keypad\KeypadButton.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />

@@ -35169,7 +35169,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: 5
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -113242,6 +113242,7 @@ GameObject:
   - component: {fileID: 2075314853}
   - component: {fileID: 2075314854}
   - component: {fileID: 2075314855}
+  - component: {fileID: 2075314856}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -113446,6 +113447,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popupPanel: {fileID: 697941973}
   cardImageDisplay: {fileID: 400433953}
+--- !u!114 &2075314856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075314845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a50df711b5c84774c9ed217e89673e32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridParent: {fileID: 686963440}
+  clueSlotPrefab: {fileID: 691012995963321010, guid: 0f800573e79339d4783353acd8b3cc7c, type: 3}
+  lockedPlaceholder: {fileID: 21300000, guid: 80379d68160aa1849a14c6df7246cffc, type: 3}
+  allClues: []
+  enablePolling: 0
+  pollIntervalSeconds: 0.5
+  lockOverlayChildName: LockOverlay
 --- !u!1001 &2075718925
 PrefabInstance:
   m_ObjectHideFlags: 0

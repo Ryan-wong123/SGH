@@ -65,6 +65,8 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
 
         InventorySystem.Instance.AddItem(itemName);
         InventoryUIManager.Instance.UpdateInventoryUI();
+        ClueSystem.Instance?.RefreshUI();
+
     }
 
     [PunRPC]
