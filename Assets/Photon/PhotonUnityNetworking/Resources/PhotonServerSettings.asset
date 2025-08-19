@@ -52,6 +52,7 @@ MonoBehaviour:
   - RPC_AdvanceStageForAll
   - RPC_RequestLockFromMaster
   - RPC_RequestAddWrong
+  - SyncCluePickup
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

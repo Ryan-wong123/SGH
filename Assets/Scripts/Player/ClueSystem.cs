@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,21 +27,16 @@ public class ClueSystem : MonoBehaviour
     [Header("All Clues (grid order)")]
     [SerializeField] private List<ClueDef> allClues = new();
 
-    [Header("Auto-refresh (optional)")]
-    [Tooltip("If true, will poll InventorySystem periodically in case you don't call RefreshUI() manually.")]
-    [SerializeField] private bool enablePolling = false;
-    [SerializeField] private float pollIntervalSeconds = 0.5f;
-
     // Runtime
     private readonly Dictionary<string, Slot> slots = new(); // id -> UI
-    private readonly HashSet<string> lastSnapshot = new();   // for polling change-detect
+    private readonly HashSet<string> collected = new();      // collected clue ids
 
     [Serializable]
     private class Slot
     {
         public Image icon;
         public Sprite lockedSprite;    // required
-        public Sprite revealedSprite;  // optional but recommended
+        public Sprite revealedSprite;  // required
     }
 
     private void Awake()
@@ -55,9 +49,6 @@ public class ClueSystem : MonoBehaviour
     {
         BuildGrid();
         RefreshUI();
-
-        if (enablePolling)
-            StartCoroutine(PollInventoryLoop());
     }
 
     private void OnDestroy()
@@ -72,21 +63,10 @@ public class ClueSystem : MonoBehaviour
 
         foreach (var def in allClues)
         {
-            if (def == null)
-            {
-                Debug.LogError("[ClueSystem] Null ClueDef in list.");
-                continue;
-            }
-            if (string.IsNullOrWhiteSpace(def.id))
-            {
-                Debug.LogError("[ClueSystem] ClueDef has empty id.");
-                continue;
-            }
-            if (def.lockedSprite == null)
-            {
-                Debug.LogError($"[ClueSystem] Clue '{def.id}' is missing a lockedSprite. Slot will not be created.");
-                continue; // strict: no fallback
-            }
+            if (def == null) { Debug.LogError("[ClueSystem] Null ClueDef in list."); continue; }
+            if (string.IsNullOrWhiteSpace(def.id)) { Debug.LogError("[ClueSystem] ClueDef has empty id."); continue; }
+            if (def.lockedSprite == null) { Debug.LogError($"[ClueSystem] '{def.id}' missing lockedSprite."); continue; }
+            if (def.revealedSprite == null) { Debug.LogError($"[ClueSystem] '{def.id}' missing revealedSprite."); continue; }
 
             var go = Instantiate(clueSlotPrefab, gridParent);
 
@@ -94,7 +74,7 @@ public class ClueSystem : MonoBehaviour
             var icon = go.GetComponentInChildren<Image>(true);
             if (icon == null)
             {
-                Debug.LogError("[ClueSystem] clueSlotPrefab must contain an Image component.");
+                Debug.LogError("[ClueSystem] clueSlotPrefab must contain an Image.");
                 Destroy(go);
                 continue;
             }
@@ -111,58 +91,36 @@ public class ClueSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Sync clue icons with InventorySystem (call after inventory updates or on demand).
-    /// </summary>
+    /// <summary>Add a clue by ID (call from PickupItem when a clue is collected).</summary>
+    public void AddClue(string id)
+    {
+        if (string.IsNullOrWhiteSpace(id)) return;
+        collected.Add(id);
+        RefreshUI();
+    }
+
+    /// <summary>Return whether a clue has been collected.</summary>
+    public bool HasClue(string id) => collected.Contains(id);
+
+    /// <summary>Clear all collected clues (e.g., on level reset).</summary>
+    public void ClearAllClues()
+    {
+        collected.Clear();
+        RefreshUI();
+    }
+
+    /// <summary>Update icons based on collected set.</summary>
     public void RefreshUI()
     {
         foreach (var kvp in slots)
         {
             string id = kvp.Key;
             var s = kvp.Value;
+            bool isCollected = collected.Contains(id);
 
-            bool isCollected = InventorySystem.Instance != null &&
-                               InventorySystem.Instance.HasItem(id);
-
-            if (isCollected)
-            {
-                if (s.icon && s.revealedSprite) s.icon.sprite = s.revealedSprite;
-            }
-            else
-            {
-                if (s.icon && s.lockedSprite) s.icon.sprite = s.lockedSprite;
-            }
+            if (s.icon)
+                s.icon.sprite = isCollected ? s.revealedSprite : s.lockedSprite;
         }
-    }
-
-    /// <summary>
-    /// Optional polling if you don't want to manually call RefreshUI().
-    /// </summary>
-    private IEnumerator PollInventoryLoop()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(pollIntervalSeconds);
-
-            if (InventorySystem.Instance == null) continue;
-
-            if (SnapshotChanged()) RefreshUI();
-        }
-    }
-
-    private bool SnapshotChanged()
-    {
-        var temp = new HashSet<string>();
-        foreach (var item in InventorySystem.Instance.GetAllItems())
-            temp.Add(item);
-
-        if (!temp.SetEquals(lastSnapshot))
-        {
-            lastSnapshot.Clear();
-            foreach (var v in temp) lastSnapshot.Add(v);
-            return true;
-        }
-        return false;
     }
 
 #if UNITY_EDITOR
@@ -179,6 +137,9 @@ public class ClueSystem : MonoBehaviour
 
             if (def.lockedSprite == null)
                 Debug.LogWarning($"[ClueSystem] Clue '{def?.id}' has no lockedSprite assigned (required).");
+
+            if (def.revealedSprite == null)
+                Debug.LogWarning($"[ClueSystem] Clue '{def?.id}' has no revealedSprite assigned (required).");
         }
     }
 #endif

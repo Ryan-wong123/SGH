@@ -6,6 +6,8 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
 {
     [Header("Pickup Info")]
     [SerializeField] private string itemName = "Key";
+    [SerializeField] private bool isClue = false;
+
 
     private HighlightEffect highlightEffect;
     private void Awake()
@@ -41,10 +43,9 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
     }
 
     public void Interact()
-    {
+    { 
         photonView.RPC(nameof(SyncItemPickup), RpcTarget.AllBuffered, itemName);
         photonView.RPC(nameof(RequestDestroy), RpcTarget.MasterClient);
-
     }
 
     [PunRPC]
@@ -63,9 +64,17 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
 
         Debug.Log($"Adding {itemName}");
 
-        InventorySystem.Instance.AddItem(itemName);
-        InventoryUIManager.Instance.UpdateInventoryUI();
-        ClueSystem.Instance?.RefreshUI();
+        if (isClue)
+        {
+            ClueSystem.Instance?.AddClue(itemName);
+            ClueSystem.Instance?.RefreshUI();
+        }
+        else
+        {
+            InventorySystem.Instance?.AddItem(itemName);
+            InventoryUIManager.Instance?.UpdateInventoryUI();
+        }
+
 
     }
 
