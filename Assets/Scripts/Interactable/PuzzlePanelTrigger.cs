@@ -1,11 +1,18 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PuzzleTrigger : MonoBehaviour, IInteractable, IHighlightable
 {
     [Header("Refs")]
     [SerializeField] private PuzzleStateManager puzzleStateManager;
+    [SerializeField] private ClueUI clueUI;     // <-- Assign your ClueUI manager in Inspector
+
+    [Header("Clue Selection")]
+    [SerializeField] private string clueId;     // <-- ID defined in ClueUI.clues
 
     private HighlightEffect highlightEffect;
+
+    // ✅ Track if this clue was already shown
+    private bool clueAlreadyViewed = false;
 
     private void Awake()
     {
@@ -22,19 +29,40 @@ public class PuzzleTrigger : MonoBehaviour, IInteractable, IHighlightable
             return;
         }
 
-        if (puzzleStateManager.TryBeginAttempt(out string reason))
+        if (!puzzleStateManager.TryBeginAttempt(out string reason))
         {
-            // Allow cursor and open panel for current stage
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            Debug.Log(reason);
+            return;
+        }
 
-            puzzleStateManager.OpenCurrentStagePanel();
+        // First time → show clue
+        if (!clueAlreadyViewed && clueUI != null && !string.IsNullOrWhiteSpace(clueId) && clueUI.HasClueId(clueId))
+        {
+            bool showed = clueUI.ShowById(clueId, onClosed: () =>
+            {
+                clueAlreadyViewed = true;   // mark clue as viewed
+                OpenPuzzle();
+            });
+
+            if (!showed)
+            {
+                clueAlreadyViewed = true;   // mark as viewed anyway
+                OpenPuzzle();
+            }
         }
         else
         {
-            Debug.Log(reason);
-            // Optionally show a UI toast here
+            // Already viewed → skip straight to puzzle
+            OpenPuzzle();
         }
+    }
+
+    private void OpenPuzzle()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        puzzleStateManager.OpenCurrentStagePanel();
     }
 
     public string GetInteractionPrompt() => "Press E to start puzzle";
