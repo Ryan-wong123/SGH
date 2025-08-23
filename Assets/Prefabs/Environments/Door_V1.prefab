@@ -94,6 +94,11 @@ MonoBehaviour:
   isLocked: 0
   requiresKey: 0
   keyName: Key
+  isLeftDoor: 0
+  openAngle: 90
+  hinge: {fileID: 0}
+  smooth: 1
+  smoothSpeed: 360
 --- !u!114 &8317175646752445814
 MonoBehaviour:
   m_ObjectHideFlags: 0

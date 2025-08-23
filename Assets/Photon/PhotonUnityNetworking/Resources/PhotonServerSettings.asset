@@ -53,6 +53,8 @@ MonoBehaviour:
   - RPC_RequestLockFromMaster
   - RPC_RequestAddWrong
   - SyncCluePickup
+  - RPC_ToggleDoor
+  - RPC_SetOpen
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
