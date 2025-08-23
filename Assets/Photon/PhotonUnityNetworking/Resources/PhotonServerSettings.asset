@@ -56,6 +56,8 @@ MonoBehaviour:
   - RPC_ToggleDoor
   - RPC_SetOpen
   - RPC_SetQueueNumber
+  - RPC_SetCaption
+  - RPC_SetDisplayText
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

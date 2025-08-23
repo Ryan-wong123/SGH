@@ -84645,7 +84645,7 @@ GameObject:
   - component: {fileID: 1591424792}
   - component: {fileID: 1591424796}
   m_Layer: 0
-  m_Name: Queue Display
+  m_Name: Queue Display Canteen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84752,16 +84752,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3418aed3d69a23f4281f9fbd6d0a2ca2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberLabel: {fileID: 1840119863}
+  label: {fileID: 1840119863}
+  displayText: 154 > physician consult room
   flashSpeed: 2.5
   alphaRange: {x: 0.25, y: 1}
   cubeRenderer: {fileID: 1591424793}
   pulseEmission: 1
   emissionSpeed: 2
   emissionRange: {x: 0.1, y: 1.5}
-  currentNumber: 154
-  baseTextColor: {r: 1, g: 1, b: 1, a: 1}
-  emissionColor: {r: 0.113636374, g: 1, b: 0, a: 1}
+  emissionColor: {r: 0.11711717, g: 1, b: 0, a: 1}
+  baseTextColor: {r: 1, g: 0.08706564, b: 0, a: 1}
 --- !u!1 &1591716274
 GameObject:
   m_ObjectHideFlags: 0
@@ -98891,7 +98891,7 @@ GameObject:
   - component: {fileID: 1840119864}
   - component: {fileID: 1840119863}
   m_Layer: 0
-  m_Name: QueueNumberDisplay
+  m_Name: QueueNumberDisplayCanteen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98963,8 +98963,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 100
-  m_fontSizeBase: 100
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -98979,7 +98979,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 0
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
