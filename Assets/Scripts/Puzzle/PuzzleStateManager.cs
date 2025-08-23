@@ -385,15 +385,22 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         if (puzzleTriggerObject != null)
         {
-            PhotonView puzzlePV = puzzleTriggerObject.GetComponent<PhotonView>();
-            if (puzzlePV != null)
-                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
-            else
-                Debug.LogError("Puzzle object does not have a PhotonView component!");
+            var trigger = puzzleTriggerObject.GetComponent<PuzzleTrigger>();
+
+            // ✅ Only destroy if trigger is NOT flagged as persistent
+            if (trigger == null || !trigger.dontDestroyOnCompletion)
+            {
+                PhotonView puzzlePV = puzzleTriggerObject.GetComponent<PhotonView>();
+                if (puzzlePV != null)
+                    photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
+                else
+                    Debug.LogError("Puzzle object does not have a PhotonView component!");
+            }
         }
 
         photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, keyName);
     }
+
 
     [PunRPC]
     private void RPC_DestroyPuzzleObjectByID(int photonViewID)

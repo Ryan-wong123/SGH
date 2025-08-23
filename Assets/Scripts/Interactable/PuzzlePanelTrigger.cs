@@ -9,6 +9,10 @@ public class PuzzleTrigger : MonoBehaviour, IInteractable, IHighlightable
     [Header("Clue Selection")]
     [SerializeField] private string clueId;     // <-- ID defined in ClueUI.clues
 
+    [Header("Settings")]
+    [Tooltip("If true, this trigger will NOT be destroyed after puzzle completion.")]
+    public bool dontDestroyOnCompletion = false;
+
     private HighlightEffect highlightEffect;
 
     // ✅ Track if this clue was already shown
