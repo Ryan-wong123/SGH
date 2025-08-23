@@ -55,6 +55,7 @@ MonoBehaviour:
   - SyncCluePickup
   - RPC_ToggleDoor
   - RPC_SetOpen
+  - RPC_SetQueueNumber
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

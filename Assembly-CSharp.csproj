@@ -156,6 +156,7 @@
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 3\PictureGridManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 1\Activity1DraggableCard.cs" />
+    <Compile Include="Assets\Scripts\QueueNumberDisplay.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 11\DeathLapsesManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 8\Activity6DropSlot.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
