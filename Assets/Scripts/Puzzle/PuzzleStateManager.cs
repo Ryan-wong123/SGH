@@ -308,7 +308,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Puzzle 5 completed correctly!");
         Puzzle5Panel?.SetActive(false);
-        Puzzle6Panel?.SetActive(true);
+        //Puzzle6Panel?.SetActive(true);
         CurrentStage = PuzzleStage.Puzzle6;
         ResetTimer();
     }
