@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
 using Photon.Pun;
-using System.Linq;
 
 public class CrosshairInteractor : MonoBehaviourPun
 {
@@ -136,36 +135,42 @@ public class CrosshairInteractor : MonoBehaviourPun
 
     private void UpdateInteractionUIAndHighlight(IInteractable interactable, IHighlightable highlightable)
     {
-        // PROMPT
+        // ----- PROMPT -----
         if (interactable != null)
         {
             if (interactionLabel != null)
             {
-                interactionLabel.gameObject.SetActive(true);
-                interactionLabel.text = interactable.GetInteractionPrompt();
+                string prompt = interactable.GetInteractionPrompt();
+                bool show = !string.IsNullOrEmpty(prompt);
+                interactionLabel.gameObject.SetActive(show);
+                if (show) interactionLabel.text = prompt;
             }
 
-            // Update current target tracking (for prompt refresh)
+            // Track current target (for potential prompt refresh later)
             if (!ReferenceEquals(currentTarget, interactable))
                 currentTarget = interactable;
-            else if (interactionLabel != null)
-                interactionLabel.text = currentTarget.GetInteractionPrompt();
         }
         else
         {
-            // No interactable → hide label
             if (interactionLabel != null)
                 interactionLabel.gameObject.SetActive(false);
-
             currentTarget = null;
         }
 
-        // HIGHLIGHT
+        // ----- HIGHLIGHT -----
         if (!ReferenceEquals(currentHighlight, highlightable))
         {
-            currentHighlight?.Unhighlight();
+            SafeUnhighlight(currentHighlight);
             currentHighlight = highlightable;
-            currentHighlight?.Highlight();
+            SafeHighlight(currentHighlight);
+        }
+        else
+        {
+            // If the cached highlight got destroyed meanwhile, clear it
+            if (!IsUnityAlive(currentHighlight))
+            {
+                currentHighlight = null;
+            }
         }
     }
 
@@ -178,8 +183,31 @@ public class CrosshairInteractor : MonoBehaviourPun
 
         if (currentHighlight != null)
         {
-            currentHighlight.Unhighlight();
+            SafeUnhighlight(currentHighlight);
             currentHighlight = null;
         }
+    }
+
+    // ---------- Safe helpers for IHighlightable ----------
+
+    // Unity "alive" check for interface-backed components
+    private static bool IsUnityAlive(IHighlightable h)
+    {
+        if (h == null) return false;
+        // h is an interface; need to cast to Component to get Unity's custom null semantics
+        var comp = h as Component;
+        return comp != null; // returns false if destroyed
+    }
+
+    private static void SafeHighlight(IHighlightable h)
+    {
+        if (!IsUnityAlive(h)) return;
+        try { h.Highlight(); } catch { /* swallow to keep loop healthy */ }
+    }
+
+    private static void SafeUnhighlight(IHighlightable h)
+    {
+        if (!IsUnityAlive(h)) return;
+        try { h.Unhighlight(); } catch { /* swallow to keep loop healthy */ }
     }
 }
