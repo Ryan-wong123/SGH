@@ -58,6 +58,7 @@ MonoBehaviour:
   - RPC_SetQueueNumber
   - RPC_SetCaption
   - RPC_SetDisplayText
+  - RPC_BeginMove
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

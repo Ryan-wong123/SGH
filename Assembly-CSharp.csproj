@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\Puzzle\activity 5\CrosswordManager.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
     <Compile Include="Assets\Scripts\UI\SlideShowUI.cs" />
+    <Compile Include="Assets\Scripts\Interactable\MovementTargetNetworked.cs" />
     <Compile Include="Assets\Scripts\networking\JoinRoomManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\Draggable\DraggableCard.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 9\WordSearchManager.cs" />
