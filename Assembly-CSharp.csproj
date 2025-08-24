@@ -108,6 +108,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanTween.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanSmooth.cs" />
+    <Compile Include="Assets\Scripts\StorylineDirector.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 6\DiaryPuzzleManager.cs" />
     <Compile Include="Assets\Scripts\Interactable\PickupItem.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />

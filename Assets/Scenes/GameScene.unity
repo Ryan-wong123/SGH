@@ -12274,7 +12274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: {fileID: 1991173882}
-  displayText: 154
+  displayText: 
   flashSpeed: 2.5
   alphaRange: {x: 0.25, y: 1}
   cubeRenderer: {fileID: 237814525}
@@ -71388,7 +71388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: {fileID: 1477441816}
-  displayText: 154 > physician consult room
+  displayText: 
   flashSpeed: 2.5
   alphaRange: {x: 0.25, y: 1}
   cubeRenderer: {fileID: 1306950433}
@@ -89981,7 +89981,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: {fileID: 1840119863}
-  displayText: 154 > physician consult room
+  displayText: 
   flashSpeed: 2.5
   alphaRange: {x: 0.25, y: 1}
   cubeRenderer: {fileID: 1591424793}
@@ -114586,8 +114586,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 100
-  m_fontSizeBase: 100
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -119335,6 +119335,7 @@ GameObject:
   - component: {fileID: 2075314856}
   - component: {fileID: 2075314857}
   - component: {fileID: 2075314858}
+  - component: {fileID: 2075314859}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -119592,6 +119593,53 @@ MonoBehaviour:
   - id: nurse
     panelRoot: {fileID: 677627189}
   closeButton: {fileID: 1956943073}
+--- !u!114 &2075314859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075314845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 549525dea2b5bc24380cbdc2202260e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  puzzleStateManager: {fileID: 2075314851}
+  masterControls: 1
+  pollIntervalSeconds: 0.1
+  directives:
+  - stage: 0
+    activateOnEnter: []
+    deactivateOnExit:
+    - {fileID: 1933334847}
+    queueDisplayDirectives: []
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
+  - stage: 4
+    activateOnEnter: []
+    deactivateOnExit: []
+    queueDisplayDirectives:
+    - display: {fileID: 1840119863}
+      text: 154 -> Physician Room
+    - display: {fileID: 1991173882}
+      text: 154
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
+  - stage: 6
+    activateOnEnter:
+    - {fileID: 1933334847}
+    deactivateOnExit: []
+    queueDisplayDirectives:
+    - display: {fileID: 1991173882}
+      text: 154 -> Pharmacy
+    - display: {fileID: 1477441816}
+      text: 154
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!1001 &2075718925
 PrefabInstance:
   m_ObjectHideFlags: 0

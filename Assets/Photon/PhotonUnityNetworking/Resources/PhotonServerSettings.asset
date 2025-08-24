@@ -59,6 +59,7 @@ MonoBehaviour:
   - RPC_SetCaption
   - RPC_SetDisplayText
   - RPC_BeginMove
+  - RPC_ApplyStageEffects
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
