@@ -15,21 +15,39 @@ public class HighlightEffect : MonoBehaviour
     [SerializeField] private float highlightScaleMultiplier = 1.1f;
     [SerializeField] private float scaleSpeed = 5f;
 
+    [Header("Child Filtering")]
+    [Tooltip("If true, only children in AllowedChildren will be highlighted. If false, all children EXCEPT those in ExcludedChildren will highlight.")]
+    [SerializeField] private bool useWhitelist = false;
+
+    [Tooltip("Children explicitly allowed (used only if useWhitelist = true).")]
+    [SerializeField] private List<Renderer> allowedChildren = new();
+
+    [Tooltip("Children explicitly excluded (ignored if useWhitelist = true).")]
+    [SerializeField] private List<Renderer> excludedChildren = new();
+
     private void Awake()
     {
-        // Grab ALL renderers on this object and its children
-        renderers.AddRange(GetComponentsInChildren<Renderer>(includeInactive: true));
+        renderers.Clear();
+        materials.Clear();
 
-        foreach (var r in renderers)
+        var allRenderers = GetComponentsInChildren<Renderer>(includeInactive: true);
+
+        foreach (var r in allRenderers)
         {
-            // Create unique instances so you don’t affect shared assets
+            // Skip based on whitelist/exclude logic
+            if (useWhitelist && !allowedChildren.Contains(r)) continue;
+            if (!useWhitelist && excludedChildren.Contains(r)) continue;
+
+            renderers.Add(r);
+
+            // Get unique material instances
             var mats = r.materials;
-            for (int i = 0; i < mats.Length; i++)
+            foreach (var m in mats)
             {
-                if (mats[i] != null)
+                if (m != null)
                 {
-                    mats[i].EnableKeyword("_EMISSION");
-                    mats[i].SetColor("_EmissionColor", Color.black);
+                    m.EnableKeyword("_EMISSION");
+                    m.SetColor("_EmissionColor", Color.black);
                 }
             }
             materials.Add(mats);

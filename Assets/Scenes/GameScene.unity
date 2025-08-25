@@ -3065,6 +3065,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!1 &45796049
 GameObject:
   m_ObjectHideFlags: 0
@@ -21389,6 +21392,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!114 &386316107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54554,6 +54560,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1004099532}
   m_CullTransparentMesh: 1
+--- !u!23 &1007059913 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3780052371834939804, guid: 666a9cdbf2f4f164abff1365d004e043, type: 3}
+  m_PrefabInstance: {fileID: 1940268622}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1007059914 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3780052371834939802, guid: 666a9cdbf2f4f164abff1365d004e043, type: 3}
+  m_PrefabInstance: {fileID: 1940268622}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1008210971
 GameObject:
   m_ObjectHideFlags: 0
@@ -57771,6 +57787,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!1 &1061063798
 GameObject:
   m_ObjectHideFlags: 0
@@ -65555,6 +65574,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.1
   scaleSpeed: 5
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!114 &1193597027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69345,6 +69367,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!114 &1250697811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69361,6 +69386,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!1 &1251196507
 GameObject:
   m_ObjectHideFlags: 0
@@ -71388,6 +71416,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!1001 &1283353026
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -83781,6 +83812,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!114 &1468094836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87147,6 +87181,10 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 1
+  allowedChildren:
+  - {fileID: 5130600388806464853}
+  excludedChildren: []
 --- !u!114 &1500578047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90507,6 +90545,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!1 &1548348293
 GameObject:
   m_ObjectHideFlags: 0
@@ -92043,6 +92084,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!1 &1578149910
 GameObject:
   m_ObjectHideFlags: 0
@@ -96866,6 +96910,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!114 &1669160280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115030,6 +115077,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!114 &1933334854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115564,6 +115614,11 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 1
+  allowedChildren:
+  - {fileID: 1007059913}
+  - {fileID: 1966737436}
+  excludedChildren: []
 --- !u!114 &1940268628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115580,6 +115635,11 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 1
+  allowedChildren:
+  - {fileID: 1007059914}
+  - {fileID: 1966737437}
+  excludedChildren: []
 --- !u!1001 &1941723496
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -116449,6 +116509,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!114 &1951297234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116465,6 +116528,9 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!1 &1952403497
 GameObject:
   m_ObjectHideFlags: 0
@@ -117071,6 +117137,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1966718308}
   m_CullTransparentMesh: 1
+--- !u!23 &1966737436 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2359438865382809250, guid: 666a9cdbf2f4f164abff1365d004e043, type: 3}
+  m_PrefabInstance: {fileID: 1940268622}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1966737437 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2683659783396412867, guid: 666a9cdbf2f4f164abff1365d004e043, type: 3}
+  m_PrefabInstance: {fileID: 1940268622}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1967200248
 GameObject:
   m_ObjectHideFlags: 0
@@ -134178,6 +134254,10 @@ MonoBehaviour:
   emissionIntensity: 1.5
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  useWhitelist: 1
+  allowedChildren:
+  - {fileID: 8196937307457902911}
+  excludedChildren: []
 --- !u!33 &8522881702347735676
 MeshFilter:
   m_ObjectHideFlags: 0
