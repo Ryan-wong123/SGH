@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class DoorInteractable : MonoBehaviour, IInteractable
+public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
 {
     [Header("Door Settings")]
     [SerializeField] private bool isLocked = false;
@@ -18,6 +18,9 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     [SerializeField] private bool smooth = false;
     [SerializeField] private float smoothSpeed = 360f;    // deg/sec
 
+    private HighlightEffect highlightEffect;
+    private Transform highlightRoot;
+
     private bool isOpen = false;
 
     // Cached rotations
@@ -28,8 +31,10 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
     private void Awake()
     {
+        // Make the whole door interactable by raycasts (your layer mask must include this)
         gameObject.layer = LayerMask.NameToLayer("Interactable");
         SetLayerRecursive(transform, gameObject.layer);
+
         SetupPhotonView();
         EnsureHingeExistsAndIsParented();
 
@@ -49,6 +54,15 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         if (IsMirrored(hinge)) dir *= -1f;
 
         openRotLocal = closedRotLocal * Quaternion.Euler(0f, dir * openAngle, 0f);
+
+        // ---- Highlight setup ----
+        if (highlightEffect == null)
+        {
+            Transform searchRoot = highlightRoot != null ? highlightRoot : transform;
+            highlightEffect = searchRoot.GetComponent<HighlightEffect>();
+            if (highlightEffect == null)
+                highlightEffect = searchRoot.GetComponentInChildren<HighlightEffect>(true);
+        }
     }
     static void SetLayerRecursive(Transform t, int layer)
     {
@@ -56,6 +70,9 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         for (int i = 0; i < t.childCount; i++)
             SetLayerRecursive(t.GetChild(i), layer);
     }
+
+    // ---------------- Photon setup ----------------
+
     void SetupPhotonView()
     {
         pv = GetComponent<PhotonView>();
@@ -64,8 +81,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         // Scene object ownership
         pv.OwnershipTransfer = OwnershipOption.Fixed;
 
-        // You don't need PhotonTransformView for this (we sync via RPC),
-        // but keep it if you want to observe transform changes for other reasons.
+        // Optional observer (kept from your original)
         if (GetComponent<PhotonTransformView>() == null)
         {
             var transformView = gameObject.AddComponent<PhotonTransformView>();
@@ -80,6 +96,13 @@ public class DoorInteractable : MonoBehaviour, IInteractable
             Debug.Log($"Registered scene object with ViewID: {pv.ViewID}");
         }
     }
+    private void OnDisable()
+    {
+        // If we get disabled while highlighted, reset safely
+        highlightEffect?.Unhighlight();
+    }
+
+    // ---------------- IInteractable ----------------
 
     public void Interact()
     {
@@ -119,7 +142,11 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         return isOpen ? "Press E to close door" : "Press E to open door";
     }
 
-    // --- Network sync ---
+    // ---------------- IHighlightable ----------------
+    public void Highlight() => highlightEffect?.Highlight();
+    public void Unhighlight() => highlightEffect?.Unhighlight();
+
+    // ---------------- Network sync ----------------
 
     [PunRPC]
     void RPC_SetOpen(bool open)
@@ -127,7 +154,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         SetOpenLocal(open);
     }
 
-    // --- Core open/close logic ---
+    // ---------------- Core open/close logic ----------------
 
     void SetOpenLocal(bool open)
     {
@@ -149,10 +176,8 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
     System.Collections.IEnumerator RotateTo(Transform t, Quaternion target, float degPerSec)
     {
-        // Single-axis(ish) rotation; use angular distance to time the lerp
         while (Quaternion.Angle(t.localRotation, target) > 0.1f)
         {
-            // Compute step based on speed
             float step = degPerSec * Time.deltaTime;
             t.localRotation = Quaternion.RotateTowards(t.localRotation, target, step);
             yield return null;
@@ -160,7 +185,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         t.localRotation = target;
     }
 
-    // --- Hinge setup helpers ---
+    // ---------------- Hinge setup helpers ----------------
 
     void EnsureHingeExistsAndIsParented()
     {
@@ -224,4 +249,6 @@ public class DoorInteractable : MonoBehaviour, IInteractable
         // Negative determinant => mirrored (handedness flip) somewhere in hierarchy
         return t.localToWorldMatrix.determinant < 0f;
     }
+
+
 }

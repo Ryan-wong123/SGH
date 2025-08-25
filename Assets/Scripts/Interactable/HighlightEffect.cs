@@ -1,10 +1,11 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class HighlightEffect : MonoBehaviour
 {
-    private Renderer rend;
-    private Material material;
+    private List<Renderer> renderers = new();
+    private List<Material[]> materials = new();
     private Vector3 originalScale;
     private Coroutine scaleCoroutine;
 
@@ -16,16 +17,24 @@ public class HighlightEffect : MonoBehaviour
 
     private void Awake()
     {
-        rend = GetComponent<Renderer>();
-        if (rend != null)
+        // Grab ALL renderers on this object and its children
+        renderers.AddRange(GetComponentsInChildren<Renderer>(includeInactive: true));
+
+        foreach (var r in renderers)
         {
-            material = rend.material; // OK if you need per-instance emissive
-            if (material != null)
+            // Create unique instances so you don’t affect shared assets
+            var mats = r.materials;
+            for (int i = 0; i < mats.Length; i++)
             {
-                material.EnableKeyword("_EMISSION");
-                material.SetColor("_EmissionColor", Color.black);
+                if (mats[i] != null)
+                {
+                    mats[i].EnableKeyword("_EMISSION");
+                    mats[i].SetColor("_EmissionColor", Color.black);
+                }
             }
+            materials.Add(mats);
         }
+
         originalScale = transform.localScale;
     }
 
@@ -35,28 +44,42 @@ public class HighlightEffect : MonoBehaviour
     {
         if (!IsAlive) return;
 
-        if (material != null)
-            material.SetColor("_EmissionColor", highlightColor * emissionIntensity);
+        foreach (var mats in materials)
+        {
+            foreach (var mat in mats)
+            {
+                if (mat != null)
+                    mat.SetColor("_EmissionColor", highlightColor * emissionIntensity);
+            }
+        }
 
-        if (scaleCoroutine != null) { StopAllCoroutines(); scaleCoroutine = null; }
-        scaleCoroutine = StartCoroutine(ScaleTo(originalScale * highlightScaleMultiplier));
+        RestartScale(originalScale * highlightScaleMultiplier);
     }
 
     public void Unhighlight()
     {
         if (!IsAlive) return;
 
-        if (material != null)
-            material.SetColor("_EmissionColor", Color.black);
+        foreach (var mats in materials)
+        {
+            foreach (var mat in mats)
+            {
+                if (mat != null)
+                    mat.SetColor("_EmissionColor", Color.black);
+            }
+        }
 
-        if (scaleCoroutine != null) { StopAllCoroutines(); scaleCoroutine = null; }
-        scaleCoroutine = StartCoroutine(ScaleTo(originalScale));
+        RestartScale(originalScale);
+    }
+
+    private void RestartScale(Vector3 targetScale)
+    {
+        if (scaleCoroutine != null) { StopCoroutine(scaleCoroutine); scaleCoroutine = null; }
+        scaleCoroutine = StartCoroutine(ScaleTo(targetScale));
     }
 
     private IEnumerator ScaleTo(Vector3 targetScale)
     {
-        if (!this) yield break; // component destroyed mid-routine
-
         while (this && Vector3.Distance(transform.localScale, targetScale) > 0.01f)
         {
             transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * scaleSpeed);
@@ -68,14 +91,18 @@ public class HighlightEffect : MonoBehaviour
 
     private void OnDisable()
     {
-        // Gracefully reset if disabled/destroyed while highlighted
-        if (material != null)
-            material.SetColor("_EmissionColor", Color.black);
+        foreach (var mats in materials)
+        {
+            foreach (var mat in mats)
+            {
+                if (mat != null)
+                    mat.SetColor("_EmissionColor", Color.black);
+            }
+        }
 
         StopAllCoroutines();
         scaleCoroutine = null;
 
-        // Be defensive: if disabled mid-scale, snap back
         if (this)
             transform.localScale = originalScale;
     }
