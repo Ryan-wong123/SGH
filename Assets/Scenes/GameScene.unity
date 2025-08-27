@@ -12458,8 +12458,8 @@ MonoBehaviour:
   pulseEmission: 1
   emissionSpeed: 2
   emissionRange: {x: 0.1, y: 1.5}
-  emissionColor: {r: 0.11711717, g: 1, b: 0, a: 1}
-  baseTextColor: {r: 1, g: 0.08706564, b: 0, a: 1}
+  emissionColor: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 1}
+  baseTextColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!65 &237814524
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12543,8 +12543,8 @@ Transform:
   m_GameObject: {fileID: 237814522}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -31.407951, y: 6.185059, z: -11.038809}
-  m_LocalScale: {x: 2.8396997, y: 1.0375, z: 0.1556}
+  m_LocalPosition: {x: -31.353, y: 6.185059, z: -11.038809}
+  m_LocalScale: {x: 2.20392, y: 2.383919, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2019321327}
@@ -73687,8 +73687,8 @@ MonoBehaviour:
   pulseEmission: 1
   emissionSpeed: 2
   emissionRange: {x: 0.1, y: 1.5}
-  emissionColor: {r: 0.11711717, g: 1, b: 0, a: 1}
-  baseTextColor: {r: 1, g: 0.08706564, b: 0, a: 1}
+  emissionColor: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 1}
+  baseTextColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!65 &1306950432
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -73771,13 +73771,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1306950430}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
-  m_LocalPosition: {x: -33.793148, y: 11.034729, z: -13.103811}
-  m_LocalScale: {x: 2.8397, y: 1.0375, z: 0.1556}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
+  m_LocalPosition: {x: -31.366, y: 9.896, z: -10.544183}
+  m_LocalScale: {x: 2.2039196, y: 2.3839195, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2019321327}
-  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
 --- !u!1001 &1310603570
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -85033,17 +85033,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1477441814}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -13.663}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: -11.2039}
   m_LocalScale: {x: 0.010354817, y: 0.010354817, z: 0.010354817}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1353968160}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -980.97845, y: -533.2443}
-  m_SizeDelta: {x: 273.4031, y: 98.52}
+  m_AnchoredPosition: {x: -978.6449, y: -534.383}
+  m_SizeDelta: {x: 209.7666, y: 98.52}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1477441816
 MonoBehaviour:
@@ -85074,7 +85074,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -85092,21 +85092,21 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
+  m_paragraphSpacing: 52
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
@@ -92874,7 +92874,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 9.222051, y: 9.801514, z: -30.89681}
-  m_LocalScale: {x: 2.8397, y: 1.0375, z: 0.1556}
+  m_LocalScale: {x: 2.8397, y: 3.14, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2019321327}
@@ -92899,8 +92899,8 @@ MonoBehaviour:
   pulseEmission: 1
   emissionSpeed: 2
   emissionRange: {x: 0.1, y: 1.5}
-  emissionColor: {r: 0.11711717, g: 1, b: 0, a: 1}
-  baseTextColor: {r: 1, g: 0.08706564, b: 0, a: 1}
+  emissionColor: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 1}
+  baseTextColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1591716274
 GameObject:
   m_ObjectHideFlags: 0
@@ -108415,21 +108415,21 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
+  m_paragraphSpacing: 52
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
@@ -118664,7 +118664,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1991173880}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -11.684}
+  m_LocalPosition: {x: 0, y: 0, z: -11.6953}
   m_LocalScale: {x: 0.010354817, y: 0.010354817, z: 0.010354817}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -118672,8 +118672,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -978.67706, y: -538.094}
-  m_SizeDelta: {x: 273.4031, y: 98.52}
+  m_AnchoredPosition: {x: -978.62213, y: -538.094}
+  m_SizeDelta: {x: 206.4907, y: 98.52}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1991173882
 MonoBehaviour:
@@ -118722,21 +118722,21 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45
-  m_fontSizeBase: 45
+  m_fontSize: 43
+  m_fontSizeBase: 43
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 71
   m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
+  m_paragraphSpacing: 52
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
@@ -123763,7 +123763,7 @@ MonoBehaviour:
     deactivateOnExit: []
     queueDisplayDirectives:
     - display: {fileID: 1840119863}
-      text: 154 -> Physician Room
+      text: 154 \n Physician Room
     - display: {fileID: 1991173882}
       text: 154
     onEnter:
@@ -123775,7 +123775,7 @@ MonoBehaviour:
     deactivateOnExit: []
     queueDisplayDirectives:
     - display: {fileID: 1991173882}
-      text: 154 -> Pharmacy
+      text: 154 Pharmacy
     - display: {fileID: 1477441816}
       text: 154
     onEnter:
