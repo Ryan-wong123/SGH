@@ -31811,8 +31811,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 528.66614, y: 153.98053}
-  m_SizeDelta: {x: 855.12, y: 425.2921}
+  m_AnchoredPosition: {x: 528.67, y: 113.3573}
+  m_SizeDelta: {x: 855.12, y: 506.5386}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &570888065
 MonoBehaviour:
@@ -31834,14 +31834,29 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "1. A class of antibiotics that may increase the insulin release and enhance
-    the effects of glucose lowering drugs\n2. A class of OHGAs that is metabolized
-    by CYP2C9 \n3. A bacteriostatic antibiotic that may precipitate serotonin toxicity
-    and hypoglycaemia \n4. A class of drugs that has potent CYP3A, CYP2C9 and CYP2C19
-    inhibitory effects\n5._ l _ _ _ l _ is more predisposed to hypoglycaemia \n6.
-    _ _ _ _ _ _ _ _renal and hepatic function increase the risk of hypoglycemia when
-    on concurrent OHGAs\n7. R _ _ _ _ _ _ _ _ in dose of OHGAs should be considered
-    for patient with erratic/decreased oral intake "
+  m_text: '1.<indent=48>A class of antibiotics that may increase the insulin release
+    and enhance the effects of glucose lowering drugs<indent=0>
+
+    2.<indent=48>A
+    class of OHGAs that is metabolized by CYP2C9<indent=0>
+
+    3.<indent=48>A bacteriostatic
+    antibiotic that may precipitate serotonin toxicity and hypoglycaemia<indent=0>
+
+    4.<indent=48>A
+    class of drugs that has potent CYP3A, CYP2C9 and CYP2C19 inhibitory effects<indent=0>
+
+    5.<indent=48>_
+    l _ _ _ l _ is more predisposed to hypoglycaemia<indent=0>
+
+    6.<indent=48>_
+    _ _ _ _ _ _ _ renal and hepatic function increase the risk of hypoglycemia when
+    on concurrent OHGAs<indent=0>
+
+    7.<indent=48>R _ _ _ _ _ _ _ _ in dose of
+    OHGAs should be considered for patient with erratic/decreased oral intake<indent=0>
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -31876,13 +31891,13 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 20.38
   m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
+  m_paragraphSpacing: 12.67
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
@@ -94545,7 +94560,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1628483217
 RectTransform:
   m_ObjectHideFlags: 0
