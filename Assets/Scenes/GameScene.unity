@@ -83885,7 +83885,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6809dc1d11d554541986c788a43ed622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: envelop
+  itemName: envelope
   isClue: 1
 --- !u!1 &1468132719
 GameObject:
@@ -123696,7 +123696,7 @@ MonoBehaviour:
   gridParent: {fileID: 686963440}
   clueSlotPrefab: {fileID: 691012995963321010, guid: 0f800573e79339d4783353acd8b3cc7c, type: 3}
   allClues:
-  - id: envelop
+  - id: envelope
     lockedSprite: {fileID: 21300000, guid: 5cd9e206726399e4b9680a81e82548e1, type: 3}
     revealedSprite: {fileID: 21300000, guid: 23e7788ed0b60d54ebc8c7388a87b214, type: 3}
 --- !u!114 &2075314857
