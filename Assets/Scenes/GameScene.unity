@@ -3061,8 +3061,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -21388,8 +21388,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -57798,8 +57798,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -65585,8 +65585,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.4
   highlightScaleMultiplier: 1.1
   scaleSpeed: 5
   useWhitelist: 0
@@ -69378,8 +69378,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -69397,8 +69397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -71427,8 +71427,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -83823,8 +83823,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -87192,8 +87192,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 1
@@ -90556,8 +90556,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -92095,8 +92095,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -96921,8 +96921,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -115088,8 +115088,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -115625,8 +115625,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 1
@@ -115646,8 +115646,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 1
@@ -116520,8 +116520,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -116539,8 +116539,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 0
@@ -134265,8 +134265,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  emissionIntensity: 1.5
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
   useWhitelist: 1
