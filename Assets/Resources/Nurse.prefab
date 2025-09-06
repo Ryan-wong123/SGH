@@ -1074,6 +1074,7 @@ MonoBehaviour:
   interactableLayer:
     serializedVersion: 2
     m_Bits: 4294967295
+  preferKeypadButtons: 1
   interactionUIPanel: {fileID: 0}
 --- !u!114 &439010050917154894
 MonoBehaviour:
