@@ -9,11 +9,14 @@ public class ClueDef
     [Tooltip("Unique ID that matches PickupItem.itemName.")]
     public string id;
 
-    [Tooltip("REQUIRED: Locked image for THIS clue.")]
+    [Tooltip("Locked image for this clue in the grid.")]
     public Sprite lockedSprite;
 
-    [Tooltip("Shown after the clue is collected.")]
+    [Tooltip("Revealed icon for this clue in the grid.")]
     public Sprite revealedSprite;
+
+    [Tooltip("The full-size image shown when the player opens this clue.")]
+    public Sprite fullImage;
 }
 
 public class ClueSystem : MonoBehaviour
@@ -22,7 +25,7 @@ public class ClueSystem : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private Transform gridParent;        // Parent with GridLayoutGroup
-    [SerializeField] private GameObject clueSlotPrefab;   // Prefab containing a single Image
+    [SerializeField] private GameObject clueSlotPrefab;   // Prefab containing an Image (and ideally a Button)
 
     [Header("All Clues (grid order)")]
     [SerializeField] private List<ClueDef> allClues = new();
@@ -34,9 +37,12 @@ public class ClueSystem : MonoBehaviour
     [Serializable]
     private class Slot
     {
+        public string id;
         public Image icon;
+        public Button button;
         public Sprite lockedSprite;    // required
         public Sprite revealedSprite;  // required
+        public Sprite fullImage;       // for detail view
     }
 
     private void Awake()
@@ -70,24 +76,80 @@ public class ClueSystem : MonoBehaviour
 
             var go = Instantiate(clueSlotPrefab, gridParent);
 
-            // Expect exactly one Image somewhere in the prefab
+            // Ensure there's an Image to show the icon
             var icon = go.GetComponentInChildren<Image>(true);
             if (icon == null)
             {
-                Debug.LogError("[ClueSystem] clueSlotPrefab must contain an Image.");
-                Destroy(go);
-                continue;
+                // If the prefab itself doesn't have an Image, add one to root so it can receive raycasts.
+                icon = go.AddComponent<Image>();
+                icon.raycastTarget = true;
+                icon.color = new Color(1f, 1f, 1f, 0f); // keep invisible if needed
+            }
+
+            // Ensure there's a Button so the tile is clickable
+            var button = go.GetComponent<Button>();
+            if (button == null)
+            {
+                button = go.AddComponent<Button>();
+                // Ensure the root has an Image for raycast if icon is on a child
+                var rootImg = go.GetComponent<Image>();
+                if (rootImg == null) rootImg = go.AddComponent<Image>();
+                rootImg.raycastTarget = true;
+                if (rootImg.sprite == null) rootImg.color = new Color(1f, 1f, 1f, 0f);
             }
 
             // Initialize to locked image
             icon.sprite = def.lockedSprite;
 
-            slots[def.id] = new Slot
+            var slot = new Slot
             {
+                id = def.id,
                 icon = icon,
+                button = button,
                 lockedSprite = def.lockedSprite,
-                revealedSprite = def.revealedSprite
+                revealedSprite = def.revealedSprite,
+                fullImage = def.fullImage
             };
+
+            // Wire up click handler
+            button.onClick.RemoveAllListeners();
+            var capturedId = def.id; // capture for closure
+            button.onClick.AddListener(() => OnSlotClicked(capturedId));
+
+            slots[def.id] = slot;
+        }
+    }
+
+    private void OnSlotClicked(string id)
+    {
+        if (!collected.Contains(id))
+        {
+            // Optional: show "Locked" toast
+            CluePopupUI.Instance?.Show("This clue is locked.");
+            return;
+        }
+
+        if (!slots.TryGetValue(id, out var slot))
+        {
+            Debug.LogWarning($"[ClueSystem] Clicked unknown id '{id}'.");
+            return;
+        }
+
+        if (slot.fullImage != null)
+        {
+            if (ClueUI.Instance != null)
+            {
+                ClueUI.Instance.ShowImage(slot.fullImage);
+            }
+            else
+            {
+                Debug.LogWarning("[ClueSystem] ClueUI not present in scene.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[ClueSystem] No full image assigned for clue '{id}'.");
+            CluePopupUI.Instance?.Show("No details available for this clue.");
         }
     }
 
@@ -121,6 +183,9 @@ public class ClueSystem : MonoBehaviour
 
             if (s.icon)
                 s.icon.sprite = isCollected ? s.revealedSprite : s.lockedSprite;
+
+            if (s.button)
+                s.button.interactable = true; // keep clickable; we handle locked message in OnSlotClicked
         }
     }
 
@@ -141,6 +206,8 @@ public class ClueSystem : MonoBehaviour
 
             if (def.revealedSprite == null)
                 Debug.LogWarning($"[ClueSystem] Clue '{def?.id}' has no revealedSprite assigned (required).");
+
+            // fullImage is optional, but recommended
         }
     }
 #endif

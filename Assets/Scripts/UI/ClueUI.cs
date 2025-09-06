@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // <- for TMP_Text
+using TMPro;
 
 [Serializable]
 public class ClueEntry
@@ -10,7 +10,7 @@ public class ClueEntry
     [Tooltip("Unique ID for this clue (e.g., 'clue_diary_page1')")]
     public string id;
 
-    [Tooltip("Panel GameObject to toggle for this clue (child of mainRoot)")]
+    [Tooltip("Panel GameObject to toggle for this clue (child of mainRoot). Optional if using image detail view only.")]
     public GameObject panelRoot;
 }
 
@@ -18,10 +18,10 @@ public class ClueUI : MonoBehaviour
 {
     public static ClueUI Instance; // singleton for easy access from ClueSystem
 
-    [Header("Main Root UI Panel (all clue panels inside)")]
+    [Header("Main Root UI Panel (container for classic panels)")]
     [SerializeField] private GameObject mainRoot;
 
-    [Header("Clue Panels (id → panel)")]
+    [Header("Clue Panels (id → panel) - optional")]
     [SerializeField] private List<ClueEntry> clues = new();
 
     [Header("General Close Button (inside mainRoot)")]
@@ -35,6 +35,12 @@ public class ClueUI : MonoBehaviour
     [Header("Optional: extra badge panel to auto-close")]
     [Tooltip("If you have a small dropdown/panel tied to the badge, assign it so we can SetActive(false).")]
     [SerializeField] private GameObject badgePanelRoot;
+
+    [Header("Detail Image View")]
+    [Tooltip("Panel that contains a full-size Image (and its own Close button).")]
+    [SerializeField] private GameObject detailPanelRoot;
+    [SerializeField] private Image detailImage;
+    [SerializeField] private Button detailCloseButton;
 
     private readonly Dictionary<string, GameObject> _panels = new();
     private GameObject _currentPanel;
@@ -67,10 +73,16 @@ public class ClueUI : MonoBehaviour
         if (closeButton != null)
             closeButton.onClick.AddListener(() => Hide(true));
 
+        if (detailPanelRoot != null)
+            detailPanelRoot.SetActive(false);
+
+        if (detailCloseButton != null)
+            detailCloseButton.onClick.AddListener(HideImage);
+
         UpdateUnreadUI(); // ensure correct initial state
     }
 
-    /// <summary>Show the panel for a clue by its id.</summary>
+    /// <summary>Show the panel for a clue by its id (classic per-clue panel flow).</summary>
     public bool ShowById(string id, Action onClosed = null)
     {
         if (string.IsNullOrWhiteSpace(id) || !_panels.TryGetValue(id, out var panel))
@@ -93,7 +105,7 @@ public class ClueUI : MonoBehaviour
         Cursor.visible = true;
         Time.timeScale = 0f;
 
-        // You wanted it to reset when opening as well
+        // Reset unread when opened
         ResetUnreadCount();
 
         return true;
@@ -119,7 +131,7 @@ public class ClueUI : MonoBehaviour
 
         _currentPanel = null;
 
-        // You also wanted it to reset when closing
+        // Reset unread
         ResetUnreadCount();
         // Force-close any optional badge panel
         if (badgePanelRoot != null && badgePanelRoot.activeSelf)
@@ -128,6 +140,36 @@ public class ClueUI : MonoBehaviour
 
     public bool HasClueId(string id) =>
         !string.IsNullOrWhiteSpace(id) && _panels.ContainsKey(id);
+
+    // ---------- Image Detail View API ----------
+
+    /// <summary>Show a full-size image in the detail panel (called by ClueSystem on tile click).</summary>
+    public void ShowImage(Sprite sprite)
+    {
+        if (sprite == null || detailImage == null || detailPanelRoot == null)
+        {
+            Debug.LogWarning("[ClueUI] Missing detail image/panel or sprite.");
+            return;
+        }
+        detailImage.gameObject.SetActive(true);
+        detailImage.sprite = sprite;
+        detailPanelRoot.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Time.timeScale = 0f;
+
+        ResetUnreadCount();
+    }
+
+    public void HideImage()
+    {
+        if (detailPanelRoot != null)
+            detailPanelRoot.SetActive(false);
+        Debug.Log("dfsfdsfdss");
+        detailImage.gameObject.SetActive(false);
+        Time.timeScale = 1f;
+    }
 
     // ---------- Unread badge API (called by ClueSystem) ----------
 
