@@ -114,7 +114,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
 
         if (requiresKey && !InventorySystem.Instance.HasItem(keyName))
         {
-            Debug.Log($"Door requires a {keyName}");
+            Debug.Log($"Unlock keypad to unlock door");
             return;
         }
 
@@ -138,7 +138,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
     public string GetInteractionPrompt()
     {
         if (isLocked) return "This door is locked.";
-        if (requiresKey && !InventorySystem.Instance.HasItem(keyName)) return $"Door requires a {keyName}";
+        if (requiresKey && !InventorySystem.Instance.HasItem(keyName)) return $"Unlock keypad to unlock door";
         return isOpen ? "Press E to close door" : "Press E to open door";
     }
 
