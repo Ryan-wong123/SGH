@@ -8,33 +8,26 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
     [SerializeField] private string itemName = "Key";
     [SerializeField] private bool isClue = false;
 
-
     private HighlightEffect highlightEffect;
+
     private void Awake()
     {
         gameObject.layer = LayerMask.NameToLayer("Interactable");
         SetupPhotonView();
         highlightEffect = GetComponent<HighlightEffect>();
     }
+
     public void Highlight() => highlightEffect?.Highlight();
     public void Unhighlight() => highlightEffect?.Unhighlight();
 
     void SetupPhotonView()
     {
-        // Ensure PhotonView exists
         PhotonView view = GetComponent<PhotonView>();
-        if (view == null)
-        {
-            view = gameObject.AddComponent<PhotonView>();
-        }
+        if (view == null) view = gameObject.AddComponent<PhotonView>();
 
-        // Set Ownership Transfer to Fixed (scene object)
         view.OwnershipTransfer = OwnershipOption.Fixed;
+        view.Synchronization = ViewSynchronization.UnreliableOnChange;
 
-        // Set Synchronization method (choose one)
-        view.Synchronization = ViewSynchronization.UnreliableOnChange; // or .ReliableOnChange
-
-        // Ensure this scene object is registered at runtime
         if (PhotonNetwork.IsConnectedAndReady && view.ViewID == 0)
         {
             PhotonNetwork.RegisterPhotonView(view);
@@ -43,54 +36,71 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
     }
 
     public void Interact()
-    { 
-        photonView.RPC(nameof(SyncItemPickup), RpcTarget.AllBuffered, itemName);
+    {
+        // ------ 1) POPUP (LOCAL) ------
+        string popupText = isClue ? $"Clue found: {itemName}" : $"Picked up: {itemName}";
+        CluePopupUI.Instance?.Show(popupText);
+
+        // ------ 2) SYNC STATE (BUFFERED) ------
+        photonView.RPC(nameof(SyncItemPickup), RpcTarget.AllBuffered, itemName, isClue);
+
+        // ------ 3) POPUP (OTHERS, NON-BUFFERED) ------
+        photonView.RPC(nameof(ShowPickupPopupRemote), RpcTarget.Others, popupText);
+
+        // ------ 4) DESTROY VIA MASTER ------
         photonView.RPC(nameof(RequestDestroy), RpcTarget.MasterClient);
     }
 
     [PunRPC]
-    void SyncItemPickup(string itemName)
+    void SyncItemPickup(string pickedName, bool pickedIsClue)
     {
-        StartCoroutine(SafeSync(itemName));
+        StartCoroutine(SafeSync(pickedName, pickedIsClue));
     }
 
-    System.Collections.IEnumerator SafeSync(string itemName)
+    private IEnumerator SafeSync(string pickedName, bool pickedIsClue)
     {
-        while (InventorySystem.Instance == null || InventoryUIManager.Instance == null)
+        if (pickedIsClue)
         {
-            Debug.Log("[Sync] Still null...");
-            yield return null;
-        }
+            while (ClueSystem.Instance == null)
+            {
+                Debug.Log("[PickupItem] Waiting for ClueSystem...");
+                yield return null;
+            }
 
-        Debug.Log($"Adding {itemName}");
-
-        if (isClue)
-        {
-            ClueSystem.Instance?.AddClue(itemName);
-            ClueSystem.Instance?.RefreshUI();
+            ClueSystem.Instance.AddClue(pickedName);
+            ClueSystem.Instance.RefreshUI(); // omit if ClueSystem auto-updates
         }
         else
         {
-            InventorySystem.Instance?.AddItem(itemName);
-            InventoryUIManager.Instance?.UpdateInventoryUI();
+            while (InventorySystem.Instance == null || InventoryUIManager.Instance == null)
+            {
+                Debug.Log("[PickupItem] Waiting for Inventory systems...");
+                yield return null;
+            }
+
+            InventorySystem.Instance.AddItem(pickedName);
+            InventoryUIManager.Instance.UpdateInventoryUI();
         }
+    }
 
-
+    [PunRPC]
+    void ShowPickupPopupRemote(string text)
+    {
+        // Non-buffered: only current peers see it (no replay for late joiners)
+        CluePopupUI.Instance?.Show(text);
     }
 
     [PunRPC]
     void RequestDestroy()
     {
-        // Only MasterClient will execute this
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.Destroy(gameObject);
         }
     }
+
     public string GetInteractionPrompt()
     {
         return $"Press E to pick up {itemName}";
     }
-
- 
 }

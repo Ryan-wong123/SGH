@@ -60,6 +60,7 @@ MonoBehaviour:
   - RPC_SetDisplayText
   - RPC_BeginMove
   - RPC_ApplyStageEffects
+  - ShowCluePopupRemote
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
