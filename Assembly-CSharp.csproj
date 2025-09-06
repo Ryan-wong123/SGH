@@ -171,6 +171,7 @@
     <Compile Include="Assets\Scripts\Interactable\IInteractable.cs" />
     <Compile Include="Assets\Scripts\networking\Network.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\activity 10\RiskTable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

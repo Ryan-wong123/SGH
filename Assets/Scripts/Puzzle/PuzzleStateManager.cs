@@ -56,6 +56,9 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     [SerializeField] private WordSearchManager wordSearchManager;
     [SerializeField] private GameObject Puzzle9Panel;
 
+    [SerializeField] private RiskTable risktableManager;
+    [SerializeField] private GameObject Puzzle10Panel;
+
     [SerializeField] private DeathLapsesManager deathLapsesManager;
     [SerializeField] private GameObject Puzzle11Panel;
 
@@ -110,6 +113,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             { PuzzleStage.Puzzle7, prescriptionManager },
             { PuzzleStage.Puzzle8, insulinPuzzleManager },
             { PuzzleStage.Puzzle9, wordSearchManager },
+            { PuzzleStage.Puzzle10, risktableManager },
             { PuzzleStage.Puzzle11, deathLapsesManager }
         };
 
@@ -131,6 +135,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         stagePanels[PuzzleStage.Puzzle7] = Puzzle7Panel;
         stagePanels[PuzzleStage.Puzzle8] = Puzzle8Panel;
         stagePanels[PuzzleStage.Puzzle9] = Puzzle9Panel;
+        stagePanels[PuzzleStage.Puzzle10] = Puzzle10Panel;
         stagePanels[PuzzleStage.Puzzle11] = Puzzle11Panel;
     }
 
@@ -354,6 +359,15 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         ResetTimer();
     }
 
+    public void HandlePuzzle10Complete()
+    {
+        Debug.Log("Puzzle 10 completed correctly!");
+        Puzzle10Panel?.SetActive(false);
+
+        CurrentStage = PuzzleStage.Puzzle11;
+        ResetTimer();
+    }
+
     public void HandlePuzzle11Complete()
     {
         Debug.Log("Puzzle 11 completed correctly!");
@@ -442,6 +456,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             case PuzzleStage.Puzzle7: HandlePuzzle7Complete(); break;
             case PuzzleStage.Puzzle8: HandlePuzzle8Complete(); break;
             case PuzzleStage.Puzzle9: HandlePuzzle9Complete(); break;
+            case PuzzleStage.Puzzle10: HandlePuzzle10Complete(); break;
             case PuzzleStage.Puzzle11: HandlePuzzle11Complete(); break;
             default: Debug.LogWarning("Unhandled puzzle completion"); break;
         }
