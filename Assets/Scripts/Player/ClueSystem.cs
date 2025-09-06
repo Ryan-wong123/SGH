@@ -97,6 +97,7 @@ public class ClueSystem : MonoBehaviour
         if (string.IsNullOrWhiteSpace(id)) return;
         collected.Add(id);
         RefreshUI();
+        ClueUI.Instance?.IncrementUnread();
     }
 
     /// <summary>Return whether a clue has been collected.</summary>

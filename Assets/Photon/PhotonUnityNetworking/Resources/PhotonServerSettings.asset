@@ -61,6 +61,7 @@ MonoBehaviour:
   - RPC_BeginMove
   - RPC_ApplyStageEffects
   - ShowCluePopupRemote
+  - ShowPickupPopupRemote
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

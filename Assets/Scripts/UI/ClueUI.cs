@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; // <- for TMP_Text
 
 [Serializable]
 public class ClueEntry
@@ -15,6 +16,8 @@ public class ClueEntry
 
 public class ClueUI : MonoBehaviour
 {
+    public static ClueUI Instance; // singleton for easy access from ClueSystem
+
     [Header("Main Root UI Panel (all clue panels inside)")]
     [SerializeField] private GameObject mainRoot;
 
@@ -24,12 +27,27 @@ public class ClueUI : MonoBehaviour
     [Header("General Close Button (inside mainRoot)")]
     [SerializeField] private Button closeButton;
 
+    [Header("Unread Badge (on your Clue button)")]
+    [Tooltip("Red dot (or container) that shows the unread number.")]
+    [SerializeField] private GameObject unreadBadgeRoot;
+    [SerializeField] private TMP_Text unreadText; // number label
+
+    [Header("Optional: extra badge panel to auto-close")]
+    [Tooltip("If you have a small dropdown/panel tied to the badge, assign it so we can SetActive(false).")]
+    [SerializeField] private GameObject badgePanelRoot;
+
     private readonly Dictionary<string, GameObject> _panels = new();
     private GameObject _currentPanel;
     private Action _onClosed;
 
+    // unread counter
+    private int _unreadCount = 0;
+
     private void Awake()
     {
+        if (Instance == null) Instance = this;
+        else { Destroy(gameObject); return; }
+
         // Map IDs to panels, hide them all
         _panels.Clear();
         foreach (var c in clues)
@@ -48,6 +66,8 @@ public class ClueUI : MonoBehaviour
 
         if (closeButton != null)
             closeButton.onClick.AddListener(() => Hide(true));
+
+        UpdateUnreadUI(); // ensure correct initial state
     }
 
     /// <summary>Show the panel for a clue by its id.</summary>
@@ -73,6 +93,9 @@ public class ClueUI : MonoBehaviour
         Cursor.visible = true;
         Time.timeScale = 0f;
 
+        // You wanted it to reset when opening as well
+        ResetUnreadCount();
+
         return true;
     }
 
@@ -95,8 +118,39 @@ public class ClueUI : MonoBehaviour
         }
 
         _currentPanel = null;
+
+        // You also wanted it to reset when closing
+        ResetUnreadCount();
+        // Force-close any optional badge panel
+        if (badgePanelRoot != null && badgePanelRoot.activeSelf)
+            badgePanelRoot.SetActive(false);
     }
 
     public bool HasClueId(string id) =>
         !string.IsNullOrWhiteSpace(id) && _panels.ContainsKey(id);
+
+    // ---------- Unread badge API (called by ClueSystem) ----------
+
+    public void IncrementUnread()
+    {
+        _unreadCount++;
+        UpdateUnreadUI();
+    }
+
+    private void ResetUnreadCount()
+    {
+        _unreadCount = 0;
+        UpdateUnreadUI();
+    }
+
+    private void UpdateUnreadUI()
+    {
+        bool show = _unreadCount > 0;
+
+        if (unreadBadgeRoot != null)
+            unreadBadgeRoot.SetActive(show);
+
+        if (unreadText != null)
+            unreadText.text = _unreadCount.ToString();
+    }
 }
