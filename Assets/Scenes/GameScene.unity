@@ -3510,7 +3510,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: How To Treat Hypoglycemia?
+  m_text: How to treat hypoglycemia?
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -37278,7 +37278,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Knowing Your Insulin
+  m_text: Knowing your insulin
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -72125,7 +72125,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Select Correct Lapses Which Contributed To The Death Of the Patient
+  m_text: Select the lapses which contributed to the death of the patient
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -72328,7 +72328,7 @@ MonoBehaviour:
   keypadDisplayText: {fileID: 434840469}
   audioSource: {fileID: 1229575786}
   keyName: key2
-  photonView: {fileID: 0}
+  photonView: {fileID: 1229575787}
 --- !u!82 &1229575786
 AudioSource:
   m_ObjectHideFlags: 0
@@ -74220,7 +74220,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: How To Manage Hypoglycemia?
+  m_text: How to manage hypoglycemia?
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -79218,8 +79218,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ' To recognise the drug-drug and drug-disease interactions that increase
-    the risk of hypoglycaemia'
+  m_text: To recognise the drug-drug and drug-disease interactions that increase
+    the risk of hypoglycemia
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -93664,7 +93664,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Risk of causing hypoglycaemia
+  m_text: Risk of causing hypoglycemia
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -98138,7 +98138,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Glucose Diary
+  m_text: Glucose diary
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -138695,7 +138695,7 @@ MonoBehaviour:
   keypadDisplayText: {fileID: 2303921294511929519}
   audioSource: {fileID: 2303921293120576983}
   keyName: key1
-  photonView: {fileID: 0}
+  photonView: {fileID: 579631336775133983}
 --- !u!4 &2303921293120576982
 Transform:
   m_ObjectHideFlags: 0
