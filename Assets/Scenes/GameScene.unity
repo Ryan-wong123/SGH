@@ -131579,6 +131579,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a958ac903aba70a448a6661ad2e32876, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puzzle1Object: {fileID: 1417474234774836598}
+  puzzle2Object: {fileID: 386316105}
+  puzzle3Object: {fileID: 1578039490}
+  puzzle4Object: {fileID: 43846988}
+  puzzle5Object: {fileID: 277212288}
   delayTransition: 2
   CurrentStage: 0
   mainminiPuzzle1Panel1: {fileID: 791486485}
@@ -131593,11 +131598,6 @@ MonoBehaviour:
   Puzzle4Panel: {fileID: 1262713096}
   crosswordManager: {fileID: 53796069}
   Puzzle5Panel: {fileID: 1061063798}
-  puzzle1Object: {fileID: 1417474234774836598}
-  puzzle2Object: {fileID: 386316105}
-  puzzle3Object: {fileID: 1578039490}
-  puzzle4Object: {fileID: 43846988}
-  puzzle5Object: {fileID: 277212288}
   diaryPuzzleManager: {fileID: 509120715}
   Puzzle6Panel: {fileID: 509120711}
   prescriptionManager: {fileID: 1064947408}
