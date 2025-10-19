@@ -43,6 +43,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
     { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' }
 };
+
     void Start()
     {
         for (int i = 0; i < wordsToFind.Count; i++)
@@ -250,20 +251,13 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
                 wordToCells[word] = new List<LetterCell>(tempList);
                 foundWords.Add(word);
 
-                foreach (var c in tempList)
-                {
-                    if (!c.isLocked)
-                    {
-                        c.Highlight(true, Color.green);
-                        c.isLocked = true;
-                    }
-                }
-
+                // ✅ Do NOT highlight/lock here
                 permanentSelectedCells.Clear();
                 return;
             }
         }
 
+        // Word invalid: reset highlights
         foreach (var c in tempList)
         {
             if (!c.isLocked)
@@ -271,6 +265,26 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         }
 
         permanentSelectedCells.Clear();
+    }
+
+    public void SubmitWords()
+    {
+        foreach (string word in foundWords)
+        {
+            bool isValid = wordsToFind.Contains(word);
+            foreach (LetterCell cell in GetCellsFromWord(word))
+            {
+                if (isValid)
+                {
+                    cell.Highlight(true, Color.green);
+                    cell.isLocked = true;
+                }
+                else
+                {
+                    cell.Highlight(false);
+                }
+            }
+        }
     }
 
     private bool IsLetterSetEqual(string a, string b)
