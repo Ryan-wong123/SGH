@@ -12,6 +12,14 @@ using Hashtable = ExitGames.Client.Photon.Hashtable; // alias Photon Hashtable
 
 public class PuzzleStateManager : MonoBehaviourPunCallbacks
 {
+
+    [Header("puzzle trigger object")]
+    [SerializeField] private GameObject puzzle1Object;
+    [SerializeField] private GameObject puzzle2Object;
+    [SerializeField] private GameObject puzzle3Object;
+    [SerializeField] private GameObject puzzle4Object;
+    [SerializeField] private GameObject puzzle5Object;
+
     [SerializeField] private float delayTransition;
 
     public static PuzzleStateManager Instance;
@@ -22,6 +30,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     [Header("Puzzle 1 Correct Symptoms")]
     public HashSet<string> correctSymptomsFromPuzzle1 = new();
 
+    [Header("puzzle 1&2")]
     [SerializeField] private GameObject mainminiPuzzle1Panel1;
     [SerializeField] private GameObject miniPuzzle1Panel1;
     [SerializeField] private GameObject miniPuzzle1Panel2;
@@ -29,36 +38,39 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject miniPuzzle1Header2;
     [SerializeField] private SymptomsCardManager symptomsCardManager;
 
+    [Header("puzzle 3")]
     [SerializeField] private GameObject Puzzle3Panel;
     [SerializeField] private PictureGridManager pictureGridManager;
 
+    [Header("puzzle 4")]
     [SerializeField] private Activity2PuzzleManager activity2PuzzleManager;
     [SerializeField] private GameObject Puzzle4Panel;
 
+    [Header("puzzle 5")]
     [SerializeField] private CrosswordManager crosswordManager;
     [SerializeField] private GameObject Puzzle5Panel;
 
-    [SerializeField] private GameObject puzzle1Object;
-    [SerializeField] private GameObject puzzle2Object;
-    [SerializeField] private GameObject puzzle3Object;
-    [SerializeField] private GameObject puzzle4Object;
-    [SerializeField] private GameObject puzzle5Object;
-
+    [Header("puzzle 6")]
     [SerializeField] private DiaryPuzzleManager diaryPuzzleManager;
     [SerializeField] private GameObject Puzzle6Panel;
 
+    [Header("puzzle 7")]
     [SerializeField] private PrescriptionManager prescriptionManager;
     [SerializeField] private GameObject Puzzle7Panel;
 
+    [Header("puzzle 8")]
     [SerializeField] private InsulinPuzzleManager insulinPuzzleManager;
     [SerializeField] private GameObject Puzzle8Panel;
 
+    [Header("puzzle 9")]
     [SerializeField] private WordSearchManager wordSearchManager;
     [SerializeField] private GameObject Puzzle9Panel;
 
+    [Header("puzzle 10")]
     [SerializeField] private RiskTable risktableManager;
     [SerializeField] private GameObject Puzzle10Panel;
 
+    [Header("puzzle 11")]
     [SerializeField] private DeathLapsesManager deathLapsesManager;
     [SerializeField] private GameObject Puzzle11Panel;
 
