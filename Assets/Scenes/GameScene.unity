@@ -131596,18 +131596,18 @@ MonoBehaviour:
   pictureGridManager: {fileID: 1086276078}
   activity2PuzzleManager: {fileID: 1262713100}
   Puzzle4Panel: {fileID: 1262713096}
-  crosswordManager: {fileID: 53796069}
-  Puzzle5Panel: {fileID: 1061063798}
+  wordSearchManager: {fileID: 1628483221}
+  Puzzle5Panel: {fileID: 1628483216}
   diaryPuzzleManager: {fileID: 509120715}
   Puzzle6Panel: {fileID: 509120711}
-  prescriptionManager: {fileID: 1064947408}
-  Puzzle7Panel: {fileID: 1064947403}
-  insulinPuzzleManager: {fileID: 1067863178}
-  Puzzle8Panel: {fileID: 1067863174}
-  wordSearchManager: {fileID: 1628483221}
-  Puzzle9Panel: {fileID: 1628483216}
   risktableManager: {fileID: 1649459595}
-  Puzzle10Panel: {fileID: 1890872484}
+  Puzzle7Panel: {fileID: 1890872484}
+  prescriptionManager: {fileID: 1064947408}
+  Puzzle8Panel: {fileID: 1064947403}
+  crosswordManager: {fileID: 53796069}
+  Puzzle9Panel: {fileID: 1061063798}
+  insulinPuzzleManager: {fileID: 1067863178}
+  Puzzle10Panel: {fileID: 1067863174}
   deathLapsesManager: {fileID: 280907649}
   Puzzle11Panel: {fileID: 280907644}
   statusText: {fileID: 2024478295}

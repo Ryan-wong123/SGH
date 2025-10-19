@@ -47,7 +47,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject Puzzle4Panel;
 
     [Header("puzzle 5")]
-    [SerializeField] private CrosswordManager crosswordManager;
+    [SerializeField] private WordSearchManager wordSearchManager;
     [SerializeField] private GameObject Puzzle5Panel;
 
     [Header("puzzle 6")]
@@ -55,19 +55,20 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject Puzzle6Panel;
 
     [Header("puzzle 7")]
-    [SerializeField] private PrescriptionManager prescriptionManager;
+    [SerializeField] private RiskTable risktableManager;
+  
     [SerializeField] private GameObject Puzzle7Panel;
 
     [Header("puzzle 8")]
-    [SerializeField] private InsulinPuzzleManager insulinPuzzleManager;
+    [SerializeField] private PrescriptionManager prescriptionManager;
     [SerializeField] private GameObject Puzzle8Panel;
 
     [Header("puzzle 9")]
-    [SerializeField] private WordSearchManager wordSearchManager;
+    [SerializeField] private CrosswordManager crosswordManager;
     [SerializeField] private GameObject Puzzle9Panel;
 
     [Header("puzzle 10")]
-    [SerializeField] private RiskTable risktableManager;
+    [SerializeField] private InsulinPuzzleManager insulinPuzzleManager;
     [SerializeField] private GameObject Puzzle10Panel;
 
     [Header("puzzle 11")]
@@ -120,12 +121,12 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             { PuzzleStage.Puzzle2, symptomsCardManager },
             { PuzzleStage.Puzzle3, pictureGridManager },
             { PuzzleStage.Puzzle4, activity2PuzzleManager },
-            { PuzzleStage.Puzzle5, crosswordManager },
+            { PuzzleStage.Puzzle5, wordSearchManager  },
             { PuzzleStage.Puzzle6, diaryPuzzleManager },
-            { PuzzleStage.Puzzle7, prescriptionManager },
-            { PuzzleStage.Puzzle8, insulinPuzzleManager },
-            { PuzzleStage.Puzzle9, wordSearchManager },
-            { PuzzleStage.Puzzle10, risktableManager },
+            { PuzzleStage.Puzzle7, risktableManager  },
+            { PuzzleStage.Puzzle8, prescriptionManager  },
+            { PuzzleStage.Puzzle9, crosswordManager },
+            { PuzzleStage.Puzzle10, insulinPuzzleManager },
             { PuzzleStage.Puzzle11, deathLapsesManager }
         };
 
