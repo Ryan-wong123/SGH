@@ -1,94 +1,59 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
-using System.Collections.Generic;
 using TMPro;
-using UnityEngine;
 
 public class WordSearchManager : MonoBehaviour, IPuzzle
 {
+    [Header("Grid Setup")]
     public GameObject gridPanel;
     public GameObject cellPrefab;
-    public int gridSize = 20;
+    [Range(2, 40)] public int gridSize = 20; // includes header row/col
 
+    [Header("Letters")]
+    [SerializeField] private bool useFixedPlacement = false; // kept for compatibility; placement is always applied below
+
+    // Selection state
+    private bool isDragging = false;
+    private bool dragAddMode = true; // true: selecting, false: unselecting
+    private readonly HashSet<LetterCell> selected = new();
+
+    // Grid
     private LetterCell[,] grid;
-    [SerializeField] private List<string> wordsToFind = new List<string>();
-    private List<string> foundWords = new List<string>();
-    private Dictionary<string, List<LetterCell>> wordToCells = new();
 
-    private List<LetterCell> selectedCells = new();
-    private HashSet<LetterCell> permanentSelectedCells = new();
-    private bool isSelecting = false;
-
-    [SerializeField] private bool useFixedPlacement = false;
-
+    // Solution map: '\0' means "no specific correct letter for this cell"
     private char[,] solution = new char[21, 21]
-{
-    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
-    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L' ,'I' ,'N' ,'E' ,'Z' ,'O' ,'L' ,'I' ,'D'   },
-    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S'  },
-    { '\0','\0','\0','\0','\0','\0','R' ,'E' ,'D' ,'U' ,'C' ,'T' ,'I' ,'O' ,'N' ,'F','\0','\0','\0','\0','U'  },
-    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','L'  },
-    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','U','\0','\0','\0','\0','F'  },
-    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','O','\0','\0','\0','\0','O'  },
-    { '\0','\0','\0','\0','\0','\0','\0','\0', '\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','N'  },
-    { '\0','A','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','O','\0','\0','\0','\0','Y'  },
-    { '\0','Z','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','Q','\0','\0','\0','\0','L'  },
-    { '\0','O','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','U','\0','\0','\0','\0','U'  },
-    { '\0','L','\0','\0','\0','\0','\0','E','\0','\0','\0','\0' ,'\0','\0','\0','I','\0','\0','\0','\0','R'  },
-    { '\0','E','\0','\0','\0','\0','\0','L','\0','\0','\0','\0' ,'\0','\0','\0','N','\0','\0','\0','\0','E'  },
-    { '\0','S','\0','\0','\0','\0','\0','D','\0','\0','\0','\0' ,'\0','\0','\0','O','\0','\0','\0','\0','A'  },
-    { '\0','I','M' ,'P' ,'A' ,'I' ,'R' ,'E' ,'D','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','S'  },
-    { '\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','\0' },
-    { '\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','\0','\0','\0','N','\0','\0','\0','\0','\0' },
-    { '\0','\0','\0','\0','\0','\0','\0','Y','\0','\0','\0','\0','\0','\0','\0','E','\0','\0','\0','\0','\0' },
-    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S','\0','\0','\0','\0','\0' },
-    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
-    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' }
-};
-
-    void Start()
     {
-        for (int i = 0; i < wordsToFind.Count; i++)
-            wordsToFind[i] = wordsToFind[i].ToUpper();
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L','I','N','E','Z','O','L','I','D' },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S'  },
+        { '\0','\0','\0','\0','\0','\0','R','E','D','U','C','T','I','O','N','F','\0','\0','\0','\0','U'  },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','L'  },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','U','\0','\0','\0','\0','F'  },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','O'  },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','N'  },
+        { '\0','A','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','Y'  },
+        { '\0','Z','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','Q','\0','\0','\0','\0','L'  },
+        { '\0','O','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','U','\0','\0','\0','\0','U'  },
+        { '\0','L','\0','\0','\0','\0','\0','E','\0','\0','\0','\0','\0','\0','\0','I','\0','\0','\0','\0','R'  },
+        { '\0','E','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','\0','\0','\0','N','\0','\0','\0','\0','E'  },
+        { '\0','S','\0','\0','\0','\0','\0','D','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','A'  },
+        { '\0','I','M','P','A','I','R','E','D','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','S'  },
+        { '\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','\0','\0','\0','N','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','Y','\0','\0','\0','\0','\0','\0','\0','E','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' }
+    };
 
+    private void Start()
+    {
         GenerateGrid();
-
-        if (useFixedPlacement)
-
-            PlaceFixedWords();
-
-        else
-
-            PlaceWords();
-
-
-        FillRandomLetters();
-
+        PlaceFixedLettersFromSolution(); // put correct letters first
+        FillRandomLetters();             // fill remaining blanks with random A–Z
     }
 
-    private void PlaceFixedWords()
-    {
-        int size = Mathf.Min(gridSize, solution.GetLength(0));
-
-        for (int y = 0; y < size; y++)
-        {
-            for (int x = 0; x < size; x++)
-            {
-                char c = solution[y, x];
-                if (c != '\0')
-                {
-                    grid[x, y].SetLetter(c);
-
-
-                    grid[x, y].Highlight(true, Color.grey);
-
-                }
-            }
-        }
-    }
-
-    void GenerateGrid()
+    private void GenerateGrid()
     {
         grid = new LetterCell[gridSize, gridSize];
 
@@ -96,37 +61,40 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         {
             for (int x = 0; x < gridSize; x++)
             {
-                GameObject obj = Instantiate(cellPrefab, gridPanel.transform);
-                LetterCell cell = obj.GetComponent<LetterCell>();
-                cell.gridPosition = new Vector2Int(x, y);
+                var obj = Instantiate(cellPrefab, gridPanel.transform);
+                var cell = obj.GetComponent<LetterCell>();
+                cell.Init(this, new Vector2Int(x, y));
 
-
+                // Top-left corner
                 if (x == 0 && y == 0)
                 {
                     cell.SetLetter(' ');
                     cell.DisableCellUI();
                     cell.SetTextColor(Color.clear);
+                    cell.SetPlayable(false);
                 }
-
+                // Column labels (A..)
                 else if (y == 0)
                 {
                     char letter = (char)('A' + x - 1);
                     cell.SetLetter(letter);
                     cell.SetTextColor(Color.white);
                     cell.DisableCellUI();
+                    cell.SetPlayable(false);
                 }
-
+                // Row labels (1..)
                 else if (x == 0)
                 {
                     cell.SetLetterString(y.ToString());
                     cell.SetTextColor(Color.white);
                     cell.DisableCellUI();
+                    cell.SetPlayable(false);
                 }
                 else
                 {
-
                     cell.SetLetter(' ');
                     cell.SetTextColor(Color.black);
+                    cell.SetPlayable(true);
                 }
 
                 grid[x, y] = cell;
@@ -134,287 +102,172 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         }
     }
 
-
-
-
-    void PlaceWords()
+    private void PlaceFixedLettersFromSolution()
     {
-        System.Random rand = new System.Random();
-        foreach (string word in wordsToFind)
+        int sizeY = Mathf.Min(gridSize, solution.GetLength(0));
+        int sizeX = Mathf.Min(gridSize, solution.GetLength(1));
+
+        for (int y = 1; y < sizeY; y++)       // skip header row
         {
-            bool placed = false;
-            for (int attempts = 0; attempts < 100 && !placed; attempts++)
+            for (int x = 1; x < sizeX; x++)   // skip header col
             {
-                int x = rand.Next(gridSize);
-                int y = rand.Next(gridSize);
-                Vector2Int dir = RandomDirection(rand);
-                placed = TryPlaceWord(word.ToUpper(), x, y, dir);
+                char c = solution[y, x];
+                if (c != '\0')
+                {
+                    grid[x, y].SetLetter(c);
+                }
             }
         }
     }
 
-    bool TryPlaceWord(string word, int x, int y, Vector2Int dir)
-    {
-        int endX = x + dir.x * (word.Length - 1);
-        int endY = y + dir.y * (word.Length - 1);
-
-        if (endX < 0 || endY < 0 || endX >= gridSize || endY >= gridSize)
-            return false;
-
-        for (int i = 0; i < word.Length; i++)
-        {
-            int xi = x + i * dir.x;
-            int yi = y + i * dir.y;
-            char existing = grid[xi, yi].GetLetter();
-            if (existing != ' ' && existing != word[i])
-                return false;
-        }
-
-        for (int i = 0; i < word.Length; i++)
-        {
-            int xi = x + i * dir.x;
-            int yi = y + i * dir.y;
-            grid[xi, yi].SetLetter(word[i]);
-
-
-            grid[xi, yi].Highlight(true, Color.blue);
-
-        }
-
-        return true;
-    }
-
-    Vector2Int RandomDirection(System.Random rand)
-    {
-        return new Vector2Int[] { new(1, 0), new(0, 1) }[rand.Next(2)];
-
-
-
-
-
-    }
-
-
-    void FillRandomLetters()
+    private void FillRandomLetters()
     {
         System.Random rand = new System.Random();
-        for (int y = 0; y < gridSize; y++)
+        for (int y = 1; y < gridSize; y++)
         {
-            for (int x = 0; x < gridSize; x++)
+            for (int x = 1; x < gridSize; x++)
             {
                 if (grid[x, y].GetLetter() == ' ')
                     grid[x, y].SetLetter((char)('A' + rand.Next(26)));
-
-
-
             }
         }
     }
 
-    public void StartSelection(LetterCell start)
+    // ---------- Results clearing ----------
+    private void ClearAllResults()
     {
-        isSelecting = true;
-        selectedCells.Clear();
-        UpdateSelection(start);
-    }
+        if (grid == null) return;
+        int sizeY = grid.GetLength(1);
+        int sizeX = grid.GetLength(0);
 
-    public void UpdateSelection(LetterCell current)
-    {
-        if (!isSelecting) return;
-
-        if (!selectedCells.Contains(current))
+        for (int y = 1; y < sizeY; y++)
         {
-
-
-
-
-
-
-
-            selectedCells.Add(current);
-            if (!current.isLocked)
-                current.Highlight(true);
-        }
-    }
-
-    public void EndSelection()
-    {
-        isSelecting = false;
-
-
-        foreach (var cell in selectedCells)
-        {
-            if (!permanentSelectedCells.Contains(cell))
-
-
-
-
-
+            for (int x = 1; x < sizeX; x++)
             {
-                permanentSelectedCells.Add(cell);
-                if (!cell.isLocked)
-                    cell.Highlight(true);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                var cell = grid[x, y];
+                if (cell != null && cell.IsPlayable)
+                    cell.ClearResult();
             }
         }
-
-        selectedCells.Clear();
-        CheckTappedWord();
     }
 
-    public void ToggleSelection(LetterCell cell)
+    // =========================
+    //  Selection API for cells
+    // =========================
+    public void BeginDrag(LetterCell start)
     {
+        if (!start.IsPlayable) return;
 
+        isDragging = true;
+        dragAddMode = !selected.Contains(start); // start on selected => unselect mode
 
-        if (permanentSelectedCells.Contains(cell))
-        {
-            permanentSelectedCells.Remove(cell);
-            if (!cell.isLocked)
-                cell.Highlight(false);
-        }
-        else
-        {
-            permanentSelectedCells.Add(cell);
-            if (!cell.isLocked)
-                cell.Highlight(true);
-        }
-
-        CheckTappedWord();
+        if (dragAddMode) SelectCell(start);
+        else UnselectCell(start);
     }
 
-    private void CheckTappedWord()
+    public void DragOver(LetterCell cell)
     {
-        string selectedWord = "";
-        List<LetterCell> tempList = new(permanentSelectedCells);
+        if (!isDragging || !cell.IsPlayable) return;
 
-        foreach (var cell in tempList)
+        if (dragAddMode) SelectCell(cell);
+        else UnselectCell(cell);
+    }
 
-            selectedWord += cell.GetLetter();
+    public void EndDrag()
+    {
+        isDragging = false;
+    }
 
-
-
-
-
-        foreach (string word in wordsToFind)
+    private void SelectCell(LetterCell cell)
+    {
+        if (selected.Add(cell))
         {
-            if (selectedWord.Length != word.Length) continue;
+            cell.ClearResult();          // clear any prior green/red for iterative attempts
+            cell.SetSelectedVisual(true);
+        }
+    }
 
-            if (IsLetterSetEqual(selectedWord, word) && !foundWords.Contains(word))
+    private void UnselectCell(LetterCell cell)
+    {
+        if (selected.Remove(cell))
+        {
+            cell.ClearResult();          // clear any prior green/red for iterative attempts
+            cell.SetSelectedVisual(false);
+        }
+    }
+
+    // Optional public single-click toggle (BeginDrag already handles it)
+    public void ToggleCell(LetterCell cell)
+    {
+        if (!cell.IsPlayable) return;
+        if (selected.Contains(cell)) UnselectCell(cell);
+        else SelectCell(cell);
+    }
+
+    // Keep button wiring simple
+    public void Submit() => IsSolved();
+
+    // =========================
+    // Final check + painter
+    // =========================
+    // True iff:
+    //   1) every solution cell is selected AND matches its letter, and
+    //   2) no extra cells are selected outside the solution map.
+    // Also: clears previous results, then paints current selection green/red.
+    public bool IsSolved()
+    {
+        ClearAllResults(); // fresh attempt paint
+
+        int sizeY = Mathf.Min(gridSize, solution.GetLength(0));
+        int sizeX = Mathf.Min(gridSize, solution.GetLength(1));
+
+        bool allMatch = true;
+
+        // 1) Paint every selected cell and track correctness
+        foreach (var cell in selected)
+        {
+            Vector2Int p = cell.gridPosition;
+            if (p.x <= 0 || p.y <= 0 || p.x >= sizeX || p.y >= sizeY) // ignore headers/out-of-range
+                continue;
+
+            char expected = solution[p.y, p.x];
+            char actual = cell.GetLetter();
+
+            bool isCorrect = (expected != '\0') &&
+                             (char.ToUpperInvariant(expected) == char.ToUpperInvariant(actual));
+
+            if (isCorrect) cell.SetResultCorrect(); // green
+            else cell.SetResultWrong();   // red
+
+            if (!isCorrect) allMatch = false;
+        }
+
+        // 2) Ensure no required cell is missing, and that selected ones match
+        for (int y = 1; y < sizeY; y++)
+        {
+            for (int x = 1; x < sizeX; x++)
             {
-                wordToCells[word] = new List<LetterCell>(tempList);
-                foundWords.Add(word);
+                if (solution[y, x] == '\0') continue;
 
-                foreach (var c in tempList)
+                var neededCell = grid[x, y];
+
+                // must be selected
+                if (!selected.Contains(neededCell))
                 {
-                    if (!c.isLocked)
-                    {
-                        c.Highlight(true, Color.green);
-                        c.isLocked = true;
-                    }
-                }
-
-
-
-
-
-
-
-                permanentSelectedCells.Clear();
-                return;
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-        foreach (var c in tempList)
-
-
-
-        {
-            if (!c.isLocked)
-                c.Highlight(false);
-
-
-        }
-
-        permanentSelectedCells.Clear();
-
-
-
-
-    }
-
-    private bool IsLetterSetEqual(string a, string b)
-    {
-        var aArr = a.ToCharArray();
-        var bArr = b.ToCharArray();
-        System.Array.Sort(aArr);
-        System.Array.Sort(bArr);
-        return new string(aArr) == new string(bArr);
-    }
-
-    public bool IsSolved() => AllWordsFound();
-
-
-
-
-
-    private bool AllWordsFound()
-    {
-
-
-        bool allCorrect = true;
-
-        foreach (string word in foundWords)
-        {
-            bool isValid = wordsToFind.Contains(word);
-
-
-
-            foreach (LetterCell cell in GetCellsFromWord(word))
-            {
-                if (isValid)
-                {
-                    cell.Highlight(true, Color.green);
-                    cell.isLocked = true;
+                    allMatch = false;
                 }
                 else
                 {
-                    cell.Highlight(false);
-                    allCorrect = false;
+                    // and must match expected letter
+                    if (char.ToUpperInvariant(neededCell.GetLetter()) !=
+                        char.ToUpperInvariant(solution[y, x]))
+                    {
+                        allMatch = false;
+                    }
                 }
             }
         }
 
-        return allCorrect && foundWords.Count == wordsToFind.Count;
-    }
-
-    private List<LetterCell> GetCellsFromWord(string word)
-    {
-        return wordToCells.TryGetValue(word, out var cells) ? cells : new List<LetterCell>();
+        return allMatch;
     }
 }

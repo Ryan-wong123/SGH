@@ -5,84 +5,89 @@ using UnityEngine.UI;
 
 public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerUpHandler
 {
+    [Header("UI")]
     public TMP_Text letterText;
     public Image backgroundImage;
-    public Vector2Int gridPosition;
-    public bool isLocked = false;
+
+    [HideInInspector] public Vector2Int gridPosition;
+    [HideInInspector] public bool IsPlayable { get; private set; }
 
     private WordSearchManager game;
 
-    private void Start()
+    // Visual state
+    private bool isSelected = false;
+    private bool hasResult = false; // true when green/red applied
+
+    // ---- Init from manager ----
+    public void Init(WordSearchManager mgr, Vector2Int pos)
     {
-        game = FindAnyObjectByType<WordSearchManager>();
+        game = mgr;
+        gridPosition = pos;
     }
 
-    public void SetLetter(char c)
+    public void SetPlayable(bool playable)
     {
-        letterText.text = c.ToString();
+        IsPlayable = playable;
+        if (backgroundImage != null) backgroundImage.raycastTarget = playable;
     }
 
-    public char GetLetter()
+    // ---- Content ----
+    public void SetLetter(char c) => letterText.text = c.ToString();
+    public void SetLetterString(string s) => letterText.text = s;
+    public char GetLetter() => letterText.text.Length > 0 ? letterText.text[0] : ' ';
+
+    // ---- Visuals ----
+    public void SetSelectedVisual(bool selected)
     {
-        return letterText.text.Length > 0 ? letterText.text[0] : ' ';
+        isSelected = selected;
+        if (hasResult) return; // keep green/red until cleared
+        backgroundImage.color = isSelected ? new Color(1f, 0.95f, 0.4f) : Color.white; // yellow or white
     }
 
-    public void Highlight(bool status, Color? customColor = null)
+    public void SetResultCorrect()
     {
-        if (isLocked) return;
-        backgroundImage.color = status ? (customColor ?? Color.yellow) : Color.white;
-
-
-
-
+        hasResult = true;
+        backgroundImage.color = Color.green;
     }
 
+    public void SetResultWrong()
+    {
+        hasResult = true;
+        backgroundImage.color = Color.red;
+    }
+
+    public void ClearResult()
+    {
+        hasResult = false;
+        // Re-apply selection coloring
+        backgroundImage.color = isSelected ? new Color(1f, 0.95f, 0.4f) : Color.white;
+    }
+
+    public void DisableCellUI()
+    {
+        backgroundImage.enabled = false;
+        backgroundImage.raycastTarget = false;
+    }
+
+    public void SetTextColor(Color color) => letterText.color = color;
+
+    // ---- Pointer input ----
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            if (Input.GetMouseButton(0))
-
-
-                game.StartSelection(this);
-
-            else
-
-
-                game.ToggleSelection(this);
-
-        }
+        if (!IsPlayable || eventData.button != PointerEventData.InputButton.Left) return;
+        game.BeginDrag(this);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!IsPlayable) return;
         if (Input.GetMouseButton(0))
-            game.UpdateSelection(this);
+            game.DragOver(this);
     }
-
-
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
-            game.EndSelection();
+        if (!IsPlayable || eventData.button != PointerEventData.InputButton.Left) return;
+        game.EndDrag();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void DisableCellUI() => backgroundImage.enabled = false;
-
-    public void SetTextColor(Color color) => letterText.color = color;
-
-    public void SetLetterString(string s) => letterText.text = s;
 }

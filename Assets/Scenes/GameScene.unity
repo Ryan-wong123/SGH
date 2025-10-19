@@ -100324,14 +100324,6 @@ MonoBehaviour:
   gridPanel: {fileID: 4821342}
   cellPrefab: {fileID: 7512843899243525254, guid: 170fa6abb03edbb41abef45f0fd48b15, type: 3}
   gridSize: 21
-  wordsToFind:
-  - Fluoroquinolones
-  - Sulfonylureas
-  - Linezolid
-  - Azoles
-  - Elderly
-  - Impaired
-  - reduction
   useFixedPlacement: 1
 --- !u!1 &1629859606
 GameObject:
