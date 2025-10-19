@@ -29,8 +29,15 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         [Tooltip("TMP text element to update for this stage.")]
         public TextMeshProUGUI display;
 
+        [Tooltip("Queue board (QueueNumberDisplay) that should flash when this text is shown.")]
+        public QueueNumberDisplay board;
+
         [Tooltip("Text applied to this display. Use {n} to inject puzzle number.")]
         public string text = "";
+
+        [Header("Flash behavior")]
+        [Tooltip("If true, board.isFlash will be turned ON when text is applied.")]
+        public bool flashBoardWhenShown = true;
     }
 
     [Serializable]
@@ -101,7 +108,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         int[] deactivateIds = CollectInstanceIDs(prevDirective?.deactivateOnExit);
         int[] activateIds = CollectInstanceIDs(newDirective?.activateOnEnter);
 
-        // Collect per-display texts (already formatted with {n})
         string[] texts = CollectQueueTexts(newDirective, stage);
 
         photonView.RPC(nameof(RPC_ApplyStageEffects),
@@ -115,39 +121,44 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_ApplyStageEffects(int stageInt, int[] deactivateIds, int[] activateIds, string[] texts)
     {
+        // 1) Stop all board flashes before applying new stage (ensures "flash until stage change")
+        StopAllBoardFlashes();
+
+        // 2) Toggle objects
         ToggleByInstanceIDs(deactivateIds, false);
         ToggleByInstanceIDs(activateIds, true);
 
+        // 3) Apply texts + turn on flash for this stage
         var stage = (PuzzleStateManager.PuzzleStage)stageInt;
         var directive = FindDirective(stage);
-
-        ApplyQueueTexts(directive, texts, stage);
+        ApplyQueueTextsAndFlash(directive, texts, stage);
 
         directive?.onEnter?.Invoke();
     }
 
     private void ApplyForEveryone(PuzzleStateManager.PuzzleStage? previous, PuzzleStateManager.PuzzleStage stage)
     {
+        // 1) Stop all board flashes
+        StopAllBoardFlashes();
+
         var prevDirective = previous.HasValue ? FindDirective(previous.Value) : null;
         var newDirective = FindDirective(stage);
         if (newDirective == null) return;
 
-        // Deactivate from previous stage
         if (prevDirective != null)
             foreach (var go in prevDirective.deactivateOnExit)
                 if (go) go.SetActive(false);
 
-        // Activate for new stage
         foreach (var go in newDirective.activateOnEnter)
             if (go) go.SetActive(true);
 
-        // Apply per-display texts
         string[] texts = CollectQueueTexts(newDirective, stage);
-        ApplyQueueTexts(newDirective, texts, stage);
+        ApplyQueueTextsAndFlash(newDirective, texts, stage);
 
         newDirective.onEnter?.Invoke();
     }
 
+    // ---- Core helpers ----
     private string[] CollectQueueTexts(StageDirective directive, PuzzleStateManager.PuzzleStage stage)
     {
         if (directive == null || directive.queueDisplayDirectives == null)
@@ -162,15 +173,33 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         return result.ToArray();
     }
 
-    private void ApplyQueueTexts(StageDirective directive, string[] texts, PuzzleStateManager.PuzzleStage stage)
+    private void ApplyQueueTextsAndFlash(StageDirective directive, string[] texts, PuzzleStateManager.PuzzleStage stage)
     {
         if (directive == null || directive.queueDisplayDirectives == null) return;
 
         for (int i = 0; i < directive.queueDisplayDirectives.Count && i < texts.Length; i++)
         {
             var q = directive.queueDisplayDirectives[i];
-            if (q.display != null)
-                q.display.text = texts[i];
+
+            // 1) Set the visible stage text
+            if (q.display != null) q.display.text = texts[i];
+
+            // 2) Flash ONLY the queue board while this stage is active
+            if (q.flashBoardWhenShown && q.board != null)
+            {
+                q.board.SetFlash(true);   // keep flashing; will be turned off next stage
+            }
+        }
+    }
+
+    private void StopAllBoardFlashes()
+    {
+        if (directives == null) return;
+        foreach (var d in directives)
+        {
+            if (d?.queueDisplayDirectives == null) continue;
+            foreach (var q in d.queueDisplayDirectives)
+                if (q?.board != null) q.board.SetFlash(false);
         }
     }
 
@@ -218,9 +247,8 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         var all = FindObjectsOfType<GameObject>(true);
         var map = new HashSet<int>(ids);
         foreach (var go in all)
-        {
             if (map.Contains(go.GetInstanceID()))
                 go.SetActive(active);
-        }
     }
 }
+

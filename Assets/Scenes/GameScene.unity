@@ -13431,6 +13431,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   label: {fileID: 1991173882}
   displayText: 
+  isFlash: 0
   flashSpeed: 2.5
   alphaRange: {x: 0.25, y: 1}
   cubeRenderer: {fileID: 237814525}
@@ -78099,6 +78100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   label: {fileID: 1477441816}
   displayText: 
+  isFlash: 0
   flashSpeed: 2.5
   alphaRange: {x: 0.25, y: 1}
   cubeRenderer: {fileID: 1306950433}
@@ -98485,6 +98487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   label: {fileID: 1840119863}
   displayText: 
+  isFlash: 0
   flashSpeed: 2.5
   alphaRange: {x: 0.25, y: 1}
   cubeRenderer: {fileID: 1591424793}
@@ -131074,9 +131077,13 @@ MonoBehaviour:
     deactivateOnExit: []
     queueDisplayDirectives:
     - display: {fileID: 1840119863}
+      board: {fileID: 1591424796}
       text: 154 \n Physician Room
+      flashBoardWhenShown: 1
     - display: {fileID: 1991173882}
+      board: {fileID: 237814523}
       text: 154
+      flashBoardWhenShown: 1
     onEnter:
       m_PersistentCalls:
         m_Calls: []
@@ -131086,9 +131093,13 @@ MonoBehaviour:
     deactivateOnExit: []
     queueDisplayDirectives:
     - display: {fileID: 1991173882}
+      board: {fileID: 237814523}
       text: 154 Pharmacy
+      flashBoardWhenShown: 1
     - display: {fileID: 1477441816}
+      board: {fileID: 1306950431}
       text: 154
+      flashBoardWhenShown: 1
     onEnter:
       m_PersistentCalls:
         m_Calls: []

@@ -5,8 +5,11 @@ using Photon.Pun;
 #endif
 
 /// <summary>
-/// Flash a free-form string (e.g., "154-> room") on a world-space TMP label,
-/// with optional cube emission pulse and optional Photon sync.
+/// World-space TMP "queue board".
+/// - Shows any free-form text (e.g., "154-> room").
+/// - Flashes only when isFlash == true (solid otherwise).
+/// - Optional cube emission pulse tied to isFlash.
+/// - Photon sync for displayText and isFlash.
 /// </summary>
 public class QueueNumberDisplay : MonoBehaviour
 #if PHOTON_UNITY_NETWORKING
@@ -21,6 +24,7 @@ public class QueueNumberDisplay : MonoBehaviour
     [TextArea][SerializeField] private string displayText = "154-> room";
 
     [Header("Flash")]
+    [SerializeField] public bool isFlash = false;            // <— director toggles this
     [Tooltip("How fast the label flashes.")]
     [SerializeField] private float flashSpeed = 2.5f;
     [Tooltip("Minimum and maximum alpha for the flashing text.")]
@@ -37,7 +41,7 @@ public class QueueNumberDisplay : MonoBehaviour
     [SerializeField] private Color emissionColor = Color.white;
 
     // Internal
-    [SerializeField] private Color baseTextColor;
+    [SerializeField] private Color baseTextColor = Color.white;
     private MaterialPropertyBlock mpb;
 
 #if PHOTON_UNITY_NETWORKING
@@ -49,30 +53,42 @@ public class QueueNumberDisplay : MonoBehaviour
     {
         if (label != null) baseTextColor = label.color;
         if (cubeRenderer != null) mpb = new MaterialPropertyBlock();
-
 #if PHOTON_UNITY_NETWORKING
         pv = GetComponent<PhotonView>();
 #endif
         RedrawImmediate();
+        ApplyFlashVisuals(initial: true);
     }
 
     void Update()
     {
-        // Flashing alpha
+        // Text alpha flash ONLY when isFlash is true
         if (label != null)
         {
-            float t = 0.5f * (Mathf.Sin(Time.time * flashSpeed * Mathf.PI * 2f) + 1f);
-            float a = Mathf.Lerp(alphaRange.x, alphaRange.y, t);
-            var c = baseTextColor;
-            c.a = a;
-            label.color = c;
+            if (isFlash)
+            {
+                float t = 0.5f * (Mathf.Sin(Time.unscaledTime * flashSpeed * Mathf.PI * 2f) + 1f);
+                float a = Mathf.Lerp(alphaRange.x, alphaRange.y, t);
+                var c = baseTextColor; c.a = a;
+                label.color = c;
+            }
+            else
+            {
+                // Keep solid alpha when not flashing
+                var c = baseTextColor; c.a = 1f;
+                if (label.color.a != 1f) label.color = c;
+            }
         }
 
-        // Emission pulse
+        // Emission pulse follows isFlash (on when flashing, 0 when not)
         if (pulseEmission && cubeRenderer != null)
         {
-            float t = 0.5f * (Mathf.Sin(Time.time * emissionSpeed * Mathf.PI * 2f) + 1f);
-            float intensity = Mathf.Lerp(emissionRange.x, emissionRange.y, t);
+            float intensity = 0f;
+            if (isFlash)
+            {
+                float t = 0.5f * (Mathf.Sin(Time.unscaledTime * emissionSpeed * Mathf.PI * 2f) + 1f);
+                intensity = Mathf.Lerp(emissionRange.x, emissionRange.y, t);
+            }
 
             cubeRenderer.GetPropertyBlock(mpb);
             mpb.SetColor("_EmissionColor", emissionColor * intensity);
@@ -86,8 +102,18 @@ public class QueueNumberDisplay : MonoBehaviour
             label.text = displayText ?? "";
     }
 
+    private void ApplyFlashVisuals(bool initial = false)
+    {
+        // Ensure the label matches the isFlash state immediately
+        if (label == null) return;
+        if (!isFlash || initial)
+        {
+            var c = baseTextColor; c.a = isFlash ? c.a : 1f;
+            label.color = c;
+        }
+    }
+
     // ---------- Public API ----------
-    /// <summary>Sets any free-form text (symbols allowed) and updates the label.</summary>
     public void SetDisplayText(string text)
     {
 #if PHOTON_UNITY_NETWORKING
@@ -101,15 +127,23 @@ public class QueueNumberDisplay : MonoBehaviour
         RedrawImmediate();
     }
 
-    /// <summary>
-    /// Convenience method if you sometimes want to push a number.
-    /// Set paddingDigits = 0 for raw number; e.g., 7 → "7".
-    /// Set paddingDigits = 3 for "007", etc. You can also add a suffix/prefix.
-    /// </summary>
     public void SetNumber(int number, int paddingDigits = 0, string prefix = "", string suffix = "")
     {
         string core = paddingDigits > 0 ? number.ToString($"D{Mathf.Max(1, paddingDigits)}") : number.ToString();
         SetDisplayText($"{prefix}{core}{suffix}");
+    }
+
+    public void SetFlash(bool on)
+    {
+#if PHOTON_UNITY_NETWORKING
+        if (pv != null && pv.IsMine)
+        {
+            pv.RPC(nameof(RPC_SetFlash), RpcTarget.AllBuffered, on);
+            return;
+        }
+#endif
+        isFlash = on;
+        ApplyFlashVisuals();
     }
 
 #if PHOTON_UNITY_NETWORKING
@@ -121,17 +155,27 @@ public class QueueNumberDisplay : MonoBehaviour
         RedrawImmediate();
     }
 
-    /// <summary>
-    /// Optional state sync (backup to RPC buffer).
-    /// </summary>
+    [PunRPC]
+    private void RPC_SetFlash(bool on)
+    {
+        isFlash = on;
+        ApplyFlashVisuals();
+    }
+
+    /// <summary>Optional state sync (backup to RPC buffer).</summary>
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
+        {
             stream.SendNext(displayText ?? "");
+            stream.SendNext(isFlash);
+        }
         else
         {
             displayText = (string)stream.ReceiveNext();
+            isFlash = (bool)stream.ReceiveNext();
             RedrawImmediate();
+            ApplyFlashVisuals();
         }
     }
 #endif
