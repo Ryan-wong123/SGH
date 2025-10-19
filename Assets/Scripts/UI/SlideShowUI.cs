@@ -13,6 +13,28 @@ public class SlideshowUI : MonoBehaviour
 
     private int currentIndex = 0;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;    // Assign AudioSource component
+    [SerializeField] private AudioClip onEnableClip;     // Clip to play when panel is shown
+
+    private void OnEnable()
+    {
+        // Play the sound when the panel is enabled
+        if (audioSource != null && onEnableClip != null)
+        {
+            audioSource.clip = onEnableClip;
+            audioSource.Play();
+        }
+    }
+    private void OnDisable()
+    {
+        // Stop sound when panel is disabled
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+    }
+
     private void Start()
     {
         if (slideshowImages.Length == 0)
@@ -27,26 +49,42 @@ public class SlideshowUI : MonoBehaviour
         // Hook up buttons
         prevButton.onClick.AddListener(ShowPrevImage);
         nextButton.onClick.AddListener(ShowNextImage);
+
+        // Initialize button state
+        UpdateButtonState();
     }
 
     private void ShowPrevImage()
     {
-        currentIndex--;
-        if (currentIndex < 0)
-            currentIndex = slideshowImages.Length - 1; // wrap around
-        UpdateImage();
+        if (currentIndex > 0)
+        {
+            currentIndex--;
+            UpdateImage();
+            UpdateButtonState();
+        }
     }
 
     private void ShowNextImage()
     {
-        currentIndex++;
-        if (currentIndex >= slideshowImages.Length)
-            currentIndex = 0; // wrap around
-        UpdateImage();
+        if (currentIndex < slideshowImages.Length - 1)
+        {
+            currentIndex++;
+            UpdateImage();
+            UpdateButtonState();
+        }
     }
 
     private void UpdateImage()
     {
         displayImage.sprite = slideshowImages[currentIndex];
+    }
+
+    private void UpdateButtonState()
+    {
+        // Disable prev button if at first image
+        prevButton.interactable = currentIndex > 0;
+
+        // Disable next button if at last image
+        nextButton.interactable = currentIndex < slideshowImages.Length - 1;
     }
 }
