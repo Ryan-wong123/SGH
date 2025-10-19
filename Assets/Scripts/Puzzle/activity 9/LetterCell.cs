@@ -24,17 +24,13 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
 
     public char GetLetter()
     {
-        return letterText.text[0];
+        return letterText.text.Length > 0 ? letterText.text[0] : ' ';
     }
 
     public void Highlight(bool status, Color? customColor = null)
     {
         if (isLocked) return;
-
-        if (status)
-            backgroundImage.color = customColor ?? Color.yellow;
-        else
-            backgroundImage.color = Color.white;
+        backgroundImage.color = status ? (customColor ?? Color.yellow) : Color.white;
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -42,42 +38,27 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             if (Input.GetMouseButton(0))
-            {
-                // Drag-based
                 game.StartSelection(this);
-            }
             else
-            {
-                // Tap-based
                 game.ToggleSelection(this);
-            }
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (Input.GetMouseButton(0)) // ✅ Important: only act while dragging
+        if (Input.GetMouseButton(0))
             game.UpdateSelection(this);
     }
-
-
 
     public void OnPointerUp(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
             game.EndSelection();
     }
-    public void DisableCellUI()
-    {
-        backgroundImage.enabled = false;
-    }
-    public void SetTextColor(Color color)
-    {
-        letterText.color = color;
-    }
-    public void SetLetterString(string s)
-    {
-        letterText.text = s;
-    }
 
+    public void DisableCellUI() => backgroundImage.enabled = false;
+
+    public void SetTextColor(Color color) => letterText.color = color;
+
+    public void SetLetterString(string s) => letterText.text = s;
 }

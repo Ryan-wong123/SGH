@@ -13,37 +13,36 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     private List<string> foundWords = new List<string>();
     private Dictionary<string, List<LetterCell>> wordToCells = new();
 
-    private List<LetterCell> selectedCells = new List<LetterCell>(); // Current drag
-    private HashSet<LetterCell> permanentSelectedCells = new();     // Across all drags
+    private List<LetterCell> selectedCells = new();
+    private HashSet<LetterCell> permanentSelectedCells = new();
     private bool isSelecting = false;
 
     [SerializeField] private bool useFixedPlacement = false;
 
     private char[,] solution = new char[21, 21]
-    {
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L' ,'I' ,'N' ,'E' ,'Z' ,'O' ,'L' ,'I' ,'D'   },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S'  },
-        { '\0','\0','\0','\0','\0','\0','R' ,'E' ,'D' ,'U' ,'C' ,'T' ,'I' ,'O' ,'N' ,'F','\0','\0','\0','\0','U'  },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','L'  },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','U','\0','\0','\0','\0','F'  },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','O','\0','\0','\0','\0','O'  },
-        { '\0','\0','\0','\0','\0','\0','\0','\0', '\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','N'  },
-        { '\0','A','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','O','\0','\0','\0','\0','Y'  },
-        { '\0','Z','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','Q','\0','\0','\0','\0','L'  },
-        { '\0','O','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','U','\0','\0','\0','\0','U'  },
-        { '\0','L','\0','\0','\0','\0','\0','E','\0','\0','\0','\0' ,'\0','\0','\0','I','\0','\0','\0','\0','R'  },
-        { '\0','E','\0','\0','\0','\0','\0','L','\0','\0','\0','\0' ,'\0','\0','\0','N','\0','\0','\0','\0','E'  },
-        { '\0','S','\0','\0','\0','\0','\0','D','\0','\0','\0','\0' ,'\0','\0','\0','O','\0','\0','\0','\0','A'  },
-        { '\0','I','M' ,'P' ,'A' ,'I' ,'R' ,'E' ,'D','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','S'  },
-        { '\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','\0','\0','\0','N','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','Y','\0','\0','\0','\0','\0','\0','\0','E','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' }
-    };
-
+{
+    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
+    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L' ,'I' ,'N' ,'E' ,'Z' ,'O' ,'L' ,'I' ,'D'   },
+    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S'  },
+    { '\0','\0','\0','\0','\0','\0','R' ,'E' ,'D' ,'U' ,'C' ,'T' ,'I' ,'O' ,'N' ,'F','\0','\0','\0','\0','U'  },
+    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','L'  },
+    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','U','\0','\0','\0','\0','F'  },
+    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','O','\0','\0','\0','\0','O'  },
+    { '\0','\0','\0','\0','\0','\0','\0','\0', '\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','N'  },
+    { '\0','A','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','O','\0','\0','\0','\0','Y'  },
+    { '\0','Z','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','Q','\0','\0','\0','\0','L'  },
+    { '\0','O','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' ,'\0','\0','\0','U','\0','\0','\0','\0','U'  },
+    { '\0','L','\0','\0','\0','\0','\0','E','\0','\0','\0','\0' ,'\0','\0','\0','I','\0','\0','\0','\0','R'  },
+    { '\0','E','\0','\0','\0','\0','\0','L','\0','\0','\0','\0' ,'\0','\0','\0','N','\0','\0','\0','\0','E'  },
+    { '\0','S','\0','\0','\0','\0','\0','D','\0','\0','\0','\0' ,'\0','\0','\0','O','\0','\0','\0','\0','A'  },
+    { '\0','I','M' ,'P' ,'A' ,'I' ,'R' ,'E' ,'D','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','S'  },
+    { '\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','\0' },
+    { '\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','\0','\0','\0','N','\0','\0','\0','\0','\0' },
+    { '\0','\0','\0','\0','\0','\0','\0','Y','\0','\0','\0','\0','\0','\0','\0','E','\0','\0','\0','\0','\0' },
+    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S','\0','\0','\0','\0','\0' },
+    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
+    { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' }
+};
     void Start()
     {
         for (int i = 0; i < wordsToFind.Count; i++)
@@ -52,21 +51,16 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         GenerateGrid();
 
         if (useFixedPlacement)
-        {
             PlaceFixedWords();
-        }
         else
-        {
             PlaceWords();
-        }
 
         FillRandomLetters();
-
     }
+
     private void PlaceFixedWords()
     {
         int size = Mathf.Min(gridSize, solution.GetLength(0));
-
         for (int y = 0; y < size; y++)
         {
             for (int x = 0; x < size; x++)
@@ -75,10 +69,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
                 if (c != '\0')
                 {
                     grid[x, y].SetLetter(c);
-
-                    // ✅ Highlight in green and lock
                     grid[x, y].Highlight(true, Color.grey);
-       
                 }
             }
         }
@@ -87,7 +78,6 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     void GenerateGrid()
     {
         grid = new LetterCell[gridSize, gridSize];
-
         for (int y = 0; y < gridSize; y++)
         {
             for (int x = 0; x < gridSize; x++)
@@ -96,22 +86,19 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
                 LetterCell cell = obj.GetComponent<LetterCell>();
                 cell.gridPosition = new Vector2Int(x, y);
 
-                // Top-left corner (0,0)
                 if (x == 0 && y == 0)
                 {
                     cell.SetLetter(' ');
                     cell.DisableCellUI();
                     cell.SetTextColor(Color.clear);
                 }
-                // Top row (A to T)
                 else if (y == 0)
                 {
-                    char letter = (char)('A' + x - 1); // A = 65
+                    char letter = (char)('A' + x - 1);
                     cell.SetLetter(letter);
                     cell.SetTextColor(Color.white);
                     cell.DisableCellUI();
                 }
-                // First column (1 to 20)
                 else if (x == 0)
                 {
                     cell.SetLetterString(y.ToString());
@@ -120,18 +107,14 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
                 }
                 else
                 {
-                    // Playable grid cells
                     cell.SetLetter(' ');
-                    cell.SetTextColor(Color.black); // change to white if desired
+                    cell.SetTextColor(Color.black);
                 }
 
                 grid[x, y] = cell;
             }
         }
     }
-
-
-
 
     void PlaceWords()
     {
@@ -171,24 +154,16 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
             int xi = x + i * dir.x;
             int yi = y + i * dir.y;
             grid[xi, yi].SetLetter(word[i]);
-
-            // ✅ Highlight in green and lock
             grid[xi, yi].Highlight(true, Color.blue);
-       
         }
+
         return true;
     }
 
     Vector2Int RandomDirection(System.Random rand)
     {
-        // Only allow horizontal (→) and vertical (↓) directions
-        Vector2Int[] directions = {
-        new Vector2Int(1, 0),  // right
-        new Vector2Int(0, 1),  // down
-    };
-        return directions[rand.Next(directions.Length)];
+        return new Vector2Int[] { new(1, 0), new(0, 1) }[rand.Next(2)];
     }
-
 
     void FillRandomLetters()
     {
@@ -198,10 +173,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
             for (int x = 0; x < gridSize; x++)
             {
                 if (grid[x, y].GetLetter() == ' ')
-                {
-                    char c = (char)('A' + rand.Next(26));
-                    grid[x, y].SetLetter(c);
-                }
+                    grid[x, y].SetLetter((char)('A' + rand.Next(26)));
             }
         }
     }
@@ -209,25 +181,19 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     public void StartSelection(LetterCell start)
     {
         isSelecting = true;
-        selectedCells.Clear(); // Fresh drag
+        selectedCells.Clear();
         UpdateSelection(start);
     }
 
     public void UpdateSelection(LetterCell current)
     {
-        if (!isSelecting || current.isLocked) return;
+        if (!isSelecting) return;
 
-        if (permanentSelectedCells.Contains(current) && !selectedCells.Contains(current))
+        if (!selectedCells.Contains(current))
         {
-            // Unhighlight immediately if dragging over a previously selected cell
-            permanentSelectedCells.Remove(current);
-            current.Highlight(false);
-        }
-        else if (!selectedCells.Contains(current) && !permanentSelectedCells.Contains(current))
-        {
-            // Highlight new cell
             selectedCells.Add(current);
-            current.Highlight(true);
+            if (!current.isLocked)
+                current.Highlight(true);
         }
     }
 
@@ -235,147 +201,95 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     {
         isSelecting = false;
 
-        List<LetterCell> finalSelection = new();
         foreach (var cell in selectedCells)
         {
-            if (permanentSelectedCells.Contains(cell))
-            {
-                permanentSelectedCells.Remove(cell);
-                cell.Highlight(false);
-            }
-            else
+            if (!permanentSelectedCells.Contains(cell))
             {
                 permanentSelectedCells.Add(cell);
-                finalSelection.Add(cell);
-            }
-        }
-
-        if (finalSelection.Count > 0)
-        {
-            string selectedWord = BuildOrderedWordFromSelection(finalSelection);
-
-
-            string sortedSelected = SortString(selectedWord);
-
-            foreach (string word in wordsToFind)
-            {
-                if (SortString(word) == sortedSelected && !foundWords.Contains(word))
-                {
-                    wordToCells[word] = new List<LetterCell>(finalSelection);
-                    foundWords.Add(word);
-                    break;
-                }
+                if (!cell.isLocked)
+                    cell.Highlight(true);
             }
         }
 
         selectedCells.Clear();
+        CheckTappedWord();
     }
+
     public void ToggleSelection(LetterCell cell)
     {
-        if (cell.isLocked) return;
-
         if (permanentSelectedCells.Contains(cell))
         {
             permanentSelectedCells.Remove(cell);
-            cell.Highlight(false);
+            if (!cell.isLocked)
+                cell.Highlight(false);
         }
         else
         {
             permanentSelectedCells.Add(cell);
-            cell.Highlight(true);
+            if (!cell.isLocked)
+                cell.Highlight(true);
         }
 
         CheckTappedWord();
     }
+
     private void CheckTappedWord()
     {
         string selectedWord = "";
-        List<LetterCell> tempList = new();
+        List<LetterCell> tempList = new(permanentSelectedCells);
 
-        foreach (var cell in permanentSelectedCells)
-        {
+        foreach (var cell in tempList)
             selectedWord += cell.GetLetter();
-            tempList.Add(cell);
-        }
 
-        // Optionally sort by position if you want (for anagram prevention)
-
-        if (!string.IsNullOrEmpty(selectedWord))
+        foreach (string word in wordsToFind)
         {
-            if (wordsToFind.Contains(selectedWord) && !foundWords.Contains(selectedWord))
+            if (selectedWord.Length != word.Length) continue;
+
+            if (IsLetterSetEqual(selectedWord, word) && !foundWords.Contains(word))
             {
-                wordToCells[selectedWord] = new List<LetterCell>(tempList);
-                foundWords.Add(selectedWord);
+                wordToCells[word] = new List<LetterCell>(tempList);
+                foundWords.Add(word);
 
                 foreach (var c in tempList)
                 {
-                    c.Highlight(true, Color.green);
-                    c.isLocked = true;
+                    if (!c.isLocked)
+                    {
+                        c.Highlight(true, Color.green);
+                        c.isLocked = true;
+                    }
                 }
 
-                permanentSelectedCells.Clear(); // Clear for next word
-            }
-            else if (selectedWord.Length >= 3) // optional: auto reset if wrong
-            {
-                foreach (var c in tempList)
-                    c.Highlight(false);
                 permanentSelectedCells.Clear();
+                return;
             }
         }
-    }
-    private string BuildOrderedWordFromSelection(List<LetterCell> cells)
-    {
-        if (cells.Count < 2)
-            return "";
 
-        // Get direction from first two cells
-        Vector2Int dir = cells[1].gridPosition - cells[0].gridPosition;
-
-        if (dir == Vector2Int.zero) return "";
-
-        List<LetterCell> ordered = new() { cells[0] };
-        Vector2Int currentPos = cells[0].gridPosition;
-
-        for (int i = 1; i < cells.Count; i++)
+        foreach (var c in tempList)
         {
-            currentPos += dir;
-            LetterCell next = cells.Find(c => c.gridPosition == currentPos);
-            if (next == null) return ""; // Broken sequence
-            ordered.Add(next);
+            if (!c.isLocked)
+                c.Highlight(false);
         }
 
-        string word = "";
-        foreach (var cell in ordered)
-            word += cell.GetLetter();
-
-        return word;
+        permanentSelectedCells.Clear();
     }
 
-    private string SortString(string input)
+    private bool IsLetterSetEqual(string a, string b)
     {
-        char[] chars = input.ToCharArray();
-        System.Array.Sort(chars);
-        return new string(chars);
+        var aArr = a.ToCharArray();
+        var bArr = b.ToCharArray();
+        System.Array.Sort(aArr);
+        System.Array.Sort(bArr);
+        return new string(aArr) == new string(bArr);
     }
 
-
-    private List<LetterCell> GetCellsFromWord(string word)
-    {
-        return wordToCells.TryGetValue(word, out var cells) ? cells : new List<LetterCell>();
-    }
+    public bool IsSolved() => AllWordsFound();
 
     private bool AllWordsFound()
     {
-        Debug.Log("Checking all words...");
-
         bool allCorrect = true;
-
         foreach (string word in foundWords)
         {
             bool isValid = wordsToFind.Contains(word);
-
-            Debug.Log($"{word} is valid {isValid}");
-
             foreach (LetterCell cell in GetCellsFromWord(word))
             {
                 if (isValid)
@@ -390,12 +304,12 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
                 }
             }
         }
-        Debug.Log($"all correct {allCorrect} foundwords count {foundWords.Count} wordstofind count {wordsToFind.Count} ");
+
         return allCorrect && foundWords.Count == wordsToFind.Count;
     }
 
-    public bool IsSolved()
+    private List<LetterCell> GetCellsFromWord(string word)
     {
-        return AllWordsFound();
+        return wordToCells.TryGetValue(word, out var cells) ? cells : new List<LetterCell>();
     }
 }
