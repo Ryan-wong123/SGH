@@ -7,7 +7,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
 {
     public TMP_Text letterText;
     public Image backgroundImage;
-    public Vector2Int gridPosition;  // (x,y) in grid array
+    public Vector2Int gridPosition;
     public bool isLocked = false;
 
     private WordSearchManager game;
@@ -17,41 +17,68 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         game = FindAnyObjectByType<WordSearchManager>();
     }
 
-    public void SetLetter(char c) => letterText.text = c.ToString();
+    public void SetLetter(char c)
+    {
+        letterText.text = c.ToString();
+    }
 
-    public char GetLetter() => letterText.text.Length > 0 ? letterText.text[0] : ' ';
+    public char GetLetter()
+    {
+        return letterText.text.Length > 0 ? letterText.text[0] : ' ';
+    }
 
     public void Highlight(bool status, Color? customColor = null)
     {
         if (isLocked) return;
         backgroundImage.color = status ? (customColor ?? Color.yellow) : Color.white;
+
+
+
+
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            // Left: start a drag OR begin manual selection (first click)
-            game.BeginPointer(this);
-        }
-        else if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            // Right: remove any stored selection that includes this cell
-            game.TryRemoveSelectionContaining(this);
+            if (Input.GetMouseButton(0))
+
+
+                game.StartSelection(this);
+
+            else
+
+
+                game.ToggleSelection(this);
+
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (Input.GetMouseButton(0))
-            game.DragPreviewTo(this);
+            game.UpdateSelection(this);
     }
+
+
 
     public void OnPointerUp(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
-            game.EndPointer(this);
+            game.EndSelection();
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void DisableCellUI() => backgroundImage.enabled = false;
 
