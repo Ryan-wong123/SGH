@@ -7,7 +7,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
 {
     public TMP_Text letterText;
     public Image backgroundImage;
-    public Vector2Int gridPosition;
+    public Vector2Int gridPosition;  // (x,y) in grid array
     public bool isLocked = false;
 
     private WordSearchManager game;
@@ -17,15 +17,9 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         game = FindAnyObjectByType<WordSearchManager>();
     }
 
-    public void SetLetter(char c)
-    {
-        letterText.text = c.ToString();
-    }
+    public void SetLetter(char c) => letterText.text = c.ToString();
 
-    public char GetLetter()
-    {
-        return letterText.text.Length > 0 ? letterText.text[0] : ' ';
-    }
+    public char GetLetter() => letterText.text.Length > 0 ? letterText.text[0] : ' ';
 
     public void Highlight(bool status, Color? customColor = null)
     {
@@ -37,23 +31,26 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            if (Input.GetMouseButton(0))
-                game.StartSelection(this);
-            else
-                game.ToggleSelection(this);
+            // Left: start a drag OR begin manual selection (first click)
+            game.BeginPointer(this);
+        }
+        else if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            // Right: remove any stored selection that includes this cell
+            game.TryRemoveSelectionContaining(this);
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (Input.GetMouseButton(0))
-            game.UpdateSelection(this);
+            game.DragPreviewTo(this);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
-            game.EndSelection();
+            game.EndPointer(this);
     }
 
     public void DisableCellUI() => backgroundImage.enabled = false;
