@@ -169,8 +169,9 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
         diary3input3.image.color = c3 ? Color.green : Color.red;
         diary3input4.image.color = c4 ? Color.green : Color.red;
         diary3input5.image.color = c5 ? Color.green : Color.red;
+        diary3input6.image.color = c6 ? Color.green : Color.red;
 
-        return c1 && c2 && c3 && c4 && c5;
+        return c1 && c2 && c3 && c4 && c5 && c6;
     }
     public bool IsSolved()
     {
