@@ -30124,25 +30124,91 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48e8fed29e3f8cc4c876526285d3b59a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  diary1input1: {fileID: 2070167657}
-  diary1input2: {fileID: 2105311274}
-  diary2input1: {fileID: 419082750}
-  diary2input2: {fileID: 1859807059}
-  diary2input3: {fileID: 948360299}
-  diary2input4: {fileID: 1517259996}
-  diary2input5: {fileID: 992889254}
-  diary2input6: {fileID: 1444072186}
-  diary2input7: {fileID: 297710797}
-  diary2input8: {fileID: 1849691888}
-  diary3input1: {fileID: 997433105}
-  diary3input2: {fileID: 229427955}
-  diary3input3: {fileID: 413554717}
-  diary3input4: {fileID: 1288579484}
-  diary3input5: {fileID: 787802224}
-  diary3input6: {fileID: 781277512}
-  diaryPanel1: {fileID: 980202699}
-  diaryPanel2: {fileID: 1037636554}
-  diaryPanel3: {fileID: 521481521}
+  answers:
+  - field: {fileID: 2070167657}
+    stage: 1
+    caseSensitive: 0
+    accepted:
+    - 32
+  - field: {fileID: 2105311274}
+    stage: 1
+    caseSensitive: 0
+    accepted:
+    - 32
+  - field: {fileID: 419082750}
+    stage: 2
+    caseSensitive: 0
+    accepted:
+    - 24
+  - field: {fileID: 1859807059}
+    stage: 2
+    caseSensitive: 0
+    accepted:
+    - 8
+  - field: {fileID: 948360299}
+    stage: 2
+    caseSensitive: 0
+    accepted:
+    - 8
+  - field: {fileID: 1517259996}
+    stage: 2
+    caseSensitive: 0
+    accepted:
+    - 8
+  - field: {fileID: 992889254}
+    stage: 2
+    caseSensitive: 0
+    accepted:
+    - 24
+  - field: {fileID: 1444072186}
+    stage: 2
+    caseSensitive: 0
+    accepted:
+    - 8
+  - field: {fileID: 297710797}
+    stage: 2
+    caseSensitive: 0
+    accepted:
+    - 8
+  - field: {fileID: 1849691888}
+    stage: 2
+    caseSensitive: 0
+    accepted:
+    - 8
+  - field: {fileID: 997433105}
+    stage: 3
+    caseSensitive: 0
+    accepted:
+    - 40
+  - field: {fileID: 229427955}
+    stage: 3
+    caseSensitive: 0
+    accepted:
+    - 40
+  - field: {fileID: 413554717}
+    stage: 3
+    caseSensitive: 0
+    accepted:
+    - 40
+  - field: {fileID: 1288579484}
+    stage: 3
+    caseSensitive: 0
+    accepted:
+    - 40
+  - field: {fileID: 787802224}
+    stage: 3
+    caseSensitive: 0
+    accepted:
+    - 40
+  - field: {fileID: 781277512}
+    stage: 3
+    caseSensitive: 0
+    accepted:
+    - 75
+  stagePanels:
+  - {fileID: 980202699}
+  - {fileID: 1037636554}
+  - {fileID: 521481521}
   dateEntries:
   - dateText: {fileID: 2082326223}
     daysBack: 469
