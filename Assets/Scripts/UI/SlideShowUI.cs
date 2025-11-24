@@ -1,56 +1,81 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class SlideshowUI : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] private Image displayImage;    // The UI Image in the panel
-    [SerializeField] private Button prevButton;     // Left arrow
-    [SerializeField] private Button nextButton;     // Right arrow
+    [SerializeField] private Image displayImage;
+    [SerializeField] private Button prevButton;
+    [SerializeField] private Button nextButton;
 
-    [Header("Images")]
-    [SerializeField] private Sprite[] slideshowImages;  // Your image set
+    [System.Serializable]
+    public struct SlideData
+    {
+        public Sprite image;
+        public float duration;   // how long this slide stays (seconds)
+    }
+
+    [Header("Slides")]
+    [SerializeField] private SlideData[] slides;
 
     private int currentIndex = 0;
 
     [Header("Audio")]
-    [SerializeField] private AudioSource audioSource;    // Assign AudioSource component
-    [SerializeField] private AudioClip onEnableClip;     // Clip to play when panel is shown
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip onEnableClip;
+
+    [Header("Autoplay")]
+    [SerializeField] private bool autoPlay = false;
+    [SerializeField] private bool loop = false;
+    [SerializeField] private float defaultSlideDuration = 2f;
+
+    private Coroutine autoPlayRoutine;
 
     private void OnEnable()
     {
-        // Play the sound when the panel is enabled
-        if (audioSource != null && onEnableClip != null)
+        // Play audio when panel is enabled
+        if (audioSource && onEnableClip)
         {
             audioSource.clip = onEnableClip;
             audioSource.Play();
         }
+
+        // Start autoplay (if enabled and we have slides)
+        if (autoPlay && slides.Length > 0)
+            StartAutoPlay();
     }
+
     private void OnDisable()
     {
-        // Stop sound when panel is disabled
-        if (audioSource != null && audioSource.isPlaying)
-        {
+        // Stop audio
+        if (audioSource && audioSource.isPlaying)
             audioSource.Stop();
+
+        // Stop autoplay coroutine
+        if (autoPlayRoutine != null)
+        {
+            StopCoroutine(autoPlayRoutine);
+            autoPlayRoutine = null;
         }
     }
 
     private void Start()
     {
-        if (slideshowImages.Length == 0)
+        if (slides.Length == 0)
         {
-            Debug.LogWarning("Slideshow has no images assigned!");
+            Debug.LogWarning("No slides assigned!");
             return;
         }
 
-        // Show first image
+        // Show first slide
         UpdateImage();
 
         // Hook up buttons
         prevButton.onClick.AddListener(ShowPrevImage);
         nextButton.onClick.AddListener(ShowNextImage);
 
-        // Initialize button state
+        // Initial button state
         UpdateButtonState();
     }
 
@@ -61,30 +86,98 @@ public class SlideshowUI : MonoBehaviour
             currentIndex--;
             UpdateImage();
             UpdateButtonState();
+
+            // Reset autoplay timer after manual navigation
+            if (autoPlay)
+                StartAutoPlay();
         }
     }
 
     private void ShowNextImage()
     {
-        if (currentIndex < slideshowImages.Length - 1)
+        if (currentIndex < slides.Length - 1)
         {
             currentIndex++;
             UpdateImage();
             UpdateButtonState();
+
+            // Reset autoplay timer after manual navigation
+            if (autoPlay)
+                StartAutoPlay();
         }
     }
 
     private void UpdateImage()
     {
-        displayImage.sprite = slideshowImages[currentIndex];
+        displayImage.sprite = slides[currentIndex].image;
     }
 
     private void UpdateButtonState()
     {
-        // Disable prev button if at first image
+        // Prev disabled at first slide (unless you want looping via buttons)
         prevButton.interactable = currentIndex > 0;
 
-        // Disable next button if at last image
-        nextButton.interactable = currentIndex < slideshowImages.Length - 1;
+        if (!loop)
+        {
+            // Next disabled at last slide
+            nextButton.interactable = currentIndex < slides.Length - 1;
+        }
+        else
+        {
+            // If looping, always allow
+            prevButton.interactable = true;
+            nextButton.interactable = true;
+        }
+    }
+
+    // ---------- AUTOPLAY ----------
+
+    private void StartAutoPlay()
+    {
+        if (slides.Length == 0)
+            return;
+
+        // Stop any existing autoplay coroutine so we restart delay
+        if (autoPlayRoutine != null)
+            StopCoroutine(autoPlayRoutine);
+
+        autoPlayRoutine = StartCoroutine(AutoPlayRoutine());
+    }
+
+    private IEnumerator AutoPlayRoutine()
+    {
+        while (true)
+        {
+            // Get this slide's duration; fall back to default if not set or <= 0
+            float duration = slides[currentIndex].duration;
+            if (duration <= 0f)
+                duration = defaultSlideDuration;
+
+            // IMPORTANT: Use real-time so it still runs if Time.timeScale == 0
+            yield return new WaitForSecondsRealtime(duration);
+
+            // Move to next slide
+            if (currentIndex < slides.Length - 1)
+            {
+                currentIndex++;
+                UpdateImage();
+                UpdateButtonState();
+            }
+            else
+            {
+                if (loop)
+                {
+                    currentIndex = 0;
+                    UpdateImage();
+                    UpdateButtonState();
+                }
+                else
+                {
+                    // End of slideshow, stop autoplay
+                    autoPlayRoutine = null;
+                    yield break;
+                }
+            }
+        }
     }
 }

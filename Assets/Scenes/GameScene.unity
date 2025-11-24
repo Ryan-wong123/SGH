@@ -40787,13 +40787,20 @@ MonoBehaviour:
   displayImage: {fileID: 1318389081}
   prevButton: {fileID: 636861673}
   nextButton: {fileID: 119605258}
-  slideshowImages:
-  - {fileID: 21300000, guid: 54d224f8c22968f4d8492481119293b7, type: 3}
-  - {fileID: 21300000, guid: c8ba6dbc60fc77c49b7afef67eba18be, type: 3}
-  - {fileID: 21300000, guid: e3e445518399e974097912b5efa0353f, type: 3}
-  - {fileID: 21300000, guid: 28ca1b2a8e4c9bd4385690e312b4c451, type: 3}
+  slides:
+  - image: {fileID: 21300000, guid: 54d224f8c22968f4d8492481119293b7, type: 3}
+    duration: 8
+  - image: {fileID: 21300000, guid: c8ba6dbc60fc77c49b7afef67eba18be, type: 3}
+    duration: 8
+  - image: {fileID: 21300000, guid: e3e445518399e974097912b5efa0353f, type: 3}
+    duration: 8
+  - image: {fileID: 21300000, guid: 28ca1b2a8e4c9bd4385690e312b4c451, type: 3}
+    duration: 8
   audioSource: {fileID: 677627194}
   onEnableClip: {fileID: 8300000, guid: bcee62c0c7566944881ffb4ec1f14ac2, type: 3}
+  autoPlay: 1
+  loop: 0
+  defaultSlideDuration: 2
 --- !u!82 &677627194
 AudioSource:
   m_ObjectHideFlags: 0

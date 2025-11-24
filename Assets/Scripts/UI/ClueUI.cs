@@ -166,7 +166,6 @@ public class ClueUI : MonoBehaviour
     {
         if (detailPanelRoot != null)
             detailPanelRoot.SetActive(false);
-        Debug.Log("dfsfdsfdss");
         detailImage.gameObject.SetActive(false);
         Time.timeScale = 1f;
     }
