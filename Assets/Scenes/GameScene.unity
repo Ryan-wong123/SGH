@@ -42036,6 +42036,7 @@ GameObject:
   - component: {fileID: 703483718}
   - component: {fileID: 703483720}
   - component: {fileID: 703483719}
+  - component: {fileID: 703483723}
   m_Layer: 5
   m_Name: Lantus
   m_TagString: Untagged
@@ -42100,6 +42101,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 703483717}
   m_CullTransparentMesh: 1
+--- !u!114 &703483723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703483717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aca6adb41853ab24583a1a0b32ab6e12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerButton: 1
+  cardSprite: {fileID: 21300000, guid: 14b7cef7d786aa64c83b798800eae97a, type: 3}
 --- !u!1 &705185641
 GameObject:
   m_ObjectHideFlags: 0
@@ -62023,7 +62038,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1061063799
 RectTransform:
   m_ObjectHideFlags: 0
@@ -94491,6 +94506,7 @@ GameObject:
   - component: {fileID: 1523634391}
   - component: {fileID: 1523634393}
   - component: {fileID: 1523634392}
+  - component: {fileID: 1523634396}
   m_Layer: 5
   m_Name: Apidra
   m_TagString: Untagged
@@ -94555,6 +94571,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1523634390}
   m_CullTransparentMesh: 1
+--- !u!114 &1523634396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523634390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aca6adb41853ab24583a1a0b32ab6e12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerButton: 1
+  cardSprite: {fileID: 21300000, guid: 8eb245dfd52b3044995d77983c056d21, type: 3}
 --- !u!1 &1523666978
 GameObject:
   m_ObjectHideFlags: 0
@@ -138807,6 +138837,7 @@ GameObject:
   - component: {fileID: 2147119448}
   - component: {fileID: 2147119450}
   - component: {fileID: 2147119449}
+  - component: {fileID: 2147119453}
   m_Layer: 5
   m_Name: Actrapid
   m_TagString: Untagged
@@ -138871,6 +138902,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2147119447}
   m_CullTransparentMesh: 1
+--- !u!114 &2147119453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147119447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aca6adb41853ab24583a1a0b32ab6e12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerButton: 1
+  cardSprite: {fileID: 21300000, guid: 048e037d04308824d93f57f0596ced75, type: 3}
 --- !u!33 &104683128810117236
 MeshFilter:
   m_ObjectHideFlags: 0
