@@ -270,4 +270,36 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
 
         return allMatch;
     }
+
+    public void ResetPuzzle()
+    {
+        // --- 1) Destroy all existing grid children ---
+        if (gridPanel == null)
+        {
+            Debug.LogError("[WordSearch] gridPanel is NULL");
+            return;
+        }
+
+        Debug.Log($"[WordSearch] ResetPuzzle - children BEFORE = {gridPanel.transform.childCount}");
+
+        for (int i = gridPanel.transform.childCount - 1; i >= 0; i--)
+        {
+            Transform child = gridPanel.transform.GetChild(i);
+            Destroy(child.gameObject);
+        }
+
+        // --- 2) Reset selection state ---
+        selected.Clear();
+        isDragging = false;
+
+        grid = null;
+
+        // --- 3) Regenerate everything ---
+        GenerateGrid();
+        PlaceFixedLettersFromSolution();
+        FillRandomLetters();
+
+        Debug.Log($"[WordSearch] ResetPuzzle - DONE, children AFTER = {gridPanel.transform.childCount}");
+    }
+
 }

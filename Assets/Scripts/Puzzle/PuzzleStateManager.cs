@@ -240,8 +240,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     public void ReloadPuzzle5()
     {
         Debug.Log("Reloading Puzzle 5");
-        crosswordManager?.ResetPuzzle();
-        if (Puzzle5Panel != null) Puzzle5Panel.SetActive(true);
+        wordSearchManager?.ResetPuzzle();
+        Puzzle5Panel.SetActive(false);
         CurrentStage = PuzzleStage.Puzzle5;
 
         if (PhotonNetwork.IsMasterClient)
@@ -252,7 +252,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Reloading Puzzle 6");
         diaryPuzzleManager?.ResetPuzzle();
-        if (Puzzle6Panel != null) Puzzle6Panel.SetActive(true);
+        Puzzle6Panel.SetActive(false);
         CurrentStage = PuzzleStage.Puzzle6; // fix
 
         if (PhotonNetwork.IsMasterClient)
