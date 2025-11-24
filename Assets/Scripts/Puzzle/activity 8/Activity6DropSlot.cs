@@ -13,15 +13,14 @@ public class Activity6DropSlot : DropSlot
     {
         if (card is Activity6DraggableCard a1Card)
         {
-            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle8)
-            {
-                string cardStep = a1Card.stepName?.Trim().ToLower() ?? "";
-                string slotStep = stepName.Trim().ToLower();
+           
+            string cardStep = a1Card.stepName?.Trim().ToLower() ?? "";
+            string slotStep = stepName.Trim().ToLower();
 
-                Debug.Log($"[IsCardCorrect - Puzzle8] Card Step: {cardStep}, Slot Expects: {slotStep}");
+            Debug.Log($"[IsCardCorrect - Puzzle8] Card Step: {cardStep}, Slot Expects: {slotStep}");
 
-                return cardStep == slotStep;
-            }
+            return cardStep == slotStep;
+           
         }
 
         return false;
