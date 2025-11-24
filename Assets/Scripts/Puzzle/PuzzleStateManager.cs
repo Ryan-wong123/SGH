@@ -173,8 +173,10 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             case PuzzleStage.Puzzle5: ReloadPuzzle5(); break;
             case PuzzleStage.Puzzle6: ReloadPuzzle6(); break;
             case PuzzleStage.Puzzle7: ReloadPuzzle7(); break;
-            case PuzzleStage.Puzzle8: ReloadPuzzle7(); break; // if intended to go back
-            case PuzzleStage.Puzzle9: Debug.Log("Restarting Puzzle 9"); break;
+            case PuzzleStage.Puzzle8: ReloadPuzzle8(); break; 
+            case PuzzleStage.Puzzle9: ReloadPuzzle9(); break; 
+            case PuzzleStage.Puzzle10: ReloadPuzzle10(); break; 
+            case PuzzleStage.Puzzle11: ReloadPuzzle11(); break; 
         }
     }
 
@@ -262,13 +264,74 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     public void ReloadPuzzle7()
     {
         Debug.Log("Reloading Puzzle 7");
-        prescriptionManager?.ResetPuzzle();
-        if (Puzzle7Panel != null) Puzzle7Panel.SetActive(true);
+        risktableManager?.ResetPuzzle();
+        Puzzle7Panel?.SetActive(false);
         CurrentStage = PuzzleStage.Puzzle7;
 
         if (PhotonNetwork.IsMasterClient)
             FindObjectOfType<GameTimerManager>()?.StartTimer();
     }
+
+    public void ReloadPuzzle8()
+    {
+        Debug.Log("Reloading Puzzle 8");
+        prescriptionManager?.ResetPuzzle();
+        Puzzle8Panel?.SetActive(false);
+        CurrentStage = PuzzleStage.Puzzle8;
+
+        if (PhotonNetwork.IsMasterClient)
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
+    }
+
+    public void ReloadPuzzle9()
+    {
+        Debug.Log("Reloading Puzzle 9");
+        crosswordManager?.ResetPuzzle();
+        Puzzle9Panel?.SetActive(false);
+        CurrentStage = PuzzleStage.Puzzle9;
+
+        if (PhotonNetwork.IsMasterClient)
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
+    }
+
+
+    public void ReloadPuzzle10()
+    {
+        Debug.Log("Reloading Puzzle 10");
+        DropSlot.ResetAllSlots();
+        foreach (var card in FindObjectsOfType<Activity6DraggableCard>())
+        {
+            Image img = card.GetComponent<Image>();
+            if (img != null) img.color = Color.white;
+            card.ResetCard();
+        }
+        insulinPuzzleManager?.ResetPuzzle();
+        Puzzle10Panel?.SetActive(false);
+        CurrentStage = PuzzleStage.Puzzle10;
+
+        if (PhotonNetwork.IsMasterClient)
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
+    }
+
+
+    public void ReloadPuzzle11()
+    {
+        Debug.Log("Reloading Puzzle 11");
+        DropSlot.ResetAllSlots();
+        foreach (var card in FindObjectsOfType<Activity9DraggableCard>())
+        {
+            Image img = card.GetComponent<Image>();
+            if (img != null) img.color = Color.white;
+            card.ResetCard();
+        }
+        deathLapsesManager?.ResetPuzzle();
+        Puzzle11Panel?.SetActive(false);
+        CurrentStage = PuzzleStage.Puzzle11;
+
+        if (PhotonNetwork.IsMasterClient)
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
+    }
+
 
     // ===== Stage completion handlers =====
     public void MarkCorrect(string symptom) => correctSymptomsFromPuzzle1.Add(symptom);

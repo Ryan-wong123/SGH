@@ -99,4 +99,28 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
             }
         }
     }
+
+    public void ResetPuzzle()
+    {
+        Debug.Log("[InsulinPuzzle] Resetting Puzzle");
+
+        // -----------------------------
+        // 1) Reset syringe dropdown
+        // -----------------------------
+        if (syringeDropdown != null)
+        {
+            syringeDropdown.value = 0;                   // Reset selection to first option
+            syringeDropdown.RefreshShownValue();         // Update UI
+            syringeDropdown.GetComponent<Image>().color = defaultColor;
+        }
+
+        // -----------------------------
+        // 5) Reset panel visibility
+        // -----------------------------
+        if (panel1 != null) panel1.SetActive(true);
+        if (panel2 != null) panel2.SetActive(false);
+
+        Debug.Log("[InsulinPuzzle] RESET COMPLETE");
+    }
+
 }

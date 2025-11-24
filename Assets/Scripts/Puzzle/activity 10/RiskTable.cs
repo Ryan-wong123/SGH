@@ -60,17 +60,26 @@ public class RiskTable : MonoBehaviour, IPuzzle
         return CheckAnswers();
     }
 
-    /// <summary>
-    /// Reset all dropdown colors back to default.
-    /// </summary>
-    public void ResetColors()
+    public void ResetPuzzle()
     {
         foreach (var entry in dropdowns)
         {
-            if (entry.dropdown == null) continue;
+            if (entry.dropdown == null)
+                continue;
 
+            // Reset selection to the first option (index 0), or whatever default you want
+            entry.dropdown.value = 0;
+            entry.dropdown.RefreshShownValue();
+
+            // Reset color back to default
             Image img = entry.dropdown.targetGraphic as Image;
-            if (img) img.color = defaultColor;
+            if (img != null)
+            {
+                img.color = defaultColor;
+            }
         }
+
+        Debug.Log("RiskTable puzzle reset.");
     }
+
 }

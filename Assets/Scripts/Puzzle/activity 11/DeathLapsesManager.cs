@@ -133,4 +133,19 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
             }
         }
     }
+
+    public void ResetPuzzle()
+    {
+        Debug.Log("[DeathLapses] Resetting puzzle...");
+
+        // 1) Reset stage flags
+        stage1Completed = false;
+
+        // 2) Hide Stage 2 UI
+        if (answer2Cards != null) answer2Cards.SetActive(false);
+        if (answer2Slots != null) answer2Slots.SetActive(false);
+
+        Debug.Log("[DeathLapses] Reset complete.");
+    }
+
 }
