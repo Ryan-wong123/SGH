@@ -2,9 +2,46 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
+using TMPro;
 public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
 {
     [SerializeField] private int required;
+
+    [SerializeField] GameObject panel1;
+    [SerializeField] GameObject panel2;
+
+    public TMP_Dropdown syringeDropdown;
+    public int correctSyringeIndex = 1;       // The correct option index in dropdown
+
+    public Color correctColor = Color.green;
+    public Color wrongColor = Color.red;
+    public Color defaultColor = Color.white;
+
+    public void SubmitSyringeAnswer()
+    {
+        StartCoroutine(CheckCorrectSyringe());
+    }
+
+    public IEnumerator CheckCorrectSyringe()
+    {
+        // Get the user's selected option
+        int selected = syringeDropdown.value;
+
+        // Check correctness
+        if (selected == correctSyringeIndex)
+        {
+            syringeDropdown.GetComponent<Image>().color = correctColor;
+            // Optional delay before showing result (remove if not needed)
+            yield return new WaitForSeconds(2f);
+            panel1.SetActive(false);
+            panel2.SetActive(true);
+        }
+           
+        else
+            syringeDropdown.GetComponent<Image>().color = wrongColor;
+    }
+
+
 
     public bool AreAllPuzzle8CardsCorrect()
     {
