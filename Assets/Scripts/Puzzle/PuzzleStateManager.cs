@@ -45,6 +45,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     [Header("puzzle 4")]
     [SerializeField] private Activity2PuzzleManager activity2PuzzleManager;
     [SerializeField] private GameObject Puzzle4Panel;
+    [SerializeField] private GameObject Puzzle4Panel1;
+    [SerializeField] private GameObject Puzzle4Panel2;
 
     [Header("puzzle 5")]
     [SerializeField] private WordSearchManager wordSearchManager;
@@ -206,7 +208,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Reloading Puzzle 3");
         pictureGridManager?.ResetPuzzle();
-        if (Puzzle3Panel != null) Puzzle3Panel.SetActive(true);
+        Puzzle3Panel?.SetActive(false);
         CurrentStage = PuzzleStage.Puzzle3;
 
         if (PhotonNetwork.IsMasterClient)
@@ -216,9 +218,20 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     public void ReloadPuzzle4()
     {
         Debug.Log("Reloading Puzzle 4");
+        DropSlot.ResetAllSlots();
         PuzzleTileManager.Instance?.ResetPuzzle();
-        if (Puzzle4Panel != null) Puzzle4Panel.SetActive(true);
-        CurrentStage = PuzzleStage.Puzzle4; // fix
+
+        foreach (var card in FindObjectsOfType<Activity2DraggableCard>())
+        {
+            Image img = card.GetComponent<Image>();
+            if (img != null) img.color = Color.white;
+            card.ResetCard();
+        }
+        activity2PuzzleManager.ResetActivity2Part2();
+        Puzzle4Panel1?.SetActive(true);
+        Puzzle4Panel2?.SetActive(false);
+        Puzzle4Panel?.SetActive(false);
+        CurrentStage = PuzzleStage.Puzzle4; 
 
         if (PhotonNetwork.IsMasterClient)
             FindObjectOfType<GameTimerManager>()?.StartTimer();

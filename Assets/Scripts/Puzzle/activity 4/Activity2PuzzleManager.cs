@@ -77,6 +77,14 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
   
     }
 
+    public void ResetActivity2Part2()
+    {
+        input1.GetComponent<Image>().color = Color.white;
+        input2.GetComponent<Image>().color = Color.white;
+        input1.text = "";
+        input2.text = "";
+    }
+
     private IEnumerator ResetIncorrectCardColorsAfterDelay(float delaySeconds)
     {
         yield return new WaitForSeconds(delaySeconds);

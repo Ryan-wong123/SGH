@@ -134911,6 +134911,8 @@ MonoBehaviour:
   pictureGridManager: {fileID: 1086276078}
   activity2PuzzleManager: {fileID: 1262713100}
   Puzzle4Panel: {fileID: 1262713096}
+  Puzzle4Panel1: {fileID: 1052805173}
+  Puzzle4Panel2: {fileID: 1429473839}
   wordSearchManager: {fileID: 1628483221}
   Puzzle5Panel: {fileID: 1628483216}
   diaryPuzzleManager: {fileID: 509120715}
