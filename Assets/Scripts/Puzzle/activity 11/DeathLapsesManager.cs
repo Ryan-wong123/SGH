@@ -21,7 +21,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
                 stage1Completed = true;
                 ShowStage2();
                 Debug.Log("✅ Stage 1 completed. Submit again to check Stage 2.");
-                return false; // ⛔️ SKIP Stage 2 completely on first submit
+                return false; // first submit only checks Stage 1
             }
             Debug.Log("❌ Stage 1 incorrect.");
             return false;
@@ -29,10 +29,9 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
         else
         {
             Debug.Log("checking stage 2");
-            return AreStage2CardsCorrect(); // ✅ only after stage1Completed = true
+            return AreStage2CardsCorrect(); // only after stage1Completed = true
         }
     }
-
 
     public bool IsSolved() => AreAllPuzzle11CardsCorrect();
 
@@ -47,18 +46,27 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
         int correct = 0;
 
         // ✅ Reset colors first
-        foreach (Activity9DropSlot slot in Activity9DropSlot.allDropSlots)
+        foreach (DropSlot baseSlot in DropSlot.allDropSlots)
         {
+            var slot = baseSlot as Activity9DropSlot;
+            if (slot == null) continue;                    // skip other puzzles' slots
             if (!slot.CompareTag("Stage1Slot")) continue;
-            foreach (Activity9DraggableCard card in slot.GetCardsInSlot())
+
+            foreach (var baseCard in slot.GetCardsInSlot())
             {
-                card.GetComponent<Image>().color = Color.white;
+                var card = baseCard as Activity9DraggableCard;
+                if (card == null) continue;                // skip non-Activity9 cards
+
+                var img = card.GetComponent<Image>();
+                if (img != null) img.color = Color.white;
             }
         }
 
         // ✅ Assign stage1Answer FIRST then check correctness
-        foreach (Activity9DropSlot slot in Activity9DropSlot.allDropSlots)
+        foreach (DropSlot baseSlot in DropSlot.allDropSlots)
         {
+            var slot = baseSlot as Activity9DropSlot;
+            if (slot == null) continue;
             if (!slot.CompareTag("Stage1Slot")) continue;
 
             var cards = slot.GetCardsInSlot();
@@ -67,7 +75,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
                 var card = cards[0] as Activity9DraggableCard;
                 if (card == null) continue;
 
-                // ✅ Save answer before checking
+                // Save the Stage 1 answer in the slot
                 slot.stage1Answer = card.lapsesAnswer.Trim().ToLower();
 
                 bool isCorrect = slot.IsCardCorrect(card);
@@ -79,29 +87,42 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
 
                 Debug.Log($"[Stage 1] Slot {slot.name} stores '{slot.stage1Answer}' and check = {isCorrect}");
             }
-            else slot.stage1Answer = "";
+            else
+            {
+                slot.stage1Answer = "";
+            }
         }
 
         Debug.Log($"Stage 1 correct: {correct}");
         return correct >= requiredAnswer1;
     }
 
-
     private bool AreStage2CardsCorrect()
     {
         int correct = 0;
 
-        foreach (Activity9DropSlot slot in Activity9DropSlot.allDropSlots)
+        // Reset Stage 2 colors
+        foreach (DropSlot baseSlot in DropSlot.allDropSlots)
         {
+            var slot = baseSlot as Activity9DropSlot;
+            if (slot == null) continue;
             if (!slot.CompareTag("Stage2Slot")) continue;
-            foreach (Activity9DraggableCard card in slot.GetCardsInSlot())
+
+            foreach (var baseCard in slot.GetCardsInSlot())
             {
-                card.GetComponent<Image>().color = Color.white;
+                var card = baseCard as Activity9DraggableCard;
+                if (card == null) continue;
+
+                var img = card.GetComponent<Image>();
+                if (img != null) img.color = Color.white;
             }
         }
 
-        foreach (Activity9DropSlot slot in Activity9DropSlot.allDropSlots)
+        // Check Stage 2 correctness
+        foreach (DropSlot baseSlot in DropSlot.allDropSlots)
         {
+            var slot = baseSlot as Activity9DropSlot;
+            if (slot == null) continue;
             if (!slot.CompareTag("Stage2Slot")) continue;
 
             var cards = slot.GetCardsInSlot();
@@ -111,7 +132,10 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
                 if (card == null) continue;
 
                 bool isCorrect = slot.IsCardCorrect(card);
-                card.GetComponent<Image>().color = isCorrect ? Color.green : Color.red;
+
+                var img = card.GetComponent<Image>();
+                if (img != null) img.color = isCorrect ? Color.green : Color.red;
+
                 if (isCorrect) correct++;
             }
         }
@@ -124,28 +148,37 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
     private IEnumerator ResetIncorrectCardColorsAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        foreach (Activity9DropSlot slot in Activity9DropSlot.allDropSlots)
+
+        foreach (DropSlot baseSlot in DropSlot.allDropSlots)
         {
-            foreach (Activity9DraggableCard card in slot.GetCardsInSlot())
+            var slot = baseSlot as Activity9DropSlot;
+            if (slot == null) continue;
+
+            foreach (var baseCard in slot.GetCardsInSlot())
             {
-                if (card.GetComponent<Image>().color == Color.red)
-                    card.GetComponent<Image>().color = Color.white;
+                var card = baseCard as Activity9DraggableCard;
+                if (card == null) continue;
+
+                var img = card.GetComponent<Image>();
+                if (img != null && img.color == Color.red)
+                {
+                    img.color = Color.white;
+                }
             }
         }
     }
 
     public void ResetPuzzle()
     {
-        Debug.Log("[DeathLapses] Resetting puzzle...");
+        Debug.Log("[DeathLapses] Resetting puzzle.");
 
-        // 1) Reset stage flags
+        // Reset stage flag
         stage1Completed = false;
 
-        // 2) Hide Stage 2 UI
+        // Hide Stage 2 UI
         if (answer2Cards != null) answer2Cards.SetActive(false);
         if (answer2Slots != null) answer2Slots.SetActive(false);
 
         Debug.Log("[DeathLapses] Reset complete.");
     }
-
 }
