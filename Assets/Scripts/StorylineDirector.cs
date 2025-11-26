@@ -132,7 +132,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         var stage = (PuzzleStateManager.PuzzleStage)stageInt;
         var directive = FindDirective(stage);
         ApplyQueueTextsAndFlash(directive, texts, stage);
-
         directive?.onEnter?.Invoke();
     }
 
@@ -250,5 +249,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
             if (map.Contains(go.GetInstanceID()))
                 go.SetActive(active);
     }
+
 }
 
