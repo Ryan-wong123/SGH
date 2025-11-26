@@ -59,17 +59,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         [Tooltip("Optional local hooks (animations, sounds, etc.). Not networked.")]
         public UnityEvent onEnter;
     }
-    [System.Serializable]
-    public class ToggleObject
-    {
-        public GameObject target;
-
-        [Tooltip("If true, once this object is disabled one time, it will NEVER be enabled again")]
-        public bool disablePermanentlyAfterFirstDisable = false;
-
-        [HideInInspector]
-        public bool hasBeenPermanentlyDisabled = false;  // runtime state
-    }
 
     [System.Serializable]
     public class ComicStrip
