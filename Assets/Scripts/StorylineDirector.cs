@@ -21,7 +21,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     [SerializeField] private List<StageDirective> directives = new();
 
     public List<ComicStrip> comic = new List<ComicStrip>();
-    private Dictionary<GameObject, bool> permanentlyDisabled = new();
 
     private PuzzleStateManager.PuzzleStage? lastStage;
     private float _nextPoll;
@@ -77,9 +76,8 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     {
         [Tooltip("Which puzzle state does this mapping apply to?")]
         public PuzzleStateManager.PuzzleStage stage;
-
-        public List<ToggleObject> objectsToEnable = new List<ToggleObject>();
-        public List<ToggleObject> objectsToDisable = new List<ToggleObject>();
+        [Tooltip("Objects that turn ON when this state is active.")]
+        public List<GameObject> objectsToEnable = new List<GameObject>();
     }
 
     private void Awake()
@@ -278,37 +276,15 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
                 go.SetActive(active);
     }
 
-
     private void ApplyComicState(PuzzleStateManager.PuzzleStage newStage)
     {
+        ClueUI.Instance.ShowClueMainPage();
         foreach (var entry in comic)
         {
-            if (entry.stage != newStage)
-                continue;
-
-            // --- Process objects to disable ---
-            foreach (var obj in entry.objectsToDisable)
+            if (entry.stage == newStage)
             {
-                if (obj.target == null) continue;
-
-                // Disable the GameObject
-                obj.target.SetActive(false);
-
-                // Mark permanent lockout
-                if (obj.disablePermanentlyAfterFirstDisable)
-                    obj.hasBeenPermanentlyDisabled = true;
-            }
-
-            // --- Process objects to enable ---
-            foreach (var obj in entry.objectsToEnable)
-            {
-                if (obj.target == null) continue;
-
-                // Do NOT re-enable if permanently disabled
-                if (obj.hasBeenPermanentlyDisabled)
-                    continue;
-
-                obj.target.SetActive(true);
+                foreach (var go in entry.objectsToEnable)
+                    if (go) go.SetActive(true);
             }
         }
     }

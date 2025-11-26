@@ -135897,6 +135897,8 @@ MonoBehaviour:
     panelRoot: {fileID: 820384499}
   - id: nurse
     panelRoot: {fileID: 677627189}
+  - id: comic 1
+    panelRoot: {fileID: 637772015}
   closeButton: {fileID: 1956943073}
   unreadBadgeRoot: {fileID: 572123885}
   unreadText: {fileID: 1746173019}
@@ -135904,6 +135906,9 @@ MonoBehaviour:
   detailPanelRoot: {fileID: 1595557880}
   detailImage: {fileID: 1591216746}
   detailCloseButton: {fileID: 1956943073}
+  comics:
+  - {fileID: 637772015}
+  - {fileID: 1816229999}
 --- !u!114 &2075314859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135962,22 +135967,10 @@ MonoBehaviour:
   comic:
   - stage: 0
     objectsToEnable:
-    - target: {fileID: 1595557880}
-      disablePermanentlyAfterFirstDisable: 0
-      hasBeenPermanentlyDisabled: 0
-    - target: {fileID: 637772015}
-      disablePermanentlyAfterFirstDisable: 1
-      hasBeenPermanentlyDisabled: 0
-    objectsToDisable: []
+    - {fileID: 637772015}
   - stage: 2
     objectsToEnable:
-    - target: {fileID: 1595557880}
-      disablePermanentlyAfterFirstDisable: 0
-      hasBeenPermanentlyDisabled: 0
-    - target: {fileID: 1816229999}
-      disablePermanentlyAfterFirstDisable: 1
-      hasBeenPermanentlyDisabled: 0
-    objectsToDisable: []
+    - {fileID: 1816229999}
 --- !u!114 &2075314860
 MonoBehaviour:
   m_ObjectHideFlags: 0
