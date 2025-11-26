@@ -58,15 +58,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         public UnityEvent onEnter;
     }
 
-    [System.Serializable]
-    public class ComicStrip
-    {
-        [Tooltip("Which puzzle state does this mapping apply to?")]
-        public PuzzleStateManager.PuzzleStage stage;
-        [Tooltip("Objects that turn ON when this state is active.")]
-        public List<GameObject> objectsToEnable = new List<GameObject>();
-    }
-
     private void Awake()
     {
         if (puzzleStateManager == null)
@@ -148,8 +139,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     {
         // 1) Stop all board flashes
         StopAllBoardFlashes();
-
-       
 
         var prevDirective = previous.HasValue ? FindDirective(previous.Value) : null;
         var newDirective = FindDirective(stage);
