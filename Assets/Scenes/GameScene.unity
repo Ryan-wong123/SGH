@@ -136323,8 +136323,6 @@ MonoBehaviour:
     panelRoot: {fileID: 820384499}
   - id: nurse
     panelRoot: {fileID: 677627189}
-  - id: comic 1
-    panelRoot: {fileID: 637772015}
   closeButton: {fileID: 1956943073}
   unreadBadgeRoot: {fileID: 572123885}
   unreadText: {fileID: 1746173019}
@@ -136411,7 +136409,6 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  comic: []
 --- !u!114 &2075314860
 MonoBehaviour:
   m_ObjectHideFlags: 0
