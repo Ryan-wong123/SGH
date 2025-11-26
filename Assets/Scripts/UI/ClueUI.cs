@@ -42,8 +42,6 @@ public class ClueUI : MonoBehaviour
     [SerializeField] private Image detailImage;
     [SerializeField] private Button detailCloseButton;
 
-    [SerializeField] private GameObject[] comics; 
-
     private readonly Dictionary<string, GameObject> _panels = new();
     private GameObject _currentPanel;
     private Action _onClosed;
@@ -165,19 +163,11 @@ public class ClueUI : MonoBehaviour
         ResetUnreadCount();
     }
 
-    public void ShowClueMainPage()
-    {
-        detailPanelRoot.SetActive(true);
-    }
-
     public void HideImage()
     {
         if (detailPanelRoot != null)
             detailPanelRoot.SetActive(false);
-        foreach (var go in comics)
-        {
-            go.SetActive(false);
-        }
+  
         detailImage.gameObject.SetActive(false);
         Time.timeScale = 1f;
     }
