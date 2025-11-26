@@ -20,6 +20,9 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     [Header("Per-Stage Directives")]
     [SerializeField] private List<StageDirective> directives = new();
 
+    public List<ComicStrip> comic = new List<ComicStrip>();
+    private Dictionary<GameObject, bool> permanentlyDisabled = new();
+
     private PuzzleStateManager.PuzzleStage? lastStage;
     private float _nextPoll;
 
@@ -56,6 +59,27 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 
         [Tooltip("Optional local hooks (animations, sounds, etc.). Not networked.")]
         public UnityEvent onEnter;
+    }
+    [System.Serializable]
+    public class ToggleObject
+    {
+        public GameObject target;
+
+        [Tooltip("If true, once this object is disabled one time, it will NEVER be enabled again")]
+        public bool disablePermanentlyAfterFirstDisable = false;
+
+        [HideInInspector]
+        public bool hasBeenPermanentlyDisabled = false;  // runtime state
+    }
+
+    [System.Serializable]
+    public class ComicStrip
+    {
+        [Tooltip("Which puzzle state does this mapping apply to?")]
+        public PuzzleStateManager.PuzzleStage stage;
+
+        public List<ToggleObject> objectsToEnable = new List<ToggleObject>();
+        public List<ToggleObject> objectsToDisable = new List<ToggleObject>();
     }
 
     private void Awake()
@@ -132,7 +156,7 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         var stage = (PuzzleStateManager.PuzzleStage)stageInt;
         var directive = FindDirective(stage);
         ApplyQueueTextsAndFlash(directive, texts, stage);
-
+        ApplyComicState(stage);
         directive?.onEnter?.Invoke();
     }
 
@@ -140,6 +164,9 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     {
         // 1) Stop all board flashes
         StopAllBoardFlashes();
+
+        // show respective comic strip based on puzzle state number
+        ApplyComicState(stage);
 
         var prevDirective = previous.HasValue ? FindDirective(previous.Value) : null;
         var newDirective = FindDirective(stage);
@@ -250,5 +277,41 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
             if (map.Contains(go.GetInstanceID()))
                 go.SetActive(active);
     }
+
+
+    private void ApplyComicState(PuzzleStateManager.PuzzleStage newStage)
+    {
+        foreach (var entry in comic)
+        {
+            if (entry.stage != newStage)
+                continue;
+
+            // --- Process objects to disable ---
+            foreach (var obj in entry.objectsToDisable)
+            {
+                if (obj.target == null) continue;
+
+                // Disable the GameObject
+                obj.target.SetActive(false);
+
+                // Mark permanent lockout
+                if (obj.disablePermanentlyAfterFirstDisable)
+                    obj.hasBeenPermanentlyDisabled = true;
+            }
+
+            // --- Process objects to enable ---
+            foreach (var obj in entry.objectsToEnable)
+            {
+                if (obj.target == null) continue;
+
+                // Do NOT re-enable if permanently disabled
+                if (obj.hasBeenPermanentlyDisabled)
+                    continue;
+
+                obj.target.SetActive(true);
+            }
+        }
+    }
+
 }
 
