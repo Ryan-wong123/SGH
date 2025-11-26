@@ -136353,7 +136353,9 @@ MonoBehaviour:
   pollIntervalSeconds: 0.1
   directives:
   - stage: 0
-    activateOnEnter: []
+    activateOnEnter:
+    - {fileID: 1595557880}
+    - {fileID: 637772015}
     deactivateOnExit:
     - {fileID: 1933334847}
     queueDisplayDirectives: []
@@ -136391,16 +136393,25 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  comic:
-  - stage: 0
-    objectsToEnable:
-    - {fileID: 637772015}
   - stage: 2
-    objectsToEnable:
+    activateOnEnter:
+    - {fileID: 1595557880}
     - {fileID: 1816229999}
+    deactivateOnExit: []
+    queueDisplayDirectives: []
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
   - stage: 6
-    objectsToEnable:
+    activateOnEnter:
+    - {fileID: 1595557880}
     - {fileID: 1993116214}
+    deactivateOnExit: []
+    queueDisplayDirectives: []
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
+  comic: []
 --- !u!114 &2075314860
 MonoBehaviour:
   m_ObjectHideFlags: 0

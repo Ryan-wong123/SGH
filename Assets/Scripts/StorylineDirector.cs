@@ -20,8 +20,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     [Header("Per-Stage Directives")]
     [SerializeField] private List<StageDirective> directives = new();
 
-    public List<ComicStrip> comic = new List<ComicStrip>();
-
     private PuzzleStateManager.PuzzleStage? lastStage;
     private float _nextPoll;
 
@@ -143,7 +141,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         var stage = (PuzzleStateManager.PuzzleStage)stageInt;
         var directive = FindDirective(stage);
         ApplyQueueTextsAndFlash(directive, texts, stage);
-        ApplyComicState(stage);
         directive?.onEnter?.Invoke();
     }
 
@@ -152,8 +149,7 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         // 1) Stop all board flashes
         StopAllBoardFlashes();
 
-        // show respective comic strip based on puzzle state number
-        ApplyComicState(stage);
+       
 
         var prevDirective = previous.HasValue ? FindDirective(previous.Value) : null;
         var newDirective = FindDirective(stage);
@@ -263,19 +259,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         foreach (var go in all)
             if (map.Contains(go.GetInstanceID()))
                 go.SetActive(active);
-    }
-
-    private void ApplyComicState(PuzzleStateManager.PuzzleStage newStage)
-    {
-        ClueUI.Instance.ShowClueMainPage();
-        foreach (var entry in comic)
-        {
-            if (entry.stage == newStage)
-            {
-                foreach (var go in entry.objectsToEnable)
-                    if (go) go.SetActive(true);
-            }
-        }
     }
 
 }
