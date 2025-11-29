@@ -10712,7 +10712,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathId: Canteen
-  waypointIndex: 0
+  waypointIndex: 6
   playerTag: Player
 --- !u!1 &170143259
 GameObject:
@@ -14027,7 +14027,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathId: Canteen
-  waypointIndex: 0
+  waypointIndex: 4
   playerTag: Player
 --- !u!1001 &235951267
 PrefabInstance:
@@ -49246,7 +49246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathId: Canteen
-  waypointIndex: 0
+  waypointIndex: 2
   playerTag: Player
 --- !u!1 &786636231
 GameObject:
@@ -60642,7 +60642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathId: Canteen
-  waypointIndex: 0
+  waypointIndex: 1
   playerTag: Player
 --- !u!1 &1003895863
 GameObject:
@@ -62815,6 +62815,84 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 7000191367813686699, guid: 4a5feb043d474144192adbf0f30e3b7c, type: 3}
   m_PrefabInstance: {fileID: 1025383420}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1028498012
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.30968714
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.30968714
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.30968714
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.908
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.252
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.981
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6067185528594298527, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f35892c4f9e0a2d4aacf413b57bbefea, type: 2}
+    - target: {fileID: 919132149155446097, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+      propertyPath: m_Name
+      value: GuidingArrow
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+--- !u!4 &1028498013 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b207a15c43bc41d45b345df873e38a43, type: 3}
+  m_PrefabInstance: {fileID: 1028498012}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1031120117
 GameObject:
@@ -72980,7 +73058,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathId: Canteen
-  waypointIndex: 0
+  waypointIndex: 3
   playerTag: Player
 --- !u!1 &1196259793
 GameObject:
@@ -82481,78 +82559,6 @@ Transform:
   - {fileID: 1500600647}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1333630356
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1333630357}
-  - component: {fileID: 1333630359}
-  - component: {fileID: 1333630358}
-  m_Layer: 5
-  m_Name: Guiding Arrow
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1333630357
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1333630356}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 23.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1353968160}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -91.93762}
-  m_SizeDelta: {x: 434, y: 165}
-  m_Pivot: {x: 0.5, y: 1}
---- !u!114 &1333630358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1333630356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Texture: {fileID: 2800000, guid: b8bf8de04fc7ecc459f60947a0f87bbe, type: 3}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
---- !u!222 &1333630359
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1333630356}
-  m_CullTransparentMesh: 1
 --- !u!1001 &1337075057
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -83740,7 +83746,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1333630357}
   - {fileID: 1840119862}
   - {fileID: 1477441815}
   - {fileID: 1991173881}
@@ -135360,7 +135365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathId: Canteen
-  waypointIndex: 0
+  waypointIndex: 5
   playerTag: Player
 --- !u!1001 &2058618038
 PrefabInstance:
@@ -136635,7 +136640,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  arrowUI: {fileID: 1333630357}
+  arrowObject: {fileID: 1028498013}
+  forwardOffset: 1.5
+  heightOffset: 0.5
   paths:
   - id: Canteen
     waypoints:
@@ -148009,3 +148016,4 @@ SceneRoots:
   - {fileID: 2019321327}
   - {fileID: 1353968160}
   - {fileID: 1332651571}
+  - {fileID: 1028498012}

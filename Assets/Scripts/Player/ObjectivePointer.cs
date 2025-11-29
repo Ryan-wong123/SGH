@@ -12,12 +12,12 @@ public class ObjectivePointer : MonoBehaviour
         public Transform[] waypoints;  // ordered list of points
     }
 
-    // -------- Pointer / UI --------
+    // -------- Pointer / 3D Arrow --------
     [Header("Pointer References")]
-    [SerializeField] private Transform player;
-    [SerializeField] private RectTransform arrowUI;
+    [SerializeField] private Transform player;        // local player
+    [SerializeField] private Transform arrowObject;   // 3D arrow object in world
 
-    [Header("World-Space Arrow Settings")]
+    [Header("World Arrow Settings")]
     [SerializeField] private float forwardOffset = 1.5f;  // how far in front of the player
     [SerializeField] private float heightOffset = 1.2f;  // how high above the player
 
@@ -48,39 +48,36 @@ public class ObjectivePointer : MonoBehaviour
     private void Update()
     {
         // Hide if we don't have what we need
-        if (arrowUI == null || player == null || currentTarget == null)
+        if (arrowObject == null || player == null || currentTarget == null)
         {
-            if (arrowUI != null && arrowUI.gameObject.activeSelf)
-                arrowUI.gameObject.SetActive(false);
+            if (arrowObject != null && arrowObject.gameObject.activeSelf)
+                arrowObject.gameObject.SetActive(false);
             return;
         }
 
-        // --- WORLD-SPACE POSITIONING ---
-        // Place arrow in front of the player in world space
+        // --- POSITION: put arrow in front of player ---
         Vector3 basePos = player.position
                         + player.forward * forwardOffset
                         + Vector3.up * heightOffset;
 
-        arrowUI.position = basePos;
+        arrowObject.position = basePos;
 
-        // --- DIRECTION & ROTATION ---
-        // Direction from player to target on horizontal plane
-        Vector3 toTarget = currentTarget.position - player.position;
+        // --- ROTATION: face the target on XZ plane ---
+        Vector3 toTarget = currentTarget.position - arrowObject.position;
         toTarget.y = 0f;
 
         // If we're basically on top of the target, hide the arrow
         if (toTarget.sqrMagnitude < 0.001f)
         {
-            arrowUI.gameObject.SetActive(false);
+            arrowObject.gameObject.SetActive(false);
             return;
         }
 
-        // Compute angle (XZ plane) and rotate arrow in its plane (Z-rotation)
-        float angle = Mathf.Atan2(toTarget.x, toTarget.z) * Mathf.Rad2Deg;
-        arrowUI.rotation = Quaternion.Euler(0f, 0f, -angle);
+        Quaternion lookRot = Quaternion.LookRotation(toTarget.normalized, Vector3.up);
+        arrowObject.rotation = lookRot;
 
-        if (!arrowUI.gameObject.activeSelf)
-            arrowUI.gameObject.SetActive(true);
+        if (!arrowObject.gameObject.activeSelf)
+            arrowObject.gameObject.SetActive(true);
     }
 
     // ========== PATH CONTROL ==========
@@ -209,6 +206,13 @@ public class ObjectivePointer : MonoBehaviour
 
     public void SetCamera(Camera newCam)
     {
-        cam = newCam; // kept for future if you want camera-based stuff
+        cam = newCam; // still here in case you use it later
+    }
+
+    // Optionally, if you ever want to set the arrow from code:
+    public void SetArrowObject(Transform newArrow)
+    {
+        arrowObject = newArrow;
+        Debug.Log($"[ObjectiveNavigator] Arrow object set to: {newArrow.name}");
     }
 }
