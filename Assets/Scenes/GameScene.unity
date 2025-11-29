@@ -136642,7 +136642,7 @@ MonoBehaviour:
   player: {fileID: 0}
   arrowObject: {fileID: 1028498013}
   forwardOffset: 1.5
-  heightOffset: 0.5
+  heightOffset: 0
   paths:
   - id: Canteen
     waypoints:

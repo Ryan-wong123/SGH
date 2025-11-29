@@ -47,38 +47,42 @@ public class ObjectivePointer : MonoBehaviour
 
     private void Update()
     {
-        // Hide if we don't have what we need
-        if (arrowObject == null || player == null || currentTarget == null)
+        // Need at least: arrow, target, and either player or cam
+        if (arrowObject == null || currentTarget == null || (player == null && cam == null))
         {
             if (arrowObject != null && arrowObject.gameObject.activeSelf)
                 arrowObject.gameObject.SetActive(false);
             return;
         }
 
-        // --- POSITION: put arrow in front of player ---
-        Vector3 basePos = player.position
-                        + player.forward * forwardOffset
+        // Use camera as reference if available, otherwise fallback to player
+        Transform refTransform = cam != null ? cam.transform : player;
+
+        // 1) Position arrow in front of the camera/player
+        Vector3 basePos = refTransform.position
+                        + refTransform.forward * forwardOffset
                         + Vector3.up * heightOffset;
 
         arrowObject.position = basePos;
 
-        // --- ROTATION: face the target on XZ plane ---
-        Vector3 toTarget = currentTarget.position - arrowObject.position;
+        // 2) Compute direction to target on horizontal plane
+        Vector3 toTarget = currentTarget.position - refTransform.position;
         toTarget.y = 0f;
 
-        // If we're basically on top of the target, hide the arrow
         if (toTarget.sqrMagnitude < 0.001f)
         {
             arrowObject.gameObject.SetActive(false);
             return;
         }
 
+        // 3) Rotate arrow to face target
         Quaternion lookRot = Quaternion.LookRotation(toTarget.normalized, Vector3.up);
         arrowObject.rotation = lookRot;
 
         if (!arrowObject.gameObject.activeSelf)
             arrowObject.gameObject.SetActive(true);
     }
+
 
     // ========== PATH CONTROL ==========
 
