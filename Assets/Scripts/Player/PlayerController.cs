@@ -32,6 +32,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
             playerCamera.gameObject.SetActive(true);
             Cursor.lockState = CursorLockMode.Locked;
+
+            // Find the ObjectivePointer in the scene (on your Canvas/UI Manager)
+            if (ObjectivePointer.Instance != null)
+            {
+                ObjectivePointer.Instance.SetPlayer(transform);
+                // Assign camera (get the child camera)
+                ObjectivePointer.Instance.SetCamera(GetComponentInChildren<Camera>() ?? throw new System.Exception("No camera found on local player!"));
+            }
+
         }
         else
         {
