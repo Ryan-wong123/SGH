@@ -3008,8 +3008,7 @@ MonoBehaviour:
   tipText: {fileID: 1016540183}
   fadeDuration: 1
   loadingTips:
-  - WASD to move
-  - Left Click to interact
+  - Press "Q" to enable mouse cursor
 --- !u!1 &1106310834
 GameObject:
   m_ObjectHideFlags: 0
