@@ -91,8 +91,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     private const string RP_ROUND = "Round";           // int; increments to signal a reset
     private const string PP_PLAYED_ROUND = "PlayedRound";     // bool on each player
 
-    [SerializeField] private Transform[] compassObject;
-
     public enum PuzzleStage
     {
         Puzzle1,
@@ -377,7 +375,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         CurrentStage = PuzzleStage.Puzzle3;
         ResetTimer();
 
-        ObjectivePointer.Instance.SetTarget(compassObject[0]);
+        ObjectivePointer.Instance.StartPath("Canteen");
 
     }
 

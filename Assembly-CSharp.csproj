@@ -130,6 +130,7 @@
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\TextToggleIsOnTransition.cs" />
     <Compile Include="Assets\Scripts\Puzzle\Draggable\DropSlot.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 4\Activity2DropSlot.cs" />
+    <Compile Include="Assets\Scripts\Player\WaypointTrigger.cs" />
     <Compile Include="Assets\Scripts\UI\SideBarMenuManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 4\Activity2DraggableCard.cs" />

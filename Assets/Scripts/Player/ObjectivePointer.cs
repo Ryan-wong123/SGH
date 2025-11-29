@@ -1,83 +1,214 @@
-using UnityEngine;
+﻿using UnityEngine;
+using TMPro;
 
 public class ObjectivePointer : MonoBehaviour
 {
     public static ObjectivePointer Instance { get; private set; }
 
-    [Header("References")]
-    [SerializeField] private Transform player;        // your local player transform
-    [SerializeField] private Transform target;        // current objective
-    [SerializeField] private RectTransform arrowUI;   // the UI Image RectTransform
+    [System.Serializable]
+    public class WaypointPath
+    {
+        public string id;              // unique name/key for this path
+        public Transform[] waypoints;  // ordered list of points
+    }
 
-    [Header("Settings")]
-    [SerializeField] private float edgePadding = 50f; // distance from screen edge
+    // -------- Pointer / UI --------
+    [Header("Pointer References")]
+    [SerializeField] private Transform player;
+    [SerializeField] private RectTransform arrowUI;
 
-    private Camera cam;
+    [Header("World-Space Arrow Settings")]
+    [SerializeField] private float forwardOffset = 1.5f;  // how far in front of the player
+    [SerializeField] private float heightOffset = 1.2f;  // how high above the player
 
+    // -------- Paths --------
+    [Header("Available Paths")]
+    [SerializeField] private WaypointPath[] paths;
+
+    private int activePathIndex = -1;
+    private int currentWaypointIndex = -1;
+    private Transform currentTarget;
+
+    public bool IsActive { get; private set; }
+
+    private Camera cam; // kept in case you want later use
+
+    // ========== LIFECYCLE ==========
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
-        cam = Camera.main;
     }
 
     private void Update()
     {
-        if (!target)
+        // Hide if we don't have what we need
+        if (arrowUI == null || player == null || currentTarget == null)
         {
-            arrowUI?.gameObject.SetActive(false);
+            if (arrowUI != null && arrowUI.gameObject.activeSelf)
+                arrowUI.gameObject.SetActive(false);
             return;
+        }
+
+        // --- WORLD-SPACE POSITIONING ---
+        // Place arrow in front of the player in world space
+        Vector3 basePos = player.position
+                        + player.forward * forwardOffset
+                        + Vector3.up * heightOffset;
+
+        arrowUI.position = basePos;
+
+        // --- DIRECTION & ROTATION ---
+        // Direction from player to target on horizontal plane
+        Vector3 toTarget = currentTarget.position - player.position;
+        toTarget.y = 0f;
+
+        // If we're basically on top of the target, hide the arrow
+        if (toTarget.sqrMagnitude < 0.001f)
+        {
+            arrowUI.gameObject.SetActive(false);
+            return;
+        }
+
+        // Compute angle (XZ plane) and rotate arrow in its plane (Z-rotation)
+        float angle = Mathf.Atan2(toTarget.x, toTarget.z) * Mathf.Rad2Deg;
+        arrowUI.rotation = Quaternion.Euler(0f, 0f, -angle);
+
+        if (!arrowUI.gameObject.activeSelf)
+            arrowUI.gameObject.SetActive(true);
+    }
+
+    // ========== PATH CONTROL ==========
+
+    /// <summary>
+    /// Start a path by id (e.g. "ToBedroom").
+    /// </summary>
+    public void StartPath(string pathId)
+    {
+        int index = FindPathIndex(pathId);
+        if (index == -1)
+        {
+            Debug.LogWarning($"[ObjectiveNavigator] No path with id '{pathId}'");
+            ClearTarget();
+            return;
+        }
+
+        StartPath(index);
+    }
+
+    /// <summary>
+    /// Start a path by index (Inspector order).
+    /// </summary>
+    public void StartPath(int pathIndex)
+    {
+        if (paths == null || pathIndex < 0 || pathIndex >= paths.Length)
+        {
+            Debug.LogWarning($"[ObjectiveNavigator] Invalid path index {pathIndex}");
+            ClearTarget();
+            return;
+        }
+
+        if (paths[pathIndex].waypoints == null || paths[pathIndex].waypoints.Length == 0)
+        {
+            Debug.LogWarning($"[ObjectiveNavigator] Path '{paths[pathIndex].id}' has no waypoints");
+            ClearTarget();
+            return;
+        }
+
+        activePathIndex = pathIndex;
+        currentWaypointIndex = 0;
+        IsActive = true;
+
+        SetTarget(paths[activePathIndex].waypoints[currentWaypointIndex]);
+        Debug.Log($"[ObjectiveNavigator] Started path '{paths[activePathIndex].id}', waypoint 0: {currentTarget.name}");
+    }
+
+    public void ReachWaypoint(string pathId, int waypointIndex)
+    {
+        // Only react if this is the active path
+        if (!IsActive)
+            return;
+
+        int expectedPathIndex = FindPathIndex(pathId);
+        if (expectedPathIndex != activePathIndex)
+            return;
+
+        if (waypointIndex != currentWaypointIndex)
+            return;
+
+        AdvanceWaypoint();
+    }
+
+    public void ReachWaypoint(int waypointIndex)
+    {
+        // Overload if you don't care about id and only have one active path
+        if (!IsActive || waypointIndex != currentWaypointIndex)
+            return;
+
+        AdvanceWaypoint();
+    }
+
+    private void AdvanceWaypoint()
+    {
+        var path = paths[activePathIndex];
+
+        Debug.Log($"[ObjectiveNavigator] Reached waypoint {currentWaypointIndex} ({path.waypoints[currentWaypointIndex].name})");
+
+        currentWaypointIndex++;
+
+        if (currentWaypointIndex < path.waypoints.Length)
+        {
+            SetTarget(path.waypoints[currentWaypointIndex]);
+            Debug.Log($"[ObjectiveNavigator] Next waypoint {currentWaypointIndex}: {currentTarget.name}");
         }
         else
         {
-            arrowUI?.gameObject.SetActive(true);
+            Debug.Log($"[ObjectiveNavigator] Completed path '{path.id}'");
+            ClearTarget();
+            IsActive = false;
         }
-
-            Vector3 screenPos = cam.WorldToScreenPoint(target.position);
-
-        // If target is behind camera, flip it so arrow still points roughly correctly
-        if (screenPos.z < 0)
-        {
-            screenPos.x = Screen.width - screenPos.x;
-            screenPos.y = Screen.height - screenPos.y;
-        }
-
-        // Clamp position to screen edges (with padding)
-        float clampedX = Mathf.Clamp(screenPos.x, edgePadding, Screen.width - edgePadding);
-        float clampedY = Mathf.Clamp(screenPos.y, edgePadding, Screen.height - edgePadding);
-
-        arrowUI.position = new Vector3(clampedX, clampedY, 0f);
-
-        // Compute direction on the horizontal plane from player to target
-        Vector3 worldDir = target.position - player.position;
-        worldDir.y = 0;
-
-        if (worldDir.sqrMagnitude > 0.01f)
-        {
-            float angle = Mathf.Atan2(worldDir.x, worldDir.z) * Mathf.Rad2Deg;
-            // Rotate arrow so it points towards the objective
-            arrowUI.rotation = Quaternion.Euler(0, 0, -angle);
-        }
-
-        arrowUI.gameObject.SetActive(true);
     }
 
-    // Call this when you change objectives
-    public void SetTarget(Transform newTarget)
+    private int FindPathIndex(string id)
     {
-        target = newTarget;
-        Debug.Log($"target for arrow set to {target.name}");
+        if (paths == null) return -1;
+        for (int i = 0; i < paths.Length; i++)
+        {
+            if (!string.IsNullOrEmpty(paths[i].id) && paths[i].id == id)
+                return i;
+        }
+        return -1;
     }
+
+    public void SetTarget(Transform t)
+    {
+        currentTarget = t;
+        if (t != null)
+            Debug.Log($"[ObjectiveNavigator] Target set to {t.name}");
+        else
+            Debug.Log("[ObjectiveNavigator] Target cleared");
+    }
+
+    public void ClearTarget()
+    {
+        SetTarget(null);
+    }
+
+    // ========== EXTERNAL HOOKS ==========
 
     public void SetPlayer(Transform newPlayer)
     {
         player = newPlayer;
-        Debug.Log($"player for arrow set to {player.name}");
+        Debug.Log($"[ObjectiveNavigator] Player set to: {newPlayer.name}");
     }
+
     public void SetCamera(Camera newCam)
     {
-        cam = newCam;
+        cam = newCam; // kept for future if you want camera-based stuff
     }
-
 }
-
-
