@@ -397,6 +397,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         CurrentStage = PuzzleStage.Puzzle5;
         ResetTimer();
+
+        ObjectivePointer.Instance.StartPath("Physician Room");
     }
 
     public void HandlePuzzle5Complete()
@@ -417,6 +419,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         CurrentStage = PuzzleStage.Puzzle7;
         ResetTimer();
+        ObjectivePointer.Instance.StartPath("Pharmacy");
     }
 
     public void HandlePuzzle7Complete()
@@ -438,6 +441,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         GetKeyUponCompletion(puzzle4Object, "Time Crystal4");
         ResetTimer();
+        ObjectivePointer.Instance.StartPath("Nurse Education Room");
     }
 
     public void HandlePuzzle9Complete()
@@ -456,6 +460,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         CurrentStage = PuzzleStage.Puzzle11;
         ResetTimer();
+       
+        ObjectivePointer.Instance.StartPath("Morturary");
     }
 
     public void HandlePuzzle11Complete()
