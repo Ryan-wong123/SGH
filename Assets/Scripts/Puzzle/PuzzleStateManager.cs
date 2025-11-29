@@ -198,7 +198,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         miniPuzzle1Header1?.SetActive(true);
         miniPuzzle1Panel2?.SetActive(false);
         miniPuzzle1Header2?.SetActive(false);
-        mainminiPuzzle1Panel1?.SetActive(false);
+
 
         CurrentStage = PuzzleStage.Puzzle1;
 
@@ -210,7 +210,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Reloading Puzzle 3");
         pictureGridManager?.ResetPuzzle();
-        Puzzle3Panel?.SetActive(false);
         CurrentStage = PuzzleStage.Puzzle3;
 
         if (PhotonNetwork.IsMasterClient)
@@ -232,7 +231,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         activity2PuzzleManager.ResetActivity2Part2();
         Puzzle4Panel1?.SetActive(true);
         Puzzle4Panel2?.SetActive(false);
-        Puzzle4Panel?.SetActive(false);
         CurrentStage = PuzzleStage.Puzzle4; 
 
         if (PhotonNetwork.IsMasterClient)
@@ -243,7 +241,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Reloading Puzzle 5");
         wordSearchManager?.ResetPuzzle();
-        Puzzle5Panel.SetActive(false);
         CurrentStage = PuzzleStage.Puzzle5;
 
         if (PhotonNetwork.IsMasterClient)
@@ -254,7 +251,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Reloading Puzzle 6");
         diaryPuzzleManager?.ResetPuzzle();
-        Puzzle6Panel.SetActive(false);
         CurrentStage = PuzzleStage.Puzzle6; // fix
 
         if (PhotonNetwork.IsMasterClient)
@@ -265,7 +261,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Reloading Puzzle 7");
         risktableManager?.ResetPuzzle();
-        Puzzle7Panel?.SetActive(false);
         CurrentStage = PuzzleStage.Puzzle7;
 
         if (PhotonNetwork.IsMasterClient)
@@ -276,7 +271,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Reloading Puzzle 8");
         prescriptionManager?.ResetPuzzle();
-        Puzzle8Panel?.SetActive(false);
         CurrentStage = PuzzleStage.Puzzle8;
 
         if (PhotonNetwork.IsMasterClient)
@@ -287,7 +281,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Reloading Puzzle 9");
         crosswordManager?.ResetPuzzle();
-        Puzzle9Panel?.SetActive(false);
+
         CurrentStage = PuzzleStage.Puzzle9;
 
         if (PhotonNetwork.IsMasterClient)
@@ -306,7 +300,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             card.ResetCard();
         }
         insulinPuzzleManager?.ResetPuzzle();
-        Puzzle10Panel?.SetActive(false);
+
         CurrentStage = PuzzleStage.Puzzle10;
 
         if (PhotonNetwork.IsMasterClient)
@@ -325,7 +319,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             card.ResetCard();
         }
         deathLapsesManager?.ResetPuzzle();
-        Puzzle11Panel?.SetActive(false);
+
         CurrentStage = PuzzleStage.Puzzle11;
 
         if (PhotonNetwork.IsMasterClient)
