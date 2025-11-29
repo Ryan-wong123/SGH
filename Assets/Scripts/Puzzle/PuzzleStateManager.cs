@@ -68,6 +68,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     [Header("puzzle 9")]
     [SerializeField] private CrosswordManager crosswordManager;
     [SerializeField] private GameObject Puzzle9Panel;
+    [SerializeField] private GameObject Puzzle9ImageHint;
+    [SerializeField] private GameObject Puzzle9AcrossHint;
 
     [Header("puzzle 10")]
     [SerializeField] private InsulinPuzzleManager insulinPuzzleManager;
@@ -441,7 +443,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     public void HandlePuzzle9Complete()
     {
         Debug.Log("Puzzle 9 completed correctly!");
-        Puzzle9Panel?.SetActive(false);
+        Puzzle9AcrossHint?.SetActive(false);
+        Puzzle9ImageHint?.SetActive(true);
 
         CurrentStage = PuzzleStage.Puzzle10;
         ResetTimer();
@@ -616,12 +619,29 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         var panel = GetPanelForStage(CurrentStage);
         if (panel != null) { panel.SetActive(true); currentPuzzlePanel = panel; }
     }
-
+   
     public void CloseCurrentPuzzle()
     {
         var panel = GetPanelForStage(CurrentStage);
         if (panel != null && panel.activeSelf) { panel.SetActive(false); Debug.Log($"Closed {panel.name}"); }
         else Debug.Log("No current puzzle panel to close.");
+    }
+
+    // Close a specific puzzle panel from a UI button (Inspector selects stage as int)
+    public void ClosePuzzle(int stageInt)
+    {
+        PuzzleStage stage = (PuzzleStage)stageInt;
+        var panel = GetPanelForStage(stage);
+
+        if (panel != null && panel.activeSelf)
+        {
+            panel.SetActive(false);
+            Debug.Log($"Closed {stage} ({panel.name})");
+        }
+        else
+        {
+            Debug.Log($"No active panel to close for stage: {stage}");
+        }
     }
 
     // ==== Fair-turn system additions ====
