@@ -2,7 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 
 [RequireComponent(typeof(PhotonView))]
-public class MovementTargetForward : MonoBehaviourPun, IPunObservable, IInteractable, IHighlightable
+public class MovementTargetForward : MonoBehaviourPun, IPunObservable, IHighlightable
 {
     [Header("Movement Settings")]
     [SerializeField] private float moveDistance = 3f;   // how far to move forward (local)
@@ -27,7 +27,7 @@ public class MovementTargetForward : MonoBehaviourPun, IPunObservable, IInteract
     public void Interact()
     {
         // Ignore if already moving or already completed the one-shot move
-        if (isMoving || hasReachedTarget) return;
+        if (isMoving || hasReachedTarget) return;         
 
         if (!photonView.AmOwner) photonView.RequestOwnership();
 
@@ -72,7 +72,7 @@ public class MovementTargetForward : MonoBehaviourPun, IPunObservable, IInteract
             hasReachedTarget = true; // lock further interactions
         }
     }
-
+ 
     // ---- Minimal state sync for late joiners/snapshots ----
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -93,7 +93,6 @@ public class MovementTargetForward : MonoBehaviourPun, IPunObservable, IInteract
     }
 
     // ---- IHighlightable (using your HighlightEffect) ----
-    public string GetInteractionPrompt() => hasReachedTarget ? "" : "Press E to move";
     public void Highlight() => highlightEffect?.Highlight();
     public void Unhighlight() => highlightEffect?.Unhighlight();
 }

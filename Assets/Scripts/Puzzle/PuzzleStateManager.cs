@@ -78,6 +78,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     [Header("puzzle 11")]
     [SerializeField] private DeathLapsesManager deathLapsesManager;
     [SerializeField] private GameObject Puzzle11Panel;
+    [SerializeField] private GameObject movementTargetPuzzle11;
+
 
     private Dictionary<PuzzleStage, IPuzzle> puzzleHandlers;
 
@@ -468,9 +470,11 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         GetKeyUponCompletion(puzzle5Object, "Time Crystal5");
         ResetTimer();
+        movementTargetPuzzle11?.GetComponent<MovementTargetForward>().Interact();
+      
 
-        if (PuzzleScoreTracker.Instance != null)
-            PuzzleScoreTracker.Instance.ShowEndScreen();
+        //if (PuzzleScoreTracker.Instance != null)
+        //    PuzzleScoreTracker.Instance.ShowEndScreen();
     }
 
     public void ResetTimer()
