@@ -34,6 +34,7 @@ public class JoinRoomManager : Network
     {
         refreshButton.onClick.AddListener(RefreshRoomList);
         startGameButton.onClick.AddListener(StartGame);
+        PhotonNetwork.AutomaticallySyncScene = true;
 
         //toggle visibility of RoomListPanel 
         toggleRoomListPanelButton.onClick.AddListener(() =>
@@ -153,16 +154,26 @@ public class JoinRoomManager : Network
             item.GetComponentInChildren<Text>().text = player.NickName;
         }
     }
-    
+
     //function to start game
     void StartGame()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            //prevent anymore player from joining
-            PhotonNetwork.CurrentRoom.IsOpen = false;
-            loadingScreen.StartFadeAndLoad("GameScene");
-        }
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+
+        // Tell everyone to show loading UI + start tracking progress
+        photonView.RPC(nameof(RPC_BeginLoading), RpcTarget.All, "GameScene");
+
+        // Master triggers the actual networked scene load (everyone will follow)
+        PhotonNetwork.LoadLevel("GameScene");
     }
+
+    [PunRPC]
+    private void RPC_BeginLoading(string sceneName)
+    {
+        loadingScreen.StartFadeAndLoad(sceneName);
+    }
+
 
 }

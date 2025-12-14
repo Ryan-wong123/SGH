@@ -33,9 +33,6 @@ public class LoadingScreenManager : MonoBehaviour
         tipText.text = loadingTips[Random.Range(0, loadingTips.Length)];
         yield return StartCoroutine(FadeIn());
 
-        if (PhotonNetwork.IsMasterClient)
-            PhotonNetwork.LoadLevel(sceneName);
-
         // While loading, show progress bar
         while (PhotonNetwork.LevelLoadingProgress < 1f)
         {
