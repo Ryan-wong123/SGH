@@ -64,6 +64,9 @@ MonoBehaviour:
   - ShowPickupPopupRemote
   - RPC_SetFlash
   - RPC_BeginLoading
+  - RPC_OpenPuzzle
+  - RPC_RequestShowClue
+  - RPC_ShowClueForAll
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
