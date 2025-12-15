@@ -13151,7 +13151,7 @@ MonoBehaviour:
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: slow wound healing
-  backSprite: {fileID: 0}
+  backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
 --- !u!1 &211960595
 GameObject:
   m_ObjectHideFlags: 0
@@ -38181,7 +38181,7 @@ MonoBehaviour:
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: fruity breath
-  backSprite: {fileID: 0}
+  backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
 --- !u!1 &612424900
 GameObject:
   m_ObjectHideFlags: 0
@@ -45774,7 +45774,7 @@ MonoBehaviour:
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: abdominal pain
-  backSprite: {fileID: 0}
+  backSprite: {fileID: 21300000, guid: 32df19571ff61db439b638d6791b20fc, type: 3}
 --- !u!1 &719114440
 GameObject:
   m_ObjectHideFlags: 0
@@ -53210,7 +53210,7 @@ MonoBehaviour:
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: frequent urination
-  backSprite: {fileID: 0}
+  backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
 --- !u!1 &844769470
 GameObject:
   m_ObjectHideFlags: 0
@@ -59063,7 +59063,7 @@ MonoBehaviour:
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: unexplained weight loss
-  backSprite: {fileID: 0}
+  backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
 --- !u!1001 &939758957
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72430,7 +72430,7 @@ MonoBehaviour:
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: dry skin
-  backSprite: {fileID: 0}
+  backSprite: {fileID: 21300000, guid: 32df19571ff61db439b638d6791b20fc, type: 3}
 --- !u!1 &1167730170
 GameObject:
   m_ObjectHideFlags: 0
@@ -136158,7 +136158,7 @@ MonoBehaviour:
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: extreme thirst
-  backSprite: {fileID: 0}
+  backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
 --- !u!1 &2024478293
 GameObject:
   m_ObjectHideFlags: 0
@@ -136466,7 +136466,7 @@ MonoBehaviour:
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: peripheral neuropathy
-  backSprite: {fileID: 0}
+  backSprite: {fileID: 21300000, guid: 32df19571ff61db439b638d6791b20fc, type: 3}
 --- !u!1 &2028173530
 GameObject:
   m_ObjectHideFlags: 0
@@ -138753,7 +138753,7 @@ MonoBehaviour:
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: sexual dysfunction
-  backSprite: {fileID: 0}
+  backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
 --- !u!1 &2070167655
 GameObject:
   m_ObjectHideFlags: 0
@@ -139378,6 +139378,7 @@ MonoBehaviour:
   puzzleStateManager: {fileID: 2075314851}
   masterControls: 1
   pollIntervalSeconds: 0.1
+  bufferStageRpcForLateJoiners: 1
   directives:
   - stage: 0
     activateOnEnter:
