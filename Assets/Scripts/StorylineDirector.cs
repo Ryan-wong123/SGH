@@ -17,6 +17,9 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     [Tooltip("Polling interval (s) for detecting stage changes.")]
     [SerializeField] private float pollIntervalSeconds = 0.1f;
 
+    [Tooltip("If true, stage effects are buffered so late joiners receive the latest stage toggles.")]
+    [SerializeField] private bool bufferStageRpcForLateJoiners = true;
+
     [Header("Per-Stage Directives")]
     [SerializeField] private List<StageDirective> directives = new();
 
@@ -28,13 +31,10 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     {
         [Tooltip("TMP text element to update for this stage.")]
         public TextMeshProUGUI display;
-
         [Tooltip("Queue board (QueueNumberDisplay) that should flash when this text is shown.")]
         public QueueNumberDisplay board;
-
         [Tooltip("Text applied to this display. Use {n} to inject puzzle number.")]
         public string text = "";
-
         [Header("Flash behavior")]
         [Tooltip("If true, board.isFlash will be turned ON when text is applied.")]
         public bool flashBoardWhenShown = true;
@@ -45,10 +45,10 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     {
         public PuzzleStateManager.PuzzleStage stage;
 
-        [Tooltip("Objects set active = true when entering this stage.")]
+        [Tooltip("Scene objects set active = true when entering this stage.")]
         public List<GameObject> activateOnEnter = new();
 
-        [Tooltip("Objects set active = false when exiting this stage.")]
+        [Tooltip("Scene objects set active = false when exiting this stage.")]
         public List<GameObject> deactivateOnExit = new();
 
         [Header("Queue Number Displays (optional, per-display text)")]
@@ -105,39 +105,43 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         var prevDirective = previous.HasValue ? FindDirective(previous.Value) : null;
         var newDirective = FindDirective(stage);
 
-        int[] deactivateIds = CollectInstanceIDs(prevDirective?.deactivateOnExit);
-        int[] activateIds = CollectInstanceIDs(newDirective?.activateOnEnter);
+        // Convert to stable hierarchy paths (works even if inactive)
+        string[] deactivatePaths = CollectHierarchyPaths(prevDirective?.deactivateOnExit);
+        string[] activatePaths = CollectHierarchyPaths(newDirective?.activateOnEnter);
 
         string[] texts = CollectQueueTexts(newDirective, stage);
 
+        var target = bufferStageRpcForLateJoiners ? RpcTarget.AllBuffered : RpcTarget.All;
+
         photonView.RPC(nameof(RPC_ApplyStageEffects),
-            RpcTarget.All,
+            target,
             (int)stage,
-            deactivateIds,
-            activateIds,
+            deactivatePaths,
+            activatePaths,
             texts);
     }
 
     [PunRPC]
-    private void RPC_ApplyStageEffects(int stageInt, int[] deactivateIds, int[] activateIds, string[] texts)
+    private void RPC_ApplyStageEffects(int stageInt, string[] deactivatePaths, string[] activatePaths, string[] texts)
     {
-        // 1) Stop all board flashes before applying new stage (ensures "flash until stage change")
+        // 1) Stop all board flashes before applying new stage
         StopAllBoardFlashes();
 
-        // 2) Toggle objects
-        ToggleByInstanceIDs(deactivateIds, false);
-        ToggleByInstanceIDs(activateIds, true);
+        // 2) Toggle objects by path
+        ToggleByPaths(deactivatePaths, false);
+        ToggleByPaths(activatePaths, true);
 
         // 3) Apply texts + turn on flash for this stage
         var stage = (PuzzleStateManager.PuzzleStage)stageInt;
         var directive = FindDirective(stage);
         ApplyQueueTextsAndFlash(directive, texts, stage);
+
+        // Local-only hooks
         directive?.onEnter?.Invoke();
     }
 
     private void ApplyForEveryone(PuzzleStateManager.PuzzleStage? previous, PuzzleStateManager.PuzzleStage stage)
     {
-        // 1) Stop all board flashes
         StopAllBoardFlashes();
 
         var prevDirective = previous.HasValue ? FindDirective(previous.Value) : null;
@@ -157,7 +161,103 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         newDirective.onEnter?.Invoke();
     }
 
-    // ---- Core helpers ----
+    // ----------------------------
+    // Path-based helpers
+    // ----------------------------
+
+    private static string[] CollectHierarchyPaths(List<GameObject> list)
+    {
+        if (list == null || list.Count == 0) return Array.Empty<string>();
+
+        List<string> paths = new();
+        foreach (var go in list)
+        {
+            if (!go) continue;
+            paths.Add(GetHierarchyPath(go.transform));
+        }
+        return paths.ToArray();
+    }
+
+    // Example: "Environment/Room1/DoorBlocker"
+    private static string GetHierarchyPath(Transform t)
+    {
+        var stack = new Stack<string>();
+        while (t != null)
+        {
+            stack.Push(t.name);
+            t = t.parent;
+        }
+        return string.Join("/", stack);
+    }
+
+    // Find including inactive
+    private static GameObject FindByHierarchyPathIncludingInactive(string path)
+    {
+        if (string.IsNullOrEmpty(path)) return null;
+
+        // The first segment is a root object name
+        var split = path.Split('/');
+        if (split.Length == 0) return null;
+
+        // Find matching root (including inactive)
+        var roots = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+        Transform current = null;
+
+        foreach (var r in roots)
+        {
+            if (r.name == split[0])
+            {
+                current = r.transform;
+                break;
+            }
+        }
+        if (current == null) return null;
+
+        // Traverse children by name, including inactive
+        for (int i = 1; i < split.Length; i++)
+        {
+            current = FindChildByNameIncludingInactive(current, split[i]);
+            if (current == null) return null;
+        }
+
+        return current.gameObject;
+    }
+
+    private static Transform FindChildByNameIncludingInactive(Transform parent, string childName)
+    {
+        // Search recursively through all children (includes inactive automatically)
+        foreach (Transform child in parent)
+        {
+            if (child.name == childName) return child;
+
+            var deeper = FindChildByNameIncludingInactive(child, childName);
+            if (deeper != null) return deeper;
+        }
+        return null;
+    }
+
+    private static void ToggleByPaths(string[] paths, bool active)
+    {
+        if (paths == null) return;
+
+        foreach (var p in paths)
+        {
+            var go = FindByHierarchyPathIncludingInactive(p);
+            if (go != null)
+            {
+                go.SetActive(active);
+            }
+            else
+            {
+                Debug.LogWarning($"[StorylineDirector] Could not find GameObject by path: {p}");
+            }
+        }
+    }
+
+    // ----------------------------
+    // Your existing queue helpers
+    // ----------------------------
+
     private string[] CollectQueueTexts(StageDirective directive, PuzzleStateManager.PuzzleStage stage)
     {
         if (directive == null || directive.queueDisplayDirectives == null)
@@ -180,14 +280,10 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         {
             var q = directive.queueDisplayDirectives[i];
 
-            // 1) Set the visible stage text
             if (q.display != null) q.display.text = texts[i];
 
-            // 2) Flash ONLY the queue board while this stage is active
             if (q.flashBoardWhenShown && q.board != null)
-            {
-                q.board.SetFlash(true);   // keep flashing; will be turned off next stage
-            }
+                q.board.SetFlash(true);
         }
     }
 
@@ -230,25 +326,4 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         }
         return (int)stage + 1;
     }
-
-    private static int[] CollectInstanceIDs(List<GameObject> list)
-    {
-        if (list == null || list.Count == 0) return Array.Empty<int>();
-        List<int> ids = new();
-        foreach (var go in list)
-            if (go != null) ids.Add(go.GetInstanceID());
-        return ids.ToArray();
-    }
-
-    private static void ToggleByInstanceIDs(int[] ids, bool active)
-    {
-        if (ids == null) return;
-        var all = FindObjectsOfType<GameObject>(true);
-        var map = new HashSet<int>(ids);
-        foreach (var go in all)
-            if (map.Contains(go.GetInstanceID()))
-                go.SetActive(active);
-    }
-
 }
-

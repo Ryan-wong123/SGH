@@ -39792,6 +39792,7 @@ GameObject:
   - component: {fileID: 637772018}
   - component: {fileID: 637772017}
   - component: {fileID: 637772019}
+  - component: {fileID: 637772020}
   m_Layer: 5
   m_Name: Comic 1
   m_TagString: Untagged
@@ -39896,6 +39897,28 @@ MonoBehaviour:
   autoPlay: 0
   loop: 0
   defaultSlideDuration: 2
+--- !u!114 &637772020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 637772015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 52
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &638963910
 GameObject:
   m_ObjectHideFlags: 0
@@ -105122,6 +105145,7 @@ GameObject:
   - component: {fileID: 1595557881}
   - component: {fileID: 1595557883}
   - component: {fileID: 1595557882}
+  - component: {fileID: 1595557884}
   m_Layer: 5
   m_Name: Clue
   m_TagString: Untagged
@@ -105193,6 +105217,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1595557880}
   m_CullTransparentMesh: 1
+--- !u!114 &1595557884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595557880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 21
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1595978230
 GameObject:
   m_ObjectHideFlags: 0
@@ -139042,6 +139088,7 @@ GameObject:
   - component: {fileID: 2075314859}
   - component: {fileID: 2075314860}
   - component: {fileID: 2075314861}
+  - component: {fileID: 2075314862}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -139456,6 +139503,28 @@ MonoBehaviour:
     - {fileID: 896361446}
     - {fileID: 16704548}
     - {fileID: 1737778587}
+--- !u!114 &2075314862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075314845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 13
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &2075718925
 PrefabInstance:
   m_ObjectHideFlags: 0
