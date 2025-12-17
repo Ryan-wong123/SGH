@@ -1394,8 +1394,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -0.380188, y: 5.2474976}
-  m_SizeDelta: {x: -34.2799, y: 40.663}
+  m_AnchoredPosition: {x: -0.000061035156, y: 0}
+  m_SizeDelta: {x: 0, y: 153}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &454617648
 MonoBehaviour:
@@ -1632,7 +1632,6 @@ RectTransform:
   - {fileID: 886003212}
   - {fileID: 454617647}
   - {fileID: 986937775}
-  - {fileID: 1016540182}
   m_Father: {fileID: 276156587}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2012,7 +2011,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 51.2196}
+  m_SizeDelta: {x: 0, y: 153}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &886003213
 MonoBehaviour:
@@ -2780,14 +2779,15 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1016540182}
   m_Father: {fileID: 592799692}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000030518, y: -415.35648}
-  m_SizeDelta: {x: 1920, y: 137.287}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 152}
+  m_SizeDelta: {x: 1920, y: 137.28699}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &986937776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2851,16 +2851,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1016540181}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 592799692}
+  m_Father: {fileID: 986937775}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 63.770966}
+  m_AnchoredPosition: {x: 0.000061035156, y: 7.770935}
   m_SizeDelta: {x: 0, y: 129.5161}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1016540183
@@ -3085,7 +3085,7 @@ MonoBehaviour:
   tipText: {fileID: 1016540183}
   fadeDuration: 1
   loadingTips:
-  - Press "Q" to enable mouse cursor
+  - "Press \u201CQ\u201D to enable mouse"
 --- !u!114 &1038675568
 MonoBehaviour:
   m_ObjectHideFlags: 0
