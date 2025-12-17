@@ -8,6 +8,7 @@ public class SlideshowUI : MonoBehaviour
     [SerializeField] private Image displayImage;
     [SerializeField] private Button prevButton;
     [SerializeField] private Button nextButton;
+    [SerializeField] private Button closeButton;
 
     public enum SlideOrientationMode
     {
@@ -47,6 +48,9 @@ public class SlideshowUI : MonoBehaviour
 
     private void OnEnable()
     {
+
+        closeButton?.gameObject.SetActive(false);
+
         // Play audio when panel is enabled
         if (audioSource && onEnableClip)
         {
@@ -71,6 +75,8 @@ public class SlideshowUI : MonoBehaviour
             StopCoroutine(autoPlayRoutine);
             autoPlayRoutine = null;
         }
+
+        closeButton?.gameObject.SetActive(false);
     }
 
     private void Start()
@@ -80,6 +86,8 @@ public class SlideshowUI : MonoBehaviour
             Debug.LogWarning("No slides assigned!");
             return;
         }
+
+        closeButton.gameObject.SetActive(false);
 
         // Show first slide
         UpdateImage();
@@ -114,6 +122,11 @@ public class SlideshowUI : MonoBehaviour
             if (autoPlay)
                 StartAutoPlay();
         }
+    }
+    private void UpdateCloseButton()
+    {
+        bool isLastSlide = currentIndex == slides.Length - 1;
+        closeButton.gameObject.SetActive(isLastSlide);
     }
 
     private void ShowNextImage()
@@ -172,6 +185,8 @@ public class SlideshowUI : MonoBehaviour
         }
 
         rt.sizeDelta = isPortrait ? portraitSize : landscapeSize;
+
+        UpdateCloseButton();
     }
 
     private void UpdateButtonState()

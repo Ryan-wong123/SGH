@@ -39881,6 +39881,7 @@ MonoBehaviour:
   displayImage: {fileID: 1229055749}
   prevButton: {fileID: 602411467}
   nextButton: {fileID: 1388983570}
+  closeButton: {fileID: 1956943073}
   slides:
   - image: {fileID: 21300000, guid: 2ac12e086903caa47b9b70cdb6dcf8a9, type: 3}
     duration: 0
@@ -42374,6 +42375,7 @@ MonoBehaviour:
   displayImage: {fileID: 1318389081}
   prevButton: {fileID: 636861673}
   nextButton: {fileID: 119605258}
+  closeButton: {fileID: 0}
   slides:
   - image: {fileID: 21300000, guid: 07ee0fd5936073949864fb9b25fde61d, type: 3}
     duration: 8
@@ -120508,6 +120510,7 @@ MonoBehaviour:
   displayImage: {fileID: 1885096976}
   prevButton: {fileID: 131194422}
   nextButton: {fileID: 266491515}
+  closeButton: {fileID: 1956943073}
   slides:
   - image: {fileID: 21300000, guid: 36b1363cabe469f40b67d43143f765bc, type: 3}
     duration: 0
