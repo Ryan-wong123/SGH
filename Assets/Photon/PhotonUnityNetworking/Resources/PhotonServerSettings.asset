@@ -67,6 +67,7 @@ MonoBehaviour:
   - RPC_OpenPuzzle
   - RPC_RequestShowClue
   - RPC_ShowClueForAll
+  - RPC_DiaryGoToStage
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -407,6 +407,12 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         CurrentStage = PuzzleStage.Puzzle6;
         ResetTimer();
     }
+    [PunRPC]
+    private void RPC_DiaryGoToStage(int newStage)
+    {
+        if (diaryPuzzleManager != null)
+            diaryPuzzleManager.GoToStage(newStage);
+    }
 
     public void HandlePuzzle6Complete()
     {
@@ -562,6 +568,35 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     // Use RPC to advance for everyone after delay (fair-turn compatible)
     public void Submit()
     {
+        // ✅ Special handling for Puzzle 6 multi-page diary
+        if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null)
+        {
+            var result = diaryPuzzleManager.SubmitDiaryStage();
+
+            if (result == DiaryPuzzleManager.DiarySubmitResult.Incorrect)
+            {
+                if (PuzzleScoreTracker.Instance != null)
+                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
+
+                Debug.Log("Diary stage incorrect.");
+                return;
+            }
+
+            if (result == DiaryPuzzleManager.DiarySubmitResult.Advanced)
+            {
+                int nextStage = diaryPuzzleManager.CurrentStage + 1;
+
+                // ✅ Toggle diary panels for everyone
+                photonView.RPC(nameof(RPC_DiaryGoToStage), RpcTarget.All, nextStage);
+                return; // IMPORTANT: do not advance puzzle stage yet
+            }
+
+            // Completed final diary page -> proceed with normal stage-advance flow
+            StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
+            return;
+        }
+
+        // ✅ Default flow for all other puzzles
         if (puzzleHandlers.TryGetValue(CurrentStage, out IPuzzle puzzle))
         {
             if (puzzle.IsSolved())
@@ -570,7 +605,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             }
             else
             {
-                // 🔴 Record a wrong attempt with the scoreboard
                 if (PuzzleScoreTracker.Instance != null)
                     PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
 
@@ -582,6 +616,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             Debug.LogWarning($"No handler found for puzzle stage {CurrentStage}");
         }
     }
+
 
 
     private IEnumerator DelayAndAdvance(PuzzleStage stage, float delay)

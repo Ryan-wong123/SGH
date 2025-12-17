@@ -7,7 +7,6 @@ using System.Globalization;
 
 public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
 {
- 
     [System.Serializable]
     public struct AnswerItem
     {
@@ -17,19 +16,29 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
         public string[] accepted;      // One or more accepted answers
     }
 
-    [SerializeField] private List<AnswerItem> answers;    
-    [SerializeField] private GameObject[] stagePanels;     
-   
+    [SerializeField] private List<AnswerItem> answers;
+    [SerializeField] private GameObject[] stagePanels;
+
     private int currentStage = 1;
 
     [System.Serializable]
     public class DateTextEntry
     {
-        public TMP_Text dateText;      // The UI Text Component
-        public int daysBack;           // How many days to go back from today
+        public TMP_Text dateText;
+        public int daysBack;
     }
 
     [SerializeField] private List<DateTextEntry> dateEntries;
+
+    public enum DiarySubmitResult
+    {
+        Incorrect,
+        Advanced,   // correct, moved to next diary page
+        Completed   // correct, final page complete
+    }
+
+    public int CurrentStage => currentStage;
+    public int MaxStage => stagePanels != null ? stagePanels.Length : 0;
 
     private void OnEnable()
     {
@@ -40,15 +49,11 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
             if (entry.dateText != null)
             {
                 DateTime targetDate = today.AddDays(-entry.daysBack);
-                entry.dateText.text = targetDate.ToString("dd MMM yyyy"); // Example format: 21 May 2025
+                entry.dateText.text = targetDate.ToString("dd MMM yyyy");
             }
         }
     }
 
-
-    // Treat answers as equal if:
-    // 1) exact string match (with optional case-insensitive), OR
-    // 2) numeric match within a small tolerance (handles "8", "08", "8.0")
     private static bool ValuesMatch(string user, string expected, bool caseSensitive, float floatEps = 1e-4f)
     {
         if (user == null) user = string.Empty;
@@ -65,7 +70,6 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
 
         if (u == e) return true;
 
-        // Try numeric comparison
         if (float.TryParse(u, NumberStyles.Float, CultureInfo.InvariantCulture, out var uf) &&
             float.TryParse(e, NumberStyles.Float, CultureInfo.InvariantCulture, out var ef))
         {
@@ -74,7 +78,6 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
 
         return false;
     }
-
 
     private bool CheckStage(int stage)
     {
@@ -106,35 +109,44 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
         return allCorrect;
     }
 
-
-
-    public bool SubmitDiary()
+    // ✅ New: no panel toggling here, just returns the result
+    public DiarySubmitResult SubmitDiaryStage()
     {
-        int maxStage = stagePanels?.Length ?? 0;
+        int maxStage = MaxStage;
         if (currentStage < 1 || currentStage > maxStage)
         {
             Debug.LogWarning($"Invalid currentStage={currentStage}");
-            return false;
+            return DiarySubmitResult.Incorrect;
         }
 
         if (!CheckStage(currentStage))
         {
             Debug.Log($"Diary {currentStage} incorrect. Please fix it.");
-            return false;
+            return DiarySubmitResult.Incorrect;
         }
 
-        // advance or finish
         if (currentStage < maxStage)
         {
             Debug.Log($"Diary {currentStage} correct. Proceed to Diary {currentStage + 1}.");
-            stagePanels[currentStage - 1].SetActive(false);
-            stagePanels[currentStage].SetActive(true);
-            currentStage++;
-            return false;
+            return DiarySubmitResult.Advanced;
         }
 
         Debug.Log($"Diary {currentStage} correct. All stages complete!");
-        return true;
+        return DiarySubmitResult.Completed;
+    }
+
+    // ✅ New: PuzzleStateManager will call this via RPC to actually toggle panels
+    public void GoToStage(int newStage)
+    {
+        int maxStage = MaxStage;
+        if (maxStage <= 0) return;
+
+        newStage = Mathf.Clamp(newStage, 1, maxStage);
+
+        for (int i = 0; i < stagePanels.Length; i++)
+            stagePanels[i].SetActive(i == (newStage - 1));
+
+        currentStage = newStage;
     }
 
     public void ResetPuzzle()
@@ -153,9 +165,11 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
         currentStage = 1;
         Debug.Log("Diary puzzle reset.");
     }
-  
+
+    // IPuzzle
     public bool IsSolved()
     {
-        return SubmitDiary();
+        // Keep compatibility: only returns true when fully completed
+        return SubmitDiaryStage() == DiarySubmitResult.Completed;
     }
 }
