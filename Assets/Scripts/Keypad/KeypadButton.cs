@@ -1,34 +1,40 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 namespace NavKeypad
 {
     public class KeypadButton : MonoBehaviour
     {
         [Header("Value")]
         [SerializeField] private string value;
+
         [Header("Button Animation Settings")]
         [SerializeField] private float bttnspeed = 0.1f;
         [SerializeField] private float moveDist = 0.0025f;
         [SerializeField] private float buttonPressedTime = 0.1f;
+
         [Header("Component References")]
         [SerializeField] private Keypad keypad;
 
+        private bool moving;
 
         public void PressButton()
         {
-            if (!moving)
+            if (moving) return;
+            if (keypad == null)
             {
-                keypad.AddInput(value);
-                StartCoroutine(MoveSmooth());
+                Debug.LogWarning($"{name}: Keypad reference missing.");
+                return;
             }
+
+            keypad.AddInput(value);
+            StartCoroutine(MoveSmooth());
         }
-        private bool moving;
 
         private IEnumerator MoveSmooth()
         {
-
             moving = true;
+
             Vector3 startPos = transform.localPosition;
             Vector3 endPos = transform.localPosition + new Vector3(0, 0, moveDist);
 
@@ -37,13 +43,13 @@ namespace NavKeypad
             {
                 elapsedTime += Time.deltaTime;
                 float t = Mathf.Clamp01(elapsedTime / bttnspeed);
-
                 transform.localPosition = Vector3.Lerp(startPos, endPos, t);
-
                 yield return null;
             }
+
             transform.localPosition = endPos;
             yield return new WaitForSeconds(buttonPressedTime);
+
             startPos = transform.localPosition;
             endPos = transform.localPosition - new Vector3(0, 0, moveDist);
 
@@ -52,13 +58,11 @@ namespace NavKeypad
             {
                 elapsedTime += Time.deltaTime;
                 float t = Mathf.Clamp01(elapsedTime / bttnspeed);
-
                 transform.localPosition = Vector3.Lerp(startPos, endPos, t);
-
                 yield return null;
             }
-            transform.localPosition = endPos;
 
+            transform.localPosition = endPos;
             moving = false;
         }
     }

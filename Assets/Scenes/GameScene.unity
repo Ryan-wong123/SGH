@@ -21928,8 +21928,8 @@ MonoBehaviour:
   panelMesh: {fileID: 783130179}
   keypadDisplayText: {fileID: 1010425281}
   audioSource: {fileID: 362954615}
+  doorsToUnlock: []
   keyName: key5
-  photonView: {fileID: 362954614}
 --- !u!114 &362954614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32448,8 +32448,8 @@ MonoBehaviour:
   panelMesh: {fileID: 943136238}
   keypadDisplayText: {fileID: 992444479}
   audioSource: {fileID: 510832930}
+  doorsToUnlock: []
   keyName: key3
-  photonView: {fileID: 510832929}
 --- !u!114 &510832929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50672,6 +50672,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 787802222}
   m_CullTransparentMesh: 1
+--- !u!114 &787840574 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3517607219998587055, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+  m_PrefabInstance: {fileID: 1951297229}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951297232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c4763f1136fbff46a36b7f5b4eaa6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &790648621
 GameObject:
   m_ObjectHideFlags: 0
@@ -77074,8 +77085,10 @@ MonoBehaviour:
   panelMesh: {fileID: 1647209259}
   keypadDisplayText: {fileID: 434840469}
   audioSource: {fileID: 1229575786}
+  doorsToUnlock:
+  - {fileID: 1946356867}
+  - {fileID: 1946356866}
   keyName: key2
-  photonView: {fileID: 1229575787}
 --- !u!82 &1229575786
 AudioSource:
   m_ObjectHideFlags: 0
@@ -80471,6 +80484,17 @@ MonoBehaviour:
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
+--- !u!114 &1283054914 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3504898680590497188, guid: 62d44f9ee9c56364a8d1b0e1bbcdbf7c, type: 3}
+  m_PrefabInstance: {fileID: 1283054910}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283054912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c4763f1136fbff46a36b7f5b4eaa6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1283353026
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -107608,8 +107632,9 @@ MonoBehaviour:
   panelMesh: {fileID: 2112915043}
   keypadDisplayText: {fileID: 1158598849}
   audioSource: {fileID: 1639897534}
+  doorsToUnlock:
+  - {fileID: 1283054914}
   keyName: key4
-  photonView: {fileID: 1639897535}
 --- !u!82 &1639897534
 AudioSource:
   m_ObjectHideFlags: 0
@@ -128788,6 +128813,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1919901762}
   m_CullTransparentMesh: 1
+--- !u!114 &1920893731 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4237375382858856840, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+  m_PrefabInstance: {fileID: 1951297229}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951297231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c4763f1136fbff46a36b7f5b4eaa6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1921617835
 GameObject:
   m_ObjectHideFlags: 0
@@ -131183,6 +131219,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1945600569}
   m_CullTransparentMesh: 1
+--- !u!114 &1946356866 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4237375382858856840, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+  m_PrefabInstance: {fileID: 1250697806}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250697808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c4763f1136fbff46a36b7f5b4eaa6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1946356867 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3517607219998587055, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+  m_PrefabInstance: {fileID: 1250697806}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250697809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c4763f1136fbff46a36b7f5b4eaa6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1946521758
 GameObject:
   m_ObjectHideFlags: 0
@@ -147362,8 +147420,10 @@ MonoBehaviour:
   panelMesh: {fileID: 6711368085481998410}
   keypadDisplayText: {fileID: 2303921294511929519}
   audioSource: {fileID: 2303921293120576983}
+  doorsToUnlock:
+  - {fileID: 787840574}
+  - {fileID: 1920893731}
   keyName: key1
-  photonView: {fileID: 579631336775133983}
 --- !u!4 &2303921293120576982
 Transform:
   m_ObjectHideFlags: 0
@@ -150573,6 +150633,8 @@ MonoBehaviour:
   isLocked: 0
   requiresKey: 1
   keyName: key5
+  openOnUnlock: 1
+  permanentlyDisableKeyRequirementOnUnlock: 1
   isLeftDoor: 0
   openAngle: 180
   hinge: {fileID: 85962078}

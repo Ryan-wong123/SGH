@@ -8,22 +8,24 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
     [SerializeField] private bool requiresKey = false;
     [SerializeField] private string keyName = "Key";
 
+    [Header("Keypad Unlock Behaviour")]
+    [SerializeField] private bool openOnUnlock = true;
+    [SerializeField] private bool permanentlyDisableKeyRequirementOnUnlock = true;
+
     [Header("Leaf Settings")]
-    [SerializeField] private bool isLeftDoor = false;     // Left leaf swings negative
-    [SerializeField] private float openAngle = 90f;       // Degrees to swing open
+    [SerializeField] private bool isLeftDoor = false;
+    [SerializeField] private float openAngle = 90f;
     [Tooltip("Optional. If not set, a hinge is auto-created at the door edge.")]
     [SerializeField] private Transform hinge;
 
     [Header("Animation")]
     [SerializeField] private bool smooth = false;
-    [SerializeField] private float smoothSpeed = 360f;    // deg/sec
+    [SerializeField] private float smoothSpeed = 360f;
 
     private HighlightEffect highlightEffect;
     private Transform highlightRoot;
 
     private bool isOpen = false;
-
-    // Cached rotations
     private Quaternion closedRotLocal;
     private Quaternion openRotLocal;
 
@@ -31,7 +33,6 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
 
     private void Awake()
     {
-        // Make the whole door interactable by raycasts (your layer mask must include this)
         gameObject.layer = LayerMask.NameToLayer("Interactable");
         SetLayerRecursive(transform, gameObject.layer);
 
@@ -44,18 +45,13 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
             return;
         }
 
-        // Cache closed pose as authored
         closedRotLocal = hinge.localRotation;
 
-        // Direction: left swings negative, right swings positive
         float dir = isLeftDoor ? -1f : 1f;
-
-        // If the transform hierarchy is mirrored, flip direction
         if (IsMirrored(hinge)) dir *= -1f;
 
         openRotLocal = closedRotLocal * Quaternion.Euler(0f, dir * openAngle, 0f);
 
-        // ---- Highlight setup ----
         if (highlightEffect == null)
         {
             Transform searchRoot = highlightRoot != null ? highlightRoot : transform;
@@ -64,6 +60,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
                 highlightEffect = searchRoot.GetComponentInChildren<HighlightEffect>(true);
         }
     }
+
     static void SetLayerRecursive(Transform t, int layer)
     {
         t.gameObject.layer = layer;
@@ -71,17 +68,13 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
             SetLayerRecursive(t.GetChild(i), layer);
     }
 
-    // ---------------- Photon setup ----------------
-
     void SetupPhotonView()
     {
         pv = GetComponent<PhotonView>();
         if (pv == null) pv = gameObject.AddComponent<PhotonView>();
 
-        // Scene object ownership
         pv.OwnershipTransfer = OwnershipOption.Fixed;
 
-        // Optional observer (kept from your original)
         if (GetComponent<PhotonTransformView>() == null)
         {
             var transformView = gameObject.AddComponent<PhotonTransformView>();
@@ -96,9 +89,9 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
             Debug.Log($"Registered scene object with ViewID: {pv.ViewID}");
         }
     }
+
     private void OnDisable()
     {
-        // If we get disabled while highlighted, reset safely
         highlightEffect?.Unhighlight();
     }
 
@@ -112,25 +105,21 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
             return;
         }
 
-        if (requiresKey && !InventorySystem.Instance.HasItem(keyName))
+        if (requiresKey && (InventorySystem.Instance == null || !InventorySystem.Instance.HasItem(keyName)))
         {
-            Debug.Log($"Use keypad to unlock door");
+            Debug.Log("Use keypad to unlock door");
             return;
         }
 
-        // Network-safe toggle: broadcast target state so everyone lands exactly on the same angle
         bool targetState = !isOpen;
 
         if (pv != null && PhotonNetwork.IsConnected)
         {
-            if (pv.IsMine)
-                pv.RPC(nameof(RPC_SetOpen), RpcTarget.AllBuffered, targetState);
-            else
-                Debug.Log("PhotonView is not mine; waiting for owner to toggle.");
+            // Scene object ownership fixed; allow Master to toggle, or allow anyone by directly RPCing AllBuffered
+            pv.RPC(nameof(RPC_SetOpen), RpcTarget.AllBuffered, targetState);
         }
         else
         {
-            // Offline/local mode
             SetOpenLocal(targetState);
         }
     }
@@ -138,7 +127,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
     public string GetInteractionPrompt()
     {
         if (isLocked) return "This door is locked.";
-        if (requiresKey && !InventorySystem.Instance.HasItem(keyName)) return $"Use keypad to unlock door";
+        if (requiresKey && (InventorySystem.Instance == null || !InventorySystem.Instance.HasItem(keyName))) return "Use keypad to unlock door";
         return isOpen ? "Press E to close door" : "Press E to open door";
     }
 
@@ -146,15 +135,44 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
     public void Highlight() => highlightEffect?.Highlight();
     public void Unhighlight() => highlightEffect?.Unhighlight();
 
-    // ---------------- Network sync ----------------
+    // ---------------- Keypad API ----------------
+
+    // Called by Keypad when correct PIN entered
+    public void UnlockFromKeypad()
+    {
+        if (pv != null && PhotonNetwork.IsConnected)
+        {
+            pv.RPC(nameof(RPC_KeypadUnlock), RpcTarget.AllBuffered, true);
+        }
+        else
+        {
+            ApplyKeypadUnlockLocal(true);
+        }
+    }
+
+    [PunRPC]
+    private void RPC_KeypadUnlock(bool unlocked)
+    {
+        ApplyKeypadUnlockLocal(unlocked);
+    }
+
+    private void ApplyKeypadUnlockLocal(bool unlocked)
+    {
+        isLocked = !unlocked;
+        if (permanentlyDisableKeyRequirementOnUnlock)
+            requiresKey = false;
+
+        if (unlocked && openOnUnlock)
+            SetOpenLocal(true);
+    }
+
+    // ---------------- Network sync (open/close) ----------------
 
     [PunRPC]
     void RPC_SetOpen(bool open)
     {
         SetOpenLocal(open);
     }
-
-    // ---------------- Core open/close logic ----------------
 
     void SetOpenLocal(bool open)
     {
@@ -169,7 +187,6 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
             return;
         }
 
-        // Smoothly rotate to target
         StopAllCoroutines();
         StartCoroutine(RotateTo(hinge, target, smoothSpeed));
     }
@@ -185,7 +202,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
         t.localRotation = target;
     }
 
-    // ---------------- Hinge setup helpers ----------------
+    // ---------------- Hinge helpers ----------------
 
     void EnsureHingeExistsAndIsParented()
     {
@@ -196,7 +213,6 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
             return;
         }
 
-        // Try find an existing child/parent named "Hinge"
         Transform found = null;
         if (transform.parent != null) found = transform.parent.Find("Hinge");
         if (found == null) found = transform.Find("Hinge");
@@ -209,7 +225,6 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
             return;
         }
 
-        // Auto-create hinge at door edge using Renderer bounds
         var rend = GetComponentInChildren<Renderer>();
         if (rend == null)
         {
@@ -217,20 +232,17 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
             return;
         }
 
-        Bounds b = rend.bounds; // world-space bounds
+        Bounds b = rend.bounds;
         Vector3 edge = b.center;
-        edge.x = isLeftDoor ? b.min.x : b.max.x; // use X edge for left/right
+        edge.x = isLeftDoor ? b.min.x : b.max.x;
 
         var go = new GameObject("Hinge");
         hinge = go.transform;
         hinge.position = edge;
-        hinge.rotation = transform.rotation; // share same orientation
+        hinge.rotation = transform.rotation;
         hinge.localScale = Vector3.one;
 
-        // Put hinge beside door in hierarchy
         hinge.SetParent(transform.parent, worldPositionStays: true);
-
-        // Make door a child of hinge without moving it
         ReparentWithoutMoving(transform, hinge);
     }
 
@@ -241,14 +253,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable
         child.SetParent(newParent, worldPositionStays: false);
         child.position = wp;
         child.rotation = wr;
-        // Assume uniform scales for clean rotation around hinge
     }
 
-    static bool IsMirrored(Transform t)
-    {
-        // Negative determinant => mirrored (handedness flip) somewhere in hierarchy
-        return t.localToWorldMatrix.determinant < 0f;
-    }
-
-
+    static bool IsMirrored(Transform t) => t.localToWorldMatrix.determinant < 0f;
 }

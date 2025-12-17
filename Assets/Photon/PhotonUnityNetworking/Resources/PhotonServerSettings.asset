@@ -68,6 +68,10 @@ MonoBehaviour:
   - RPC_RequestShowClue
   - RPC_ShowClueForAll
   - RPC_DiaryGoToStage
+  - RPC_UnlockAndOpen
+  - RPC_KeypadUnlock
+  - RPC_RequestCheck
+  - RPC_ShowResult
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
