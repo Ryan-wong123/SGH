@@ -49,8 +49,6 @@ public class SlideshowUI : MonoBehaviour
     private void OnEnable()
     {
 
-        closeButton?.gameObject.SetActive(false);
-
         // Play audio when panel is enabled
         if (audioSource && onEnableClip)
         {
@@ -76,7 +74,6 @@ public class SlideshowUI : MonoBehaviour
             autoPlayRoutine = null;
         }
 
-        closeButton?.gameObject.SetActive(false);
     }
 
     private void Start()
