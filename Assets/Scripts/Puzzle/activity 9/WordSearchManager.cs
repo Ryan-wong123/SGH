@@ -23,6 +23,9 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     [SerializeField] private Color rowColor;
     [SerializeField] private Color ColumnColor;
 
+    private bool _built = false;
+    private static WordSearchManager _activeInstance;
+
     // Solution map: '\0' means "no specific correct letter for this cell"
     private char[,] solution = new char[21, 21]
     {
@@ -49,13 +52,59 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' }
     };
 
-    private void Start()
+    private void Awake()
     {
-        GenerateGrid();
-        PlaceFixedLettersFromSolution(); // put correct letters first
-        FillRandomLetters();             // fill remaining blanks with random A–Z
+        // HARD BLOCK: only 1 active WordSearchManager at runtime
+        if (_activeInstance != null && _activeInstance != this)
+        {
+            Debug.LogWarning($"[WordSearch] Duplicate WordSearchManager detected -> DISABLING this one on {gameObject.name}");
+            gameObject.SetActive(false);
+            return;
+        }
+        _activeInstance = this;
     }
 
+    private void Start()
+    {
+        // If something calls Start twice / object re-enabled, don’t build again
+        if (_built) return;
+
+        // Always start clean (prevents any leftover children if prefab already contains them)
+        ClearGridPanelImmediate();
+
+        GenerateGrid();
+        PlaceFixedLettersFromSolution();
+        FillRandomLetters();
+
+        _built = true;
+
+        Debug.Log($"[WordSearch] BUILT on '{gridPanel.name}' path='{GetTransformPath(gridPanel.transform)}' " +
+                  $"children={gridPanel.transform.childCount} expected={gridSize * gridSize}");
+
+        // GLOBAL proof: if you see a 2nd grid, this number will be > expected overall
+        int totalCells = FindObjectsOfType<LetterCell>(true).Length;
+        Debug.Log($"[WordSearch] TOTAL LetterCell in scene (all parents) = {totalCells}");
+    }
+    private void ClearGridPanelImmediate()
+    {
+        if (gridPanel == null) return;
+
+        // runtime-safe: Destroy existing children (if any)
+        for (int i = gridPanel.transform.childCount - 1; i >= 0; i--)
+        {
+            Destroy(gridPanel.transform.GetChild(i).gameObject);
+        }
+    }
+    private static string GetTransformPath(Transform t)
+    {
+        var stack = new Stack<string>();
+        while (t != null)
+        {
+            stack.Push(t.name);
+            t = t.parent;
+        }
+        return string.Join("/", stack);
+    }
     private void GenerateGrid()
     {
         grid = new LetterCell[gridSize, gridSize];
