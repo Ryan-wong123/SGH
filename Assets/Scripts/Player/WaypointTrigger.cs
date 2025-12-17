@@ -1,11 +1,11 @@
-using UnityEngine;
-// using Photon.Pun; // uncomment if you want Photon checks
+﻿using UnityEngine;
+using Photon.Pun;
 
 public class WaypointTrigger : MonoBehaviour
 {
     [Header("Path and waypoint index")]
-    [SerializeField] private string pathId;      // must match WaypointPath.id
-    [SerializeField] private int waypointIndex;  // index in that path
+    [SerializeField] private string pathId;
+    [SerializeField] private int waypointIndex;
 
     [Header("Filter")]
     [SerializeField] private string playerTag = "Player";
@@ -15,7 +15,9 @@ public class WaypointTrigger : MonoBehaviour
         if (!other.CompareTag(playerTag))
             return;
 
-        // Photon filtering (optional) can go here
+        // Only react for the LOCAL player
+        PhotonView pv = other.GetComponentInParent<PhotonView>();
+        if (pv != null && !pv.IsMine) return;
 
         if (ObjectivePointer.Instance != null)
         {
