@@ -39884,25 +39884,36 @@ MonoBehaviour:
   slides:
   - image: {fileID: 21300000, guid: 2ac12e086903caa47b9b70cdb6dcf8a9, type: 3}
     duration: 0
+    isPortrait: 0
   - image: {fileID: 21300000, guid: 467ac88f2a57a6444b71b3258831c5b2, type: 3}
     duration: 0
+    isPortrait: 1
   - image: {fileID: 21300000, guid: a87065e571ac3474a855730bca55cd7e, type: 3}
     duration: 0
+    isPortrait: 1
   - image: {fileID: 21300000, guid: 4ded1761a763c3040ac983af9b342688, type: 3}
     duration: 0
+    isPortrait: 1
   - image: {fileID: 21300000, guid: ebde92448523fac47b37c228706b88ad, type: 3}
     duration: 0
+    isPortrait: 1
   - image: {fileID: 21300000, guid: 38929186a58f2904b882048a0b45e577, type: 3}
     duration: 0
+    isPortrait: 1
   - image: {fileID: 21300000, guid: 2019454a947d33243baeb73a19e39d7d, type: 3}
     duration: 0
+    isPortrait: 1
   - image: {fileID: 21300000, guid: c11aac93a1fc315488973e3b5215b1a2, type: 3}
     duration: 0
+    isPortrait: 1
   audioSource: {fileID: 0}
   onEnableClip: {fileID: 0}
   autoPlay: 0
   loop: 0
   defaultSlideDuration: 2
+  portraitSize: {x: 700, y: 1000}
+  landscapeSize: {x: 1600, y: 1500}
+  preserveAspect: 1
 --- !u!114 &637772020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42366,21 +42377,30 @@ MonoBehaviour:
   slides:
   - image: {fileID: 21300000, guid: 07ee0fd5936073949864fb9b25fde61d, type: 3}
     duration: 8
+    isPortrait: 0
   - image: {fileID: 21300000, guid: cb058b94dc666ad48b3ec6c69d2b671b, type: 3}
     duration: 8
+    isPortrait: 0
   - image: {fileID: 21300000, guid: 268394c29fe2ead4f87e8d0434dfddb8, type: 3}
     duration: 8
+    isPortrait: 0
   - image: {fileID: 21300000, guid: b4df398060094bd459fb3d1db2eb9feb, type: 3}
     duration: 8
+    isPortrait: 0
   - image: {fileID: 21300000, guid: cfaf3b4be0f5d464ba501de509873cf9, type: 3}
     duration: 8
+    isPortrait: 0
   - image: {fileID: 21300000, guid: 7bbc9c7f3bb2cee4ebe2e33dadbff597, type: 3}
     duration: 8
+    isPortrait: 0
   audioSource: {fileID: 677627194}
   onEnableClip: {fileID: 8300000, guid: bcee62c0c7566944881ffb4ec1f14ac2, type: 3}
   autoPlay: 1
   loop: 0
   defaultSlideDuration: 2
+  portraitSize: {x: 600, y: 900}
+  landscapeSize: {x: 900, y: 600}
+  preserveAspect: 1
 --- !u!82 &677627194
 AudioSource:
   m_ObjectHideFlags: 0
@@ -120491,21 +120511,30 @@ MonoBehaviour:
   slides:
   - image: {fileID: 21300000, guid: 36b1363cabe469f40b67d43143f765bc, type: 3}
     duration: 0
+    isPortrait: 0
   - image: {fileID: 21300000, guid: eff208afdeb988c4abfa49fd29a2ac9c, type: 3}
     duration: 0
+    isPortrait: 1
   - image: {fileID: 21300000, guid: 987c91a973a95944989cf7e317c5f363, type: 3}
     duration: 0
+    isPortrait: 1
   - image: {fileID: 21300000, guid: a0a1ef618f66f384fb2e649e5bd20785, type: 3}
     duration: 0
+    isPortrait: 1
   - image: {fileID: 21300000, guid: 8fd27d258e625ae49970c9d7f5acee1f, type: 3}
     duration: 0
+    isPortrait: 1
   - image: {fileID: 21300000, guid: 95689f67dcd932e4f8a928cd9155fc00, type: 3}
     duration: 0
+    isPortrait: 1
   audioSource: {fileID: 0}
   onEnableClip: {fileID: 0}
   autoPlay: 0
   loop: 0
   defaultSlideDuration: 2
+  portraitSize: {x: 700, y: 1000}
+  landscapeSize: {x: 1600, y: 1500}
+  preserveAspect: 1
 --- !u!114 &1816230002
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ public class SlideshowUI : MonoBehaviour
     {
         public Sprite image;
         public float duration;   // how long this slide stays (seconds)
+        public bool isPortrait;    // true = portrait, false = landscape
     }
 
     [Header("Slides")]
@@ -29,6 +30,11 @@ public class SlideshowUI : MonoBehaviour
     [SerializeField] private bool autoPlay = false;
     [SerializeField] private bool loop = false;
     [SerializeField] private float defaultSlideDuration = 2f;
+
+    [Header("Image Layout")]
+    [SerializeField] private Vector2 portraitSize = new Vector2(600, 900);
+    [SerializeField] private Vector2 landscapeSize = new Vector2(900, 600);
+    [SerializeField] private bool preserveAspect = true;
 
     private Coroutine autoPlayRoutine;
 
@@ -109,7 +115,21 @@ public class SlideshowUI : MonoBehaviour
 
     private void UpdateImage()
     {
-        displayImage.sprite = slides[currentIndex].image;
+        SlideData slide = slides[currentIndex];
+
+        displayImage.sprite = slide.image;
+        displayImage.preserveAspect = preserveAspect;
+
+        RectTransform rt = displayImage.rectTransform;
+
+        if (slide.isPortrait)
+        {
+            rt.sizeDelta = portraitSize;
+        }
+        else
+        {
+            rt.sizeDelta = landscapeSize;
+        }
     }
 
     private void UpdateButtonState()
