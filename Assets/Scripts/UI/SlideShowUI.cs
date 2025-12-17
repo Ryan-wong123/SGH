@@ -9,12 +9,19 @@ public class SlideshowUI : MonoBehaviour
     [SerializeField] private Button prevButton;
     [SerializeField] private Button nextButton;
 
+    public enum SlideOrientationMode
+    {
+        Auto,
+        ForcePortrait,
+        ForceLandscape
+    }
+
     [System.Serializable]
     public struct SlideData
     {
         public Sprite image;
-        public float duration;   // how long this slide stays (seconds)
-        public bool isPortrait;    // true = portrait, false = landscape
+        public float duration; // how long this slide stays (seconds)
+        public SlideOrientationMode orientationMode;
     }
 
     [Header("Slides")]
@@ -31,12 +38,12 @@ public class SlideshowUI : MonoBehaviour
     [SerializeField] private bool loop = false;
     [SerializeField] private float defaultSlideDuration = 2f;
 
+    private Coroutine autoPlayRoutine;
+
     [Header("Image Layout")]
     [SerializeField] private Vector2 portraitSize = new Vector2(600, 900);
     [SerializeField] private Vector2 landscapeSize = new Vector2(900, 600);
     [SerializeField] private bool preserveAspect = true;
-
-    private Coroutine autoPlayRoutine;
 
     private void OnEnable()
     {
@@ -97,6 +104,16 @@ public class SlideshowUI : MonoBehaviour
             if (autoPlay)
                 StartAutoPlay();
         }
+        else if (loop && slides.Length > 0)
+        {
+            // Optional: if loop enabled, allow prev wrap-around
+            currentIndex = slides.Length - 1;
+            UpdateImage();
+            UpdateButtonState();
+
+            if (autoPlay)
+                StartAutoPlay();
+        }
     }
 
     private void ShowNextImage()
@@ -111,6 +128,16 @@ public class SlideshowUI : MonoBehaviour
             if (autoPlay)
                 StartAutoPlay();
         }
+        else if (loop && slides.Length > 0)
+        {
+            // Optional: if loop enabled, allow next wrap-around
+            currentIndex = 0;
+            UpdateImage();
+            UpdateButtonState();
+
+            if (autoPlay)
+                StartAutoPlay();
+        }
     }
 
     private void UpdateImage()
@@ -122,20 +149,35 @@ public class SlideshowUI : MonoBehaviour
 
         RectTransform rt = displayImage.rectTransform;
 
-        if (slide.isPortrait)
+        bool isPortrait = false;
+
+        switch (slide.orientationMode)
         {
-            rt.sizeDelta = portraitSize;
+            case SlideOrientationMode.ForcePortrait:
+                isPortrait = true;
+                break;
+
+            case SlideOrientationMode.ForceLandscape:
+                isPortrait = false;
+                break;
+
+            case SlideOrientationMode.Auto:
+            default:
+                if (slide.image != null)
+                {
+                    // Auto-detect from sprite pixel rect
+                    isPortrait = slide.image.rect.height > slide.image.rect.width;
+                }
+                break;
         }
-        else
-        {
-            rt.sizeDelta = landscapeSize;
-        }
+
+        rt.sizeDelta = isPortrait ? portraitSize : landscapeSize;
     }
 
     private void UpdateButtonState()
     {
-        // Prev disabled at first slide (unless you want looping via buttons)
-        prevButton.interactable = currentIndex > 0;
+        // Prev disabled at first slide (unless looping via buttons)
+        prevButton.interactable = loop ? true : currentIndex > 0;
 
         if (!loop)
         {
