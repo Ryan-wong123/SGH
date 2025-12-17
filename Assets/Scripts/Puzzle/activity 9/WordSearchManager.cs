@@ -20,6 +20,9 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     // Grid
     private LetterCell[,] grid;
 
+    [SerializeField] private Color rowColor;
+    [SerializeField] private Color ColumnColor;
+
     // Solution map: '\0' means "no specific correct letter for this cell"
     private char[,] solution = new char[21, 21]
     {
@@ -78,7 +81,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
                 {
                     char letter = (char)('A' + x - 1);
                     cell.SetLetter(letter);
-                    cell.SetTextColor(Color.white);
+                    cell.SetTextColor(rowColor);
                     cell.DisableCellUI();
                     cell.SetPlayable(false);
                 }
@@ -86,7 +89,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
                 else if (x == 0)
                 {
                     cell.SetLetterString(y.ToString());
-                    cell.SetTextColor(Color.white);
+                    cell.SetTextColor(ColumnColor);
                     cell.DisableCellUI();
                     cell.SetPlayable(false);
                 }

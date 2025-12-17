@@ -106830,6 +106830,8 @@ MonoBehaviour:
   cellPrefab: {fileID: 7512843899243525254, guid: 170fa6abb03edbb41abef45f0fd48b15, type: 3}
   gridSize: 21
   useFixedPlacement: 1
+  rowColor: {r: 0, g: 0, b: 0, a: 1}
+  ColumnColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &1629859606
 GameObject:
   m_ObjectHideFlags: 0
