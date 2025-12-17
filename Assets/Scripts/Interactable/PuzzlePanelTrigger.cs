@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using Photon.Pun;
-using System;
 
 public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
 {
     [Header("Refs")]
     [SerializeField] private PuzzleStateManager puzzleStateManager;
-    [SerializeField] private ClueUI clueUI;     // <-- Assign your ClueUI manager in Inspector
+    [SerializeField] private ClueUI clueUI; // optional; ClueUI.Instance will also work
 
     [Header("Clue Selection")]
-    [SerializeField] private string clueId;     // <-- ID defined in ClueUI.clues
+    [SerializeField] private string clueId; // ID defined in ClueUI.clues
+
+    [Header("Clue Flow")]
+    [Tooltip("If true, show the clue page first (if clueId exists). If false, open puzzle immediately.")]
+    [SerializeField] private bool startWithClue = true;
 
     [Header("Settings")]
     [Tooltip("If true, this trigger will NOT be destroyed after puzzle completion.")]
@@ -17,8 +20,7 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
 
     private HighlightEffect highlightEffect;
 
-
-    // ✅ Track if this clue was already shown
+    // Track if this clue was already shown (per client; master decides the broadcast)
     private bool clueAlreadyViewed = false;
 
     private void Awake()
@@ -36,29 +38,35 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
             return;
         }
 
+        // Fair-turn gate
         if (!puzzleStateManager.TryBeginAttempt(out string reason))
         {
             Debug.Log(reason);
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(clueId))
+        // ✅ If this trigger should NOT start with clue OR clueId is empty -> open puzzle immediately
+        if (!startWithClue || string.IsNullOrWhiteSpace(clueId))
         {
-            OpenPuzzle();
+            // Keep consistent network behavior: open for everyone
+            if (PhotonNetwork.IsConnected)
+                photonView.RPC(nameof(RPC_OpenPuzzle), RpcTarget.All);
+            else
+                OpenPuzzle();
+
             return;
         }
 
-        // Only one authority broadcasts (Master). If you prefer owner, switch to ownership model.
+        // If not connected, do local-only fallback
         if (!PhotonNetwork.IsConnected)
         {
-            // Offline fallback
             ShowClueLocalThenOpen(clueId);
             return;
         }
 
+        // Only one authority decides showing clue for everyone (Master)
         if (!PhotonNetwork.IsMasterClient)
         {
-            // Ask Master to show this clue for everyone
             photonView.RPC(nameof(RPC_RequestShowClue), RpcTarget.MasterClient, clueId);
             return;
         }
@@ -66,19 +74,19 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
         // Master clicked
         HandleShowClueAsMaster(clueId);
     }
+
     [PunRPC]
     private void RPC_RequestShowClue(string requestedClueId, PhotonMessageInfo info)
     {
-        // Master receives request from any client
         if (!PhotonNetwork.IsMasterClient) return;
         HandleShowClueAsMaster(requestedClueId);
     }
 
     private void HandleShowClueAsMaster(string id)
     {
+        // If already shown once, skip clue and open puzzle for everyone
         if (clueAlreadyViewed)
         {
-            // Already shown -> just open puzzle for everyone (optional)
             photonView.RPC(nameof(RPC_OpenPuzzle), RpcTarget.All);
             return;
         }
@@ -92,19 +100,20 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
     [PunRPC]
     private void RPC_ShowClueForAll(string id)
     {
-        // Each client shows UI locally (no networked UI objects)
-        if (ClueUI.Instance != null && ClueUI.Instance.HasClueId(id))
+        // Each client shows UI locally (UI itself isn't networked)
+        var ui = (clueUI != null) ? clueUI : ClueUI.Instance;
+
+        if (ui != null && ui.HasClueId(id))
         {
-            ClueUI.Instance.ShowById(id, onClosed: () =>
+            ui.ShowById(id, onClosed: () =>
             {
-                // When each player closes their own clue UI, open puzzle locally for them
-                // If you want the puzzle to open ONLY when everyone closed, tell me and I’ll add a ready-check.
+                // When player closes clue UI, open puzzle locally for them
                 OpenPuzzle();
             });
         }
         else
         {
-            Debug.LogWarning($"[PuzzlePanelTrigger] ClueUI missing or clue id not found: '{id}'");
+            Debug.LogWarning($"[PuzzleTrigger] ClueUI missing or clue id not found: '{id}'");
             OpenPuzzle();
         }
     }
@@ -117,8 +126,10 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
 
     private void ShowClueLocalThenOpen(string id)
     {
-        if (ClueUI.Instance != null && ClueUI.Instance.HasClueId(id))
-            ClueUI.Instance.ShowById(id, onClosed: OpenPuzzle);
+        var ui = (clueUI != null) ? clueUI : ClueUI.Instance;
+
+        if (ui != null && ui.HasClueId(id))
+            ui.ShowById(id, onClosed: OpenPuzzle);
         else
             OpenPuzzle();
     }

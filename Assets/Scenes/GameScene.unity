@@ -3298,6 +3298,7 @@ MonoBehaviour:
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
   clueId: Insulin Diary
+  startWithClue: 0
   dontDestroyOnCompletion: 1
 --- !u!114 &43846991
 MonoBehaviour:
@@ -24038,6 +24039,7 @@ MonoBehaviour:
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
   clueId: Coffee Cup
+  startWithClue: 0
   dontDestroyOnCompletion: 0
 --- !u!1001 &387309776
 PrefabInstance:
@@ -35169,6 +35171,7 @@ MonoBehaviour:
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
   clueId: Syringe Trigger
+  startWithClue: 0
   dontDestroyOnCompletion: 0
 --- !u!114 &550995253
 MonoBehaviour:
@@ -65692,6 +65695,7 @@ MonoBehaviour:
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
   clueId: nurse
+  startWithClue: 1
   dontDestroyOnCompletion: 1
 --- !u!114 &1059567800
 MonoBehaviour:
@@ -102097,6 +102101,7 @@ MonoBehaviour:
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
   clueId: phone
+  startWithClue: 1
   dontDestroyOnCompletion: 0
 --- !u!65 &1547783181
 BoxCollider:
@@ -103884,6 +103889,7 @@ MonoBehaviour:
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
   clueId: pc
+  startWithClue: 1
   dontDestroyOnCompletion: 1
 --- !u!114 &1578039494
 MonoBehaviour:
@@ -109722,6 +109728,7 @@ MonoBehaviour:
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
   clueId: Insulin Trigger
+  startWithClue: 0
   dontDestroyOnCompletion: 0
 --- !u!114 &1669160279
 MonoBehaviour:
@@ -149516,6 +149523,7 @@ MonoBehaviour:
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
   clueId: Morturary Trigger
+  startWithClue: 0
   dontDestroyOnCompletion: 0
 --- !u!4 &5130600388808890299
 Transform:
