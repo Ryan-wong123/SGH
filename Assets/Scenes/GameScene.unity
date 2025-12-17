@@ -3297,7 +3297,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
-  clueId: 
+  clueId: Insulin Diary
   dontDestroyOnCompletion: 1
 --- !u!114 &43846991
 MonoBehaviour:
@@ -24034,7 +24034,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
-  clueId: 
+  clueId: Coffee Cup
   dontDestroyOnCompletion: 0
 --- !u!1001 &387309776
 PrefabInstance:
@@ -35165,7 +35165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
-  clueId: 
+  clueId: Syringe Trigger
   dontDestroyOnCompletion: 0
 --- !u!114 &550995253
 MonoBehaviour:
@@ -109696,7 +109696,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
-  clueId: 
+  clueId: Insulin Trigger
   dontDestroyOnCompletion: 0
 --- !u!114 &1669160279
 MonoBehaviour:
@@ -139353,6 +139353,16 @@ MonoBehaviour:
     panelRoot: {fileID: 820384499}
   - id: nurse
     panelRoot: {fileID: 677627189}
+  - id: Coffee Cup
+    panelRoot: {fileID: 1409617926}
+  - id: Insulin Diary
+    panelRoot: {fileID: 509120711}
+  - id: Insulin Trigger
+    panelRoot: {fileID: 1067863174}
+  - id: Syringe Trigger
+    panelRoot: {fileID: 1061063798}
+  - id: Morturary Trigger
+    panelRoot: {fileID: 280907644}
   closeButton: {fileID: 1956943073}
   unreadBadgeRoot: {fileID: 572123885}
   unreadText: {fileID: 1746173019}
@@ -149480,7 +149490,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
-  clueId: 
+  clueId: Morturary Trigger
   dontDestroyOnCompletion: 0
 --- !u!4 &5130600388808890299
 Transform:
