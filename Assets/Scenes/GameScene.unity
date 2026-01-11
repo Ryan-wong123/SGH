@@ -40267,7 +40267,7 @@ MonoBehaviour:
   nextButton: {fileID: 1388983570}
   closeButton: {fileID: 1956943073}
   slides:
-  - image: {fileID: 21300000, guid: 2ac12e086903caa47b9b70cdb6dcf8a9, type: 3}
+  - image: {fileID: 21300000, guid: 0452724263d9f7747a80381ca589ca0c, type: 3}
     duration: 0
     orientationMode: 0
   - image: {fileID: 21300000, guid: 467ac88f2a57a6444b71b3258831c5b2, type: 3}
@@ -120947,7 +120947,7 @@ MonoBehaviour:
   nextButton: {fileID: 266491515}
   closeButton: {fileID: 1956943073}
   slides:
-  - image: {fileID: 21300000, guid: 36b1363cabe469f40b67d43143f765bc, type: 3}
+  - image: {fileID: 21300000, guid: 190e44f341c104b4fac8c41245a969c9, type: 3}
     duration: 0
     orientationMode: 0
   - image: {fileID: 21300000, guid: eff208afdeb988c4abfa49fd29a2ac9c, type: 3}
