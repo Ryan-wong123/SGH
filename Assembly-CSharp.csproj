@@ -135,6 +135,7 @@
     <Compile Include="Assets\Scripts\Player\WaypointTrigger.cs" />
     <Compile Include="Assets\Scripts\UI\SideBarMenuManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\PhotonSyncedUIButtonColor.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 4\Activity2DraggableCard.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanTweenExt.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
