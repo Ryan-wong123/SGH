@@ -75,6 +75,7 @@
     <Compile Include="Assets\Scripts\Player\ClueSystem.cs" />
     <Compile Include="Assets\Scripts\Interactable\PuzzlePanelTrigger.cs" />
     <Compile Include="Assets\Scripts\Keypad\KeypadButton.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\PhotonSyncedTMPDropdown.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 4\Activity2PuzzleManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Assets\Scripts\Player\WaypointTrigger.cs" />
     <Compile Include="Assets\Scripts\UI\SideBarMenuManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\PhotonSyncedUIButtonColor.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 4\Activity2DraggableCard.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanTweenExt.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
@@ -151,6 +153,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
     <Compile Include="Assets\Scripts\Puzzle\Draggable\CardPopupManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 8\InsulinPuzzleManager.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\PhotonSyncedInputField.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />

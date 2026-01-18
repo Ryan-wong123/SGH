@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 5171622870765276993}
   - component: {fileID: 2590310165320201341}
   - component: {fileID: 6956495549475081871}
+  - component: {fileID: -4121716008167439158}
+  - component: {fileID: 5097762456655528691}
   m_Layer: 5
   m_Name: Crossword Cell
   m_TagString: Untagged
@@ -194,6 +196,41 @@ MonoBehaviour:
   inputField: {fileID: 2590310165320201341}
   position: {x: 0, y: 0}
   isActive: 0
+--- !u!114 &-4121716008167439158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5896630162443153934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 2590310165320201341}
+--- !u!114 &5097762456655528691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5896630162443153934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &7692961839002495153
 GameObject:
   m_ObjectHideFlags: 0

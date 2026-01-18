@@ -1,9 +1,9 @@
-﻿// DropSlot.cs
+﻿// DropSlot.cs (add these checks)
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using static PuzzleStateManager;
+using Photon.Pun;
 
 public class DropSlot : MonoBehaviour, IDropHandler
 {
@@ -29,19 +29,26 @@ public class DropSlot : MonoBehaviour, IDropHandler
     }
     public List<DraggableCard> GetCardsInSlot()
     {
-        List<DraggableCard> current = new();
+        var cards = new List<DraggableCard>();
+
+        // If your slot holds the card directly as a child:
         foreach (Transform child in transform)
         {
             var card = child.GetComponent<DraggableCard>();
-            if (card != null)
-                current.Add(card);
+            if (card != null) cards.Add(card);
         }
-        return current;
-    }
 
+        return cards;
+    }
     public virtual void OnDrop(PointerEventData eventData)
     {
         GameObject droppedObj = eventData.pointerDrag;
+        if (droppedObj == null) return;
+
+        // NETWORK: only owner can perform the drop action
+        var pv = droppedObj.GetComponent<PhotonView>();
+        if (pv != null && !pv.IsMine)
+            return;
 
         if (transform.childCount > 0)
         {
@@ -50,12 +57,13 @@ public class DropSlot : MonoBehaviour, IDropHandler
             return;
         }
 
-        DraggableCard card = droppedObj?.GetComponent<DraggableCard>();
+        DraggableCard card = droppedObj.GetComponent<DraggableCard>();
         if (card != null)
         {
             AcceptCard(card);
         }
     }
+
     protected virtual void AcceptCard(DraggableCard card)
     {
         card.transform.SetParent(transform);
@@ -86,9 +94,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
     {
         foreach (Transform child in transform)
         {
-            child.SetParent(null); // Detach
+            child.SetParent(null);
         }
     }
-
-
 }

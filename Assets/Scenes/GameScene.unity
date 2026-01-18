@@ -1347,6 +1347,7 @@ GameObject:
   - component: {fileID: 15199539}
   - component: {fileID: 15199538}
   - component: {fileID: 15199541}
+  - component: {fileID: 15199542}
   m_Layer: 5
   m_Name: Draggable Card 2
   m_TagString: Untagged
@@ -1438,11 +1439,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 2010036956}
   panel2GridLayout: {fileID: 1505633663}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 241d029883683bc47b9d7aa7de0f78a8, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   lapsesAnswer: insulin
   isLocked: 0
+--- !u!114 &15199542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15199535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 15199541}
+  sceneViewId: 117
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &16704547
 GameObject:
   m_ObjectHideFlags: 0
@@ -2729,6 +2754,7 @@ GameObject:
   - component: {fileID: 39374695}
   - component: {fileID: 39374693}
   - component: {fileID: 39374697}
+  - component: {fileID: 39374698}
   m_Layer: 5
   m_Name: Draggable Card 3
   m_TagString: Untagged
@@ -2820,10 +2846,34 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 12e61b0f6f1767f49a14eb7a9fb34c8c, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 3
+--- !u!114 &39374698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39374691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 39374697}
+  sceneViewId: 112
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &41126471
 GameObject:
   m_ObjectHideFlags: 0
@@ -6688,6 +6738,7 @@ GameObject:
   - component: {fileID: 107259313}
   - component: {fileID: 107259311}
   - component: {fileID: 107259315}
+  - component: {fileID: 107259316}
   m_Layer: 5
   m_Name: Draggable Card 16
   m_TagString: Untagged
@@ -6779,10 +6830,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 9c50d6000001faa4e8b3d51c30a66335, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 16
+--- !u!114 &107259316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107259309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 111
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &108253650
 GameObject:
   m_ObjectHideFlags: 0
@@ -9328,6 +9402,7 @@ GameObject:
   - component: {fileID: 143838285}
   - component: {fileID: 143838288}
   - component: {fileID: 143838287}
+  - component: {fileID: 143838289}
   m_Layer: 5
   m_Name: Draggable Card 17
   m_TagString: Untagged
@@ -9419,12 +9494,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 1ba9cfa659cb7e04783ef6839bb6b89b, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: anxious
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
+--- !u!114 &143838289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143838282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 72
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &144205718
 GameObject:
   m_ObjectHideFlags: 0
@@ -10834,6 +10932,7 @@ GameObject:
   - component: {fileID: 168943987}
   - component: {fileID: 168943990}
   - component: {fileID: 168943989}
+  - component: {fileID: 168943991}
   m_Layer: 5
   m_Name: Draggable Card 10
   m_TagString: Untagged
@@ -10925,12 +11024,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 81ff19e587f5b254c929c37a6b8a5263, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: irritable
   backSprite: {fileID: 21300000, guid: 32df19571ff61db439b638d6791b20fc, type: 3}
+--- !u!114 &168943991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168943984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 71
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &169632538
 GameObject:
   m_ObjectHideFlags: 0
@@ -13192,6 +13314,7 @@ GameObject:
   - component: {fileID: 206797493}
   - component: {fileID: 206797496}
   - component: {fileID: 206797495}
+  - component: {fileID: 206797497}
   m_Layer: 5
   m_Name: Draggable Card 1
   m_TagString: Untagged
@@ -13283,12 +13406,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: d2fcc228c3bd4bf468a00cee19357099, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: slow wound healing
   backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
+--- !u!114 &206797497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206797490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 70
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &211960595
 GameObject:
   m_ObjectHideFlags: 0
@@ -14080,6 +14226,8 @@ GameObject:
   - component: {fileID: 229427957}
   - component: {fileID: 229427956}
   - component: {fileID: 229427955}
+  - component: {fileID: 229427959}
+  - component: {fileID: 229427958}
   m_Layer: 5
   m_Name: InputField (TMP) (1)
   m_TagString: Untagged
@@ -14246,6 +14394,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 229427953}
   m_CullTransparentMesh: 1
+--- !u!114 &229427958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 229427953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 229427955}
+--- !u!114 &229427959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 229427953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 135
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &229916008
 GameObject:
   m_ObjectHideFlags: 0
@@ -15170,6 +15353,8 @@ GameObject:
   - component: {fileID: 247625394}
   - component: {fileID: 247625393}
   - component: {fileID: 247625392}
+  - component: {fileID: 247625396}
+  - component: {fileID: 247625395}
   m_Layer: 5
   m_Name: Dropdown (2)
   m_TagString: Untagged
@@ -15304,6 +15489,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 247625390}
   m_CullTransparentMesh: 1
+--- !u!114 &247625395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247625390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 247625392}
+--- !u!114 &247625396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247625390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 146
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &252276503
 GameObject:
   m_ObjectHideFlags: 0
@@ -16772,6 +16992,7 @@ GameObject:
   - component: {fileID: 271167814}
   - component: {fileID: 271167813}
   - component: {fileID: 271167816}
+  - component: {fileID: 271167817}
   m_Layer: 5
   m_Name: Draggable Card 1
   m_TagString: Untagged
@@ -16863,11 +17084,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1200996390}
   panel2GridLayout: {fileID: 1673625621}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 934e21ff35429fe4081c1d929b2f8985, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   lapsesAnswer: inappropriate management
   isLocked: 0
+--- !u!114 &271167817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271167811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 271167816}
+  sceneViewId: 121
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &273105595
 GameObject:
   m_ObjectHideFlags: 0
@@ -17744,6 +17989,7 @@ GameObject:
   - component: {fileID: 292843702}
   - component: {fileID: 292843705}
   - component: {fileID: 292843704}
+  - component: {fileID: 292843706}
   m_Layer: 5
   m_Name: Draggable Card 16
   m_TagString: Untagged
@@ -17835,12 +18081,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 47a073de6f58d34449c5a39c41bf05fe, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: dizziness
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
+--- !u!114 &292843706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292843699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 69
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &293915198
 GameObject:
   m_ObjectHideFlags: 0
@@ -18148,6 +18417,8 @@ GameObject:
   - component: {fileID: 297710799}
   - component: {fileID: 297710798}
   - component: {fileID: 297710797}
+  - component: {fileID: 297710801}
+  - component: {fileID: 297710800}
   m_Layer: 5
   m_Name: InputField (TMP) (1)
   m_TagString: Untagged
@@ -18314,6 +18585,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 297710795}
   m_CullTransparentMesh: 1
+--- !u!114 &297710800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297710795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 297710797}
+--- !u!114 &297710801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297710795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 132
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &297990439
 GameObject:
   m_ObjectHideFlags: 0
@@ -18822,6 +19128,8 @@ GameObject:
   - component: {fileID: 305293000}
   - component: {fileID: 305292999}
   - component: {fileID: 305292998}
+  - component: {fileID: 305293002}
+  - component: {fileID: 305293001}
   m_Layer: 5
   m_Name: Card 8
   m_TagString: Untagged
@@ -18930,6 +19238,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305292996}
   m_CullTransparentMesh: 1
+--- !u!114 &305293001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305292996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &305293002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305292996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 166
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &307625169
 GameObject:
   m_ObjectHideFlags: 0
@@ -19247,6 +19598,8 @@ GameObject:
   - component: {fileID: 310819687}
   - component: {fileID: 310819686}
   - component: {fileID: 310819685}
+  - component: {fileID: 310819689}
+  - component: {fileID: 310819688}
   m_Layer: 5
   m_Name: Card 14
   m_TagString: Untagged
@@ -19355,6 +19708,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 310819683}
   m_CullTransparentMesh: 1
+--- !u!114 &310819688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310819683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &310819689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 310819683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 165
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &312777877
 GameObject:
   m_ObjectHideFlags: 0
@@ -19744,6 +20140,7 @@ GameObject:
   - component: {fileID: 316237440}
   - component: {fileID: 316237439}
   - component: {fileID: 316237438}
+  - component: {fileID: 316237442}
   m_Layer: 5
   m_Name: Draggable Card 8
   m_TagString: Untagged
@@ -19785,6 +20182,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: afb7b4782e6eaa7498d4138ca47b6232, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -19839,6 +20237,29 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 316237436}
   m_CullTransparentMesh: 1
+--- !u!114 &316237442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316237436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 316237438}
+  sceneViewId: 92
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &317960325
 GameObject:
   m_ObjectHideFlags: 0
@@ -21376,6 +21797,8 @@ GameObject:
   - component: {fileID: 343123213}
   - component: {fileID: 343123212}
   - component: {fileID: 343123211}
+  - component: {fileID: 343123215}
+  - component: {fileID: 343123214}
   m_Layer: 5
   m_Name: Card 18
   m_TagString: Untagged
@@ -21484,6 +21907,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 343123209}
   m_CullTransparentMesh: 1
+--- !u!114 &343123214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 343123209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &343123215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 343123209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 164
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &344489126
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24148,6 +24614,7 @@ GameObject:
   - component: {fileID: 383393039}
   - component: {fileID: 383393042}
   - component: {fileID: 383393041}
+  - component: {fileID: 383393043}
   m_Layer: 5
   m_Name: Draggable Card 15
   m_TagString: Untagged
@@ -24239,12 +24706,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 0608788293e6a5d4fa8649a5ff1e68b5, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: blurry vision
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
+--- !u!114 &383393043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 383393036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 68
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &384138437
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25648,6 +26138,8 @@ GameObject:
   - component: {fileID: 409226957}
   - component: {fileID: 409226956}
   - component: {fileID: 409226955}
+  - component: {fileID: 409226959}
+  - component: {fileID: 409226958}
   m_Layer: 5
   m_Name: Card 2
   m_TagString: Untagged
@@ -25756,6 +26248,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 409226953}
   m_CullTransparentMesh: 1
+--- !u!114 &409226958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409226953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &409226959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409226953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 163
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &410318359
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25900,6 +26435,8 @@ GameObject:
   - component: {fileID: 413554719}
   - component: {fileID: 413554718}
   - component: {fileID: 413554717}
+  - component: {fileID: 413554721}
+  - component: {fileID: 413554720}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -26066,6 +26603,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 413554715}
   m_CullTransparentMesh: 1
+--- !u!114 &413554720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 413554715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 413554717}
+--- !u!114 &413554721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 413554715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 136
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &414140648
 GameObject:
   m_ObjectHideFlags: 0
@@ -26534,6 +27106,8 @@ GameObject:
   - component: {fileID: 419082752}
   - component: {fileID: 419082751}
   - component: {fileID: 419082750}
+  - component: {fileID: 419082754}
+  - component: {fileID: 419082753}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -26700,6 +27274,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 419082748}
   m_CullTransparentMesh: 1
+--- !u!114 &419082753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419082748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 419082750}
+--- !u!114 &419082754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419082748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 126
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &421197363
 GameObject:
   m_ObjectHideFlags: 0
@@ -27808,6 +28417,7 @@ GameObject:
   - component: {fileID: 438539188}
   - component: {fileID: 438539187}
   - component: {fileID: 438539186}
+  - component: {fileID: 438539190}
   m_Layer: 5
   m_Name: Draggable Card 9
   m_TagString: Untagged
@@ -27849,6 +28459,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 5823e907f20caf84ead8c45184a2e803, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -27903,6 +28514,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 438539184}
   m_CullTransparentMesh: 1
+--- !u!114 &438539190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 438539184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 91
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &442641338
 GameObject:
   m_ObjectHideFlags: 0
@@ -28965,6 +29598,8 @@ GameObject:
   - component: {fileID: 458497777}
   - component: {fileID: 458497776}
   - component: {fileID: 458497775}
+  - component: {fileID: 458497779}
+  - component: {fileID: 458497778}
   m_Layer: 5
   m_Name: Card 15
   m_TagString: Untagged
@@ -29073,6 +29708,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 458497773}
   m_CullTransparentMesh: 1
+--- !u!114 &458497778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458497773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &458497779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458497773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 162
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &460524675
 GameObject:
   m_ObjectHideFlags: 0
@@ -33039,6 +33717,7 @@ GameObject:
   - component: {fileID: 512882007}
   - component: {fileID: 512882005}
   - component: {fileID: 512882009}
+  - component: {fileID: 512882010}
   m_Layer: 5
   m_Name: Draggable Card 18
   m_TagString: Untagged
@@ -33130,10 +33809,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 0c12ea78968f96142b266d10874aa0d1, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 18
+--- !u!114 &512882010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512882003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 110
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &513231596
 GameObject:
   m_ObjectHideFlags: 0
@@ -34511,6 +35213,8 @@ GameObject:
   - component: {fileID: 536574271}
   - component: {fileID: 536574270}
   - component: {fileID: 536574269}
+  - component: {fileID: 536574273}
+  - component: {fileID: 536574272}
   m_Layer: 5
   m_Name: Card 20
   m_TagString: Untagged
@@ -34619,6 +35323,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 536574267}
   m_CullTransparentMesh: 1
+--- !u!114 &536574272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 536574267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &536574273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 536574267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 161
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &537767895
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35297,6 +36044,7 @@ GameObject:
   - component: {fileID: 544743748}
   - component: {fileID: 544743751}
   - component: {fileID: 544743750}
+  - component: {fileID: 544743752}
   m_Layer: 5
   m_Name: Draggable Card 8
   m_TagString: Untagged
@@ -35388,12 +36136,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: e9bd65b31cd505d45a30f3a791e2cfdd, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: shakiness
   backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
+--- !u!114 &544743752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 544743745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 67
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &547331207
 GameObject:
   m_ObjectHideFlags: 0
@@ -38475,6 +39246,7 @@ GameObject:
   - component: {fileID: 612382126}
   - component: {fileID: 612382129}
   - component: {fileID: 612382128}
+  - component: {fileID: 612382130}
   m_Layer: 5
   m_Name: Draggable Card 4
   m_TagString: Untagged
@@ -38566,12 +39338,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 67abe01c4e4db9d4a859993ccd7ca800, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: fruity breath
   backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
+--- !u!114 &612382130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612382123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 66
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &612424900
 GameObject:
   m_ObjectHideFlags: 0
@@ -39112,6 +39907,7 @@ GameObject:
   - component: {fileID: 628841547}
   - component: {fileID: 628841545}
   - component: {fileID: 628841549}
+  - component: {fileID: 628841550}
   m_Layer: 5
   m_Name: Draggable Card 6
   m_TagString: Untagged
@@ -39203,10 +39999,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: b7ce66a987730cd41ad21089f4b770c1, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 6
+--- !u!114 &628841550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 628841543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 109
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &629220800
 GameObject:
   m_ObjectHideFlags: 0
@@ -40606,6 +41425,7 @@ GameObject:
   - component: {fileID: 643503755}
   - component: {fileID: 643503753}
   - component: {fileID: 643503757}
+  - component: {fileID: 643503758}
   m_Layer: 5
   m_Name: Draggable Card 9
   m_TagString: Untagged
@@ -40697,10 +41517,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 9ddf0c2b87d60ab4f8a0937b66bb12c9, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 9
+--- !u!114 &643503758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643503751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 108
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &643981978
 GameObject:
   m_ObjectHideFlags: 0
@@ -40713,6 +41556,8 @@ GameObject:
   - component: {fileID: 643981982}
   - component: {fileID: 643981981}
   - component: {fileID: 643981980}
+  - component: {fileID: 643981984}
+  - component: {fileID: 643981983}
   m_Layer: 5
   m_Name: Card 19
   m_TagString: Untagged
@@ -40821,6 +41666,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 643981978}
   m_CullTransparentMesh: 1
+--- !u!114 &643981983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643981978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &643981984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643981978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 160
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &647323748
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42048,6 +42936,7 @@ GameObject:
   - component: {fileID: 666637853}
   - component: {fileID: 666637852}
   - component: {fileID: 666637851}
+  - component: {fileID: 666637855}
   m_Layer: 5
   m_Name: Draggable Card 2
   m_TagString: Untagged
@@ -42089,6 +42978,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: f87f4219fb0d89d40b71bf668ae97a49, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -42143,6 +43033,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 666637849}
   m_CullTransparentMesh: 1
+--- !u!114 &666637855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666637849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 90
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &667517201
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -43249,6 +44161,7 @@ GameObject:
   - component: {fileID: 683897062}
   - component: {fileID: 683897060}
   - component: {fileID: 683897064}
+  - component: {fileID: 683897065}
   m_Layer: 5
   m_Name: Draggable Card 22
   m_TagString: Untagged
@@ -43340,10 +44253,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 78f25a2404351614b8bdd8cf5e44a122, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 22
+--- !u!114 &683897065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683897058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 107
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &686442287
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44803,6 +45739,8 @@ GameObject:
   - component: {fileID: 703371391}
   - component: {fileID: 703371390}
   - component: {fileID: 703371389}
+  - component: {fileID: 703371393}
+  - component: {fileID: 703371392}
   m_Layer: 5
   m_Name: Dropdown (5)
   m_TagString: Untagged
@@ -44937,6 +45875,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 703371387}
   m_CullTransparentMesh: 1
+--- !u!114 &703371392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703371387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 703371389}
+--- !u!114 &703371393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703371387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 145
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &703483717
 GameObject:
   m_ObjectHideFlags: 0
@@ -45369,6 +46342,8 @@ GameObject:
   - component: {fileID: 707033371}
   - component: {fileID: 707033370}
   - component: {fileID: 707033369}
+  - component: {fileID: 707033373}
+  - component: {fileID: 707033372}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -45535,6 +46510,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 707033367}
   m_CullTransparentMesh: 1
+--- !u!114 &707033372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707033367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 707033369}
+--- !u!114 &707033373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707033367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 139
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &707920817
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45957,6 +46967,7 @@ GameObject:
   - component: {fileID: 716920878}
   - component: {fileID: 716920881}
   - component: {fileID: 716920880}
+  - component: {fileID: 716920882}
   m_Layer: 5
   m_Name: Draggable Card 3
   m_TagString: Untagged
@@ -46048,12 +47059,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 95a5cb2948380f64bafa36f0f9136e95, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: abdominal pain
   backSprite: {fileID: 21300000, guid: 32df19571ff61db439b638d6791b20fc, type: 3}
+--- !u!114 &716920882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716920875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 65
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &719114440
 GameObject:
   m_ObjectHideFlags: 0
@@ -46067,6 +47101,7 @@ GameObject:
   - component: {fileID: 719114444}
   - component: {fileID: 719114442}
   - component: {fileID: 719114446}
+  - component: {fileID: 719114447}
   m_Layer: 5
   m_Name: Draggable Card 7
   m_TagString: Untagged
@@ -46158,10 +47193,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 7a901b3e4086a634ea2aebd865afde74, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 7
+--- !u!114 &719114447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 719114440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 106
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &721692132
 GameObject:
   m_ObjectHideFlags: 0
@@ -47653,6 +48711,7 @@ GameObject:
   - component: {fileID: 743652112}
   - component: {fileID: 743652111}
   - component: {fileID: 743652114}
+  - component: {fileID: 743652115}
   m_Layer: 5
   m_Name: Draggable Card 4
   m_TagString: Untagged
@@ -47744,11 +48803,34 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 2010036956}
   panel2GridLayout: {fileID: 1505633663}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: f912f0d2344eaa34ab2dc1244a207156, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   lapsesAnswer: drug interaction
   isLocked: 0
+--- !u!114 &743652115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 743652108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 116
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &744877783
 GameObject:
   m_ObjectHideFlags: 0
@@ -49552,6 +50634,8 @@ GameObject:
   - component: {fileID: 773312267}
   - component: {fileID: 773312266}
   - component: {fileID: 773312265}
+  - component: {fileID: 773312269}
+  - component: {fileID: 773312268}
   m_Layer: 5
   m_Name: Card 16
   m_TagString: Untagged
@@ -49660,6 +50744,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 773312263}
   m_CullTransparentMesh: 1
+--- !u!114 &773312268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773312263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &773312269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773312263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 159
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &778772981
 GameObject:
   m_ObjectHideFlags: 0
@@ -50601,6 +51728,8 @@ GameObject:
   - component: {fileID: 787802226}
   - component: {fileID: 787802225}
   - component: {fileID: 787802224}
+  - component: {fileID: 787802228}
+  - component: {fileID: 787802227}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -50767,6 +51896,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 787802222}
   m_CullTransparentMesh: 1
+--- !u!114 &787802227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787802222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 787802224}
+--- !u!114 &787802228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 787802222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 138
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!114 &787840574 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3517607219998587055, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
@@ -51013,6 +52177,7 @@ GameObject:
   - component: {fileID: 797186870}
   - component: {fileID: 797186869}
   - component: {fileID: 797186868}
+  - component: {fileID: 797186872}
   m_Layer: 5
   m_Name: Draggable Card 10
   m_TagString: Untagged
@@ -51054,6 +52219,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 3476617aae435444a8d86601b5eda9d4, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -51108,6 +52274,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 797186866}
   m_CullTransparentMesh: 1
+--- !u!114 &797186872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 797186866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 89
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &798696085
 GameObject:
   m_ObjectHideFlags: 0
@@ -52658,6 +53846,7 @@ GameObject:
   - component: {fileID: 830719370}
   - component: {fileID: 830719369}
   - component: {fileID: 830719372}
+  - component: {fileID: 830719373}
   m_Layer: 5
   m_Name: Draggable Card 2
   m_TagString: Untagged
@@ -52749,11 +53938,34 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1200996390}
   panel2GridLayout: {fileID: 1673625621}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 037bfa0b408ecb943bc22c484600ebd3, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   lapsesAnswer: apparatus
   isLocked: 0
+--- !u!114 &830719373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830719367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 120
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &832903779
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53380,6 +54592,7 @@ GameObject:
   - component: {fileID: 843600298}
   - component: {fileID: 843600301}
   - component: {fileID: 843600300}
+  - component: {fileID: 843600302}
   m_Layer: 5
   m_Name: Draggable Card 6
   m_TagString: Untagged
@@ -53471,12 +54684,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 0a43e94ee0256dd48ab96efdf7d5bfd2, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: frequent urination
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
+--- !u!114 &843600302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843600295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 64
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &844769470
 GameObject:
   m_ObjectHideFlags: 0
@@ -54756,6 +55992,7 @@ GameObject:
   - component: {fileID: 862475567}
   - component: {fileID: 862475565}
   - component: {fileID: 862475569}
+  - component: {fileID: 862475570}
   m_Layer: 5
   m_Name: Draggable Card 20
   m_TagString: Untagged
@@ -54847,10 +56084,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: c3fb3e48209806f478ed9865f08e41ae, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 20
+--- !u!114 &862475570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862475563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 105
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &867144780
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55535,6 +56795,7 @@ GameObject:
   - component: {fileID: 870812153}
   - component: {fileID: 870812151}
   - component: {fileID: 870812155}
+  - component: {fileID: 870812156}
   m_Layer: 5
   m_Name: Draggable Card 10
   m_TagString: Untagged
@@ -55626,10 +56887,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 735236a131571dc4cb017394e2daf4cf, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 10
+--- !u!114 &870812156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870812149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 104
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &870841646
 GameObject:
   m_ObjectHideFlags: 0
@@ -57541,6 +58825,7 @@ GameObject:
   - component: {fileID: 904675582}
   - component: {fileID: 904675581}
   - component: {fileID: 904675584}
+  - component: {fileID: 904675585}
   m_Layer: 5
   m_Name: Draggable Card 4
   m_TagString: Untagged
@@ -57632,11 +58917,34 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1200996390}
   panel2GridLayout: {fileID: 1673625621}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: c2ffef2eac104aa458df50a9783df0ea, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   lapsesAnswer: drug interaction
   isLocked: 0
+--- !u!114 &904675585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904675579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 119
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &907834845
 GameObject:
   m_ObjectHideFlags: 0
@@ -59233,6 +60541,7 @@ GameObject:
   - component: {fileID: 936852559}
   - component: {fileID: 936852562}
   - component: {fileID: 936852561}
+  - component: {fileID: 936852563}
   m_Layer: 5
   m_Name: Draggable Card 7
   m_TagString: Untagged
@@ -59324,12 +60633,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 1cfd3752635cf6f41ad2f870a95d9455, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: unexplained weight loss
   backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
+--- !u!114 &936852563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936852556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 63
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &939758957
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59649,6 +60981,8 @@ GameObject:
   - component: {fileID: 948360301}
   - component: {fileID: 948360300}
   - component: {fileID: 948360299}
+  - component: {fileID: 948360303}
+  - component: {fileID: 948360302}
   m_Layer: 5
   m_Name: InputField (TMP) (1)
   m_TagString: Untagged
@@ -59815,6 +61149,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 948360297}
   m_CullTransparentMesh: 1
+--- !u!114 &948360302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948360297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 948360299}
+--- !u!114 &948360303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948360297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 128
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &949372660
 GameObject:
   m_ObjectHideFlags: 0
@@ -60005,6 +61374,7 @@ GameObject:
   - component: {fileID: 959157926}
   - component: {fileID: 959157925}
   - component: {fileID: 959157924}
+  - component: {fileID: 959157928}
   m_Layer: 5
   m_Name: Draggable Card 16
   m_TagString: Untagged
@@ -60046,6 +61416,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 96f4926e16ea69f46a7b813e09646230, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -60100,6 +61471,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 959157922}
   m_CullTransparentMesh: 1
+--- !u!114 &959157928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959157922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 88
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &960603874
 GameObject:
   m_ObjectHideFlags: 0
@@ -60746,6 +62139,8 @@ GameObject:
   - component: {fileID: 983163606}
   - component: {fileID: 983163605}
   - component: {fileID: 983163604}
+  - component: {fileID: 983163608}
+  - component: {fileID: 983163607}
   m_Layer: 5
   m_Name: Dropdown (4)
   m_TagString: Untagged
@@ -60880,6 +62275,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 983163602}
   m_CullTransparentMesh: 1
+--- !u!114 &983163607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983163602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 983163604}
+--- !u!114 &983163608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983163602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 144
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &983604998
 GameObject:
   m_ObjectHideFlags: 0
@@ -61635,6 +63065,8 @@ GameObject:
   - component: {fileID: 992889256}
   - component: {fileID: 992889255}
   - component: {fileID: 992889254}
+  - component: {fileID: 992889258}
+  - component: {fileID: 992889257}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -61801,6 +63233,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 992889252}
   m_CullTransparentMesh: 1
+--- !u!114 &992889257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992889252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 992889254}
+--- !u!114 &992889258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992889252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 130
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &993491374
 GameObject:
   m_ObjectHideFlags: 0
@@ -62024,6 +63491,8 @@ GameObject:
   - component: {fileID: 997433107}
   - component: {fileID: 997433106}
   - component: {fileID: 997433105}
+  - component: {fileID: 997433109}
+  - component: {fileID: 997433108}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -62190,6 +63659,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 997433103}
   m_CullTransparentMesh: 1
+--- !u!114 &997433108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997433103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 997433105}
+--- !u!114 &997433109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997433103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 134
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1001021302
 GameObject:
   m_ObjectHideFlags: 0
@@ -63570,6 +65074,7 @@ GameObject:
   - component: {fileID: 1016945834}
   - component: {fileID: 1016945833}
   - component: {fileID: 1016945832}
+  - component: {fileID: 1016945836}
   m_Layer: 5
   m_Name: Draggable Card 1
   m_TagString: Untagged
@@ -63611,6 +65116,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: a726fa3a081729945802c83f4b57007e, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -63665,6 +65171,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1016945830}
   m_CullTransparentMesh: 1
+--- !u!114 &1016945836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1016945830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 87
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1019528083
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64521,6 +66049,8 @@ GameObject:
   - component: {fileID: 1031120121}
   - component: {fileID: 1031120120}
   - component: {fileID: 1031120119}
+  - component: {fileID: 1031120123}
+  - component: {fileID: 1031120122}
   m_Layer: 5
   m_Name: Card 7
   m_TagString: Untagged
@@ -64629,6 +66159,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1031120117}
   m_CullTransparentMesh: 1
+--- !u!114 &1031120122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031120117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1031120123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031120117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 158
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1033120239
 GameObject:
   m_ObjectHideFlags: 0
@@ -65089,6 +66662,7 @@ GameObject:
   - component: {fileID: 1043129513}
   - component: {fileID: 1043129512}
   - component: {fileID: 1043129511}
+  - component: {fileID: 1043129515}
   m_Layer: 5
   m_Name: Draggable Card 4
   m_TagString: Untagged
@@ -65130,6 +66704,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: ee3a38a6c136908458be73b3e7527270, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -65184,6 +66759,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1043129509}
   m_CullTransparentMesh: 1
+--- !u!114 &1043129515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043129509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 86
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1045847524
 GameObject:
   m_ObjectHideFlags: 0
@@ -65815,6 +67412,7 @@ GameObject:
   - component: {fileID: 1056254390}
   - component: {fileID: 1056254393}
   - component: {fileID: 1056254392}
+  - component: {fileID: 1056254394}
   m_Layer: 5
   m_Name: Draggable Card 11
   m_TagString: Untagged
@@ -65906,12 +67504,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 34a1e95a3aa596345b5ddf2fb777d739, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: headache
   backSprite: {fileID: 21300000, guid: 32df19571ff61db439b638d6791b20fc, type: 3}
+--- !u!114 &1056254394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056254387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 62
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!4 &1059567797 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0b7ad66fc40807b4bb8d66861bf10ce9, type: 3}
@@ -66101,6 +67722,7 @@ GameObject:
   - component: {fileID: 1062663328}
   - component: {fileID: 1062663327}
   - component: {fileID: 1062663326}
+  - component: {fileID: 1062663330}
   m_Layer: 5
   m_Name: Draggable Card 12
   m_TagString: Untagged
@@ -66142,6 +67764,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 36f74e88a15b97648ab7e67cfebc4660, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -66196,6 +67819,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1062663324}
   m_CullTransparentMesh: 1
+--- !u!114 &1062663330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062663324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 85
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1063337801
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -68134,6 +69779,8 @@ GameObject:
   - component: {fileID: 1088297376}
   - component: {fileID: 1088297375}
   - component: {fileID: 1088297374}
+  - component: {fileID: 1088297378}
+  - component: {fileID: 1088297377}
   m_Layer: 5
   m_Name: Card 9
   m_TagString: Untagged
@@ -68242,6 +69889,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1088297372}
   m_CullTransparentMesh: 1
+--- !u!114 &1088297377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088297372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1088297378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088297372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 157
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1090021937
 GameObject:
   m_ObjectHideFlags: 0
@@ -69187,6 +70877,7 @@ GameObject:
   - component: {fileID: 1111495343}
   - component: {fileID: 1111495342}
   - component: {fileID: 1111495345}
+  - component: {fileID: 1111495346}
   m_Layer: 5
   m_Name: Draggable Card 5
   m_TagString: Untagged
@@ -69278,11 +70969,34 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 2010036956}
   panel2GridLayout: {fileID: 1505633663}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 1557ddf8d6f11b64e9646c110e2befcb, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   lapsesAnswer: inappropriate management
   isLocked: 0
+--- !u!114 &1111495346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111495339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 115
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1111898375
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -70116,6 +71830,7 @@ GameObject:
   - component: {fileID: 1123054294}
   - component: {fileID: 1123054293}
   - component: {fileID: 1123054296}
+  - component: {fileID: 1123054297}
   m_Layer: 5
   m_Name: Draggable Card 1
   m_TagString: Untagged
@@ -70207,11 +71922,34 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 2010036956}
   panel2GridLayout: {fileID: 1505633663}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 481fbde59fb9429438e1bc6a10b39e7a, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   lapsesAnswer: death
   isLocked: 0
+--- !u!114 &1123054297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123054290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 114
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1123768412
 GameObject:
   m_ObjectHideFlags: 0
@@ -70972,6 +72710,8 @@ GameObject:
   - component: {fileID: 1139986468}
   - component: {fileID: 1139986467}
   - component: {fileID: 1139986466}
+  - component: {fileID: 1139986470}
+  - component: {fileID: 1139986469}
   m_Layer: 5
   m_Name: Card 3
   m_TagString: Untagged
@@ -71080,6 +72820,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1139986464}
   m_CullTransparentMesh: 1
+--- !u!114 &1139986469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139986464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1139986470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139986464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 156
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1140349624
 GameObject:
   m_ObjectHideFlags: 0
@@ -71638,6 +73421,7 @@ GameObject:
   - component: {fileID: 1149908853}
   - component: {fileID: 1149908851}
   - component: {fileID: 1149908855}
+  - component: {fileID: 1149908856}
   m_Layer: 5
   m_Name: Draggable Card 8
   m_TagString: Untagged
@@ -71729,10 +73513,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: f2e108d5702c49a40b8b739d3c1b56cc, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 8
+--- !u!114 &1149908856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149908849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 103
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1152022835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72623,6 +74430,7 @@ GameObject:
   - component: {fileID: 1167287924}
   - component: {fileID: 1167287927}
   - component: {fileID: 1167287926}
+  - component: {fileID: 1167287928}
   m_Layer: 5
   m_Name: Draggable Card 5
   m_TagString: Untagged
@@ -72714,12 +74522,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: dede98463ecca384b80d04dbf4e01f10, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: dry skin
   backSprite: {fileID: 21300000, guid: 32df19571ff61db439b638d6791b20fc, type: 3}
+--- !u!114 &1167287928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167287921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 61
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1167730170
 GameObject:
   m_ObjectHideFlags: 0
@@ -78939,6 +80770,7 @@ GameObject:
   - component: {fileID: 1254255060}
   - component: {fileID: 1254255063}
   - component: {fileID: 1254255062}
+  - component: {fileID: 1254255064}
   m_Layer: 5
   m_Name: Draggable Card 13
   m_TagString: Untagged
@@ -79030,12 +80862,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: e2bf5b9b77f2d97429a3c370b36ec0c6, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: sweating
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
+--- !u!114 &1254255064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254255057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 60
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1254844796
 GameObject:
   m_ObjectHideFlags: 0
@@ -81588,6 +83443,8 @@ GameObject:
   - component: {fileID: 1288579486}
   - component: {fileID: 1288579485}
   - component: {fileID: 1288579484}
+  - component: {fileID: 1288579488}
+  - component: {fileID: 1288579487}
   m_Layer: 5
   m_Name: InputField (TMP) (2)
   m_TagString: Untagged
@@ -81754,6 +83611,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1288579482}
   m_CullTransparentMesh: 1
+--- !u!114 &1288579487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288579482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 1288579484}
+--- !u!114 &1288579488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288579482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 137
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1289146574
 GameObject:
   m_ObjectHideFlags: 0
@@ -83418,6 +85310,8 @@ GameObject:
   - component: {fileID: 1308178854}
   - component: {fileID: 1308178853}
   - component: {fileID: 1308178852}
+  - component: {fileID: 1308178856}
+  - component: {fileID: 1308178855}
   m_Layer: 5
   m_Name: Dropdown
   m_TagString: Untagged
@@ -83552,6 +85446,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1308178850}
   m_CullTransparentMesh: 1
+--- !u!114 &1308178855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308178850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 1308178852}
+--- !u!114 &1308178856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308178850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 143
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1310603570
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -84073,6 +86002,7 @@ GameObject:
   - component: {fileID: 1322126566}
   - component: {fileID: 1322126564}
   - component: {fileID: 1322126568}
+  - component: {fileID: 1322126569}
   m_Layer: 5
   m_Name: Draggable Card 4
   m_TagString: Untagged
@@ -84164,10 +86094,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 6677bc48d285d8c48952888a3df9ce13, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 4
+--- !u!114 &1322126569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322126562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 102
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1330506204
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -88201,6 +90154,8 @@ GameObject:
   - component: {fileID: 1387646079}
   - component: {fileID: 1387646078}
   - component: {fileID: 1387646077}
+  - component: {fileID: 1387646081}
+  - component: {fileID: 1387646080}
   m_Layer: 5
   m_Name: Card 5
   m_TagString: Untagged
@@ -88309,6 +90264,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1387646075}
   m_CullTransparentMesh: 1
+--- !u!114 &1387646080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387646075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1387646081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387646075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 155
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1388098628
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -88420,6 +90418,7 @@ GameObject:
   - component: {fileID: 1388696229}
   - component: {fileID: 1388696228}
   - component: {fileID: 1388696227}
+  - component: {fileID: 1388696231}
   m_Layer: 5
   m_Name: Draggable Card 11
   m_TagString: Untagged
@@ -88461,6 +90460,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 4122616fdf1db1447be6de06923e6249, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -88515,6 +90515,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1388696225}
   m_CullTransparentMesh: 1
+--- !u!114 &1388696231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388696225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 84
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1388983568
 GameObject:
   m_ObjectHideFlags: 0
@@ -89315,6 +91337,8 @@ GameObject:
   - component: {fileID: 1401914930}
   - component: {fileID: 1401914929}
   - component: {fileID: 1401914928}
+  - component: {fileID: 1401914932}
+  - component: {fileID: 1401914931}
   m_Layer: 5
   m_Name: Dropdown (1)
   m_TagString: Untagged
@@ -89449,6 +91473,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1401914926}
   m_CullTransparentMesh: 1
+--- !u!114 &1401914931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401914926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 1401914928}
+--- !u!114 &1401914932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401914926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 142
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1403568190
 GameObject:
   m_ObjectHideFlags: 0
@@ -89462,6 +91521,7 @@ GameObject:
   - component: {fileID: 1403568194}
   - component: {fileID: 1403568192}
   - component: {fileID: 1403568196}
+  - component: {fileID: 1403568197}
   m_Layer: 5
   m_Name: Draggable Card 13
   m_TagString: Untagged
@@ -89553,10 +91613,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 83c0e0c79028eec4ab121cb6d40cf734, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 13
+--- !u!114 &1403568197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1403568190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 101
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1404081327
 GameObject:
   m_ObjectHideFlags: 0
@@ -89569,6 +91652,8 @@ GameObject:
   - component: {fileID: 1404081331}
   - component: {fileID: 1404081330}
   - component: {fileID: 1404081329}
+  - component: {fileID: 1404081333}
+  - component: {fileID: 1404081332}
   m_Layer: 5
   m_Name: Card 4
   m_TagString: Untagged
@@ -89677,6 +91762,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1404081327}
   m_CullTransparentMesh: 1
+--- !u!114 &1404081332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404081327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1404081333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404081327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 154
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1405390082
 GameObject:
   m_ObjectHideFlags: 0
@@ -89690,6 +91818,7 @@ GameObject:
   - component: {fileID: 1405390085}
   - component: {fileID: 1405390088}
   - component: {fileID: 1405390087}
+  - component: {fileID: 1405390089}
   m_Layer: 5
   m_Name: Draggable Card 9
   m_TagString: Untagged
@@ -89781,12 +91910,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 80a1d28708da9894eafb6ef132ca6578, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: palpitations
   backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
+--- !u!114 &1405390089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1405390082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 59
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1405984689
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -90077,6 +92229,8 @@ GameObject:
   - component: {fileID: 1409949622}
   - component: {fileID: 1409949621}
   - component: {fileID: 1409949620}
+  - component: {fileID: 1409949624}
+  - component: {fileID: 1409949623}
   m_Layer: 5
   m_Name: Input mmol
   m_TagString: Untagged
@@ -90243,6 +92397,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409949618}
   m_CullTransparentMesh: 1
+--- !u!114 &1409949623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409949618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 123
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &1409949624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409949618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 1409949620}
 --- !u!1 &1411299358
 GameObject:
   m_ObjectHideFlags: 0
@@ -90580,6 +92769,7 @@ GameObject:
   - component: {fileID: 1420566421}
   - component: {fileID: 1420566424}
   - component: {fileID: 1420566423}
+  - component: {fileID: 1420566425}
   m_Layer: 5
   m_Name: Draggable Card 14
   m_TagString: Untagged
@@ -90671,12 +92861,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 2b1c6941183dd8947bc08352246596c4, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: weak or fatigue
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
+--- !u!114 &1420566425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420566418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 58
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1420670603
 GameObject:
   m_ObjectHideFlags: 0
@@ -92356,6 +94569,8 @@ GameObject:
   - component: {fileID: 1444072188}
   - component: {fileID: 1444072187}
   - component: {fileID: 1444072186}
+  - component: {fileID: 1444072190}
+  - component: {fileID: 1444072189}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -92522,6 +94737,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1444072184}
   m_CullTransparentMesh: 1
+--- !u!114 &1444072189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444072184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 1444072186}
+--- !u!114 &1444072190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444072184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 131
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1446177417
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -95454,6 +97704,7 @@ GameObject:
   - component: {fileID: 1472552760}
   - component: {fileID: 1472552759}
   - component: {fileID: 1472552758}
+  - component: {fileID: 1472552762}
   m_Layer: 5
   m_Name: Draggable Card 14
   m_TagString: Untagged
@@ -95495,6 +97746,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: db33e2adc988c1d429848a9a7c2d9664, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -95549,6 +97801,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1472552756}
   m_CullTransparentMesh: 1
+--- !u!114 &1472552762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472552756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 83
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1474201661
 GameObject:
   m_ObjectHideFlags: 0
@@ -96643,6 +98917,8 @@ GameObject:
   - component: {fileID: 1487578387}
   - component: {fileID: 1487578386}
   - component: {fileID: 1487578385}
+  - component: {fileID: 1487578389}
+  - component: {fileID: 1487578388}
   m_Layer: 5
   m_Name: Syring Dropdown
   m_TagString: Untagged
@@ -96786,6 +99062,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1487578383}
   m_CullTransparentMesh: 1
+--- !u!114 &1487578388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487578383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 1487578385}
+--- !u!114 &1487578389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487578383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 140
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1488013335
 GameObject:
   m_ObjectHideFlags: 0
@@ -98284,6 +100595,8 @@ GameObject:
   - component: {fileID: 1500430547}
   - component: {fileID: 1500430546}
   - component: {fileID: 1500430545}
+  - component: {fileID: 1500430549}
+  - component: {fileID: 1500430548}
   m_Layer: 5
   m_Name: Card 11
   m_TagString: Untagged
@@ -98392,6 +100705,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1500430543}
   m_CullTransparentMesh: 1
+--- !u!114 &1500430548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500430543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1500430549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500430543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 153
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!114 &1500578045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99293,6 +101649,7 @@ GameObject:
   - component: {fileID: 1510928821}
   - component: {fileID: 1510928824}
   - component: {fileID: 1510928823}
+  - component: {fileID: 1510928825}
   m_Layer: 5
   m_Name: Draggable Card 2
   m_TagString: Untagged
@@ -99384,12 +101741,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 563f6840a6d22124a911e3dd9dd5c58d, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: hungry
   backSprite: {fileID: 21300000, guid: 6285b8257ca9a7d41bf1dae9e8d26f68, type: 3}
+--- !u!114 &1510928825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510928818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 57
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1511582311
 GameObject:
   m_ObjectHideFlags: 0
@@ -99765,6 +102145,8 @@ GameObject:
   - component: {fileID: 1517259998}
   - component: {fileID: 1517259997}
   - component: {fileID: 1517259996}
+  - component: {fileID: 1517260000}
+  - component: {fileID: 1517259999}
   m_Layer: 5
   m_Name: InputField (TMP) (2)
   m_TagString: Untagged
@@ -99931,6 +102313,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1517259994}
   m_CullTransparentMesh: 1
+--- !u!114 &1517259999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517259994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 1517259996}
+--- !u!114 &1517260000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517259994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 129
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1517731263
 GameObject:
   m_ObjectHideFlags: 0
@@ -100406,6 +102823,7 @@ GameObject:
   - component: {fileID: 1521350641}
   - component: {fileID: 1521350640}
   - component: {fileID: 1521350639}
+  - component: {fileID: 1521350643}
   m_Layer: 5
   m_Name: Draggable Card 13
   m_TagString: Untagged
@@ -100447,6 +102865,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 868f094453da9274f97a9356a4da93d1, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -100501,6 +102920,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1521350637}
   m_CullTransparentMesh: 1
+--- !u!114 &1521350643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521350637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 82
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1523634390
 GameObject:
   m_ObjectHideFlags: 0
@@ -101127,6 +103568,7 @@ GameObject:
   - component: {fileID: 1532583508}
   - component: {fileID: 1532583506}
   - component: {fileID: 1532583510}
+  - component: {fileID: 1532583511}
   m_Layer: 5
   m_Name: Draggable Card 21
   m_TagString: Untagged
@@ -101218,10 +103660,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: f1657bc30db5d0548a5dad3e94122bc4, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 21
+--- !u!114 &1532583511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532583504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 100
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1532754800
 GameObject:
   m_ObjectHideFlags: 0
@@ -101330,6 +103795,7 @@ GameObject:
   - component: {fileID: 1533712709}
   - component: {fileID: 1533712707}
   - component: {fileID: 1533712711}
+  - component: {fileID: 1533712712}
   m_Layer: 5
   m_Name: Draggable Card 5
   m_TagString: Untagged
@@ -101421,10 +103887,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 972fc88f4531ecd49b7b66f8039da007, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 5
+--- !u!114 &1533712712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533712705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 99
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1534224726
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -107296,6 +109785,7 @@ GameObject:
   - component: {fileID: 1629859609}
   - component: {fileID: 1629859608}
   - component: {fileID: 1629859611}
+  - component: {fileID: 1629859612}
   m_Layer: 5
   m_Name: Draggable Card 3
   m_TagString: Untagged
@@ -107387,11 +109877,34 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1200996390}
   panel2GridLayout: {fileID: 1673625621}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: c40c57e7f5cf98f4a8e78aec6d487cb5, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   lapsesAnswer: insulin
   isLocked: 0
+--- !u!114 &1629859612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1629859606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 118
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1632282165
 GameObject:
   m_ObjectHideFlags: 0
@@ -107906,6 +110419,7 @@ GameObject:
   - component: {fileID: 1638348095}
   - component: {fileID: 1638348094}
   - component: {fileID: 1638348093}
+  - component: {fileID: 1638348097}
   m_Layer: 5
   m_Name: Draggable Card 6
   m_TagString: Untagged
@@ -107947,6 +110461,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 3702f7342da4d874ebfd06b976f40776, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -108001,6 +110516,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1638348091}
   m_CullTransparentMesh: 1
+--- !u!114 &1638348097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1638348091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 81
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1638382265
 GameObject:
   m_ObjectHideFlags: 0
@@ -108488,6 +111025,8 @@ GameObject:
   - component: {fileID: 1645685600}
   - component: {fileID: 1645685599}
   - component: {fileID: 1645685598}
+  - component: {fileID: 1645685602}
+  - component: {fileID: 1645685601}
   m_Layer: 5
   m_Name: Card 6
   m_TagString: Untagged
@@ -108596,6 +111135,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1645685596}
   m_CullTransparentMesh: 1
+--- !u!114 &1645685601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645685596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1645685602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645685596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 152
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1647209256
 GameObject:
   m_ObjectHideFlags: 0
@@ -109445,6 +112027,8 @@ GameObject:
   - component: {fileID: 1660295438}
   - component: {fileID: 1660295437}
   - component: {fileID: 1660295436}
+  - component: {fileID: 1660295440}
+  - component: {fileID: 1660295439}
   m_Layer: 5
   m_Name: Card 12
   m_TagString: Untagged
@@ -109553,6 +112137,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1660295434}
   m_CullTransparentMesh: 1
+--- !u!114 &1660295439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660295434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1660295440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660295434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 151
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1661867099
 GameObject:
   m_ObjectHideFlags: 0
@@ -112162,6 +114789,8 @@ GameObject:
   - component: {fileID: 1691258798}
   - component: {fileID: 1691258797}
   - component: {fileID: 1691258796}
+  - component: {fileID: 1691258800}
+  - component: {fileID: 1691258799}
   m_Layer: 5
   m_Name: Card 1
   m_TagString: Untagged
@@ -112270,6 +114899,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1691258794}
   m_CullTransparentMesh: 1
+--- !u!114 &1691258799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691258794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1691258800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691258794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 150
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1694119891
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -114926,6 +117598,7 @@ GameObject:
   - component: {fileID: 1738507440}
   - component: {fileID: 1738507439}
   - component: {fileID: 1738507438}
+  - component: {fileID: 1738507442}
   m_Layer: 5
   m_Name: Draggable Card 5
   m_TagString: Untagged
@@ -114967,6 +117640,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: d5933b87efa0d57419290ca2a28dbcfb, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -115021,6 +117695,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1738507436}
   m_CullTransparentMesh: 1
+--- !u!114 &1738507442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738507436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 80
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1740617674
 GameObject:
   m_ObjectHideFlags: 0
@@ -116555,6 +119251,7 @@ GameObject:
   - component: {fileID: 1775826478}
   - component: {fileID: 1775826477}
   - component: {fileID: 1775826476}
+  - component: {fileID: 1775826480}
   m_Layer: 5
   m_Name: Draggable Card 18
   m_TagString: Untagged
@@ -116596,6 +119293,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 17fc6b34398813f4b805e121f8dd7bcd, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -116650,6 +119348,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1775826474}
   m_CullTransparentMesh: 1
+--- !u!114 &1775826480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775826474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 79
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1777358907
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -118119,6 +120839,8 @@ GameObject:
   - component: {fileID: 1793151429}
   - component: {fileID: 1793151428}
   - component: {fileID: 1793151427}
+  - component: {fileID: 1793151431}
+  - component: {fileID: 1793151430}
   m_Layer: 5
   m_Name: Card 17
   m_TagString: Untagged
@@ -118227,6 +120949,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1793151425}
   m_CullTransparentMesh: 1
+--- !u!114 &1793151430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793151425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1793151431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793151425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 149
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1793515146
 GameObject:
   m_ObjectHideFlags: 0
@@ -122121,6 +124886,7 @@ GameObject:
   - component: {fileID: 1822759102}
   - component: {fileID: 1822759100}
   - component: {fileID: 1822759104}
+  - component: {fileID: 1822759105}
   m_Layer: 5
   m_Name: Draggable Card 14
   m_TagString: Untagged
@@ -122212,10 +124978,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 1ed9b88abaa3e5b48a60146023455cdf, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 14
+--- !u!114 &1822759105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1822759098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 98
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1823339982
 GameObject:
   m_ObjectHideFlags: 0
@@ -123879,6 +126668,8 @@ GameObject:
   - component: {fileID: 1849691890}
   - component: {fileID: 1849691889}
   - component: {fileID: 1849691888}
+  - component: {fileID: 1849691892}
+  - component: {fileID: 1849691891}
   m_Layer: 5
   m_Name: InputField (TMP) (2)
   m_TagString: Untagged
@@ -124045,6 +126836,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1849691886}
   m_CullTransparentMesh: 1
+--- !u!114 &1849691891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849691886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 1849691888}
+--- !u!114 &1849691892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849691886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 133
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1851825636
 GameObject:
   m_ObjectHideFlags: 0
@@ -125195,6 +128021,8 @@ GameObject:
   - component: {fileID: 1859807061}
   - component: {fileID: 1859807060}
   - component: {fileID: 1859807059}
+  - component: {fileID: 1859807063}
+  - component: {fileID: 1859807062}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -125361,6 +128189,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1859807057}
   m_CullTransparentMesh: 1
+--- !u!114 &1859807062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859807057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 1859807059}
+--- !u!114 &1859807063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859807057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 127
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1860539705
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -125436,6 +128299,7 @@ GameObject:
   - component: {fileID: 1861615200}
   - component: {fileID: 1861615199}
   - component: {fileID: 1861615198}
+  - component: {fileID: 1861615202}
   m_Layer: 5
   m_Name: Draggable Card 7
   m_TagString: Untagged
@@ -125477,6 +128341,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: e4f8c42a6cacf4a4998a1aa77cdc248f, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -125531,6 +128396,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1861615196}
   m_CullTransparentMesh: 1
+--- !u!114 &1861615202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861615196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 78
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1863272363
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -128576,6 +131463,7 @@ GameObject:
   - component: {fileID: 1913724032}
   - component: {fileID: 1913724030}
   - component: {fileID: 1913724034}
+  - component: {fileID: 1913724035}
   m_Layer: 5
   m_Name: Draggable Card 1
   m_TagString: Untagged
@@ -128667,10 +131555,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 9351c03a8d801d24fae6f8ad3aa69171, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 1
+--- !u!114 &1913724035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913724028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 97
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1914165475
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129375,6 +132286,8 @@ GameObject:
   - component: {fileID: 1921617839}
   - component: {fileID: 1921617838}
   - component: {fileID: 1921617837}
+  - component: {fileID: 1921617841}
+  - component: {fileID: 1921617840}
   m_Layer: 5
   m_Name: Card 13
   m_TagString: Untagged
@@ -129483,6 +132396,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1921617835}
   m_CullTransparentMesh: 1
+--- !u!114 &1921617840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921617835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &1921617841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921617835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 148
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1922028186
 GameObject:
   m_ObjectHideFlags: 0
@@ -129568,6 +132524,8 @@ GameObject:
   - component: {fileID: 1922197399}
   - component: {fileID: 1922197398}
   - component: {fileID: 1922197397}
+  - component: {fileID: 1922197401}
+  - component: {fileID: 1922197400}
   m_Layer: 5
   m_Name: Dropdown (3)
   m_TagString: Untagged
@@ -129702,6 +132660,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1922197395}
   m_CullTransparentMesh: 1
+--- !u!114 &1922197400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922197395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 1922197397}
+--- !u!114 &1922197401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922197395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 141
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1922303261
 GameObject:
   m_ObjectHideFlags: 0
@@ -132943,6 +135936,7 @@ GameObject:
   - component: {fileID: 1967200252}
   - component: {fileID: 1967200251}
   - component: {fileID: 1967200250}
+  - component: {fileID: 1967200254}
   m_Layer: 5
   m_Name: Draggable Card 20
   m_TagString: Untagged
@@ -132984,6 +135978,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: ea04680fa595d524d83e4b4ced118086, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -133038,6 +136033,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1967200248}
   m_CullTransparentMesh: 1
+--- !u!114 &1967200254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967200248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 77
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1967635094
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -133192,6 +136209,7 @@ GameObject:
   - component: {fileID: 1968617452}
   - component: {fileID: 1968617451}
   - component: {fileID: 1968617450}
+  - component: {fileID: 1968617454}
   m_Layer: 5
   m_Name: Draggable Card 19
   m_TagString: Untagged
@@ -133233,6 +136251,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 332966d46eb647d40b2384c0a7b00677, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -133287,6 +136306,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1968617448}
   m_CullTransparentMesh: 1
+--- !u!114 &1968617454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968617448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 76
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1969814093
 GameObject:
   m_ObjectHideFlags: 0
@@ -133856,6 +136897,7 @@ GameObject:
   - component: {fileID: 1976127339}
   - component: {fileID: 1976127337}
   - component: {fileID: 1976127341}
+  - component: {fileID: 1976127342}
   m_Layer: 5
   m_Name: Draggable Card 17
   m_TagString: Untagged
@@ -133947,10 +136989,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 6577d6ba0463bce4da2b8282f1675a06, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 17
+--- !u!114 &1976127342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976127335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 96
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1976526609
 GameObject:
   m_ObjectHideFlags: 0
@@ -135165,6 +138230,7 @@ GameObject:
   - component: {fileID: 2000895859}
   - component: {fileID: 2000895857}
   - component: {fileID: 2000895861}
+  - component: {fileID: 2000895862}
   m_Layer: 5
   m_Name: Draggable Card 11
   m_TagString: Untagged
@@ -135256,10 +138322,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: dbe7764c72be6dd4880875138a3cb6c7, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 11
+--- !u!114 &2000895862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000895855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 95
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2003569042
 GameObject:
   m_ObjectHideFlags: 0
@@ -136691,6 +139780,7 @@ GameObject:
   - component: {fileID: 2021751253}
   - component: {fileID: 2021751256}
   - component: {fileID: 2021751255}
+  - component: {fileID: 2021751257}
   m_Layer: 5
   m_Name: Draggable Card 12
   m_TagString: Untagged
@@ -136782,12 +139872,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: bab01356e5fc98843b0cbcda2739831c, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: extreme thirst
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
+--- !u!114 &2021751257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021751250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 56
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2024478293
 GameObject:
   m_ObjectHideFlags: 0
@@ -136999,6 +140112,7 @@ GameObject:
   - component: {fileID: 2027945690}
   - component: {fileID: 2027945693}
   - component: {fileID: 2027945692}
+  - component: {fileID: 2027945694}
   m_Layer: 5
   m_Name: Draggable Card 19
   m_TagString: Untagged
@@ -137090,12 +140204,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 823825939b217344ca1def38ea1e22c5, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: peripheral neuropathy
   backSprite: {fileID: 21300000, guid: 32df19571ff61db439b638d6791b20fc, type: 3}
+--- !u!114 &2027945694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2027945687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 55
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2028173530
 GameObject:
   m_ObjectHideFlags: 0
@@ -137261,6 +140398,7 @@ GameObject:
   - component: {fileID: 2030210972}
   - component: {fileID: 2030210971}
   - component: {fileID: 2030210970}
+  - component: {fileID: 2030210974}
   m_Layer: 5
   m_Name: Draggable Card 15
   m_TagString: Untagged
@@ -137302,6 +140440,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 19800289e7b7c394c92a3a69ab1f928b, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -137356,6 +140495,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2030210968}
   m_CullTransparentMesh: 1
+--- !u!114 &2030210974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030210968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 75
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2032246486
 GameObject:
   m_ObjectHideFlags: 0
@@ -139129,6 +142290,7 @@ GameObject:
   - component: {fileID: 2069310564}
   - component: {fileID: 2069310567}
   - component: {fileID: 2069310566}
+  - component: {fileID: 2069310568}
   m_Layer: 5
   m_Name: Draggable Card 18
   m_TagString: Untagged
@@ -139220,12 +142382,35 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 853569e528db8334c954c44d63a3de19, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   panel3GridLayout: {fileID: 1055109011}
   symptomName: sexual dysfunction
   backSprite: {fileID: 21300000, guid: ea0627f0e658f904e852a2b659719bde, type: 3}
+--- !u!114 &2069310568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069310561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 54
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2070167655
 GameObject:
   m_ObjectHideFlags: 0
@@ -139238,6 +142423,8 @@ GameObject:
   - component: {fileID: 2070167659}
   - component: {fileID: 2070167658}
   - component: {fileID: 2070167657}
+  - component: {fileID: 2070167661}
+  - component: {fileID: 2070167660}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -139404,6 +142591,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2070167655}
   m_CullTransparentMesh: 1
+--- !u!114 &2070167660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070167655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 2070167657}
+--- !u!114 &2070167661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070167655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 124
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2074607471
 GameObject:
   m_ObjectHideFlags: 0
@@ -141323,6 +144545,8 @@ GameObject:
   - component: {fileID: 2094339127}
   - component: {fileID: 2094339126}
   - component: {fileID: 2094339125}
+  - component: {fileID: 2094339129}
+  - component: {fileID: 2094339128}
   m_Layer: 5
   m_Name: Input Minutes
   m_TagString: Untagged
@@ -141489,6 +144713,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2094339123}
   m_CullTransparentMesh: 1
+--- !u!114 &2094339128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2094339123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 122
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &2094339129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2094339123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 2094339125}
 --- !u!1 &2095448081
 GameObject:
   m_ObjectHideFlags: 0
@@ -141900,6 +145159,7 @@ GameObject:
   - component: {fileID: 2097181834}
   - component: {fileID: 2097181833}
   - component: {fileID: 2097181836}
+  - component: {fileID: 2097181837}
   m_Layer: 5
   m_Name: Draggable Card 3
   m_TagString: Untagged
@@ -141991,11 +145251,34 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 2010036956}
   panel2GridLayout: {fileID: 1505633663}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 66e220120438912498a30b40e347b542, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   lapsesAnswer: apparatus
   isLocked: 0
+--- !u!114 &2097181837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2097181830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 113
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &2097774268
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -142079,6 +145362,7 @@ GameObject:
   - component: {fileID: 2098151721}
   - component: {fileID: 2098151719}
   - component: {fileID: 2098151723}
+  - component: {fileID: 2098151724}
   m_Layer: 5
   m_Name: Draggable Card 15
   m_TagString: Untagged
@@ -142170,10 +145454,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 7079fcb6888e3d844bef2536a09a9591, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 15
+--- !u!114 &2098151724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098151717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 94
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2098173962
 GameObject:
   m_ObjectHideFlags: 0
@@ -142477,6 +145784,7 @@ GameObject:
   - component: {fileID: 2101223951}
   - component: {fileID: 2101223949}
   - component: {fileID: 2101223953}
+  - component: {fileID: 2101223954}
   m_Layer: 5
   m_Name: Draggable Card 2
   m_TagString: Untagged
@@ -142568,10 +145876,33 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: ae8db83e1c1f43f4f8544649f23fd974, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
   stepName: 2
+--- !u!114 &2101223954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101223947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 93
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &2101235161
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -143252,6 +146583,8 @@ GameObject:
   - component: {fileID: 2105311276}
   - component: {fileID: 2105311275}
   - component: {fileID: 2105311274}
+  - component: {fileID: 2105311278}
+  - component: {fileID: 2105311277}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -143418,6 +146751,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2105311272}
   m_CullTransparentMesh: 1
+--- !u!114 &2105311277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105311272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d8c5e4beec77c4ab021803af1d9bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 2105311274}
+--- !u!114 &2105311278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105311272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 125
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2106010488
 GameObject:
   m_ObjectHideFlags: 0
@@ -144376,6 +147744,8 @@ GameObject:
   - component: {fileID: 2115253542}
   - component: {fileID: 2115253541}
   - component: {fileID: 2115253540}
+  - component: {fileID: 2115253544}
+  - component: {fileID: 2115253543}
   m_Layer: 5
   m_Name: Card 10
   m_TagString: Untagged
@@ -144484,6 +147854,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2115253538}
   m_CullTransparentMesh: 1
+--- !u!114 &2115253543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115253538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe4806ca35f6764084d381e271edb44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoGroupByParent: 1
+  groupId: Default
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.965922, b: 0, a: 1}
+  correctColor: {r: 0.2, g: 0.9, b: 0.2, a: 1}
+  wrongColor: {r: 0.95, g: 0.2, b: 0.2, a: 1}
+  allowToggleOff: 1
+  resultState: 0
+  isSelected: 0
+--- !u!114 &2115253544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115253538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 147
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2117871752
 GameObject:
   m_ObjectHideFlags: 0
@@ -144895,6 +148308,7 @@ GameObject:
   - component: {fileID: 2120120170}
   - component: {fileID: 2120120169}
   - component: {fileID: 2120120168}
+  - component: {fileID: 2120120172}
   m_Layer: 5
   m_Name: Draggable Card 17
   m_TagString: Untagged
@@ -144936,6 +148350,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 531601ae731f4174daafbedee2ad6686, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -144990,6 +148405,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2120120166}
   m_CullTransparentMesh: 1
+--- !u!114 &2120120172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120120166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 74
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2120954261
 GameObject:
   m_ObjectHideFlags: 0
@@ -146567,6 +150004,7 @@ GameObject:
   - component: {fileID: 2137717286}
   - component: {fileID: 2137717285}
   - component: {fileID: 2137717284}
+  - component: {fileID: 2137717288}
   m_Layer: 5
   m_Name: Draggable Card 3
   m_TagString: Untagged
@@ -146608,6 +150046,7 @@ MonoBehaviour:
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
+  pathRoot: {fileID: 0}
   frontSprite: {fileID: 21300000, guid: 207747250ecd7f74e923b4fabc014616, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -146662,6 +150101,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137717282}
   m_CullTransparentMesh: 1
+--- !u!114 &2137717288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2137717282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 73
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &2139039049
 GameObject:
   m_ObjectHideFlags: 0

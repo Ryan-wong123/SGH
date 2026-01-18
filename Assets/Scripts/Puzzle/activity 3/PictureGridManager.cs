@@ -1,7 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using TMPro;
 
 public class PictureGridManager : MonoBehaviour, IPuzzle
@@ -30,7 +29,6 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
 
         submitButton.SetActive(false);
         UpdateSelectedCountText();
-
     }
 
     void OnPictureClick(int index)
@@ -45,15 +43,22 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
             selectedIndexes.Add(index);
             SetButtonColor(index, selectedColor);
         }
+
         UpdateSelectedCountText();
-        // Log when exactly 6 buttons are selected
+
+        // Log when exactly N buttons are selected
         if (selectedIndexes.Count == correctIndexes.Count)
         {
             Debug.Log($"{correctIndexes.Count} buttons selected. Ready to check answers!");
-
             submitButton.SetActive(true);
         }
+        else
+        {
+            // keep behavior consistent (prevents submit staying on when count drops)
+            submitButton.SetActive(false);
+        }
     }
+
     void UpdateSelectedCountText()
     {
         if (selectedCountText != null)
@@ -62,11 +67,53 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
         }
     }
 
+    // ✅ FULL FIX IS HERE:
+    // Instead of directly setting Image.color (local only),
+    // we translate the color intention into a synced button-state call.
     void SetButtonColor(int index, Color color)
     {
-        var img = pictureButtons[index].GetComponent<Image>();
-        if (img != null)
-            img.color = color;
+        if (index < 0 || index >= pictureButtons.Count) return;
+
+        var btnGO = pictureButtons[index].gameObject;
+        var synced = btnGO.GetComponent<PhotonSyncedUIButtonColor>();
+
+        // If this button doesn't have the sync component, fallback to local color (keeps your logic usable)
+        if (synced == null)
+        {
+            var img = btnGO.GetComponent<Image>();
+            if (img != null) img.color = color;
+            return;
+        }
+
+        // Map your color usage to synced states:
+        // - defaultColor => clear result (back to normal)
+        // - selectedColor => selected state (yellow)
+        // - correctColor => correct state (green)
+        // - wrongColor => wrong state (red)
+        if (color == defaultColor)
+        {
+            // back to normal (not selected, not correct/wrong)
+            synced.ClearResultAndSync();
+        }
+        else if (color == selectedColor)
+        {
+            // selected highlight (yellow)
+            synced.MarkSelectedAndSync();
+        }
+        else if (color == correctColor)
+        {
+            synced.MarkCorrectAndSync();
+        }
+        else if (color == wrongColor)
+        {
+            synced.MarkWrongAndSync();
+        }
+        else
+        {
+            // If you pass a custom color, just treat it as selected
+            // (or you can add SetCustomColorAndSync to your button script if needed)
+            synced.MarkSelectedAndSync();
+        }
     }
 
     public bool CheckAnswers()
@@ -99,6 +146,7 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
     {
         return CheckAnswers();
     }
+
     public void ResetGrid()
     {
         selectedIndexes.Clear();
@@ -119,9 +167,11 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
         }
 
         submitButton.SetActive(false);
+        UpdateSelectedCountText();
 
         Debug.Log("Picture Grid Puzzle reset.");
     }
+
     private void ResetSelection(int index)
     {
         if (index < 0 || index >= pictureButtons.Count) return;
@@ -129,10 +179,7 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
         Button btn = pictureButtons[index];
         btn.interactable = true;
 
-        var img = btn.GetComponent<Image>();
-        if (img != null)
-            img.color = defaultColor;
+        // Use your existing reset flow, but route through SetButtonColor so it syncs
+        SetButtonColor(index, defaultColor);
     }
-
-
 }

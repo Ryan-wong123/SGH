@@ -72,6 +72,22 @@ MonoBehaviour:
   - RPC_KeypadUnlock
   - RPC_RequestCheck
   - RPC_ShowResult
+  - RPC_ClearEditor
+  - RPC_SetEditor
+  - RPC_SetText
+  - RPC_SetDropdownValue
+  - RPC_SetColor
+  - RPC_ToggleColor
+  - RPC_SetSelection
+  - RPC_SetResultState
+  - RPC_ClearResult
+  - RPC_DisableCellUI
+  - RPC_SetResultCorrect
+  - RPC_SetResultWrong
+  - RPC_SetSelectedVisual
+  - RPC_SetTextColor
+  - RPC_SetSelected
+  - RPC_SetTextLWW
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
