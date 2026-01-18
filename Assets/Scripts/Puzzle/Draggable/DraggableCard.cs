@@ -1,13 +1,15 @@
-﻿// DraggableCard.cs (NETWORKED)
-// Drop-in replacement for your existing DraggableCard.cs
+﻿// DraggableCard.cs (NETWORKED - shared ownership via RequestOwnership)
 
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 
-public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler, IPunObservable
+public class DraggableCard : MonoBehaviour,
+    IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler,
+    IPunObservable, IPunOwnershipCallbacks
 {
     [Header("UI References")]
     [SerializeField] protected Canvas canvas;
@@ -34,14 +36,15 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     // Photon
     private PhotonView pv;
 
-    // Local drag state (owned client)
-    private bool isDragging;
+    // Local drag state
+    private bool isDraggingLocal;
+    private bool waitingForOwnership;
 
-    // Remote smoothing
+    // Remote state
     private Vector2 netAnchoredPos;
     private Vector2 netScale;
     private string netParentPath;
-    private bool netDragging;
+    private bool netDragging; // "someone is dragging" (owner sends)
 
     protected virtual void Awake()
     {
@@ -49,6 +52,16 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         pv = GetComponent<PhotonView>();
+    }
+
+    protected virtual void OnEnable()
+    {
+        if (pv != null) PhotonNetwork.AddCallbackTarget(this);
+    }
+
+    protected virtual void OnDisable()
+    {
+        if (pv != null) PhotonNetwork.RemoveCallbackTarget(this);
     }
 
     protected virtual void Start()
@@ -61,31 +74,56 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         originalParent = transform.parent;
         originalPosition = transform.position;
 
-        // Only owner should be interactable (prevents remote click/drag stealing raycasts)
-        if (pv != null && !pv.IsMine)
-        {
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false;
-        }
+        // IMPORTANT:
+        // Do NOT disable raycasts/interactable for non-owners here.
+        // Otherwise other players can never click to request ownership.
+        SetInteractableState();
     }
 
-    private bool CanControl()
+    private bool IsNetworked => pv != null;
+
+    private bool SomeoneElseDragging()
     {
-        // If not networked, allow. If networked, only owner can control.
-        return pv == null || pv.IsMine;
+        // If remote says it's being dragged and we are not the owner, treat as locked.
+        return IsNetworked && netDragging && !pv.IsMine;
+    }
+
+    private void SetInteractableState()
+    {
+        if (canvasGroup == null) return;
+
+        // If someone else is dragging it, lock it locally.
+        bool canInteract = !SomeoneElseDragging() && !waitingForOwnership;
+
+        // Owner can always interact.
+        if (!IsNetworked || pv.IsMine) canInteract = true;
+
+        canvasGroup.interactable = canInteract;
+        canvasGroup.blocksRaycasts = canInteract;
     }
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
-        if (!CanControl()) return;
+        if (SomeoneElseDragging()) return;
 
-        // Take ownership so only 1 player drives the sync while dragging
-        if (pv != null && !pv.IsMine)
+        if (IsNetworked && !pv.IsMine)
         {
+            // Request ownership so this player becomes the sync authority
+            waitingForOwnership = true;
+            SetInteractableState();
             pv.RequestOwnership();
+
+            // Don’t start moving yet; wait until ownership transfers.
+            return;
         }
 
-        isDragging = true;
+        BeginDragInternal();
+    }
+
+    private void BeginDragInternal()
+    {
+        waitingForOwnership = false;
+        isDraggingLocal = true;
 
         canvasGroup.blocksRaycasts = false;
         lastSlotOrParent = transform.parent;
@@ -96,28 +134,30 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public virtual void OnDrag(PointerEventData eventData)
     {
-        if (!CanControl()) return;
+        // Only the owner should move the card (so it stays authoritative)
+        if (IsNetworked && !pv.IsMine) return;
+        if (waitingForOwnership) return;
+        if (SomeoneElseDragging()) return;
 
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
     public virtual void OnEndDrag(PointerEventData eventData)
     {
-        if (!CanControl()) return;
+        if (IsNetworked && !pv.IsMine) return;
+        if (waitingForOwnership) return;
 
-        isDragging = false;
+        isDraggingLocal = false;
         canvasGroup.blocksRaycasts = true;
 
         if (transform.parent == canvas.transform || transform.parent == null)
         {
             bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
 
-            // 1. From panel2, dropped on panel1(not a slot) → snap to panel1
             if (IsPointerOverPanel("Panel1") && fromPanel2)
             {
                 SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
             }
-            // 2. From panel2, dropped on panel2(not a slot)
             else if (IsPointerOverPanel("Panel2") && fromPanel2)
             {
                 Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
@@ -144,7 +184,7 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void SnapBack()
     {
-        if (!CanControl()) return;
+        if (IsNetworked && !pv.IsMine) return;
 
         if (!panel1GridLayout.gameObject.activeSelf)
         {
@@ -205,7 +245,8 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public virtual void OnPointerClick(PointerEventData eventData)
     {
-        if (!CanControl()) return;
+        if (SomeoneElseDragging()) return;
+        if (IsNetworked && !pv.IsMine && waitingForOwnership) return;
 
         if (eventData.button == PointerEventData.InputButton.Right)
         {
@@ -216,7 +257,7 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public virtual void ResetCard()
     {
-        if (!CanControl()) return;
+        if (IsNetworked && !pv.IsMine) return;
 
         SetParentLocal(originalParent);
         transform.position = originalPosition;
@@ -230,14 +271,12 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     // ---------------------------
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        // If not networked, do nothing
         if (pv == null) return;
 
         if (stream.IsWriting)
         {
-            // Send parent path + rect state
             string parentPath = GetPathFromRoot(transform.parent);
-            stream.SendNext(isDragging);
+            stream.SendNext(isDraggingLocal);
             stream.SendNext(parentPath);
             stream.SendNext(rectTransform.anchoredPosition);
             stream.SendNext((Vector2)rectTransform.localScale);
@@ -258,30 +297,24 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void ApplyRemoteState()
     {
-        // Reparent by path
         Transform parent = FindByPath(netParentPath);
         if (parent != null && transform.parent != parent)
         {
             transform.SetParent(parent);
         }
 
-        // Apply rect state
         rectTransform.anchoredPosition = netAnchoredPos;
         rectTransform.localScale = netScale;
 
-        // Remote should never block raycasts (prevents them from interfering with local drag)
-        canvasGroup.blocksRaycasts = false;
-        canvasGroup.interactable = false;
+        // Lock/unlock interaction based on whether someone else is dragging
+        SetInteractableState();
     }
 
     private string GetPathFromRoot(Transform target)
     {
         if (pathRoot == null || target == null) return "";
-
-        // If target is the root itself
         if (target == pathRoot) return "";
 
-        // Build "A/B/C" path relative to root
         var stack = new Stack<string>();
         Transform cur = target;
 
@@ -291,9 +324,7 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             cur = cur.parent;
         }
 
-        // If we never reached root, hierarchy mismatch
         if (cur != pathRoot) return "";
-
         return string.Join("/", stack.ToArray());
     }
 
@@ -301,7 +332,32 @@ public class DraggableCard : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (pathRoot == null) return null;
         if (string.IsNullOrEmpty(path)) return pathRoot;
-
         return pathRoot.Find(path);
+    }
+
+    // ---------------------------
+    // Ownership callbacks
+    // ---------------------------
+    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer) { }
+
+    public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
+    {
+        if (pv == null || targetView != pv) return;
+
+        // If we requested it, start dragging now
+        if (pv.IsMine && waitingForOwnership)
+        {
+            BeginDragInternal();
+        }
+
+        SetInteractableState();
+    }
+
+    public void OnOwnershipTransferFailed(PhotonView targetView, Player senderOfFailedRequest)
+    {
+        if (pv == null || targetView != pv) return;
+
+        waitingForOwnership = false;
+        SetInteractableState();
     }
 }
