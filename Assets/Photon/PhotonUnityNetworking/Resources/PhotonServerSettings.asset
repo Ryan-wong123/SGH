@@ -72,6 +72,9 @@ MonoBehaviour:
   - RPC_KeypadUnlock
   - RPC_RequestCheck
   - RPC_ShowResult
+  - RPC_ClearEditor
+  - RPC_SetEditor
+  - RPC_SetText
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
