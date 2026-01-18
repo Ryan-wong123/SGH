@@ -75,6 +75,7 @@ MonoBehaviour:
   - RPC_ClearEditor
   - RPC_SetEditor
   - RPC_SetText
+  - RPC_SetDropdownValue
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

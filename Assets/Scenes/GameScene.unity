@@ -15353,6 +15353,8 @@ GameObject:
   - component: {fileID: 247625394}
   - component: {fileID: 247625393}
   - component: {fileID: 247625392}
+  - component: {fileID: 247625396}
+  - component: {fileID: 247625395}
   m_Layer: 5
   m_Name: Dropdown (2)
   m_TagString: Untagged
@@ -15487,6 +15489,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 247625390}
   m_CullTransparentMesh: 1
+--- !u!114 &247625395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247625390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 247625392}
+--- !u!114 &247625396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247625390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 146
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &252276503
 GameObject:
   m_ObjectHideFlags: 0
@@ -45387,6 +45424,8 @@ GameObject:
   - component: {fileID: 703371391}
   - component: {fileID: 703371390}
   - component: {fileID: 703371389}
+  - component: {fileID: 703371393}
+  - component: {fileID: 703371392}
   m_Layer: 5
   m_Name: Dropdown (5)
   m_TagString: Untagged
@@ -45521,6 +45560,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 703371387}
   m_CullTransparentMesh: 1
+--- !u!114 &703371392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703371387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 703371389}
+--- !u!114 &703371393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703371387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 145
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &703483717
 GameObject:
   m_ObjectHideFlags: 0
@@ -61705,6 +61779,8 @@ GameObject:
   - component: {fileID: 983163606}
   - component: {fileID: 983163605}
   - component: {fileID: 983163604}
+  - component: {fileID: 983163608}
+  - component: {fileID: 983163607}
   m_Layer: 5
   m_Name: Dropdown (4)
   m_TagString: Untagged
@@ -61839,6 +61915,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 983163602}
   m_CullTransparentMesh: 1
+--- !u!114 &983163607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983163602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 983163604}
+--- !u!114 &983163608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983163602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 144
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &983604998
 GameObject:
   m_ObjectHideFlags: 0
@@ -84704,6 +84815,8 @@ GameObject:
   - component: {fileID: 1308178854}
   - component: {fileID: 1308178853}
   - component: {fileID: 1308178852}
+  - component: {fileID: 1308178856}
+  - component: {fileID: 1308178855}
   m_Layer: 5
   m_Name: Dropdown
   m_TagString: Untagged
@@ -84838,6 +84951,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1308178850}
   m_CullTransparentMesh: 1
+--- !u!114 &1308178855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308178850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 1308178852}
+--- !u!114 &1308178856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308178850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 143
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1310603570
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -90649,6 +90797,8 @@ GameObject:
   - component: {fileID: 1401914930}
   - component: {fileID: 1401914929}
   - component: {fileID: 1401914928}
+  - component: {fileID: 1401914932}
+  - component: {fileID: 1401914931}
   m_Layer: 5
   m_Name: Dropdown (1)
   m_TagString: Untagged
@@ -90783,6 +90933,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1401914926}
   m_CullTransparentMesh: 1
+--- !u!114 &1401914931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401914926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 1401914928}
+--- !u!114 &1401914932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401914926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 142
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1403568190
 GameObject:
   m_ObjectHideFlags: 0
@@ -98147,6 +98332,8 @@ GameObject:
   - component: {fileID: 1487578387}
   - component: {fileID: 1487578386}
   - component: {fileID: 1487578385}
+  - component: {fileID: 1487578389}
+  - component: {fileID: 1487578388}
   m_Layer: 5
   m_Name: Syring Dropdown
   m_TagString: Untagged
@@ -98290,6 +98477,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1487578383}
   m_CullTransparentMesh: 1
+--- !u!114 &1487578388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487578383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 1487578385}
+--- !u!114 &1487578389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487578383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 140
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1488013335
 GameObject:
   m_ObjectHideFlags: 0
@@ -131447,6 +131669,8 @@ GameObject:
   - component: {fileID: 1922197399}
   - component: {fileID: 1922197398}
   - component: {fileID: 1922197397}
+  - component: {fileID: 1922197401}
+  - component: {fileID: 1922197400}
   m_Layer: 5
   m_Name: Dropdown (3)
   m_TagString: Untagged
@@ -131581,6 +131805,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1922197395}
   m_CullTransparentMesh: 1
+--- !u!114 &1922197400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922197395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3de3e163789f24a4da4099be73a28f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdown: {fileID: 1922197397}
+--- !u!114 &1922197401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922197395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 1
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 141
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1922303261
 GameObject:
   m_ObjectHideFlags: 0
@@ -141788,7 +142047,7 @@ MonoBehaviour:
   puzzle4Object: {fileID: 43846988}
   puzzle5Object: {fileID: 277212288}
   delayTransition: 2
-  CurrentStage: 0
+  CurrentStage: 6
   mainminiPuzzle1Panel1: {fileID: 791486485}
   miniPuzzle1Panel1: {fileID: 3431202}
   miniPuzzle1Panel2: {fileID: 1055109010}

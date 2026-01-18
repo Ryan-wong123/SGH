@@ -75,6 +75,7 @@
     <Compile Include="Assets\Scripts\Player\ClueSystem.cs" />
     <Compile Include="Assets\Scripts\Interactable\PuzzlePanelTrigger.cs" />
     <Compile Include="Assets\Scripts\Keypad\KeypadButton.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\PhotonSyncedTMPDropdown.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 4\Activity2PuzzleManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
