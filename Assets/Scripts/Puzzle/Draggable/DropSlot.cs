@@ -27,7 +27,19 @@ public class DropSlot : MonoBehaviour, IDropHandler
     {
         allDropSlots.Remove(this);
     }
+    public List<DraggableCard> GetCardsInSlot()
+    {
+        var cards = new List<DraggableCard>();
 
+        // If your slot holds the card directly as a child:
+        foreach (Transform child in transform)
+        {
+            var card = child.GetComponent<DraggableCard>();
+            if (card != null) cards.Add(card);
+        }
+
+        return cards;
+    }
     public virtual void OnDrop(PointerEventData eventData)
     {
         GameObject droppedObj = eventData.pointerDrag;
@@ -51,19 +63,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
             AcceptCard(card);
         }
     }
-    public List<DraggableCard> GetCardsInSlot()
-    {
-        var cards = new List<DraggableCard>();
 
-        // If your slot holds the card directly as a child:
-        foreach (Transform child in transform)
-        {
-            var card = child.GetComponent<DraggableCard>();
-            if (card != null) cards.Add(card);
-        }
-
-        return cards;
-    }
     protected virtual void AcceptCard(DraggableCard card)
     {
         card.transform.SetParent(transform);
