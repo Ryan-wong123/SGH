@@ -87,6 +87,7 @@ MonoBehaviour:
   - RPC_SetSelectedVisual
   - RPC_SetTextColor
   - RPC_SetSelected
+  - RPC_SetTextLWW
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

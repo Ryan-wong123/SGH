@@ -1,22 +1,19 @@
 ﻿using UnityEngine;
 using Photon.Pun;
-using UnityEngine.EventSystems;
 using TMPro;
 
 [RequireComponent(typeof(PhotonView))]
 [RequireComponent(typeof(TMP_InputField))]
-public class PhotonSyncedTMPInputField : MonoBehaviourPun, ISelectHandler, IDeselectHandler
+public class PhotonSyncedTMPInputField : MonoBehaviourPun
 {
     [SerializeField] private TMP_InputField input;
 
-    private int editActor = -1;
     private bool suppressCallbacks;
 
-    private int LocalActor =>
-        PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1;
-
-    private bool IsLocked => editActor != -1;
-    private bool IsLockedByMe => editActor == LocalActor;
+    // LWW ordering per-sender
+    private int localSeq = 0;
+    private readonly System.Collections.Generic.Dictionary<int, int> lastSeqByActor =
+        new System.Collections.Generic.Dictionary<int, int>();
 
     private void Awake()
     {
@@ -31,83 +28,31 @@ public class PhotonSyncedTMPInputField : MonoBehaviourPun, ISelectHandler, IDese
         input.onValueChanged.RemoveListener(OnLocalValueChanged);
     }
 
-    // ─────────────────────────────
-    // LOCAL TYPING
-    // ─────────────────────────────
     private void OnLocalValueChanged(string value)
     {
         if (suppressCallbacks) return;
-        if (!IsLockedByMe) return;
 
-        photonView.RPC(nameof(RPC_SetText), RpcTarget.Others, value);
-    }
-
-    // ─────────────────────────────
-    // LOCKING
-    // ─────────────────────────────
-    public void OnSelect(BaseEventData eventData)
-    {
-        if (!PhotonNetwork.InRoom) return;
-
-        if (IsLocked && !IsLockedByMe)
-        {
-            EventSystem.current.SetSelectedGameObject(null);
+        if (!PhotonNetwork.InRoom)
             return;
-        }
 
-        photonView.RPC(nameof(RPC_SetEditor), RpcTarget.All, LocalActor);
+        localSeq++;
+        int actor = PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1;
 
-        if (!photonView.IsMine)
-            photonView.RequestOwnership();
-    }
-
-    public void OnDeselect(BaseEventData eventData)
-    {
-        if (!PhotonNetwork.InRoom) return;
-
-        if (IsLockedByMe)
-        {
-            photonView.RPC(nameof(RPC_ClearEditor), RpcTarget.All);
-        }
-    }
-
-    // ─────────────────────────────
-    // RPCs
-    // ─────────────────────────────
-    [PunRPC]
-    private void RPC_SetEditor(int actor)
-    {
-        editActor = actor;
-        input.readOnly = IsLocked && !IsLockedByMe;
+        // Everyone can type; broadcast changes to others.
+        photonView.RPC(nameof(RPC_SetTextLWW), RpcTarget.Others, value, actor, localSeq);
     }
 
     [PunRPC]
-    private void RPC_ClearEditor()
+    private void RPC_SetTextLWW(string text, int actor, int seq)
     {
-        editActor = -1;
-        input.readOnly = false;
-    }
+        // Ignore out-of-order updates from the same actor
+        if (lastSeqByActor.TryGetValue(actor, out int last) && seq <= last)
+            return;
 
-    [PunRPC]
-    private void RPC_SetText(string text)
-    {
+        lastSeqByActor[actor] = seq;
+
         suppressCallbacks = true;
         input.text = text;
         suppressCallbacks = false;
-    }
-
-    // ─────────────────────────────
-    // SAFETY: editor left room
-    // ─────────────────────────────
-    private void Update()
-    {
-        if (!PhotonNetwork.InRoom || !IsLocked) return;
-
-        var p = PhotonNetwork.CurrentRoom.GetPlayer(editActor);
-        if (p == null)
-        {
-            editActor = -1;
-            input.readOnly = false;
-        }
     }
 }
