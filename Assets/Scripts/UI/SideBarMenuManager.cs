@@ -3,26 +3,40 @@ using UnityEngine.UI;
 
 public class SidebarMenuManager : MonoBehaviour
 {
-    [Header("Popup Panels")]
-    [SerializeField] private GameObject popupMenuPanel;
-    [SerializeField] private GameObject popupInventoryPanel;
-    [SerializeField] private GameObject popupCluePanel;
-    [SerializeField] private GameObject popupSettingsPanel;
+    [Header("Sidebar Popups")]
+    [SerializeField] private SidebarPopup[] sidebarPopups;
+
+    [Header("Blocker")]
     [SerializeField] private GameObject popupBlocker;
 
     private GameObject currentPopup = null;
     private PuzzleTrigger currentPuzzle = null;
 
-    public void SetActivePuzzle(PuzzleTrigger puzzle)
+    [System.Serializable]
+    public struct SidebarPopup
     {
-        currentPuzzle = puzzle;
+        public Button button;
+        public GameObject panel;
+    }
+
+    private void Awake()
+    {
+        // Auto-bind button click listeners
+        foreach (var popup in sidebarPopups)
+        {
+            SidebarPopup capturedPopup = popup; // important for closures
+            popup.button.onClick.AddListener(() =>
+            {
+                TogglePopup(capturedPopup.panel);
+            });
+        }
     }
 
     public void TogglePopup(GameObject popup)
     {
         if (currentPopup == popup)
         {
-            // Close the popup if it's already open
+            Debug.Log("Closing popup: " + popup.name);
             popup.SetActive(false);
             popupBlocker.SetActive(false);
             currentPopup = null;
@@ -32,6 +46,7 @@ public class SidebarMenuManager : MonoBehaviour
             if (currentPopup != null)
                 currentPopup.SetActive(false);
 
+            Debug.Log("Opening popup: " + popup.name);
             popup.SetActive(true);
             popupBlocker.SetActive(true);
             currentPopup = popup;
@@ -54,6 +69,4 @@ public class SidebarMenuManager : MonoBehaviour
 
         popupBlocker.SetActive(false);
     }
-
-
 }

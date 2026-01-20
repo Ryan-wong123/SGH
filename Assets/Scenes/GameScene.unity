@@ -13341,7 +13341,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 101.51404, y: -110.16}
+  m_AnchoredPosition: {x: 101.51416, y: -110.160034}
   m_SizeDelta: {x: 280, y: 320}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &206797493
@@ -17678,7 +17678,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &280907647
@@ -18184,7 +18184,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 101.51404, y: -800.16003}
+  m_AnchoredPosition: {x: 101.51416, y: -800.16003}
   m_SizeDelta: {x: 280, y: 320}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &292843702
@@ -21104,18 +21104,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2075314848}
-        m_TargetAssemblyTypeName: SidebarMenuManager, Assembly-CSharp
-        m_MethodName: TogglePopup
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 595976595}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 2075314858}
         m_TargetAssemblyTypeName: ClueUI, Assembly-CSharp
         m_MethodName: Hide
@@ -26983,7 +26971,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -47.589, y: 0}
+  m_AnchoredPosition: {x: -47.58911, y: 0}
   m_SizeDelta: {x: 92.621, y: 30}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &414603114
@@ -31921,7 +31909,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 106.24036, y: -720.16003}
+  m_AnchoredPosition: {x: 106.240234, y: -720.16003}
   m_SizeDelta: {x: 280, y: 320}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &482276349
@@ -33230,7 +33218,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &509120713
@@ -34748,7 +34736,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -17.4843, y: 0.4940796}
+  m_AnchoredPosition: {x: -17.484375, y: 0.49414062}
   m_SizeDelta: {x: -34.9685, y: -164.9882}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &521481523
@@ -38953,7 +38941,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 315.5, y: 30.2}
+  m_AnchoredPosition: {x: 315.5, y: 30.199951}
   m_SizeDelta: {x: 32.25119, y: 32.251205}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &603901119
@@ -52294,7 +52282,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &791486487
@@ -52519,7 +52507,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0018310547, y: -0.93255615}
+  m_AnchoredPosition: {x: -0.001953125, y: -0.9326172}
   m_SizeDelta: {x: -450.24, y: -251.83}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &798696087
@@ -54842,7 +54830,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 101.51404, y: -340.16}
+  m_AnchoredPosition: {x: 101.51416, y: -340.16003}
   m_SizeDelta: {x: 280, y: 320}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &843600298
@@ -59823,7 +59811,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 106.24036, y: -240.16}
+  m_AnchoredPosition: {x: 106.240234, y: -240.16003}
   m_SizeDelta: {x: 280, y: 320}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &922639427
@@ -62174,7 +62162,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -17.4843, y: 0.4940796}
+  m_AnchoredPosition: {x: -17.484375, y: 0.49414062}
   m_SizeDelta: {x: -34.9685, y: -164.9882}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &980202701
@@ -66670,7 +66658,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -17.4843, y: 0.4940796}
+  m_AnchoredPosition: {x: -17.484375, y: 0.49414062}
   m_SizeDelta: {x: -34.9685, y: -164.9882}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1037636556
@@ -67670,7 +67658,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 101.51404, y: -570.16003}
+  m_AnchoredPosition: {x: 101.51416, y: -570.16003}
   m_SizeDelta: {x: 280, y: 320}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1056254390
@@ -67903,7 +67891,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1061063800
@@ -68428,7 +68416,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1064947406
@@ -68893,7 +68881,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1067863176
@@ -72846,7 +72834,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 35.4937, y: 0}
+  m_AnchoredPosition: {x: 35.493652, y: 0}
   m_SizeDelta: {x: 55.4937, y: -17}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1133718055
@@ -81444,7 +81432,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1262713098
@@ -84128,7 +84116,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 35.4937, y: 0}
+  m_AnchoredPosition: {x: 35.493652, y: 0}
   m_SizeDelta: {x: 55.4937, y: -17}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1290796428
@@ -88288,7 +88276,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 106.24036, y: -480.16}
+  m_AnchoredPosition: {x: 106.240234, y: -480.16003}
   m_SizeDelta: {x: 280, y: 320}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1359663131
@@ -92421,7 +92409,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1409617928
@@ -95475,19 +95463,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1451200795}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2075314848}
-        m_TargetAssemblyTypeName: SidebarMenuManager, Assembly-CSharp
-        m_MethodName: TogglePopup
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1534838746}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1451200795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110148,7 +110124,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1628483219
@@ -115985,7 +115961,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -0.099975586, y: -45.7}
+  m_AnchoredPosition: {x: -0.100097656, y: -45.69995}
   m_SizeDelta: {x: 250, y: 66}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1707366737
@@ -116137,7 +116113,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 431.9414, y: -36.137024}
+  m_AnchoredPosition: {x: 431.9414, y: -36.136963}
   m_SizeDelta: {x: -863.8727, y: -91.726}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1707974238
@@ -123101,7 +123077,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 35.4937, y: 0}
+  m_AnchoredPosition: {x: 35.493652, y: 0}
   m_SizeDelta: {x: 55.4937, y: -17}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1810337109
@@ -125016,7 +124992,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 28.9}
+  m_AnchoredPosition: {x: 0, y: 28.900024}
   m_SizeDelta: {x: 580, y: 334.59}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1821129783
@@ -126767,19 +126743,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1842676868}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2075314848}
-        m_TargetAssemblyTypeName: SidebarMenuManager, Assembly-CSharp
-        m_MethodName: TogglePopup
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 786636231}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1842676868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130601,7 +130565,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1890872486
@@ -143159,19 +143123,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2074607474}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2075314848}
-        m_TargetAssemblyTypeName: SidebarMenuManager, Assembly-CSharp
-        m_MethodName: TogglePopup
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 891826852}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2074607474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143290,10 +143242,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2d5d89acdff392469df865787c6045f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupMenuPanel: {fileID: 786636231}
-  popupInventoryPanel: {fileID: 1534838746}
-  popupCluePanel: {fileID: 595976595}
-  popupSettingsPanel: {fileID: 891826852}
+  sidebarPopups:
+  - button: {fileID: 1842676867}
+    panel: {fileID: 786636231}
+  - button: {fileID: 1451200794}
+    panel: {fileID: 1534838746}
+  - button: {fileID: 328232812}
+    panel: {fileID: 595976595}
+  - button: {fileID: 2074607473}
+    panel: {fileID: 891826852}
   popupBlocker: {fileID: 856606430}
 --- !u!114 &2075314849
 MonoBehaviour:
