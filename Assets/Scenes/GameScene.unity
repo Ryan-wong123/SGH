@@ -143267,10 +143267,18 @@ MonoBehaviour:
   countdownDuration: 120
   timerText: {fileID: 1823339984}
   timeWarningPanel: {fileID: 326284108}
-  warningThreshold: 40
-  warningThreshold2: 20
-  slideDuration: 10
   warningText: {fileID: 331771841}
+  warnings:
+  - thresholdSeconds: 40
+    message: Time's almost up!
+    color: {r: 1, g: 0.8574687, b: 0, a: 1}
+    slideDuration: 10
+    shown: 0
+  - thresholdSeconds: 20
+    message: Puzzle is going to reset!
+    color: {r: 1, g: 0, b: 0, a: 1}
+    slideDuration: 10
+    shown: 0
 --- !u!114 &2075314850
 MonoBehaviour:
   m_ObjectHideFlags: 0
