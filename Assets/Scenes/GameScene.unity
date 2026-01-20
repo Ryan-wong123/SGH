@@ -143349,7 +143349,6 @@ MonoBehaviour:
   deathLapsesManager: {fileID: 280907649}
   Puzzle11Panel: {fileID: 280907644}
   movementTargetPuzzle11: {fileID: 5130600388808461207}
-  statusText: {fileID: 2024478295}
 --- !u!114 &2075314852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143523,6 +143522,25 @@ MonoBehaviour:
     - {fileID: 1525511814}
     - {fileID: 214535468}
     queueDisplayDirectives: []
+    statusTextDirectives:
+    - target: {fileID: 2024478295}
+      template: 
+      useDate: 1
+      dateOffsetDays: 0
+      dateFormat: dd MMM yyyy
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
+  - stage: 2
+    activateOnEnter: []
+    deactivateOnExit: []
+    queueDisplayDirectives: []
+    statusTextDirectives:
+    - target: {fileID: 2024478295}
+      template: 2h before death
+      useDate: 0
+      dateOffsetDays: 0
+      dateFormat: 
     onEnter:
       m_PersistentCalls:
         m_Calls: []
@@ -143536,8 +143554,23 @@ MonoBehaviour:
       flashBoardWhenShown: 1
     - display: {fileID: 1991173882}
       board: {fileID: 237814523}
-      text: 154
+      text: '154 '
       flashBoardWhenShown: 1
+    statusTextDirectives:
+    - target: {fileID: 2024478295}
+      template: 2 weeks before death
+      useDate: 0
+      dateOffsetDays: 0
+      dateFormat: 
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
+  - stage: 5
+    activateOnEnter:
+    - {fileID: 1525511814}
+    deactivateOnExit: []
+    queueDisplayDirectives: []
+    statusTextDirectives: []
     onEnter:
       m_PersistentCalls:
         m_Calls: []
@@ -143554,29 +143587,7 @@ MonoBehaviour:
       board: {fileID: 1306950431}
       text: 154
       flashBoardWhenShown: 1
-    onEnter:
-      m_PersistentCalls:
-        m_Calls: []
-  - stage: 2
-    activateOnEnter: []
-    deactivateOnExit: []
-    queueDisplayDirectives: []
-    onEnter:
-      m_PersistentCalls:
-        m_Calls: []
-  - stage: 5
-    activateOnEnter:
-    - {fileID: 1525511814}
-    deactivateOnExit: []
-    queueDisplayDirectives: []
-    onEnter:
-      m_PersistentCalls:
-        m_Calls: []
-  - stage: 6
-    activateOnEnter:
-    - {fileID: 1933334847}
-    deactivateOnExit: []
-    queueDisplayDirectives: []
+    statusTextDirectives: []
     onEnter:
       m_PersistentCalls:
         m_Calls: []
@@ -143585,6 +143596,7 @@ MonoBehaviour:
     - {fileID: 214535468}
     deactivateOnExit: []
     queueDisplayDirectives: []
+    statusTextDirectives: []
     onEnter:
       m_PersistentCalls:
         m_Calls: []

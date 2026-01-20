@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Photon.Pun;
 using TMPro;
@@ -25,6 +25,29 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 
     private PuzzleStateManager.PuzzleStage? lastStage;
     private float _nextPoll;
+
+    [Serializable]
+    public class StatusTextDirective
+    {
+        [Tooltip("TMP text element to update for this stage.")]
+        public TMP_Text target;
+
+        [Tooltip("Template supports {n} and optional {date}. (Legacy supported: {date+X}, {date-X})")]
+        [TextArea(2, 4)]
+        public string template = "";
+
+        [Header("Date options")]
+        [Tooltip("If false, date tokens will be removed/ignored (no date shown).")]
+        public bool useDate = true;
+
+        [Tooltip("Date offset in days applied to {date}. Use negative for past dates.")]
+        public int dateOffsetDays = 0;
+
+        [Tooltip("Date format used for {date}. Select from dropdown in Inspector (custom drawer).")]
+        [DateFormat]
+        public string dateFormat = "dd MMM yyyy";
+    }
+
 
     [Serializable]
     public class QueueDisplayDirective
@@ -54,7 +77,11 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         [Header("Queue Number Displays (optional, per-display text)")]
         public List<QueueDisplayDirective> queueDisplayDirectives = new();
 
+        [Header("Status Text Directives (optional, multiple targets)")]
+        public List<StatusTextDirective> statusTextDirectives = new();
+
         [Tooltip("Optional local hooks (animations, sounds, etc.). Not networked.")]
+        [Header("Invoke functions")]
         public UnityEvent onEnter;
     }
 
@@ -109,7 +136,11 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         string[] deactivatePaths = CollectHierarchyPaths(prevDirective?.deactivateOnExit);
         string[] activatePaths = CollectHierarchyPaths(newDirective?.activateOnEnter);
 
-        string[] texts = CollectQueueTexts(newDirective, stage);
+        // Queue texts for this stage
+        string[] queueTexts = CollectQueueTexts(newDirective, stage);
+
+        // multiple status text outputs for this stage
+        string[] statusTexts = CollectStatusTexts(newDirective, stage);
 
         var target = bufferStageRpcForLateJoiners ? RpcTarget.AllBuffered : RpcTarget.All;
 
@@ -118,11 +149,12 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
             (int)stage,
             deactivatePaths,
             activatePaths,
-            texts);
+            queueTexts,
+            statusTexts);
     }
 
     [PunRPC]
-    private void RPC_ApplyStageEffects(int stageInt, string[] deactivatePaths, string[] activatePaths, string[] texts)
+    private void RPC_ApplyStageEffects(int stageInt, string[] deactivatePaths, string[] activatePaths, string[] queueTexts, string[] statusTexts)
     {
         // 1) Stop all board flashes before applying new stage
         StopAllBoardFlashes();
@@ -131,10 +163,13 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         ToggleByPaths(deactivatePaths, false);
         ToggleByPaths(activatePaths, true);
 
-        // 3) Apply texts + turn on flash for this stage
+        // 3) Apply queue texts + flash for this stage
         var stage = (PuzzleStateManager.PuzzleStage)stageInt;
         var directive = FindDirective(stage);
-        ApplyQueueTextsAndFlash(directive, texts, stage);
+        ApplyQueueTextsAndFlash(directive, queueTexts, stage);
+
+        // 4) Apply status texts for this stage (multiple targets)
+        ApplyStatusTexts(directive, statusTexts, stage);
 
         // Local-only hooks
         directive?.onEnter?.Invoke();
@@ -155,8 +190,13 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         foreach (var go in newDirective.activateOnEnter)
             if (go) go.SetActive(true);
 
-        string[] texts = CollectQueueTexts(newDirective, stage);
-        ApplyQueueTextsAndFlash(newDirective, texts, stage);
+        // Queue texts local
+        string[] queueTexts = CollectQueueTexts(newDirective, stage);
+        ApplyQueueTextsAndFlash(newDirective, queueTexts, stage);
+
+        // Status texts local
+        string[] statusTexts = CollectStatusTexts(newDirective, stage);
+        ApplyStatusTexts(newDirective, statusTexts, stage);
 
         newDirective.onEnter?.Invoke();
     }
@@ -325,5 +365,176 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
                 return parsed;
         }
         return (int)stage + 1;
+    }
+    // ----------------------------
+    // Status text helpers (NEW)
+    // ----------------------------
+
+    private string[] CollectStatusTexts(StageDirective directive, PuzzleStateManager.PuzzleStage stage)
+    {
+        if (directive == null || directive.statusTextDirectives == null || directive.statusTextDirectives.Count == 0)
+            return Array.Empty<string>();
+
+        var result = new List<string>(directive.statusTextDirectives.Count);
+
+        for (int i = 0; i < directive.statusTextDirectives.Count; i++)
+        {
+            var s = directive.statusTextDirectives[i];
+            if (s == null || s.target == null)
+            {
+                result.Add("");
+                continue;
+            }
+
+            string msg = s.template ?? "";
+
+            // Allow {n}
+            int n = GetPuzzleNumber(stage);
+            msg = msg.Replace("{n}", n.ToString());
+
+            if (s.useDate)
+            {
+                // ✅ If user didn't include any date token, auto-add it
+                // - Empty template becomes "{date}"
+                // - "Todays date:" becomes "Todays date: {date}"
+                if (!msg.Contains("{date", StringComparison.Ordinal))
+                {
+                    msg = msg.TrimEnd();
+                    msg = string.IsNullOrEmpty(msg) ? "{date}" : (msg + " {date}");
+                }
+
+                string fmt = string.IsNullOrEmpty(s.dateFormat) ? "dd MMM yyyy" : s.dateFormat;
+                DateTime baseDate = DateTime.Now.AddDays(s.dateOffsetDays);
+
+                msg = ReplaceDateTokens(msg, fmt, baseDate);
+            }
+            else
+            {
+                msg = RemoveDateTokens(msg);
+            }
+
+            result.Add(msg);
+        }
+
+        return result.ToArray();
+    }
+
+    private static string RemoveDateTokens(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return "";
+        if (!input.Contains("{date")) return input;
+
+        string output = input;
+
+        // Remove simple token
+        output = output.Replace("{date}", "");
+
+        // Remove legacy tokens like {date+2}, {date-5}
+        int safety = 50;
+        while (safety-- > 0)
+        {
+            int start = output.IndexOf("{date", StringComparison.Ordinal);
+            if (start < 0) break;
+
+            int end = output.IndexOf("}", start, StringComparison.Ordinal);
+            if (end < 0) break;
+
+            string token = output.Substring(start, end - start + 1);
+
+            // only remove if it matches the legacy token patterns
+            if (token.StartsWith("{date+", StringComparison.Ordinal) || token.StartsWith("{date-", StringComparison.Ordinal))
+            {
+                output = ReplaceFirst(output, token, "");
+            }
+            else
+            {
+                // If it's some weird token, stop to avoid infinite loop
+                break;
+            }
+        }
+
+        return output;
+    }
+
+
+    private void ApplyStatusTexts(StageDirective directive, string[] statusTexts, PuzzleStateManager.PuzzleStage stage)
+    {
+        if (directive == null || directive.statusTextDirectives == null) return;
+        if (statusTexts == null) return;
+
+        for (int i = 0; i < directive.statusTextDirectives.Count && i < statusTexts.Length; i++)
+        {
+            var s = directive.statusTextDirectives[i];
+            if (s == null || s.target == null) continue;
+
+            if (string.IsNullOrEmpty(statusTexts[i])) continue;
+
+            s.target.text = statusTexts[i];
+        }
+    }
+
+    private static string ReplaceDateTokens(string input, string dateFormat, DateTime baseDate)
+    {
+        if (string.IsNullOrEmpty(input)) return "";
+
+        if (!input.Contains("{date")) return input;
+
+        string output = input;
+
+        // Primary token {date} uses baseDate (NOW + offsetDays)
+        string baseStr = baseDate.ToString(dateFormat);
+        output = output.Replace("{date}", baseStr);
+
+        int safety = 50;
+        while (safety-- > 0)
+        {
+            int start = output.IndexOf("{date", StringComparison.Ordinal);
+            if (start < 0) break;
+
+            int end = output.IndexOf("}", start, StringComparison.Ordinal);
+            if (end < 0) break;
+
+            string token = output.Substring(start, end - start + 1);
+
+            if (token == "{date}")
+            {
+                output = ReplaceFirst(output, token, baseStr);
+                continue;
+            }
+
+            int offsetDays = 0;
+            bool parsed = false;
+
+            if (token.StartsWith("{date+", StringComparison.Ordinal) && token.EndsWith("}"))
+            {
+                string num = token.Substring(6, token.Length - 7);
+                parsed = int.TryParse(num, out offsetDays);
+            }
+            else if (token.StartsWith("{date-", StringComparison.Ordinal) && token.EndsWith("}"))
+            {
+                string num = token.Substring(6, token.Length - 7);
+                parsed = int.TryParse(num, out offsetDays);
+                offsetDays = -offsetDays;
+            }
+
+            if (parsed)
+            {
+                string d = baseDate.AddDays(offsetDays).ToString(dateFormat);
+                output = ReplaceFirst(output, token, d);
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return output;
+    }
+
+    private static string ReplaceFirst(string text, string search, string replace)
+    {
+        int pos = text.IndexOf(search, StringComparison.Ordinal);
+        if (pos < 0) return text;
+        return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
     }
 }

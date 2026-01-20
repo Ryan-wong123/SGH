@@ -83,7 +83,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
     private Dictionary<PuzzleStage, IPuzzle> puzzleHandlers;
 
-    [SerializeField] private TMP_Text statusText;
+
 
     // Tracks which panel belongs to which stage
     private readonly Dictionary<PuzzleStage, GameObject> stagePanels = new();
@@ -136,8 +136,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             { PuzzleStage.Puzzle11, deathLapsesManager }
         };
 
-        string todayDate = DateTime.Now.ToString("dd MMM yyyy");
-        photonView.RPC(nameof(RPC_UpdateStatusText), RpcTarget.All, $"{todayDate}");
+
+
 
         EnsureRoomProps(); // initialize fair-turn props in room
     }
@@ -158,11 +158,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         stagePanels[PuzzleStage.Puzzle11] = Puzzle11Panel;
     }
 
-    [PunRPC]
-    private void RPC_UpdateStatusText(string message)
-    {
-        if (statusText != null) statusText.text = message;
-    }
+
 
     // ===== Timer-driven reloads =====
     public void OnTimerExpired()
@@ -367,7 +363,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         if (miniPuzzle1Header2) miniPuzzle1Header2.SetActive(false);
         mainminiPuzzle1Panel1?.SetActive(false);
 
-        photonView.RPC(nameof(RPC_UpdateStatusText), RpcTarget.All, "2h before death");
+        
         GetKeyUponCompletion(puzzle1Object, "Time Crystal1");
 
         CurrentStage = PuzzleStage.Puzzle3;
@@ -390,7 +386,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         Debug.Log("Puzzle 4 completed correctly!");
         Puzzle4Panel?.SetActive(false);
 
-        photonView.RPC(nameof(RPC_UpdateStatusText), RpcTarget.All, "2 weeks before death");
+
         GetKeyUponCompletion(puzzle2Object, "Time Crystal2");
 
         CurrentStage = PuzzleStage.Puzzle5;
