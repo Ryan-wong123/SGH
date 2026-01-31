@@ -58225,15 +58225,13 @@ MonoBehaviour:
   m_text: 'Down
 
     1. Brand of a soluble,peakless long-acting insulin analog that
-    is usually given
+    is usually given once daily.
 
-    once daily.
+    3. The effect appear within 30min, peak between
+    2-3h after subcutaneous injection and lasts 5-8h
 
-    3. The effect appear within 30min, peak
-    between 2-3h after subcutaneous injection and lasts 5-8h
-
-    7. The brand of
-    the peakless insulin that comes in 300 iu/mL'
+    7. The brand of the peakless
+    insulin that comes in 300IU/mL'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
