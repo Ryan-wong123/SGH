@@ -15,6 +15,10 @@ public class HighlightEffect : MonoBehaviour
     [SerializeField] private float highlightScaleMultiplier = 1.1f;
     [SerializeField] private float scaleSpeed = 5f;
 
+    [Header("Optional Scaling")]
+    [Tooltip("If true, Highlight/Unhighlight will scale the object. If false, only emission highlighting is applied.")]
+    public bool enableScaling = true;
+
     [Header("Child Filtering")]
     [Tooltip("If true, only children in AllowedChildren will be highlighted. If false, all children EXCEPT those in ExcludedChildren will highlight.")]
     [SerializeField] private bool useWhitelist = false;
@@ -71,7 +75,14 @@ public class HighlightEffect : MonoBehaviour
             }
         }
 
-        RestartScale(originalScale * highlightScaleMultiplier);
+        if (enableScaling)
+        {
+            RestartScale(originalScale * highlightScaleMultiplier);
+        }
+        else
+        {
+            StopScaleAndSnapToOriginal();
+        }
     }
 
     public void Unhighlight()
@@ -87,13 +98,38 @@ public class HighlightEffect : MonoBehaviour
             }
         }
 
-        RestartScale(originalScale);
+        if (enableScaling)
+        {
+            RestartScale(originalScale);
+        }
+        else
+        {
+            StopScaleAndSnapToOriginal();
+        }
     }
 
     private void RestartScale(Vector3 targetScale)
     {
+        if (!enableScaling)
+        {
+            StopScaleAndSnapToOriginal();
+            return;
+        }
+
         if (scaleCoroutine != null) { StopCoroutine(scaleCoroutine); scaleCoroutine = null; }
         scaleCoroutine = StartCoroutine(ScaleTo(targetScale));
+    }
+
+    private void StopScaleAndSnapToOriginal()
+    {
+        if (scaleCoroutine != null)
+        {
+            StopCoroutine(scaleCoroutine);
+            scaleCoroutine = null;
+        }
+
+        if (this)
+            transform.localScale = originalScale;
     }
 
     private IEnumerator ScaleTo(Vector3 targetScale)

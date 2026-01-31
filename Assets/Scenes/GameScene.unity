@@ -12946,6 +12946,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -23156,6 +23157,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -34078,6 +34080,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -62593,6 +62596,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -70784,6 +70788,7 @@ MonoBehaviour:
   emissionIntensity: 0.4
   highlightScaleMultiplier: 1.1
   scaleSpeed: 5
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -74606,6 +74611,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -74625,6 +74631,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -76679,6 +76686,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -90082,6 +90090,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -93569,6 +93578,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 1
   allowedChildren:
   - {fileID: 5130600388806464853}
@@ -96195,6 +96205,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -98023,6 +98034,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -99499,6 +99511,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -105167,6 +105180,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -117068,6 +117082,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -125185,6 +125200,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -125722,6 +125738,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 0
   useWhitelist: 1
   allowedChildren:
   - {fileID: 1007059913}
@@ -125743,6 +125760,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 0
   useWhitelist: 1
   allowedChildren:
   - {fileID: 1007059914}
@@ -126556,6 +126574,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -126575,6 +126594,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 0
   allowedChildren: []
   excludedChildren: []
@@ -145375,6 +145395,7 @@ MonoBehaviour:
   emissionIntensity: 0.3
   highlightScaleMultiplier: 1.2
   scaleSpeed: 10
+  enableScaling: 1
   useWhitelist: 1
   allowedChildren:
   - {fileID: 8196937307457902911}
