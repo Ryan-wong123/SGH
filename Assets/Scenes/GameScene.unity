@@ -41258,7 +41258,7 @@ MonoBehaviour:
   - image: {fileID: 21300000, guid: 467ac88f2a57a6444b71b3258831c5b2, type: 3}
     duration: 0
     orientationMode: 0
-  - image: {fileID: 21300000, guid: a87065e571ac3474a855730bca55cd7e, type: 3}
+  - image: {fileID: 21300000, guid: 5cd15d1eb1dfe894983a5cb87b6acc5e, type: 3}
     duration: 0
     orientationMode: 0
   - image: {fileID: 21300000, guid: 4ded1761a763c3040ac983af9b342688, type: 3}
@@ -41270,7 +41270,7 @@ MonoBehaviour:
   - image: {fileID: 21300000, guid: 38929186a58f2904b882048a0b45e577, type: 3}
     duration: 0
     orientationMode: 0
-  - image: {fileID: 21300000, guid: 2019454a947d33243baeb73a19e39d7d, type: 3}
+  - image: {fileID: 21300000, guid: c39ca60600adebd40ab4bb8743aed1bd, type: 3}
     duration: 0
     orientationMode: 0
   - image: {fileID: 21300000, guid: c11aac93a1fc315488973e3b5215b1a2, type: 3}
