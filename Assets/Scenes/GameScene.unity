@@ -63274,7 +63274,7 @@ MonoBehaviour:
   puzzleStateManager: {fileID: 2075314851}
   clueUI: {fileID: 2075314858}
   clueId: nurse
-  startWithClue: 1
+  startWithClue: 0
   dontDestroyOnCompletion: 1
 --- !u!114 &1059567800
 MonoBehaviour:
@@ -135164,6 +135164,20 @@ MonoBehaviour:
   - stage: 7
     activateOnEnter:
     - {fileID: 214535468}
+    deactivateOnExit: []
+    queueDisplayDirectives: []
+    statusTextDirectives: []
+    enterAudioSource: {fileID: 0}
+    enterAudioClip: {fileID: 0}
+    enterAudioVolume: 1
+    usePlayOneShot: 1
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
+  - stage: 8
+    activateOnEnter:
+    - {fileID: 1595557880}
+    - {fileID: 677627189}
     deactivateOnExit: []
     queueDisplayDirectives: []
     statusTextDirectives: []
