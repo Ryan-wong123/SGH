@@ -20,11 +20,18 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     [Tooltip("If true, stage effects are buffered so late joiners receive the latest stage toggles.")]
     [SerializeField] private bool bufferStageRpcForLateJoiners = true;
 
+    [Header("Audio (Stage Enter)")]
+    [Tooltip("If false, stage enter audio will NOT play on the very first apply on each client (prevents late-join buffered RPC from playing audio).")]
+    [SerializeField] private bool playEnterAudioOnInitialApply = false;
+
     [Header("Per-Stage Directives")]
     [SerializeField] private List<StageDirective> directives = new();
 
     private PuzzleStateManager.PuzzleStage? lastStage;
     private float _nextPoll;
+
+    // Used to suppress audio on the very first stage apply (late join / buffered RPC scenario)
+    private bool _hasAppliedStageOnce = false;
 
     [Serializable]
     public class StatusTextDirective
@@ -79,6 +86,20 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 
         [Header("Status Text Directives (optional, multiple targets)")]
         public List<StatusTextDirective> statusTextDirectives = new();
+
+        [Header("Stage Enter Audio (optional)")]
+        [Tooltip("AudioSource used to play audio when entering this stage.")]
+        public AudioSource enterAudioSource;
+
+        [Tooltip("AudioClip to play on stage enter. If null, will use enterAudioSource.clip.")]
+        public AudioClip enterAudioClip;
+
+        [Range(0f, 1f)]
+        [Tooltip("Volume used when playing enter audio.")]
+        public float enterAudioVolume = 1f;
+
+        [Tooltip("If true, PlayOneShot is used (does not overwrite the AudioSource's clip). If false, sets clip then Play().")]
+        public bool usePlayOneShot = true;
 
         [Tooltip("Optional local hooks (animations, sounds, etc.). Not networked.")]
         [Header("Invoke functions")]
@@ -156,6 +177,9 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_ApplyStageEffects(int stageInt, string[] deactivatePaths, string[] activatePaths, string[] queueTexts, string[] statusTexts)
     {
+        bool isInitialApply = !_hasAppliedStageOnce;
+        _hasAppliedStageOnce = true;
+
         // 1) Stop all board flashes before applying new stage
         StopAllBoardFlashes();
 
@@ -171,12 +195,18 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         // 4) Apply status texts for this stage (multiple targets)
         ApplyStatusTexts(directive, statusTexts, stage);
 
+        // 5) Play enter audio on stage enter
+        PlayStageEnterAudio(directive, isInitialApply);
+
         // Local-only hooks
         directive?.onEnter?.Invoke();
     }
 
     private void ApplyForEveryone(PuzzleStateManager.PuzzleStage? previous, PuzzleStateManager.PuzzleStage stage)
     {
+        bool isInitialApply = !_hasAppliedStageOnce;
+        _hasAppliedStageOnce = true;
+
         StopAllBoardFlashes();
 
         var prevDirective = previous.HasValue ? FindDirective(previous.Value) : null;
@@ -198,7 +228,50 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         string[] statusTexts = CollectStatusTexts(newDirective, stage);
         ApplyStatusTexts(newDirective, statusTexts, stage);
 
+        // Play enter audio on stage enter (local mode too)
+        PlayStageEnterAudio(newDirective, isInitialApply);
+
         newDirective.onEnter?.Invoke();
+    }
+
+    // ----------------------------
+    // NEW: Stage Enter Audio
+    // ----------------------------
+
+    private void PlayStageEnterAudio(StageDirective directive, bool isInitialApply)
+    {
+        if (directive == null) return;
+
+        // Prevent buffered RPC / late joiners from hearing audio immediately (unless enabled)
+        if (isInitialApply && !playEnterAudioOnInitialApply)
+            return;
+
+        if (directive.enterAudioSource == null) return;
+
+        // Decide which clip to use:
+        // - If directive.enterAudioClip is set, use that.
+        // - Else fall back to directive.enterAudioSource.clip.
+        AudioClip clipToPlay = directive.enterAudioClip != null
+            ? directive.enterAudioClip
+            : directive.enterAudioSource.clip;
+
+        if (clipToPlay == null)
+        {
+            Debug.LogWarning($"[StorylineDirector] Stage {directive.stage} has no AudioClip (enterAudioClip and AudioSource.clip are both null).");
+            return;
+        }
+
+        if (directive.usePlayOneShot)
+        {
+            directive.enterAudioSource.PlayOneShot(clipToPlay, directive.enterAudioVolume);
+        }
+        else
+        {
+            // Set clip then play
+            directive.enterAudioSource.clip = clipToPlay;
+            directive.enterAudioSource.volume = directive.enterAudioVolume;
+            directive.enterAudioSource.Play();
+        }
     }
 
     // ----------------------------
@@ -366,6 +439,7 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         }
         return (int)stage + 1;
     }
+
     // ----------------------------
     // Status text helpers (NEW)
     // ----------------------------
@@ -455,7 +529,6 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 
         return output;
     }
-
 
     private void ApplyStatusTexts(StageDirective directive, string[] statusTexts, PuzzleStateManager.PuzzleStage stage)
     {
