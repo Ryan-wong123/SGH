@@ -13990,8 +13990,8 @@ Transform:
   m_GameObject: {fileID: 237814522}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -31.353, y: 6.185059, z: -11.038809}
-  m_LocalScale: {x: 2.20392, y: 2.383919, z: 0.01}
+  m_LocalPosition: {x: -31.353, y: 6.23, z: -11.098}
+  m_LocalScale: {x: 2.20392, y: 2.29, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2019321327}
@@ -24333,6 +24333,148 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 407065459}
   m_CullTransparentMesh: 1
+--- !u!1001 &407606753
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2019321327}
+    m_Modifications:
+    - target: {fileID: 1071093471661680292, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_Name
+      value: Door Pharmacy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -33.714
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.078
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -13.226429
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2376869530012332891, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: sceneViewId
+      value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 3187356010352280735, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: sceneViewId
+      value: 44
+      objectReference: {fileID: 0}
+    - target: {fileID: 3517607219998587055, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: keyName
+      value: key1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3517607219998587055, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: requiresKey
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237375382858856840, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: keyName
+      value: key1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237375382858856840, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      propertyPath: requiresKey
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1071093471661680288, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 407606758}
+    - targetCorrespondingSourceObject: {fileID: 1071093471661680290, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 407606757}
+  m_SourcePrefab: {fileID: 100100000, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+--- !u!4 &407606754 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1071093471661914756, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+  m_PrefabInstance: {fileID: 407606753}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &407606755 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1071093471661680290, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+  m_PrefabInstance: {fileID: 407606753}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &407606756 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1071093471661680288, guid: ed35f73ca5429894f85dad9dd2cdef48, type: 3}
+  m_PrefabInstance: {fileID: 407606753}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &407606757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 407606755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
+  highlightScaleMultiplier: 1.2
+  scaleSpeed: 10
+  enableScaling: 1
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
+--- !u!114 &407606758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 407606756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cfe02c2304141f41afb9c6a7cc732ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
+  emissionIntensity: 0.3
+  highlightScaleMultiplier: 1.2
+  scaleSpeed: 10
+  enableScaling: 1
+  useWhitelist: 0
+  allowedChildren: []
+  excludedChildren: []
 --- !u!1001 &408106947
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -91245,8 +91387,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 43
+  m_fontSizeBase: 43
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -129008,7 +129150,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 71
+  m_lineSpacing: -13.7
   m_lineSpacingMax: 0
   m_paragraphSpacing: 52
   m_charWidthMaxAdj: 0
@@ -130833,6 +130975,7 @@ Transform:
   - {fileID: 1229575783}
   - {fileID: 1639897532}
   - {fileID: 1951297230}
+  - {fileID: 407606754}
   - {fileID: 1250697807}
   - {fileID: 386316104}
   - {fileID: 1578039489}
@@ -134289,7 +134432,7 @@ MonoBehaviour:
       flashBoardWhenShown: 1
     - display: {fileID: 1991173882}
       board: {fileID: 237814523}
-      text: '154 '
+      text: 154 \n Physician Room
       flashBoardWhenShown: 1
     statusTextDirectives:
     - target: {fileID: 2024478295}
@@ -134316,11 +134459,11 @@ MonoBehaviour:
     queueDisplayDirectives:
     - display: {fileID: 1991173882}
       board: {fileID: 237814523}
-      text: 154 Pharmacy
+      text: 154 \n Pharmacy
       flashBoardWhenShown: 1
     - display: {fileID: 1477441816}
       board: {fileID: 1306950431}
-      text: 154
+      text: 154 \nPharmacy
       flashBoardWhenShown: 1
     statusTextDirectives: []
     onEnter:
