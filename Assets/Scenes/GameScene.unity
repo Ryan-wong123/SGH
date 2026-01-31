@@ -17980,6 +17980,8 @@ MonoBehaviour:
   objectsToActivate:
   - {fileID: 1595557880}
   - {fileID: 376240266}
+  textUI: {fileID: 2024478295}
+  newText: 2 weeks before death
 --- !u!65 &310432246
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22348,6 +22350,9 @@ MonoBehaviour:
   nextButton: {fileID: 1285073475}
   closeButton: {fileID: 1956943073}
   slides:
+  - image: {fileID: 21300000, guid: cb89f27eadf20b94693972fd608bc7e2, type: 3}
+    duration: 0
+    orientationMode: 0
   - image: {fileID: 21300000, guid: 07ee0fd5936073949864fb9b25fde61d, type: 3}
     duration: 0
     orientationMode: 0
@@ -39331,6 +39336,8 @@ MonoBehaviour:
   objectsToActivate:
   - {fileID: 1595557880}
   - {fileID: 1816229999}
+  textUI: {fileID: 0}
+  newText: 
 --- !u!65 &649874574
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -134434,12 +134441,7 @@ MonoBehaviour:
       board: {fileID: 237814523}
       text: 154 \n Physician Room
       flashBoardWhenShown: 1
-    statusTextDirectives:
-    - target: {fileID: 2024478295}
-      template: 2 weeks before death
-      useDate: 0
-      dateOffsetDays: 0
-      dateFormat: 
+    statusTextDirectives: []
     onEnter:
       m_PersistentCalls:
         m_Calls: []
