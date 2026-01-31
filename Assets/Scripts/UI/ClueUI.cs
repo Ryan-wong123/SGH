@@ -46,7 +46,9 @@ public class ClueUI : MonoBehaviour
     private GameObject _currentPanel;
     private Action _onClosed;
 
-
+    [Header("Image Layout")]
+    [SerializeField] private Vector2 portraitSize = new Vector2(600, 900);
+    [SerializeField] private Vector2 landscapeSize = new Vector2(900, 600);
     // unread counter
     private int _unreadCount = 0;
 
@@ -154,6 +156,21 @@ public class ClueUI : MonoBehaviour
         }
         detailImage.gameObject.SetActive(true);
         detailImage.sprite = sprite;
+        RectTransform rt = detailImage.rectTransform;
+
+        float spriteAspect = sprite.rect.width / sprite.rect.height;
+
+        float targetHeight = rt.sizeDelta.y;
+        float targetWidth = targetHeight * spriteAspect;
+
+        bool isPortrait = false;
+        // Auto-detect from sprite pixel rect
+        isPortrait = sprite.rect.height > sprite.rect.width;
+
+        rt.sizeDelta = isPortrait ? portraitSize : landscapeSize;
+
+
+
         detailPanelRoot.SetActive(true);
 
         Cursor.lockState = CursorLockMode.None;

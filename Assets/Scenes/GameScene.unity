@@ -134203,6 +134203,8 @@ MonoBehaviour:
   - {fileID: 637772015}
   - {fileID: 1816229999}
   - {fileID: 376240266}
+  portraitSize: {x: 800, y: 1000}
+  landscapeSize: {x: 1500, y: 1000}
 --- !u!114 &2075314859
 MonoBehaviour:
   m_ObjectHideFlags: 0
