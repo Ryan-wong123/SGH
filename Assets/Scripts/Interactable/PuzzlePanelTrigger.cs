@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Photon.Pun;
+using System.Collections;
+using TMPro;
 
 public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
 {
@@ -23,10 +25,21 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
     // Track if this clue was already shown (per client; master decides the broadcast)
     private bool clueAlreadyViewed = false;
 
+    [Header("UI Feedback")]
+    [SerializeField] private GameObject alreadyPlayedImage;
+    [SerializeField] private TextMeshProUGUI warningMessage;
+    [SerializeField] private float showDuration = 2f;
+
     private void Awake()
     {
         gameObject.layer = LayerMask.NameToLayer("Interactable");
         highlightEffect = GetComponent<HighlightEffect>();
+
+        if(alreadyPlayedImage != null)
+        {
+            alreadyPlayedImage.SetActive(false);
+        }
+
     }
 
     // IInteractable
@@ -42,6 +55,7 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
         if (!puzzleStateManager.TryBeginAttempt(out string reason))
         {
             Debug.Log(reason);
+            ShowAlreadyPlayedUI(reason);
             return;
         }
 
@@ -152,5 +166,22 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+
+    private void ShowAlreadyPlayedUI(string message)
+    {
+        if (alreadyPlayedImage == null) return;
+
+        StopAllCoroutines();
+        StartCoroutine(ShowImageTemporarily(message));
+    }
+
+    private IEnumerator ShowImageTemporarily(string message)
+    {
+        alreadyPlayedImage.SetActive(true);
+        warningMessage.text = message;
+        yield return new WaitForSeconds(showDuration);
+        alreadyPlayedImage.SetActive(false);
     }
 }
