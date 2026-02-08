@@ -1,24 +1,56 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class Activity9DraggableCard : DraggableCard
 {
     [SerializeField] public string lapsesAnswer;
     public bool isLocked = false;
 
+    // FIX: remember where this drag started (so reject returns into the same slot)
+    private Transform dragStartParent;
+    private Vector2 dragStartAnchoredPos;
+    private Vector2 dragStartScale;
+
     public override void OnBeginDrag(PointerEventData eventData)
     {
         if (isLocked) return; // ❌ prevent drag if locked
 
+        // Record drag origin BEFORE base potentially re-parents to canvas
+        dragStartParent = transform.parent;
+        dragStartAnchoredPos = rectTransform.anchoredPosition;
+        dragStartScale = rectTransform.localScale;
+
         base.OnBeginDrag(eventData); // ✅ default drag
     }
 
+    /// <summary>
+    /// FIX: If drop is rejected (e.g. target slot occupied), return to exact previous slot.
+    /// </summary>
+    public void RevertToDragOrigin()
+    {
+        if (dragStartParent != null)
+        {
+            // IMPORTANT: worldPositionStays=false keeps UI local placement stable
+            transform.SetParent(dragStartParent, false);
+            rectTransform.anchoredPosition = dragStartAnchoredPos;
+            rectTransform.localScale = dragStartScale;
+        }
+        else
+        {
+            // fallback (should rarely happen)
+            SnapTo(panel1GridLayout, 100, -100, 0.66f, 0.66f);
+        }
+    }
 
     public override void OnEndDrag(PointerEventData eventData)
     {
         canvasGroup.blocksRaycasts = true;
+
+        // FIX: If we are already inside a slot (NOT on the canvas), do nothing.
+        // This prevents panel snapping logic from overriding a successful revert/accept.
+        if (transform.parent != null && transform.parent != canvas.transform)
+            return;
 
         if (transform.parent == canvas.transform || transform.parent == null)
         {
@@ -52,9 +84,9 @@ public class Activity9DraggableCard : DraggableCard
                 Debug.Log("snap to true home");
                 SnapTo(panel1GridLayout, 100, -100, 0.66f, 0.66f);
             }
+
             var img = GetComponent<Image>();
             if (img != null) img.color = Color.white;
-
         }
     }
 
