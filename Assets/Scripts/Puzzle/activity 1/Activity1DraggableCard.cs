@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class Activity1DraggableCard : DraggableCard
 {
@@ -20,14 +21,42 @@ public class Activity1DraggableCard : DraggableCard
     private Vector2 dragStartAnchoredPos;
     private Vector2 dragStartScale;
 
+    // -----------------------------
+    // MULTIPLAYER FIX:
+    // Ensure ANY player can drag by requesting Photon ownership on interaction.
+    // -----------------------------
+    private PhotonView _pv;
+
     protected override void Start()
     {
         base.Start();
         ShowFront();
+
+        // Cache PV (base class likely has one, but this is safe + explicit)
+        _pv = GetComponent<PhotonView>();
+    }
+
+    /// <summary>
+    /// Request ownership if this client is not the current owner.
+    /// This allows other players to drag the card (like your other activities).
+    /// </summary>
+    private void EnsureOwnershipForInteraction()
+    {
+        if (_pv == null) _pv = GetComponent<PhotonView>();
+        if (_pv == null) return; // If card isn't networked, do nothing.
+
+        if (!_pv.IsMine)
+        {
+            // Ownership transfer is what enables other players to drag/sync.
+            _pv.RequestOwnership();
+        }
     }
 
     public override void OnBeginDrag(PointerEventData eventData)
     {
+        // MULTIPLAYER FIX: request ownership BEFORE base.OnBeginDrag (base likely checks IsMine).
+        EnsureOwnershipForInteraction();
+
         // Record drag origin BEFORE base potentially re-parents to canvas.
         dragStartParent = transform.parent;
         dragStartAnchoredPos = rectTransform.anchoredPosition;
@@ -36,6 +65,21 @@ public class Activity1DraggableCard : DraggableCard
         acceptedThisDrag = false;
 
         base.OnBeginDrag(eventData);
+    }
+
+    // MULTIPLAYER FIX:
+    // Keep requesting ownership during drag in case it wasn't granted yet on BeginDrag frame.
+    // This prevents "only owner can drag" behaviour for non-owners.
+    public override void OnDrag(PointerEventData eventData)
+    {
+        EnsureOwnershipForInteraction();
+
+        // If ownership hasn't switched yet, avoid applying local drag movement this tick.
+        // (Once IsMine becomes true, base.OnDrag will run normally.)
+        if (_pv != null && !_pv.IsMine)
+            return;
+
+        base.OnDrag(eventData);
     }
 
     /// <summary>
@@ -130,6 +174,9 @@ public class Activity1DraggableCard : DraggableCard
     {
         if (eventData.button == PointerEventData.InputButton.Right)
         {
+            // Optional multiplayer consistency (does not remove any logic)
+            EnsureOwnershipForInteraction();
+
             Sprite spriteToShow = isFlipped ? backSprite : frontSprite;
             CardPopupManager.Instance.ShowCard(spriteToShow);
         }
