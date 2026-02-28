@@ -138275,6 +138275,9 @@ MonoBehaviour:
     - {fileID: 1933334847}
     - {fileID: 0}
     - {fileID: 214535468}
+    disableAllComponentsOnEnter: []
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives:
     - target: {fileID: 2024478295}
@@ -138292,6 +138295,9 @@ MonoBehaviour:
   - stage: 2
     activateOnEnter: []
     deactivateOnExit: []
+    disableAllComponentsOnEnter: []
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives:
     - target: {fileID: 2024478295}
@@ -138309,6 +138315,9 @@ MonoBehaviour:
   - stage: 4
     activateOnEnter: []
     deactivateOnExit: []
+    disableAllComponentsOnEnter: []
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
     queueDisplayDirectives:
     - display: {fileID: 1840119863}
       board: {fileID: 1591424796}
@@ -138335,6 +138344,10 @@ MonoBehaviour:
     activateOnEnter: []
     deactivateOnExit:
     - {fileID: 1827917964}
+    disableAllComponentsOnEnter:
+    - {fileID: 1578039490}
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives: []
     enterAudioSource: {fileID: 0}
@@ -138349,6 +138362,9 @@ MonoBehaviour:
     - {fileID: 1933334847}
     - {fileID: 128019990}
     deactivateOnExit: []
+    disableAllComponentsOnEnter: []
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
     queueDisplayDirectives:
     - display: {fileID: 1991173882}
       board: {fileID: 237814523}
@@ -138370,6 +138386,9 @@ MonoBehaviour:
     activateOnEnter:
     - {fileID: 214535468}
     deactivateOnExit: []
+    disableAllComponentsOnEnter: []
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives: []
     enterAudioSource: {fileID: 0}
@@ -138384,6 +138403,10 @@ MonoBehaviour:
     - {fileID: 1595557880}
     - {fileID: 677627189}
     deactivateOnExit: []
+    disableAllComponentsOnEnter:
+    - {fileID: 344489127}
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives: []
     enterAudioSource: {fileID: 0}
@@ -138397,6 +138420,26 @@ MonoBehaviour:
     activateOnEnter:
     - {fileID: 840095269}
     deactivateOnExit: []
+    disableAllComponentsOnEnter:
+    - {fileID: 550995250}
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
+    queueDisplayDirectives: []
+    statusTextDirectives: []
+    enterAudioSource: {fileID: 0}
+    enterAudioClip: {fileID: 0}
+    enterAudioVolume: 1
+    usePlayOneShot: 1
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
+  - stage: 9
+    activateOnEnter: []
+    deactivateOnExit: []
+    disableAllComponentsOnEnter:
+    - {fileID: 1669160273}
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives: []
     enterAudioSource: {fileID: 0}

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class StorylineDirector : MonoBehaviourPunCallbacks
 {
@@ -80,6 +82,16 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 
         [Tooltip("Scene objects set active = false when exiting this stage.")]
         public List<GameObject> deactivateOnExit = new();
+
+        [Header("Disable components (keep object active)")]
+        [Tooltip("Objects where ALL components/scripts will be disabled on stage enter (object stays active).")]
+        public List<GameObject> disableAllComponentsOnEnter = new();
+
+        [Tooltip("If true, also disables components on all children.")]
+        public bool disableAlsoChildren = true;
+
+        [Tooltip("Components to keep enabled even when disabling everything else (e.g., PhotonView).")]
+        public List<Component> keepEnabledComponents = new();
 
         [Header("Queue Number Displays (optional, per-display text)")]
         public List<QueueDisplayDirective> queueDisplayDirectives = new();
@@ -163,6 +175,11 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         // multiple status text outputs for this stage
         string[] statusTexts = CollectStatusTexts(newDirective, stage);
 
+        //disable get component paths
+        string[] disableAllCompPaths = CollectHierarchyPaths(newDirective?.disableAllComponentsOnEnter);
+        bool disableAlsoChildren = newDirective != null && newDirective.disableAlsoChildren;
+        string[] keepEnabledCompPaths = CollectComponentPaths(newDirective); // helper below
+
         var target = bufferStageRpcForLateJoiners ? RpcTarget.AllBuffered : RpcTarget.All;
 
         photonView.RPC(nameof(RPC_ApplyStageEffects),
@@ -171,11 +188,15 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
             deactivatePaths,
             activatePaths,
             queueTexts,
-            statusTexts);
+            statusTexts,
+            disableAllCompPaths,
+            disableAlsoChildren,
+            keepEnabledCompPaths
+        );
     }
 
     [PunRPC]
-    private void RPC_ApplyStageEffects(int stageInt, string[] deactivatePaths, string[] activatePaths, string[] queueTexts, string[] statusTexts)
+    private void RPC_ApplyStageEffects(int stageInt, string[] deactivatePaths, string[] activatePaths, string[] queueTexts, string[] statusTexts, string[] disableAllCompPaths, bool disableAlsoChildren, string[] keepEnabledCompPaths)
     {
         bool isInitialApply = !_hasAppliedStageOnce;
         _hasAppliedStageOnce = true;
@@ -190,6 +211,11 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         // 3) Apply queue texts + flash for this stage
         var stage = (PuzzleStateManager.PuzzleStage)stageInt;
         var directive = FindDirective(stage);
+
+        // Disable components 
+        DisableAllComponentsByPaths(disableAllCompPaths, disableAlsoChildren, keepEnabledCompPaths);
+
+
         ApplyQueueTextsAndFlash(directive, queueTexts, stage);
 
         // 4) Apply status texts for this stage (multiple targets)
@@ -201,7 +227,115 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         // Local-only hooks
         directive?.onEnter?.Invoke();
     }
+    // Component path format: "Root/A/B/C|ComponentTypeName"
+    // We use this so we can "keep enabled" specific components over the network.
+    private static string MakeComponentPath(Component c)
+    {
+        if (c == null) return "";
+        return GetHierarchyPath(c.transform) + "|" + c.GetType().AssemblyQualifiedName;
+    }
 
+    private static (string goPath, string typeName) ParseComponentPath(string s)
+    {
+        int idx = s.LastIndexOf('|');
+        if (idx < 0) return (s, "");
+        return (s.Substring(0, idx), s.Substring(idx + 1));
+    }
+
+    private static string[] CollectComponentPaths(StageDirective directive)
+    {
+        if (directive == null || directive.keepEnabledComponents == null || directive.keepEnabledComponents.Count == 0)
+            return Array.Empty<string>();
+
+        var list = new List<string>();
+        foreach (var c in directive.keepEnabledComponents)
+        {
+            if (c == null) continue;
+            list.Add(MakeComponentPath(c));
+        }
+        return list.ToArray();
+    }
+
+    private static void DisableAllComponentsByPaths(string[] goPaths, bool includeChildren, string[] keepEnabledComponentPaths)
+    {
+        if (goPaths == null || goPaths.Length == 0) return;
+
+        // Build a lookup of components we want to keep enabled
+        var keepSet = new HashSet<(string goPath, string typeName)>();
+        if (keepEnabledComponentPaths != null)
+        {
+            foreach (var s in keepEnabledComponentPaths)
+            {
+                if (string.IsNullOrEmpty(s)) continue;
+                keepSet.Add(ParseComponentPath(s));
+            }
+        }
+
+        foreach (var p in goPaths)
+        {
+            var go = FindByHierarchyPathIncludingInactive(p);
+            if (go == null)
+            {
+                Debug.LogWarning($"[StorylineDirector] Could not find GameObject to disable components by path: {p}");
+                continue;
+            }
+
+            DisableAllComponents(go, includeChildren, keepSet);
+        }
+    }
+
+    private static void DisableAllComponents(
+        GameObject root,
+        bool includeChildren,
+        HashSet<(string goPath, string typeName)> keepSet
+    )
+    {
+        if (root == null) return;
+
+        var transforms = includeChildren
+            ? root.GetComponentsInChildren<Transform>(true)
+            : new[] { root.transform };
+
+        foreach (var t in transforms)
+        {
+            string goPath = GetHierarchyPath(t);
+
+            var comps = t.GetComponents<Component>();
+
+            foreach (var c in comps)
+            {
+                if (c == null) continue;
+
+                // Never disable Transform
+                if (c is Transform) continue;
+
+                // ✅ Keep Mesh Renderers (object stays visible)
+                if (c is MeshRenderer) continue;
+                if (c is SkinnedMeshRenderer) continue;
+
+                // Keep exceptions (PhotonView etc.)
+                string typeName = c.GetType().AssemblyQualifiedName;
+                if (keepSet != null && keepSet.Contains((goPath, typeName)))
+                    continue;
+
+                TrySetEnabled(c, false);
+
+                if (c is ParticleSystem ps)
+                    ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            }
+        }
+    }
+
+    // Uses reflection so it works for MonoBehaviour, Renderer, Collider, etc.
+    private static void TrySetEnabled(Component c, bool value)
+    {
+        var type = c.GetType();
+        var prop = type.GetProperty("enabled", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+        if (prop != null && prop.PropertyType == typeof(bool) && prop.CanWrite)
+        {
+            prop.SetValue(c, value);
+        }
+    }
     private void ApplyForEveryone(PuzzleStateManager.PuzzleStage? previous, PuzzleStateManager.PuzzleStage stage)
     {
         bool isInitialApply = !_hasAppliedStageOnce;
@@ -211,6 +345,7 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 
         var prevDirective = previous.HasValue ? FindDirective(previous.Value) : null;
         var newDirective = FindDirective(stage);
+
         if (newDirective == null) return;
 
         if (prevDirective != null)
