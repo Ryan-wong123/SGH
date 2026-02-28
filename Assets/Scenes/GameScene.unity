@@ -137612,6 +137612,7 @@ MonoBehaviour:
   - {fileID: 677627189}
   - {fileID: 139126021}
   - {fileID: 820384499}
+  - {fileID: 1591216744}
   portraitSize: {x: 800, y: 1000}
   landscapeSize: {x: 1500, y: 1000}
 --- !u!114 &2075314859
