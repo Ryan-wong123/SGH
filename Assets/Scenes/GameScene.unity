@@ -42009,25 +42009,25 @@ MonoBehaviour:
   closeButton: {fileID: 1956943073}
   slides:
   - image: {fileID: 21300000, guid: 7bbc9c7f3bb2cee4ebe2e33dadbff597, type: 3}
-    duration: 8
+    duration: 4
     orientationMode: 0
   - image: {fileID: 21300000, guid: be5ede34000e55e48bdc2cfcb756c073, type: 3}
-    duration: 8
+    duration: 7
     orientationMode: 0
   - image: {fileID: 21300000, guid: e1abee18559684641ae115dfb32cb46f, type: 3}
-    duration: 8
+    duration: 3.5
     orientationMode: 0
   - image: {fileID: 21300000, guid: f6c06878de24986419aebf21689f0019, type: 3}
-    duration: 8
+    duration: 5
     orientationMode: 0
   - image: {fileID: 21300000, guid: 55e2be49b95d35d46b5c51b66cecd1f3, type: 3}
-    duration: 8
+    duration: 4
     orientationMode: 0
   - image: {fileID: 21300000, guid: d43e3b13b3845ba478fade40967dc96f, type: 3}
-    duration: 8
+    duration: 10
     orientationMode: 0
   - image: {fileID: 21300000, guid: b9a98b231e7f38f49a6fc0385da09e77, type: 3}
-    duration: 8
+    duration: 2
     orientationMode: 0
   audioSource: {fileID: 677627194}
   onEnableClip: {fileID: 8300000, guid: bcee62c0c7566944881ffb4ec1f14ac2, type: 3}
