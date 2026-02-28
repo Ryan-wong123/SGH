@@ -135858,17 +135858,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b58adc5bb70781b4bbf63c8f8f43f5d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  countdownDuration: 120
+  countdownDuration: 900
   timerText: {fileID: 1823339984}
   timeWarningPanel: {fileID: 326284108}
   warningText: {fileID: 331771841}
   warnings:
-  - thresholdSeconds: 40
+  - thresholdSeconds: 300
     message: Time's almost up!
     color: {r: 1, g: 0.8574687, b: 0, a: 1}
     slideDuration: 10
     shown: 0
-  - thresholdSeconds: 20
+  - thresholdSeconds: 120
     message: Puzzle is going to reset!
     color: {r: 1, g: 0, b: 0, a: 1}
     slideDuration: 10
