@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     [SerializeField] private float verticalRotation = 0f;
     private bool cursorUnlocked = false;
-
+    public static PlayerController Local { get; private set; }
     private void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         if (photonView.IsMine)
         {
+            Local = this;
             //fix camera jitter on local player
             PhotonTransformView photonTransform = GetComponent<PhotonTransformView>();
             if (photonTransform != null)
@@ -107,5 +108,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         cameraRoot.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
         transform.Rotate(Vector3.up * mouseX);
+    }
+
+    public void ResetCameraView()
+    {
+        if (!photonView.IsMine) return;
+
+        verticalRotation = 0f;
+        cameraRoot.localRotation = Quaternion.identity;
     }
 }

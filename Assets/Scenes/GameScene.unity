@@ -13166,6 +13166,7 @@ GameObject:
   - component: {fileID: 216696527}
   - component: {fileID: 216696526}
   - component: {fileID: 216696525}
+  - component: {fileID: 216696528}
   m_Layer: 5
   m_Name: Submit Puzzle11 Button
   m_TagString: Untagged
@@ -13249,6 +13250,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 216696528}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &216696526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13287,6 +13300,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 216696523}
   m_CullTransparentMesh: 1
+--- !u!114 &216696528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 216696523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &217095497
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19392,6 +19417,7 @@ GameObject:
   - component: {fileID: 322609429}
   - component: {fileID: 322609428}
   - component: {fileID: 322609427}
+  - component: {fileID: 322609430}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -19475,6 +19501,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 322609430}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &322609428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19513,6 +19551,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 322609425}
   m_CullTransparentMesh: 1
+--- !u!114 &322609430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322609425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &326284108
 GameObject:
   m_ObjectHideFlags: 0
@@ -22523,6 +22573,7 @@ GameObject:
   - component: {fileID: 374899429}
   - component: {fileID: 374899428}
   - component: {fileID: 374899427}
+  - component: {fileID: 374899430}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -22606,6 +22657,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 374899430}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &374899428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22644,6 +22707,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 374899425}
   m_CullTransparentMesh: 1
+--- !u!114 &374899430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374899425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &375821205
 GameObject:
   m_ObjectHideFlags: 0
@@ -28118,6 +28193,7 @@ GameObject:
   - component: {fileID: 451213747}
   - component: {fileID: 451213746}
   - component: {fileID: 451213745}
+  - component: {fileID: 451213748}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -28201,6 +28277,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 451213748}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &451213746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28239,6 +28327,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451213743}
   m_CullTransparentMesh: 1
+--- !u!114 &451213748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451213743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &454907333
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29969,6 +30069,7 @@ GameObject:
   - component: {fileID: 473864966}
   - component: {fileID: 473864965}
   - component: {fileID: 473864964}
+  - component: {fileID: 473864967}
   m_Layer: 5
   m_Name: Submit Puzzle9 Button
   m_TagString: Untagged
@@ -30052,6 +30153,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 473864967}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &473864965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30090,6 +30203,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 473864962}
   m_CullTransparentMesh: 1
+--- !u!114 &473864967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473864962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &474657407
 GameObject:
   m_ObjectHideFlags: 0
@@ -33999,6 +34124,7 @@ GameObject:
   - component: {fileID: 540610943}
   - component: {fileID: 540610942}
   - component: {fileID: 540610941}
+  - component: {fileID: 540610944}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -34082,6 +34208,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 540610944}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &540610942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34120,6 +34258,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 540610939}
   m_CullTransparentMesh: 1
+--- !u!114 &540610944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540610939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &540678377
 GameObject:
   m_ObjectHideFlags: 0
@@ -61663,6 +61813,7 @@ GameObject:
   - component: {fileID: 1011339176}
   - component: {fileID: 1011339175}
   - component: {fileID: 1011339174}
+  - component: {fileID: 1011339177}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -61746,6 +61897,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1011339177}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1011339175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61784,6 +61947,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1011339172}
   m_CullTransparentMesh: 1
+--- !u!114 &1011339177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1011339172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1014152055
 GameObject:
   m_ObjectHideFlags: 0
@@ -66071,6 +66246,7 @@ GameObject:
   - component: {fileID: 1076981850}
   - component: {fileID: 1076981849}
   - component: {fileID: 1076981848}
+  - component: {fileID: 1076981851}
   m_Layer: 5
   m_Name: Submit Puzzle 4 Button
   m_TagString: Untagged
@@ -66154,6 +66330,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1076981851}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1076981849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66192,6 +66380,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1076981846}
   m_CullTransparentMesh: 1
+--- !u!114 &1076981851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1076981846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1077220978
 GameObject:
   m_ObjectHideFlags: 0
@@ -71270,6 +71470,7 @@ GameObject:
   - component: {fileID: 1167730174}
   - component: {fileID: 1167730173}
   - component: {fileID: 1167730172}
+  - component: {fileID: 1167730175}
   m_Layer: 5
   m_Name: Submit Puzzle8 Part 1 Button
   m_TagString: Untagged
@@ -71353,6 +71554,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1167730175}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1167730173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71391,6 +71604,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1167730170}
   m_CullTransparentMesh: 1
+--- !u!114 &1167730175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167730170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1168289418
 GameObject:
   m_ObjectHideFlags: 0
@@ -75109,6 +75334,7 @@ GameObject:
   - component: {fileID: 1222929136}
   - component: {fileID: 1222929135}
   - component: {fileID: 1222929134}
+  - component: {fileID: 1222929137}
   m_Layer: 5
   m_Name: Submit Puzzle8 Button
   m_TagString: Untagged
@@ -75192,6 +75418,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1222929137}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1222929135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75230,6 +75468,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1222929132}
   m_CullTransparentMesh: 1
+--- !u!114 &1222929137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222929132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1224602737
 GameObject:
   m_ObjectHideFlags: 0
@@ -76067,6 +76317,7 @@ GameObject:
   - component: {fileID: 1238138856}
   - component: {fileID: 1238138855}
   - component: {fileID: 1238138854}
+  - component: {fileID: 1238138857}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -76150,6 +76401,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1238138857}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1238138855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76188,6 +76451,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1238138852}
   m_CullTransparentMesh: 1
+--- !u!114 &1238138857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1238138852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1240095449
 GameObject:
   m_ObjectHideFlags: 0
@@ -92652,6 +92927,7 @@ GameObject:
   - component: {fileID: 1471416014}
   - component: {fileID: 1471416013}
   - component: {fileID: 1471416012}
+  - component: {fileID: 1471416015}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -92735,6 +93011,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1471416015}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1471416013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92773,6 +93061,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1471416010}
   m_CullTransparentMesh: 1
+--- !u!114 &1471416015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1471416010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1471638478
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92988,6 +93288,7 @@ GameObject:
   - component: {fileID: 1474201665}
   - component: {fileID: 1474201664}
   - component: {fileID: 1474201663}
+  - component: {fileID: 1474201666}
   m_Layer: 5
   m_Name: Submit Puzzle1 Button
   m_TagString: Untagged
@@ -93071,6 +93372,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1474201666}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1474201664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93109,6 +93422,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1474201661}
   m_CullTransparentMesh: 1
+--- !u!114 &1474201666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1474201661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1475151549
 GameObject:
   m_ObjectHideFlags: 0
@@ -93121,6 +93446,7 @@ GameObject:
   - component: {fileID: 1475151553}
   - component: {fileID: 1475151552}
   - component: {fileID: 1475151551}
+  - component: {fileID: 1475151554}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -93204,6 +93530,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1475151554}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1475151552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93242,6 +93580,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1475151549}
   m_CullTransparentMesh: 1
+--- !u!114 &1475151554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475151549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1476995120
 GameObject:
   m_ObjectHideFlags: 0
@@ -104114,6 +104464,7 @@ GameObject:
   - component: {fileID: 1626743726}
   - component: {fileID: 1626743725}
   - component: {fileID: 1626743724}
+  - component: {fileID: 1626743727}
   m_Layer: 5
   m_Name: Submit Puzzle 5 Button
   m_TagString: Untagged
@@ -104197,6 +104548,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1626743727}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1626743725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104235,6 +104598,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1626743722}
   m_CullTransparentMesh: 1
+--- !u!114 &1626743727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1626743722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1628020991
 GameObject:
   m_ObjectHideFlags: 0
@@ -107237,6 +107612,7 @@ GameObject:
   - component: {fileID: 1665353422}
   - component: {fileID: 1665353421}
   - component: {fileID: 1665353420}
+  - component: {fileID: 1665353423}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -107320,6 +107696,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1665353423}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1665353421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107358,6 +107746,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1665353418}
   m_CullTransparentMesh: 1
+--- !u!114 &1665353423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1665353418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1669160273
 GameObject:
   m_ObjectHideFlags: 0
@@ -107818,6 +108218,7 @@ GameObject:
   - component: {fileID: 1671762710}
   - component: {fileID: 1671762709}
   - component: {fileID: 1671762708}
+  - component: {fileID: 1671762711}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -107901,6 +108302,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1671762711}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1671762709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107939,6 +108352,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1671762706}
   m_CullTransparentMesh: 1
+--- !u!114 &1671762711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671762706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1672255667
 GameObject:
   m_ObjectHideFlags: 0
@@ -112615,6 +113040,7 @@ GameObject:
   - component: {fileID: 1754270592}
   - component: {fileID: 1754270591}
   - component: {fileID: 1754270590}
+  - component: {fileID: 1754270593}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -112698,6 +113124,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1754270593}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1754270591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112736,6 +113174,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1754270588}
   m_CullTransparentMesh: 1
+--- !u!114 &1754270593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754270588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1760192780
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -114946,6 +115396,7 @@ GameObject:
   - component: {fileID: 1784671111}
   - component: {fileID: 1784671110}
   - component: {fileID: 1784671109}
+  - component: {fileID: 1784671112}
   m_Layer: 5
   m_Name: Submit Puzzle 7 Button
   m_TagString: Untagged
@@ -115029,6 +115480,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1784671112}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1784671110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115067,6 +115530,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1784671107}
   m_CullTransparentMesh: 1
+--- !u!114 &1784671112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1784671107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1789988266
 GameObject:
   m_ObjectHideFlags: 0
@@ -117309,6 +117784,7 @@ GameObject:
   - component: {fileID: 1812435592}
   - component: {fileID: 1812435591}
   - component: {fileID: 1812435590}
+  - component: {fileID: 1812435593}
   m_Layer: 5
   m_Name: Submit Puzzle 3 Button
   m_TagString: Untagged
@@ -117392,6 +117868,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1812435593}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1812435591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117430,6 +117918,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812435588}
   m_CullTransparentMesh: 1
+--- !u!114 &1812435593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812435588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1812592834
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129409,6 +129909,7 @@ GameObject:
   - component: {fileID: 1956943075}
   - component: {fileID: 1956943074}
   - component: {fileID: 1956943073}
+  - component: {fileID: 1956943076}
   m_Layer: 5
   m_Name: Close Button
   m_TagString: Untagged
@@ -129479,7 +129980,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1956943074}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1956943076}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1956943074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129518,6 +130031,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1956943071}
   m_CullTransparentMesh: 1
+--- !u!114 &1956943076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956943071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1962288539
 GameObject:
   m_ObjectHideFlags: 0
@@ -132159,6 +132684,7 @@ GameObject:
   - component: {fileID: 2006738068}
   - component: {fileID: 2006738067}
   - component: {fileID: 2006738066}
+  - component: {fileID: 2006738069}
   m_Layer: 5
   m_Name: Submit Puzzle 6 Button
   m_TagString: Untagged
@@ -132242,6 +132768,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2006738069}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2006738067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132280,6 +132818,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2006738064}
   m_CullTransparentMesh: 1
+--- !u!114 &2006738069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2006738064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2008722185
 GameObject:
   m_ObjectHideFlags: 0
@@ -137255,6 +137805,7 @@ GameObject:
   - component: {fileID: 2076671408}
   - component: {fileID: 2076671407}
   - component: {fileID: 2076671406}
+  - component: {fileID: 2076671409}
   m_Layer: 5
   m_Name: Submit Puzzle9 Button
   m_TagString: Untagged
@@ -137338,6 +137889,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2076671409}
+        m_TargetAssemblyTypeName: ClosePanelAndResetCamera, Assembly-CSharp
+        m_MethodName: OnCloseClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2076671407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137376,6 +137939,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2076671404}
   m_CullTransparentMesh: 1
+--- !u!114 &2076671409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2076671404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0367838f82811434bb3b4f099c8399a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2077438954
 GameObject:
   m_ObjectHideFlags: 0
