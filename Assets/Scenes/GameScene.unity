@@ -136479,7 +136479,12 @@ MonoBehaviour:
       board: {fileID: 237814523}
       text: 154 \n Physician Room
       flashBoardWhenShown: 1
-    statusTextDirectives: []
+    statusTextDirectives:
+    - target: {fileID: 2024478295}
+      template: 2 weeks before death
+      useDate: 0
+      dateOffsetDays: 0
+      dateFormat: 
     enterAudioSource: {fileID: 1591424797}
     enterAudioClip: {fileID: 8300000, guid: a95379de740e7874a916da6ef249947a, type: 3}
     enterAudioVolume: 1
