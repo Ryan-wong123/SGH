@@ -8335,6 +8335,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Glucose_Diary
   isClue: 1
+  notificationMessage: 
 --- !u!114 &128019992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13210,6 +13211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Intervention Note
   isClue: 1
+  notificationMessage: 
 --- !u!114 &214535471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73236,6 +73238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: title deed
   isClue: 0
+  notificationMessage: 
 --- !u!114 &1193597026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92926,6 +92929,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: envelope
   isClue: 1
+  notificationMessage: 
 --- !u!1 &1468132719
 GameObject:
   m_ObjectHideFlags: 0
@@ -102217,6 +102221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: pc
   isClue: 1
+  notificationMessage: 
 --- !u!1 &1578149910
 GameObject:
   m_ObjectHideFlags: 0
@@ -128385,6 +128390,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: prescription
   isClue: 1
+  notificationMessage: Head to pharmacy
 --- !u!114 &1933334853
 MonoBehaviour:
   m_ObjectHideFlags: 0

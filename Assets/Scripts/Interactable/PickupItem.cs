@@ -7,6 +7,7 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
     [Header("Pickup Info")]
     [SerializeField] private string itemName = "Key";
     [SerializeField] private bool isClue = false;
+    [SerializeField] private string notificationMessage = "";
 
     private HighlightEffect highlightEffect;
 
@@ -38,7 +39,9 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
     public void Interact()
     {
         // ------ 1) POPUP (LOCAL) ------
-        string popupText = isClue ? $"Clue found: {itemName}" : $"Picked up: {itemName}";
+
+        string popupText = notificationMessage != "" ? notificationMessage : $"Picked up: {itemName}";
+               
         CluePopupUI.Instance?.Show(popupText);
 
         // ------ 2) SYNC STATE (BUFFERED) ------
