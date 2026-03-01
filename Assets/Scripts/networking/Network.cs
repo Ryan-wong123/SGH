@@ -27,9 +27,21 @@ public class Network : MonoBehaviourPunCallbacks
         Debug.Log("Connecting to Photon...");
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.GameVersion = gameVersion;
-        PhotonNetwork.ConnectUsingSettings();
+
+        // If already connected, don't reconnect (reconnecting can kick you out / reset state)
+        if (PhotonNetwork.IsConnected)
+        {
+            Debug.Log("Already connected. Ensuring lobby...");
+            EnsureLobbyJoined();
+        }
+        else
+        {
+            Debug.Log("Connecting to Photon...");
+            PhotonNetwork.ConnectUsingSettings();
+        }
 
         //get username and start game 
+        goToRoomListButton.onClick.RemoveAllListeners();
         goToRoomListButton.onClick.AddListener(() =>
         {
             //check if username field is empty
@@ -53,9 +65,21 @@ public class Network : MonoBehaviourPunCallbacks
             homePanel.SetActive(false);
             joinRoomManager.setRoomListPanelActive(true);
             joinRoomManager.setToggleRoomListPanelButtonActive(true);
+            EnsureLobbyJoined();
         });
     }
 
+    private void EnsureLobbyJoined()
+    {
+        // If you're in a room, you cannot join lobby yet
+        if (PhotonNetwork.InRoom) return;
+
+        // If connected to Master but not in lobby, join lobby
+        if (!PhotonNetwork.InLobby && PhotonNetwork.IsConnectedAndReady)
+        {
+            PhotonNetwork.JoinLobby();
+        }
+    }
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to Photon Master Server");

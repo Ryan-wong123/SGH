@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private Transform[] spawnPoints;
 
     private bool hasSpawned = false;
+    private string targetSceneName;
 
     private void Start()
     {
@@ -64,13 +65,27 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
 
-    public void RestartLevel()
+    public void RestartLevel(string sceneName)
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
+            photonView.RPC(nameof(RPC_LeaveRoom), RpcTarget.All, sceneName);
         }
     }
+
+    [PunRPC]
+    private void RPC_LeaveRoom(string sceneName)
+    {
+        targetSceneName = sceneName;   // store scene name locally
+        PhotonNetwork.LeaveRoom();
+    }
+
+    public override void OnLeftRoom()
+    {
+        Destroy(gameObject);
+        SceneManager.LoadScene(targetSceneName);
+    }
+
     public void QuitGame()
     {
 #if UNITY_EDITOR

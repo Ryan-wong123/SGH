@@ -88,6 +88,9 @@ MonoBehaviour:
   - RPC_SetTextColor
   - RPC_SetSelected
   - RPC_SetTextLWW
+  - RPC_RequestRestart
+  - RPC_ResetSpawnFlag
+  - RPC_LeaveRoom
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
