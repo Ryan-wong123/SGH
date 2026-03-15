@@ -19,7 +19,7 @@ public class ObjectivePointer : MonoBehaviour
 
     [Header("World Arrow Settings")]
     [SerializeField] private float forwardOffset = 1.5f;  // how far in front of the player
-    [SerializeField] private float heightOffset = 1.2f;  // how high above the player
+    [SerializeField] private float heightOffset = 1.2f;   // how high above the player
 
     // -------- Paths --------
     [Header("Available Paths")]
@@ -83,7 +83,6 @@ public class ObjectivePointer : MonoBehaviour
             arrowObject.gameObject.SetActive(true);
     }
 
-
     // ========== PATH CONTROL ==========
 
     /// <summary>
@@ -131,48 +130,56 @@ public class ObjectivePointer : MonoBehaviour
 
     public void ReachWaypoint(string pathId, int waypointIndex)
     {
-        // Only react if this is the active path
-        if (!IsActive)
-            return;
-
         int expectedPathIndex = FindPathIndex(pathId);
-        if (expectedPathIndex != activePathIndex)
+
+        // Must belong to a valid path
+        if (expectedPathIndex == -1)
             return;
 
-        if (waypointIndex != currentWaypointIndex)
+        // If no active path yet, or a different path is currently active, ignore
+        if (activePathIndex != expectedPathIndex)
             return;
 
-        AdvanceWaypoint();
+        UpdateTargetFromReachedWaypoint(waypointIndex);
     }
 
     public void ReachWaypoint(int waypointIndex)
     {
         // Overload if you don't care about id and only have one active path
-        if (!IsActive || waypointIndex != currentWaypointIndex)
+        if (activePathIndex < 0 || activePathIndex >= paths.Length)
             return;
 
-        AdvanceWaypoint();
+        UpdateTargetFromReachedWaypoint(waypointIndex);
     }
 
-    private void AdvanceWaypoint()
+    private void UpdateTargetFromReachedWaypoint(int reachedWaypointIndex)
     {
         var path = paths[activePathIndex];
 
-        Debug.Log($"[ObjectiveNavigator] Reached waypoint {currentWaypointIndex} ({path.waypoints[currentWaypointIndex].name})");
+        if (path.waypoints == null || path.waypoints.Length == 0)
+            return;
 
-        currentWaypointIndex++;
+        if (reachedWaypointIndex < 0 || reachedWaypointIndex >= path.waypoints.Length)
+            return;
 
-        if (currentWaypointIndex < path.waypoints.Length)
+        Debug.Log($"[ObjectiveNavigator] Reached waypoint {reachedWaypointIndex} ({path.waypoints[reachedWaypointIndex].name})");
+
+        // If player reached the FINAL waypoint, complete the path and hide the arrow
+        if (reachedWaypointIndex >= path.waypoints.Length - 1)
         {
-            SetTarget(path.waypoints[currentWaypointIndex]);
-            Debug.Log($"[ObjectiveNavigator] Next waypoint {currentWaypointIndex}: {currentTarget.name}");
-        }
-        else
-        {
-            Debug.Log($"[ObjectiveNavigator] Completed path '{path.id}'");
-            ClearTarget();
+            currentWaypointIndex = path.waypoints.Length - 1;
             IsActive = false;
+            ClearTarget();   // this makes Update() hide the arrow
+            Debug.Log($"[ObjectiveNavigator] Final waypoint reached. Path '{path.id}' completed.");
+            return;
         }
+
+        // Otherwise point to the next waypoint
+        currentWaypointIndex = reachedWaypointIndex + 1;
+        IsActive = true;
+
+        SetTarget(path.waypoints[currentWaypointIndex]);
+        Debug.Log($"[ObjectiveNavigator] Next waypoint {currentWaypointIndex}: {currentTarget.name}");
     }
 
     private int FindPathIndex(string id)
