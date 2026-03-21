@@ -383,6 +383,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
 
     private void CompleteClose()
     {
+        Time.timeScale = 1f;
         gameObject.SetActive(false);
 
         Transform parent = transform.parent;
