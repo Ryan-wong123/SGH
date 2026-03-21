@@ -11,8 +11,6 @@ public class CreateRoomManager : Network
 {
     private const string RoomPasswordPropertyKey = "RoomPassword";
     private const string PasswordCharacters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    private const int RoomPlayerTtlMs = 120000;
-    private const int EmptyRoomTtlMs = 120000;
 
     //room name input field
     [SerializeField] private TMP_InputField roomNameInput;
@@ -117,9 +115,6 @@ public class CreateRoomManager : Network
         return new RoomOptions
         {
             MaxPlayers = maxPlayers,
-            PlayerTtl = RoomPlayerTtlMs,
-            EmptyRoomTtl = EmptyRoomTtlMs,
-            PublishUserId = true,
             CustomRoomProperties = new ExitGames.Client.Photon.Hashtable
             {
                 { RoomPasswordPropertyKey, roomPassword }
