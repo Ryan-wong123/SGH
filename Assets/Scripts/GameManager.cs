@@ -6,17 +6,34 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
+    private const float RejoinRetryDelaySeconds = 2f;
+
     [SerializeField] private GameObject[] characterPrefabs;
     [SerializeField] private Transform[] spawnPoints;
 
     private bool hasSpawned = false;
     private string targetSceneName;
+    private string rejoinRoomName;
+    private bool isTryingToReconnect;
 
     private void Start()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
+        rejoinRoomName = PhotonNetwork.CurrentRoom?.Name;
 
         if (PhotonNetwork.InRoom && !hasSpawned)
+        {
+            hasSpawned = true;
+            StartCoroutine(SpawnWhenSceneReady());
+        }
+    }
+
+    public override void OnJoinedRoom()
+    {
+        isTryingToReconnect = false;
+        rejoinRoomName = PhotonNetwork.CurrentRoom?.Name;
+
+        if (!hasSpawned)
         {
             hasSpawned = true;
             StartCoroutine(SpawnWhenSceneReady());
@@ -86,6 +103,46 @@ public class GameManager : MonoBehaviourPunCallbacks
         SceneManager.LoadScene(targetSceneName);
     }
 
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            return;
+        }
+
+        if (string.IsNullOrEmpty(rejoinRoomName))
+        {
+            rejoinRoomName = PhotonNetwork.CurrentRoom?.Name;
+        }
+
+        if (string.IsNullOrEmpty(rejoinRoomName) || isTryingToReconnect)
+        {
+            return;
+        }
+
+        Debug.LogWarning($"Disconnected during gameplay. Attempting reconnect and rejoin. Cause: {cause}");
+        isTryingToReconnect = true;
+        hasSpawned = false;
+        StartCoroutine(ReconnectAndRejoinRoutine());
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError($"Rejoin failed: {message} ({returnCode})");
+        isTryingToReconnect = false;
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        if (!isTryingToReconnect || string.IsNullOrEmpty(rejoinRoomName))
+        {
+            return;
+        }
+
+        Debug.Log("Connected to master while recovering. Attempting room rejoin...");
+        PhotonNetwork.RejoinRoom(rejoinRoomName);
+    }
+
     public void QuitGame()
     {
 #if UNITY_EDITOR
@@ -93,5 +150,23 @@ public class GameManager : MonoBehaviourPunCallbacks
 #else
         Application.Quit();
 #endif
+    }
+
+    private IEnumerator ReconnectAndRejoinRoutine()
+    {
+        while (isTryingToReconnect && !PhotonNetwork.IsConnected)
+        {
+            if (PhotonNetwork.NetworkClientState == ClientState.Disconnected)
+            {
+                bool startedReconnect = PhotonNetwork.ReconnectAndRejoin();
+
+                if (!startedReconnect)
+                {
+                    PhotonNetwork.Reconnect();
+                }
+            }
+
+            yield return new WaitForSeconds(RejoinRetryDelaySeconds);
+        }
     }
 }

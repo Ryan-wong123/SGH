@@ -9,6 +9,7 @@ using ExitGames.Client.Photon;
 public class Network : MonoBehaviourPunCallbacks
 {
     private const string PlayerTagPropertyKey = "PlayerTag";
+    private const string UserIdPlayerPrefsKey = "PhotonUserId";
 
     //game version
     [SerializeField] private string gameVersion = "1.0";
@@ -30,6 +31,7 @@ public class Network : MonoBehaviourPunCallbacks
         Debug.Log("Connecting to Photon...");
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.GameVersion = gameVersion;
+        EnsureStableUserId();
 
         // If already connected, don't reconnect (reconnecting can kick you out / reset state)
         if (PhotonNetwork.IsConnected)
@@ -102,5 +104,29 @@ public class Network : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.LogError($"Disconnected from Photon: {cause}");
+    }
+
+    private static void EnsureStableUserId()
+    {
+        if (PhotonNetwork.AuthValues == null)
+        {
+            PhotonNetwork.AuthValues = new AuthenticationValues();
+        }
+
+        if (!string.IsNullOrEmpty(PhotonNetwork.AuthValues.UserId))
+        {
+            return;
+        }
+
+        string userId = PlayerPrefs.GetString(UserIdPlayerPrefsKey, string.Empty);
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            userId = System.Guid.NewGuid().ToString("N");
+            PlayerPrefs.SetString(UserIdPlayerPrefsKey, userId);
+            PlayerPrefs.Save();
+        }
+
+        PhotonNetwork.AuthValues.UserId = userId;
     }
 }
