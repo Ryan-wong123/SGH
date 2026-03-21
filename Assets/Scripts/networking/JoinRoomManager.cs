@@ -3,9 +3,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using ExitGames.Client.Photon;
+using TMPro;
 
 public class JoinRoomManager : Network
 {
+    private const string RoomPasswordPropertyKey = "RoomPassword";
+
     //instance of available room to join button
     [SerializeField] private GameObject roomItemPrefab;
     //scroll view of the room list
@@ -30,11 +34,31 @@ public class JoinRoomManager : Network
     private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
     //Loading Screen component
     [SerializeField] private LoadingScreenManager loadingScreen;
+
+    private string selectedRoomName;
+    [SerializeField] private TMP_Text roomPasswordDisplayText;
+    [SerializeField] private TMP_Text selectedRoomLabelText;
+    [SerializeField] private TMP_Text joinRoomFeedbackText;
+    [SerializeField] private TMP_InputField roomPasswordInputField;
+    [SerializeField] private Button confirmJoinRoomButton;
+
     private void Start()
     {
         refreshButton.onClick.AddListener(RefreshRoomList);
         startGameButton.onClick.AddListener(StartGame);
         PhotonNetwork.AutomaticallySyncScene = true;
+
+        if (confirmJoinRoomButton != null)
+        {
+            confirmJoinRoomButton.onClick.AddListener(JoinSelectedRoom);
+        }
+
+        if (roomPasswordInputField != null)
+        {
+            roomPasswordInputField.onSubmit.AddListener(_ => JoinSelectedRoom());
+        }
+
+        ClearSelectedRoom();
 
         //toggle visibility of RoomListPanel 
         toggleRoomListPanelButton.onClick.AddListener(() =>
@@ -90,13 +114,63 @@ public class JoinRoomManager : Network
         {
             GameObject item = Instantiate(roomItemPrefab, contentPanel);
             item.GetComponentInChildren<Text>().text = $"{info.Name} ({info.PlayerCount}/{info.MaxPlayers})";
-            item.GetComponent<Button>().onClick.AddListener(() => JoinSelectedRoom(info.Name));
+            item.GetComponent<Button>().onClick.AddListener(() => SelectRoom(info.Name));
+        }
+
+        if (!string.IsNullOrEmpty(selectedRoomName) && !cachedRoomList.ContainsKey(selectedRoomName))
+        {
+            ClearSelectedRoom();
         }
     }
 
-    void JoinSelectedRoom(string roomName)
+    void SelectRoom(string roomName)
     {
-        PhotonNetwork.JoinRoom(roomName);
+        selectedRoomName = roomName;
+
+        if (selectedRoomLabelText != null)
+        {
+            selectedRoomLabelText.text = $"Selected Room: {roomName}";
+        }
+
+        if (joinRoomFeedbackText != null)
+        {
+            joinRoomFeedbackText.text = "Enter the room password to join.";
+            joinRoomFeedbackText.color = new Color(0.2f, 0.2f, 0.2f, 1f);
+        }
+
+        if (roomPasswordInputField != null)
+        {
+            roomPasswordInputField.text = string.Empty;
+            roomPasswordInputField.ActivateInputField();
+        }
+    }
+
+    void JoinSelectedRoom()
+    {
+        if (string.IsNullOrEmpty(selectedRoomName))
+        {
+            SetJoinFeedback("Select a room first.", true);
+            return;
+        }
+
+        if (!cachedRoomList.TryGetValue(selectedRoomName, out RoomInfo roomInfo))
+        {
+            SetJoinFeedback("That room is no longer available.", true);
+            ClearSelectedRoom();
+            return;
+        }
+
+        string expectedPassword = GetRoomPassword(roomInfo);
+        string enteredPassword = roomPasswordInputField != null ? roomPasswordInputField.text.Trim() : string.Empty;
+
+        if (!string.IsNullOrEmpty(expectedPassword) && !string.Equals(expectedPassword, enteredPassword))
+        {
+            SetJoinFeedback("Incorrect password.", true);
+            return;
+        }
+
+        SetJoinFeedback("Joining room...", false);
+        PhotonNetwork.JoinRoom(selectedRoomName);
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -116,7 +190,9 @@ public class JoinRoomManager : Network
         //show the player count and the players in that room
         PopulatePlayerList();
         UpdatePlayerCountUI();
+        UpdateRoomPasswordDisplay();
         startGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
+        ClearSelectedRoom();
     }
     
     //function to show the player count in the room
@@ -175,5 +251,70 @@ public class JoinRoomManager : Network
         loadingScreen.StartFadeAndLoad(sceneName);
     }
 
+    private static string GetRoomPassword(RoomInfo roomInfo)
+    {
+        if (roomInfo == null || roomInfo.CustomProperties == null)
+        {
+            return string.Empty;
+        }
+
+        if (roomInfo.CustomProperties.TryGetValue(RoomPasswordPropertyKey, out object passwordValue) && passwordValue is string password)
+        {
+            return password;
+        }
+
+        return string.Empty;
+    }
+
+    private void UpdateRoomPasswordDisplay()
+    {
+        if (roomPasswordDisplayText == null)
+        {
+            return;
+        }
+
+        string roomPassword = string.Empty;
+
+        if (PhotonNetwork.CurrentRoom?.CustomProperties != null &&
+            PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(RoomPasswordPropertyKey, out object passwordValue) &&
+            passwordValue is string password)
+        {
+            roomPassword = password;
+        }
+
+        roomPasswordDisplayText.text = string.IsNullOrEmpty(roomPassword)
+            ? "Room Password: None"
+            : $"Room Password: {roomPassword}";
+    }
+
+    private void SetJoinFeedback(string message, bool isError)
+    {
+        if (joinRoomFeedbackText == null)
+        {
+            return;
+        }
+
+        joinRoomFeedbackText.text = message;
+        joinRoomFeedbackText.color = isError
+            ? new Color(0.75f, 0.15f, 0.15f, 1f)
+            : new Color(0.2f, 0.2f, 0.2f, 1f);
+    }
+
+    private void ClearSelectedRoom()
+    {
+        selectedRoomName = null;
+
+        if (selectedRoomLabelText != null)
+        {
+            selectedRoomLabelText.text = "Selected Room: None";
+        }
+
+        if (roomPasswordInputField != null)
+        {
+            roomPasswordInputField.text = string.Empty;
+        }
+
+        SetJoinFeedback("Select a room to enter its password.", false);
+    }
 
 }
