@@ -181,6 +181,7 @@ public class JoinRoomManager : Network
 
     public override void OnJoinedRoom()
     {
+        base.OnJoinedRoom();
         Debug.Log($"Joined Room: {PhotonNetwork.CurrentRoom.Name}");
         //hide room list panel and show current room panel
         toggleRoomListPanelButton.gameObject.SetActive(false);
@@ -236,7 +237,8 @@ public class JoinRoomManager : Network
     {
         if (!PhotonNetwork.IsMasterClient) return;
 
-        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+        PhotonNetwork.CurrentRoom.IsOpen = true;
 
         // Tell everyone to show loading UI + start tracking progress
         photonView.RPC(nameof(RPC_BeginLoading), RpcTarget.All, "GameScene");

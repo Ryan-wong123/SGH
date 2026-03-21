@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using UnityEngine;
+using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviourPunCallbacks
@@ -9,48 +9,91 @@ public class GameManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject[] characterPrefabs;
     [SerializeField] private Transform[] spawnPoints;
 
-    private bool hasSpawned = false;
+    private bool hasSpawned;
     private string targetSceneName;
+    private Coroutine spawnRoutine;
 
     private void Start()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
+        TrySpawnLocalPlayer();
+    }
 
-        if (PhotonNetwork.InRoom && !hasSpawned)
+    public override void OnJoinedRoom()
+    {
+        hasSpawned = false;
+        TrySpawnLocalPlayer();
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        hasSpawned = false;
+        spawnRoutine = null;
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        if (!PhotonNetwork.IsMasterClient || otherPlayer == null || !otherPlayer.IsInactive)
+        {
+            return;
+        }
+
+        PhotonNetwork.DestroyPlayerObjects(otherPlayer);
+        Debug.Log($"Destroyed player model for inactive actor {otherPlayer.ActorNumber}.");
+    }
+
+    private void TrySpawnLocalPlayer()
+    {
+        if (!PhotonNetwork.InRoom || hasSpawned || spawnRoutine != null)
+        {
+            return;
+        }
+
+        if (HasLocalPlayerModel())
         {
             hasSpawned = true;
-            StartCoroutine(SpawnWhenSceneReady());
+            return;
         }
+
+        spawnRoutine = StartCoroutine(SpawnWhenSceneReady());
     }
 
     private IEnumerator SpawnWhenSceneReady()
     {
         yield return new WaitForSeconds(0.5f);
+        spawnRoutine = null;
+
+        if (!PhotonNetwork.InRoom || HasLocalPlayerModel())
+        {
+            hasSpawned = HasLocalPlayerModel();
+            yield break;
+        }
 
         int playerIndex = GetPlayerIndex(PhotonNetwork.LocalPlayer);
         Transform spawnPoint = spawnPoints.Length > playerIndex ? spawnPoints[playerIndex] : spawnPoints[0];
+        int characterIndex = GetSelectedCharacterIndex();
+        PhotonNetwork.Instantiate(characterPrefabs[characterIndex].name, spawnPoint.position, spawnPoint.rotation);
+        hasSpawned = true;
 
-        // ✅ Retrieve selected character index
+        Debug.Log($"Spawned character index {characterIndex} for actor {PhotonNetwork.LocalPlayer.ActorNumber}.");
+    }
+
+    private int GetSelectedCharacterIndex()
+    {
         if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("CharacterIndex", out object indexObj))
         {
             int characterIndex = (int)indexObj;
-
             if (characterIndex >= 0 && characterIndex < characterPrefabs.Length)
             {
-                PhotonNetwork.Instantiate(characterPrefabs[characterIndex].name, spawnPoint.position, spawnPoint.rotation);
-                Debug.Log($"Spawned character index {characterIndex}");
+                return characterIndex;
             }
-            else
-            {
-                Debug.LogWarning("Invalid character index. Defaulting to first prefab.");
-                PhotonNetwork.Instantiate(characterPrefabs[0].name, spawnPoint.position, spawnPoint.rotation);
-            }
+
+            Debug.LogWarning("Invalid character index. Defaulting to first prefab.");
+            return 0;
         }
-        else
-        {
-            Debug.LogWarning("No character selected. Defaulting to first prefab.");
-            PhotonNetwork.Instantiate(characterPrefabs[0].name, spawnPoint.position, spawnPoint.rotation);
-        }
+
+        Debug.LogWarning("No character selected. Defaulting to first prefab.");
+        return 0;
     }
 
     private int GetPlayerIndex(Player player)
@@ -59,11 +102,30 @@ public class GameManager : MonoBehaviourPunCallbacks
         System.Array.Sort(players, (a, b) => a.ActorNumber.CompareTo(b.ActorNumber));
 
         for (int i = 0; i < players.Length; i++)
-            if (players[i] == player) return i;
+        {
+            if (players[i] == player)
+            {
+                return i;
+            }
+        }
 
         return 0;
     }
 
+    private bool HasLocalPlayerModel()
+    {
+        PlayerController[] playerControllers = FindObjectsOfType<PlayerController>();
+        foreach (PlayerController controller in playerControllers)
+        {
+            PhotonView view = controller.GetComponent<PhotonView>();
+            if (view != null && view.IsMine)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public void RestartLevel(string sceneName)
     {
@@ -76,12 +138,15 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_LeaveRoom(string sceneName)
     {
-        targetSceneName = sceneName;   // store scene name locally
+        targetSceneName = sceneName;
         PhotonNetwork.LeaveRoom();
     }
 
     public override void OnLeftRoom()
     {
+        Network.ClearCachedRoomRejoin();
+        hasSpawned = false;
+        spawnRoutine = null;
         Destroy(gameObject);
         SceneManager.LoadScene(targetSceneName);
     }
