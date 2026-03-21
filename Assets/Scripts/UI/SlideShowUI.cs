@@ -51,6 +51,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
     private TMP_Text closeButtonLabel;
     private string defaultCloseButtonText = "Close";
     private string comicClosePropertyKey;
+    private string comicClosedPropertyKey;
     private bool closeListenerRegistered;
     private static SlideshowUI activeInstance;
 
@@ -70,6 +71,8 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         activeInstance = this;
         currentIndex = 0;
         EnsureCloseButtonSetup();
+        ResetLocalCloseState();
+        ResetSharedClosedStateIfNeeded();
 
         // Play audio when panel is enabled
         if (audioSource && onEnableClip)
@@ -144,6 +147,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
             defaultCloseButtonText = closeButtonLabel.text;
 
         comicClosePropertyKey = BuildComicClosePropertyKey();
+        comicClosedPropertyKey = comicClosePropertyKey + "_Done";
 
         if (!closeListenerRegistered)
         {
@@ -331,7 +335,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
 
         if (GetRemainingPlayersCount() == 0)
         {
-            CompleteClose();
+            MarkComicClosedForEveryone();
         }
     }
 
@@ -400,6 +404,39 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         }
 
         ClosePanelAndResetCamera.ResetCameraAndCursor();
+    }
+
+    private void ResetLocalCloseState()
+    {
+        if (!ShouldUseSharedCloseGate())
+            return;
+
+        SetLocalPlayerCloseClicked(false);
+    }
+
+    private void ResetSharedClosedStateIfNeeded()
+    {
+        if (!ShouldUseSharedCloseGate() || !PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
+        {
+            [comicClosedPropertyKey] = false
+        });
+    }
+
+    private void MarkComicClosedForEveryone()
+    {
+        if (!ShouldUseSharedCloseGate() || PhotonNetwork.CurrentRoom == null)
+        {
+            CompleteClose();
+            return;
+        }
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
+        {
+            [comicClosedPropertyKey] = true
+        });
     }
 
     private void SetLocalPlayerCloseClicked(bool clicked)
@@ -485,9 +522,6 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
             return;
 
         RefreshCloseGateUI();
-
-        if (HasLocalPlayerClickedClose() && GetRemainingPlayersCount() == 0)
-            CompleteClose();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -499,7 +533,34 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
     {
         RefreshCloseGateUI();
 
-        if (ShouldUseSharedCloseGate() && HasLocalPlayerClickedClose() && GetRemainingPlayersCount() == 0)
+        if (ShouldUseSharedCloseGate() && GetRemainingPlayersCount() == 0 && HasAnyPlayerClickedClose())
+            MarkComicClosedForEveryone();
+    }
+
+    public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+    {
+        if (!ShouldUseSharedCloseGate() || propertiesThatChanged == null || string.IsNullOrEmpty(comicClosedPropertyKey))
+            return;
+
+        if (!propertiesThatChanged.TryGetValue(comicClosedPropertyKey, out object value))
+            return;
+
+        if (value is bool isClosed && isClosed)
             CompleteClose();
+    }
+
+    private bool HasAnyPlayerClickedClose()
+    {
+        if (!ShouldUseSharedCloseGate())
+            return false;
+
+        Player[] players = PhotonNetwork.PlayerList;
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (HasPlayerClickedClose(players[i]))
+                return true;
+        }
+
+        return false;
     }
 }
