@@ -117,6 +117,9 @@ public class ClueUI : MonoBehaviour
     /// <summary>Hide the current clue panel + root. If userAction=true, invoke onClosed callback.</summary>
     public void Hide(bool userAction)
     {
+        if (SlideshowUI.ShouldSuppressLegacyCloseHandlers())
+            return;
+
         if (_currentPanel != null)
             _currentPanel.SetActive(false);
 
@@ -182,6 +185,9 @@ public class ClueUI : MonoBehaviour
 
     public void HideImage()
     {
+        if (SlideshowUI.ShouldSuppressLegacyCloseHandlers())
+            return;
+
         if (detailPanelRoot != null)
             detailPanelRoot.SetActive(false);
         foreach (var go in comics)
