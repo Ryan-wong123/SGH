@@ -21,6 +21,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
 
+        if (GetComponent<PlayerTagDisplay>() == null)
+        {
+            gameObject.AddComponent<PlayerTagDisplay>();
+        }
+
         if (photonView.IsMine)
         {
             Local = this;

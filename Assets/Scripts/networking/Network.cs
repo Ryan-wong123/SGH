@@ -3,10 +3,13 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
+using ExitGames.Client.Photon;
 
 
 public class Network : MonoBehaviourPunCallbacks
 {
+    private const string PlayerTagPropertyKey = "PlayerTag";
+
     //game version
     [SerializeField] private string gameVersion = "1.0";
     //maximum number of player in 1 room
@@ -45,7 +48,7 @@ public class Network : MonoBehaviourPunCallbacks
         goToRoomListButton.onClick.AddListener(() =>
         {
             //check if username field is empty
-            string username = usernameInput.text;
+            string username = usernameInput.text.Trim();
             if (string.IsNullOrEmpty(username))
             {
                 //update placeholder text if username is empty
@@ -61,6 +64,11 @@ public class Network : MonoBehaviourPunCallbacks
 
             //set username 
             PhotonNetwork.NickName = username;
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
+            {
+                { PlayerTagPropertyKey, username }
+            });
+
             //disable home panel and show the room list panel with create room button
             homePanel.SetActive(false);
             joinRoomManager.setRoomListPanelActive(true);
