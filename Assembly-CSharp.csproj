@@ -145,6 +145,7 @@
     <Compile Include="Assets\Scripts\CharacterSelection.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanAudio.cs" />
     <Compile Include="Assets\Scripts\Player\CrossHairInteractor.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerTagDisplay.cs" />
     <Compile Include="Assets\LeanTween\Framework\LTDescrOptional.cs" />
     <Compile Include="Assets\Scripts\networking\CreateRoomManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 7\PrescriptionManager.cs" />
