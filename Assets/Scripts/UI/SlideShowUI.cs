@@ -125,13 +125,13 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         }
 
         EnsureCloseButtonSetup();
-        closeButton.gameObject.SetActive(false);
 
         // Hook up buttons
         prevButton.onClick.AddListener(ShowPrevImage);
         nextButton.onClick.AddListener(ShowNextImage);
 
         // Initial button state
+        UpdateCloseButton();
         UpdateButtonState();
     }
 

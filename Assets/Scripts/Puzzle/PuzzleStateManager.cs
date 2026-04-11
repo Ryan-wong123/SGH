@@ -88,6 +88,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     // Tracks which panel belongs to which stage
     private readonly Dictionary<PuzzleStage, GameObject> stagePanels = new();
     private GameObject currentPuzzlePanel;
+    private int currentSubmitOwnerActorNumber = -1;
 
     // ===== Room / Player property keys =====
     private const string RP_PUZZLE_LOCKED = "PuzzleLocked";   // bool
@@ -140,6 +141,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
 
         EnsureRoomProps(); // initialize fair-turn props in room
+        RefreshSubmitButtonVisibility();
     }
 
     private void InitStagePanels()
@@ -395,6 +397,38 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             diaryPuzzleManager.GoToStage(newStage);
     }
 
+    [PunRPC]
+    private void RPC_DiaryAdvanceToNextStage()
+    {
+        diaryPuzzleManager?.GoToNextStage();
+    }
+
+    [PunRPC]
+    private void RPC_Activity2GoToPart2()
+    {
+        activity2PuzzleManager?.GoToPart2();
+    }
+
+    [PunRPC]
+    private void RPC_InsulinGoToPart2()
+    {
+        insulinPuzzleManager?.GoToPart2();
+    }
+
+    [PunRPC]
+    private void RPC_DeathLapsesGoToStage2()
+    {
+        deathLapsesManager?.GoToStage2();
+    }
+
+    public void BroadcastInsulinPart2Transition()
+    {
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+            photonView.RPC(nameof(RPC_InsulinGoToPart2), RpcTarget.All);
+        else
+            insulinPuzzleManager?.GoToPart2();
+    }
+
     public void HandlePuzzle6Complete()
     {
         Debug.Log("Puzzle 6 completed correctly!");
@@ -549,6 +583,29 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     // Use RPC to advance for everyone after delay (fair-turn compatible)
     public void Submit()
     {
+        if (CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null)
+        {
+            var result = activity2PuzzleManager.SubmitActivity2Stage();
+
+            if (result == Activity2PuzzleManager.Activity2SubmitResult.Incorrect)
+            {
+                if (PuzzleScoreTracker.Instance != null)
+                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
+
+                Debug.Log("Activity 2 stage incorrect.");
+                return;
+            }
+
+            if (result == Activity2PuzzleManager.Activity2SubmitResult.Advanced)
+            {
+                photonView.RPC(nameof(RPC_Activity2GoToPart2), RpcTarget.All);
+                return;
+            }
+
+            StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
+            return;
+        }
+
         // ✅ Special handling for Puzzle 6 multi-page diary
         if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null)
         {
@@ -565,14 +622,34 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
             if (result == DiaryPuzzleManager.DiarySubmitResult.Advanced)
             {
-                int nextStage = diaryPuzzleManager.CurrentStage + 1;
-
-                // ✅ Toggle diary panels for everyone
-                photonView.RPC(nameof(RPC_DiaryGoToStage), RpcTarget.All, nextStage);
+                photonView.RPC(nameof(RPC_DiaryAdvanceToNextStage), RpcTarget.All);
                 return; // IMPORTANT: do not advance puzzle stage yet
             }
 
             // Completed final diary page -> proceed with normal stage-advance flow
+            StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
+            return;
+        }
+
+        if (CurrentStage == PuzzleStage.Puzzle11 && deathLapsesManager != null)
+        {
+            var result = deathLapsesManager.SubmitDeathLapsesStage();
+
+            if (result == DeathLapsesManager.DeathLapsesSubmitResult.Incorrect)
+            {
+                if (PuzzleScoreTracker.Instance != null)
+                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
+
+                Debug.Log("Death Lapses stage incorrect.");
+                return;
+            }
+
+            if (result == DeathLapsesManager.DeathLapsesSubmitResult.Advanced)
+            {
+                photonView.RPC(nameof(RPC_DeathLapsesGoToStage2), RpcTarget.All);
+                return;
+            }
+
             StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
             return;
         }
@@ -611,6 +688,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         var stage = (PuzzleStage)stageInt;
         HandlePuzzleCompletion(stage);
+        RefreshSubmitButtonVisibility();
 
         // === CHANGE: Do NOT bump the round here ===
         // Master only unlocks and checks if everyone has played. Round will bump inside MaybeAdvanceRoundIfEveryonePlayed().
@@ -634,10 +712,18 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     private GameObject GetPanelForStage(PuzzleStage stage) =>
         (stagePanels != null && stagePanels.TryGetValue(stage, out var panel)) ? panel : null;
 
-    public void OpenCurrentStagePanel()
+    public void OpenCurrentStagePanel(int submitOwnerActorNumber = -1)
     {
+        if (submitOwnerActorNumber > 0)
+            currentSubmitOwnerActorNumber = submitOwnerActorNumber;
+
         var panel = GetPanelForStage(CurrentStage);
-        if (panel != null) { panel.SetActive(true); currentPuzzlePanel = panel; }
+        if (panel != null)
+        {
+            panel.SetActive(true);
+            currentPuzzlePanel = panel;
+            RefreshSubmitButtonVisibility();
+        }
     }
    
     public void CloseCurrentPuzzle()
@@ -688,6 +774,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             var meProps = new Hashtable { [PP_PLAYED_ROUND] = false };
             me.SetCustomProperties(meProps);
         }
+
+        RefreshSubmitButtonVisibility();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -707,6 +795,62 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         }
 
         MaybeAdvanceRoundIfEveryonePlayed();
+    }
+
+    public bool CanLocalPlayerSubmitCurrentAttempt()
+    {
+        if (!PhotonNetwork.IsConnected || PhotonNetwork.LocalPlayer == null)
+            return true;
+
+        if (currentSubmitOwnerActorNumber > 0)
+            return PhotonNetwork.LocalPlayer.ActorNumber == currentSubmitOwnerActorNumber;
+
+        var room = PhotonNetwork.CurrentRoom;
+        if (room == null)
+            return true;
+
+        bool locked = room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED) &&
+                      (bool)room.CustomProperties[RP_PUZZLE_LOCKED];
+
+        if (!locked)
+            return true;
+
+        int owner = room.CustomProperties.ContainsKey(RP_LOCK_OWNER)
+            ? (int)room.CustomProperties[RP_LOCK_OWNER]
+            : -1;
+
+        return owner < 0 || owner == PhotonNetwork.LocalPlayer.ActorNumber;
+    }
+
+    private void RefreshSubmitButtonVisibility()
+    {
+        bool shouldShowSubmitButtons = CanLocalPlayerSubmitCurrentAttempt();
+
+        foreach (var panel in stagePanels.Values)
+        {
+            if (panel == null) continue;
+
+            foreach (var button in panel.GetComponentsInChildren<Button>(true))
+            {
+                if (button == null || !IsManagedSubmitButton(button.gameObject))
+                    continue;
+
+                button.gameObject.SetActive(shouldShowSubmitButtons);
+            }
+        }
+
+        pictureGridManager?.RefreshSubmitButtonVisibility();
+    }
+
+    private bool IsManagedSubmitButton(GameObject buttonObject)
+    {
+        if (buttonObject == null)
+            return false;
+
+        if (pictureGridManager != null && pictureGridManager.SubmitButton == buttonObject)
+            return false;
+
+        return buttonObject.name.IndexOf("submit", StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
     // Gate attempt; called by triggers

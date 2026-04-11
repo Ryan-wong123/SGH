@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+
 public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
 {
     [SerializeField] private int required;
@@ -16,10 +17,14 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
     public Color correctColor = Color.green;
     public Color wrongColor = Color.red;
     public Color defaultColor = Color.white;
+    private Coroutine part1AdvanceRoutine;
 
     public void SubmitSyringeAnswer()
     {
-        StartCoroutine(CheckCorrectSyringe());
+        if (part1AdvanceRoutine != null)
+            StopCoroutine(part1AdvanceRoutine);
+
+        part1AdvanceRoutine = StartCoroutine(CheckCorrectSyringe());
     }
 
     public IEnumerator CheckCorrectSyringe()
@@ -33,14 +38,24 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
             syringeDropdown.GetComponent<Image>().color = correctColor;
             // Optional delay before showing result (remove if not needed)
             yield return new WaitForSeconds(2f);
-            panel1.SetActive(false);
-            panel2.SetActive(true);
+
+            if (PuzzleStateManager.Instance != null)
+                PuzzleStateManager.Instance.BroadcastInsulinPart2Transition();
+            else
+                GoToPart2();
         }
            
         else
             syringeDropdown.GetComponent<Image>().color = wrongColor;
+
+        part1AdvanceRoutine = null;
     }
 
+    public void GoToPart2()
+    {
+        if (panel1 != null) panel1.SetActive(false);
+        if (panel2 != null) panel2.SetActive(true);
+    }
 
 
     public bool AreAllPuzzle8CardsCorrect()

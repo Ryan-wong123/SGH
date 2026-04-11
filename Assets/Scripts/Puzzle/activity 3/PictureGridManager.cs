@@ -19,6 +19,8 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
     [SerializeField] GameObject submitButton;
     [SerializeField] private TMP_Text selectedCountText;
 
+    public GameObject SubmitButton => submitButton;
+
     public void Start()
     {
         for (int i = 0; i < pictureButtons.Count; i++)
@@ -27,7 +29,7 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
             pictureButtons[i].onClick.AddListener(() => OnPictureClick(index));
         }
 
-        submitButton.SetActive(false);
+        RefreshSubmitButtonVisibility();
         UpdateSelectedCountText();
     }
 
@@ -46,17 +48,10 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
 
         UpdateSelectedCountText();
 
-        // Log when exactly N buttons are selected
         if (selectedIndexes.Count == correctIndexes.Count)
-        {
             Debug.Log($"{correctIndexes.Count} buttons selected. Ready to check answers!");
-            submitButton.SetActive(true);
-        }
-        else
-        {
-            // keep behavior consistent (prevents submit staying on when count drops)
-            submitButton.SetActive(false);
-        }
+
+        RefreshSubmitButtonVisibility();
     }
 
     void UpdateSelectedCountText()
@@ -166,10 +161,21 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
             ResetSelection(i); // Handles reset logic per button
         }
 
-        submitButton.SetActive(false);
+        RefreshSubmitButtonVisibility();
         UpdateSelectedCountText();
 
         Debug.Log("Picture Grid Puzzle reset.");
+    }
+
+    public void RefreshSubmitButtonVisibility()
+    {
+        if (submitButton == null) return;
+
+        bool hasRequiredSelectionCount = selectedIndexes.Count == correctIndexes.Count;
+        bool canLocalPlayerSubmit = PuzzleStateManager.Instance == null ||
+                                    PuzzleStateManager.Instance.CanLocalPlayerSubmitCurrentAttempt();
+
+        submitButton.SetActive(canLocalPlayerSubmit && hasRequiredSelectionCount);
     }
 
     private void ResetSelection(int index)

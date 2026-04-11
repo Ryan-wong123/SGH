@@ -12,31 +12,37 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
 
     private bool stage1Completed = false;
 
-    public bool AreAllPuzzle11CardsCorrect()
+    public enum DeathLapsesSubmitResult
+    {
+        Incorrect,
+        Advanced,
+        Completed
+    }
+
+    public DeathLapsesSubmitResult SubmitDeathLapsesStage()
     {
         if (!stage1Completed)
         {
             if (AreStage1CardsCorrect())
             {
-                stage1Completed = true;
-                ShowStage2();
                 Debug.Log("✅ Stage 1 completed. Submit again to check Stage 2.");
-                return false; // first submit only checks Stage 1
+                return DeathLapsesSubmitResult.Advanced;
             }
             Debug.Log("❌ Stage 1 incorrect.");
-            return false;
+            return DeathLapsesSubmitResult.Incorrect;
         }
-        else
-        {
-            Debug.Log("checking stage 2");
-            return AreStage2CardsCorrect(); // only after stage1Completed = true
-        }
+
+        Debug.Log("checking stage 2");
+        return AreStage2CardsCorrect()
+            ? DeathLapsesSubmitResult.Completed
+            : DeathLapsesSubmitResult.Incorrect;
     }
 
-    public bool IsSolved() => AreAllPuzzle11CardsCorrect();
+    public bool IsSolved() => SubmitDeathLapsesStage() == DeathLapsesSubmitResult.Completed;
 
-    private void ShowStage2()
+    public void GoToStage2()
     {
+        stage1Completed = true;
         answer2Cards?.SetActive(true);
         answer2Slots?.SetActive(true);
     }

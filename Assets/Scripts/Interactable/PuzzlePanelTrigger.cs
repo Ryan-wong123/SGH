@@ -51,6 +51,10 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
             return;
         }
 
+        int submitOwnerActorNumber = PhotonNetwork.IsConnected && PhotonNetwork.LocalPlayer != null
+            ? PhotonNetwork.LocalPlayer.ActorNumber
+            : -1;
+
         // Fair-turn gate
         if (!puzzleStateManager.TryBeginAttempt(out string reason))
         {
@@ -64,9 +68,9 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
         {
             // Keep consistent network behavior: open for everyone
             if (PhotonNetwork.IsConnected)
-                photonView.RPC(nameof(RPC_OpenPuzzle), RpcTarget.All);
+                photonView.RPC(nameof(RPC_OpenPuzzle), RpcTarget.All, submitOwnerActorNumber);
             else
-                OpenPuzzle();
+                OpenPuzzle(submitOwnerActorNumber);
 
             return;
         }
@@ -74,7 +78,7 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
         // If not connected, do local-only fallback
         if (!PhotonNetwork.IsConnected)
         {
-            ShowClueLocalThenOpen(clueId);
+            ShowClueLocalThenOpen(clueId, submitOwnerActorNumber);
             return;
         }
 
@@ -86,33 +90,34 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
         }
 
         // Master clicked
-        HandleShowClueAsMaster(clueId);
+        HandleShowClueAsMaster(clueId, submitOwnerActorNumber);
     }
 
     [PunRPC]
     private void RPC_RequestShowClue(string requestedClueId, PhotonMessageInfo info)
     {
         if (!PhotonNetwork.IsMasterClient) return;
-        HandleShowClueAsMaster(requestedClueId);
+        int submitOwnerActorNumber = info.Sender != null ? info.Sender.ActorNumber : -1;
+        HandleShowClueAsMaster(requestedClueId, submitOwnerActorNumber);
     }
 
-    private void HandleShowClueAsMaster(string id)
+    private void HandleShowClueAsMaster(string id, int submitOwnerActorNumber)
     {
         // If already shown once, skip clue and open puzzle for everyone
         if (clueAlreadyViewed)
         {
-            photonView.RPC(nameof(RPC_OpenPuzzle), RpcTarget.All);
+            photonView.RPC(nameof(RPC_OpenPuzzle), RpcTarget.All, submitOwnerActorNumber);
             return;
         }
 
         clueAlreadyViewed = true;
 
         // Broadcast: everyone shows the same clue UI now
-        photonView.RPC(nameof(RPC_ShowClueForAll), RpcTarget.All, id);
+        photonView.RPC(nameof(RPC_ShowClueForAll), RpcTarget.All, id, submitOwnerActorNumber);
     }
 
     [PunRPC]
-    private void RPC_ShowClueForAll(string id)
+    private void RPC_ShowClueForAll(string id, int submitOwnerActorNumber)
     {
         // Each client shows UI locally (UI itself isn't networked)
         var ui = (clueUI != null) ? clueUI : ClueUI.Instance;
@@ -122,37 +127,37 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable
             ui.ShowById(id, onClosed: () =>
             {
                 // When player closes clue UI, open puzzle locally for them
-                OpenPuzzle();
+                OpenPuzzle(submitOwnerActorNumber);
             });
         }
         else
         {
             Debug.LogWarning($"[PuzzleTrigger] ClueUI missing or clue id not found: '{id}'");
-            OpenPuzzle();
+            OpenPuzzle(submitOwnerActorNumber);
         }
     }
 
     [PunRPC]
-    private void RPC_OpenPuzzle()
+    private void RPC_OpenPuzzle(int submitOwnerActorNumber)
     {
-        OpenPuzzle();
+        OpenPuzzle(submitOwnerActorNumber);
     }
 
-    private void ShowClueLocalThenOpen(string id)
+    private void ShowClueLocalThenOpen(string id, int submitOwnerActorNumber)
     {
         var ui = (clueUI != null) ? clueUI : ClueUI.Instance;
 
         if (ui != null && ui.HasClueId(id))
-            ui.ShowById(id, onClosed: OpenPuzzle);
+            ui.ShowById(id, onClosed: () => OpenPuzzle(submitOwnerActorNumber));
         else
-            OpenPuzzle();
+            OpenPuzzle(submitOwnerActorNumber);
     }
 
-    private void OpenPuzzle()
+    private void OpenPuzzle(int submitOwnerActorNumber = -1)
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        puzzleStateManager.OpenCurrentStagePanel();
+        puzzleStateManager.OpenCurrentStagePanel(submitOwnerActorNumber);
     }
 
     public string GetInteractionPrompt() => "Press E to start puzzle";

@@ -42,6 +42,8 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
 
     private void OnEnable()
     {
+        ApplyStageVisibility();
+
         DateTime today = DateTime.Today;
 
         foreach (var entry in dateEntries)
@@ -135,18 +137,29 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
         return DiarySubmitResult.Completed;
     }
 
-    // ✅ New: PuzzleStateManager will call this via RPC to actually toggle panels
+    public void GoToNextStage()
+    {
+        GoToStage(currentStage + 1);
+    }
+
     public void GoToStage(int newStage)
     {
         int maxStage = MaxStage;
         if (maxStage <= 0) return;
 
         newStage = Mathf.Clamp(newStage, 1, maxStage);
+        currentStage = newStage;
+        ApplyStageVisibility();
+    }
+
+    private void ApplyStageVisibility()
+    {
+        if (stagePanels == null || stagePanels.Length == 0)
+            return;
 
         for (int i = 0; i < stagePanels.Length; i++)
-            stagePanels[i].SetActive(i == (newStage - 1));
-
-        currentStage = newStage;
+            if (stagePanels[i] != null)
+                stagePanels[i].SetActive(i == (currentStage - 1));
     }
 
     public void ResetPuzzle()
@@ -158,11 +171,8 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
             a.field.image.color = Color.white;
         }
 
-        // panels
-        for (int i = 0; i < stagePanels.Length; i++)
-            stagePanels[i].SetActive(i == 0);
-
         currentStage = 1;
+        ApplyStageVisibility();
         Debug.Log("Diary puzzle reset.");
     }
 

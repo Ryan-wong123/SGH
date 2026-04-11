@@ -12,6 +12,15 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
     [SerializeField] private GameObject panel1;
     [SerializeField] private GameObject panel2;
 
+    public enum Activity2SubmitResult
+    {
+        Incorrect,
+        Advanced,
+        Completed
+    }
+
+    public bool IsOnPart2 => panel2 != null && panel2.activeSelf;
+
 
     public bool AreAllPuzzle4CardsCorrect()
     {
@@ -50,19 +59,29 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
         return correct >= required;
     }
 
+    public Activity2SubmitResult SubmitActivity2Stage()
+    {
+        if (!IsOnPart2)
+        {
+            return AreAllPuzzle4CardsCorrect()
+                ? Activity2SubmitResult.Advanced
+                : Activity2SubmitResult.Incorrect;
+        }
+
+        return CheckActivity2Part2Correct()
+            ? Activity2SubmitResult.Completed
+            : Activity2SubmitResult.Incorrect;
+    }
+
+    public void GoToPart2()
+    {
+        if (panel1 != null) panel1.SetActive(false);
+        if (panel2 != null) panel2.SetActive(true);
+    }
+
     public bool IsSolved()
     {
-         if(AreAllPuzzle4CardsCorrect())
-        {
-            panel1.SetActive(false);
-            panel2.SetActive(true);
-
-            if (CheckActivity2Part2Correct())
-            {
-                return true;
-            }
-        }
-        return false;
+        return SubmitActivity2Stage() == Activity2SubmitResult.Completed;
     }
 
     public bool CheckActivity2Part2Correct()

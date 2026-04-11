@@ -91,6 +91,11 @@ MonoBehaviour:
   - RPC_RequestRestart
   - RPC_ResetSpawnFlag
   - RPC_LeaveRoom
+  - RPC_Activity2GoToPart2
+  - RPC_DiaryAdvanceToNextStage
+  - RPC_GoToPart2
+  - RPC_InsulinGoToPart2
+  - RPC_DeathLapsesGoToStage2
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
