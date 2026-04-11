@@ -7,6 +7,13 @@ using Photon.Pun;
 [RequireComponent(typeof(PhotonView))]
 public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerUpHandler
 {
+    public enum ResultVisualState
+    {
+        None = 0,
+        Correct = 1,
+        Wrong = 2
+    }
+
     [Header("UI")]
     public TMP_Text letterText;
     public Image backgroundImage;
@@ -18,7 +25,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
 
     // Visual state
     private bool isSelected = false;
-    private bool hasResult = false; // true when green/red applied
+    private ResultVisualState resultState = ResultVisualState.None;
 
     // Photon
     private PhotonView pv;
@@ -54,10 +61,39 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
     public char GetLetter() => letterText.text.Length > 0 ? letterText.text[0] : ' ';
 
     // ---- Visuals ----
+    public bool IsSelected => isSelected;
+    public ResultVisualState CurrentResultState => resultState;
+
+    public void ApplySharedState(bool selected, ResultVisualState result)
+    {
+        suppressNet = true;
+
+        isSelected = selected;
+        resultState = result;
+
+        if (backgroundImage != null)
+        {
+            switch (resultState)
+            {
+                case ResultVisualState.Correct:
+                    backgroundImage.color = Color.green;
+                    break;
+                case ResultVisualState.Wrong:
+                    backgroundImage.color = Color.red;
+                    break;
+                default:
+                    backgroundImage.color = isSelected ? new Color(1f, 0.95f, 0.4f) : Color.white;
+                    break;
+            }
+        }
+
+        suppressNet = false;
+    }
+
     public void SetSelectedVisual(bool selected)
     {
         isSelected = selected;
-        if (hasResult) return; // keep green/red until cleared
+        if (resultState != ResultVisualState.None) return; // keep green/red until cleared
         if (backgroundImage != null)
             backgroundImage.color = isSelected ? new Color(1f, 0.95f, 0.4f) : Color.white; // yellow or white
 
@@ -70,7 +106,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
 
     public void SetResultCorrect()
     {
-        hasResult = true;
+        resultState = ResultVisualState.Correct;
         if (backgroundImage != null) backgroundImage.color = Color.green;
 
         // ✅ Sync to others
@@ -82,7 +118,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
 
     public void SetResultWrong()
     {
-        hasResult = true;
+        resultState = ResultVisualState.Wrong;
         if (backgroundImage != null) backgroundImage.color = Color.red;
 
         // ✅ Sync to others
@@ -94,7 +130,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
 
     public void ClearResult()
     {
-        hasResult = false;
+        resultState = ResultVisualState.None;
         // Re-apply selection coloring
         if (backgroundImage != null)
             backgroundImage.color = isSelected ? new Color(1f, 0.95f, 0.4f) : Color.white;
@@ -198,26 +234,26 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
     private void SetSelectedVisual_NoNet(bool selected)
     {
         isSelected = selected;
-        if (hasResult) return;
+        if (resultState != ResultVisualState.None) return;
         if (backgroundImage != null)
             backgroundImage.color = isSelected ? new Color(1f, 0.95f, 0.4f) : Color.white;
     }
 
     private void SetResultCorrect_NoNet()
     {
-        hasResult = true;
+        resultState = ResultVisualState.Correct;
         if (backgroundImage != null) backgroundImage.color = Color.green;
     }
 
     private void SetResultWrong_NoNet()
     {
-        hasResult = true;
+        resultState = ResultVisualState.Wrong;
         if (backgroundImage != null) backgroundImage.color = Color.red;
     }
 
     private void ClearResult_NoNet()
     {
-        hasResult = false;
+        resultState = ResultVisualState.None;
         if (backgroundImage != null)
             backgroundImage.color = isSelected ? new Color(1f, 0.95f, 0.4f) : Color.white;
     }

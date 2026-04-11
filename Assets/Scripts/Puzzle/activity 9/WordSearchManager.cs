@@ -1,9 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using TMPro;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class WordSearchManager : MonoBehaviour, IPuzzle
+public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCallback
 {
+    private const byte WordSearchCellStateEventCode = 42;
+    private const string WordSearchCellStatePrefix = "P5WS_";
+
     [Header("Grid Setup")]
     public GameObject gridPanel;
     public GameObject cellPrefab;
@@ -16,6 +24,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
     private bool isDragging = false;
     private bool dragAddMode = true; // true: selecting, false: unselecting
     private readonly HashSet<LetterCell> selected = new();
+    private bool suppressNetworkStateApply;
 
     // Grid
     private LetterCell[,] grid;
@@ -64,6 +73,22 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         _activeInstance = this;
     }
 
+    private void OnEnable()
+    {
+        PhotonNetwork.AddCallbackTarget(this);
+
+        if (_built)
+            ApplyRoomSyncedCellStates();
+    }
+
+    private void OnDisable()
+    {
+        PhotonNetwork.RemoveCallbackTarget(this);
+
+        if (_activeInstance == this && !gameObject.activeInHierarchy)
+            _activeInstance = null;
+    }
+
     private void Start()
     {
         // If something calls Start twice / object re-enabled, don’t build again
@@ -75,6 +100,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         GenerateGrid();
         PlaceFixedLettersFromSolution();
         FillRandomLetters();
+        ApplyRoomSyncedCellStates();
 
         _built = true;
 
@@ -174,7 +200,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
 
     private void FillRandomLetters()
     {
-        System.Random rand = new System.Random();
+        System.Random rand = new System.Random(BuildBoardSeed());
         for (int y = 1; y < gridSize; y++)
         {
             for (int x = 1; x < gridSize; x++)
@@ -185,8 +211,169 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         }
     }
 
+    private int BuildBoardSeed()
+    {
+        int seed = 17;
+        string seedSource = PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom != null
+            ? PhotonNetwork.CurrentRoom.Name
+            : gameObject.scene.name;
+
+        foreach (char c in seedSource)
+            seed = (seed * 31) + c;
+
+        seed = (seed * 31) + gridSize;
+        return seed;
+    }
+
+    private void SyncCellState(LetterCell cell)
+    {
+        if (cell == null || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        Vector2Int pos = cell.gridPosition;
+        int state = EncodeCellState(cell.IsSelected, cell.CurrentResultState);
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
+        {
+            [BuildCellStateKey(pos.x, pos.y)] = state
+        });
+
+        object[] eventData =
+        {
+            pos.x,
+            pos.y,
+            state
+        };
+
+        PhotonNetwork.RaiseEvent(
+            WordSearchCellStateEventCode,
+            eventData,
+            new RaiseEventOptions { Receivers = ReceiverGroup.Others },
+            SendOptions.SendReliable);
+    }
+
+    private void ApplyRoomSyncedCellStates()
+    {
+        if (grid == null || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        suppressNetworkStateApply = true;
+
+        for (int y = 1; y < gridSize; y++)
+        {
+            for (int x = 1; x < gridSize; x++)
+            {
+                string key = BuildCellStateKey(x, y);
+                if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(key))
+                    continue;
+
+                ApplyEncodedStateToCell(x, y, (int)PhotonNetwork.CurrentRoom.CustomProperties[key]);
+            }
+        }
+
+        suppressNetworkStateApply = false;
+    }
+
+    private void ApplyEncodedStateToCell(int x, int y, int encodedState)
+    {
+        if (grid == null || x <= 0 || y <= 0 || x >= gridSize || y >= gridSize)
+            return;
+
+        LetterCell cell = grid[x, y];
+        if (cell == null || !cell.IsPlayable)
+            return;
+
+        DecodeCellState(encodedState, out bool shouldSelect, out LetterCell.ResultVisualState resultState);
+        ApplyCellState(cell, shouldSelect, resultState, false);
+    }
+
+    private void ApplyCellState(LetterCell cell, bool shouldSelect, LetterCell.ResultVisualState resultState, bool sync)
+    {
+        if (cell == null)
+            return;
+
+        if (shouldSelect) selected.Add(cell);
+        else selected.Remove(cell);
+
+        cell.ApplySharedState(shouldSelect, resultState);
+
+        if (sync && !suppressNetworkStateApply)
+            SyncCellState(cell);
+    }
+
+    private static int EncodeCellState(bool isSelected, LetterCell.ResultVisualState resultState)
+    {
+        return ((int)resultState << 1) | (isSelected ? 1 : 0);
+    }
+
+    private static void DecodeCellState(int encodedState, out bool isSelected, out LetterCell.ResultVisualState resultState)
+    {
+        isSelected = (encodedState & 1) == 1;
+        resultState = (LetterCell.ResultVisualState)(encodedState >> 1);
+    }
+
+    private static string BuildCellStateKey(int x, int y)
+    {
+        return $"{WordSearchCellStatePrefix}{x}_{y}";
+    }
+
+    private void ClearSyncedCellStates()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        Hashtable clearedStates = new Hashtable();
+
+        for (int y = 1; y < gridSize; y++)
+        {
+            for (int x = 1; x < gridSize; x++)
+            {
+                clearedStates[BuildCellStateKey(x, y)] = 0;
+            }
+        }
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(clearedStates);
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code != WordSearchCellStateEventCode)
+            return;
+
+        if (!(photonEvent.CustomData is object[] data) || data.Length < 3)
+            return;
+
+        suppressNetworkStateApply = true;
+        ApplyEncodedStateToCell((int)data[0], (int)data[1], (int)data[2]);
+        suppressNetworkStateApply = false;
+    }
+
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+    {
+        if (grid == null)
+            return;
+
+        suppressNetworkStateApply = true;
+
+        foreach (DictionaryEntry entry in propertiesThatChanged)
+        {
+            if (entry.Key is not string key || !key.StartsWith(WordSearchCellStatePrefix))
+                continue;
+
+            string[] parts = key.Substring(WordSearchCellStatePrefix.Length).Split('_');
+            if (parts.Length != 2 ||
+                !int.TryParse(parts[0], out int x) ||
+                !int.TryParse(parts[1], out int y))
+                continue;
+
+            ApplyEncodedStateToCell(x, y, (int)entry.Value);
+        }
+
+        suppressNetworkStateApply = false;
+    }
+
     // ---------- Results clearing ----------
-    private void ClearAllResults()
+    private void ClearAllResults(bool sync = true)
     {
         if (grid == null) return;
         int sizeY = grid.GetLength(1);
@@ -198,7 +385,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
             {
                 var cell = grid[x, y];
                 if (cell != null && cell.IsPlayable)
-                    cell.ClearResult();
+                    ApplyCellState(cell, selected.Contains(cell), LetterCell.ResultVisualState.None, sync);
             }
         }
     }
@@ -232,20 +419,14 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
 
     private void SelectCell(LetterCell cell)
     {
-        if (selected.Add(cell))
-        {
-            cell.ClearResult();          // clear any prior green/red for iterative attempts
-            cell.SetSelectedVisual(true);
-        }
+        if (!selected.Contains(cell) || cell.CurrentResultState != LetterCell.ResultVisualState.None)
+            ApplyCellState(cell, true, LetterCell.ResultVisualState.None, true);
     }
 
     private void UnselectCell(LetterCell cell)
     {
-        if (selected.Remove(cell))
-        {
-            cell.ClearResult();          // clear any prior green/red for iterative attempts
-            cell.SetSelectedVisual(false);
-        }
+        if (selected.Contains(cell) || cell.CurrentResultState != LetterCell.ResultVisualState.None)
+            ApplyCellState(cell, false, LetterCell.ResultVisualState.None, true);
     }
 
     // Optional public single-click toggle (BeginDrag already handles it)
@@ -288,8 +469,8 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
             bool isCorrect = (expected != '\0') &&
                              (char.ToUpperInvariant(expected) == char.ToUpperInvariant(actual));
 
-            if (isCorrect) cell.SetResultCorrect(); // green
-            else cell.SetResultWrong();   // red
+            if (isCorrect) ApplyCellState(cell, true, LetterCell.ResultVisualState.Correct, true); // green
+            else ApplyCellState(cell, true, LetterCell.ResultVisualState.Wrong, true);   // red
 
             if (!isCorrect) allMatch = false;
         }
@@ -343,6 +524,8 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         // --- 2) Reset selection state ---
         selected.Clear();
         isDragging = false;
+        suppressNetworkStateApply = false;
+        ClearSyncedCellStates();
 
         grid = null;
 
@@ -350,6 +533,7 @@ public class WordSearchManager : MonoBehaviour, IPuzzle
         GenerateGrid();
         PlaceFixedLettersFromSolution();
         FillRandomLetters();
+        ApplyRoomSyncedCellStates();
 
         Debug.Log($"[WordSearch] ResetPuzzle - DONE, children AFTER = {gridPanel.transform.childCount}");
     }
