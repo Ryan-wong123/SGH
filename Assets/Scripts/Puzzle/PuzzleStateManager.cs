@@ -190,16 +190,14 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1))
         {
-            Image img = card.GetComponent<Image>();
-            if (img != null) img.color = Color.white;
+            card.ResetSyncedFeedbackColor();
             card.ResetCard();
             card.ShowFront();
         }
 
         foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1_2))
         {
-            Image img = card.GetComponent<Image>();
-            if (img != null) img.color = Color.white;
+            card.ResetSyncedFeedbackColor();
             card.ResetCard();
             card.ShowFront();
         }
@@ -228,8 +226,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity2))
         {
-            Image img = card.GetComponent<Image>();
-            if (img != null) img.color = Color.white;
+            card.ResetSyncedFeedbackColor();
             card.ResetCard();
         }
         activity2PuzzleManager.ResetActivity2Part2();
@@ -299,8 +296,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         DropSlot.ResetAllSlots();
         foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity6))
         {
-            Image img = card.GetComponent<Image>();
-            if (img != null) img.color = Color.white;
+            card.ResetSyncedFeedbackColor();
             card.ResetCard();
         }
         insulinPuzzleManager?.ResetPuzzle();
@@ -318,8 +314,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         DropSlot.ResetAllSlots();
         foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity9))
         {
-            Image img = card.GetComponent<Image>();
-            if (img != null) img.color = Color.white;
+            card.ResetSyncedFeedbackColor();
             card.ResetCard();
         }
         deathLapsesManager?.ResetPuzzle();

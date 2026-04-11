@@ -104,7 +104,7 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
                 }
             }
 
-            a.field.image.color = ok ? Color.green : Color.red;
+            a.field.SetSyncedFeedbackColor(ok ? Color.green : Color.red);
             if (!ok) allCorrect = false;
         }
 
@@ -168,7 +168,7 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle
         {
             if (a.field == null) continue;
             a.field.text = string.Empty;
-            a.field.image.color = Color.white;
+            a.field.ResetSyncedFeedbackColor();
         }
 
         currentStage = 1;
