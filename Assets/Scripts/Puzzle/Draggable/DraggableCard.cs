@@ -426,7 +426,7 @@ public class DraggableCard : MonoBehaviour,
 
         while (cur != null && cur != pathRoot)
         {
-            stack.Push(cur.name);
+            stack.Push(BuildPathSegment(cur));
             cur = cur.parent;
         }
 
@@ -438,7 +438,90 @@ public class DraggableCard : MonoBehaviour,
     {
         if (pathRoot == null) return null;
         if (string.IsNullOrEmpty(path)) return pathRoot;
-        return pathRoot.Find(path);
+
+        Transform current = pathRoot;
+        string[] segments = path.Split('/');
+
+        foreach (string segment in segments)
+        {
+            if (!TryParsePathSegment(segment, out string childName, out int sameNameIndex))
+                return null;
+
+            current = FindChildByNameIndex(current, childName, sameNameIndex);
+            if (current == null)
+                return null;
+        }
+
+        return current;
+    }
+
+    private string BuildPathSegment(Transform target)
+    {
+        if (target == null)
+            return string.Empty;
+
+        int sameNameIndex = 0;
+        Transform parent = target.parent;
+
+        if (parent != null)
+        {
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                Transform sibling = parent.GetChild(i);
+                if (sibling.name != target.name)
+                    continue;
+
+                if (sibling == target)
+                    break;
+
+                sameNameIndex++;
+            }
+        }
+
+        return $"{target.name}|{sameNameIndex}";
+    }
+
+    private bool TryParsePathSegment(string segment, out string childName, out int sameNameIndex)
+    {
+        childName = segment;
+        sameNameIndex = 0;
+
+        if (string.IsNullOrEmpty(segment))
+            return false;
+
+        int separatorIndex = segment.LastIndexOf('|');
+        if (separatorIndex < 0)
+            return true;
+
+        childName = segment.Substring(0, separatorIndex);
+        string indexText = segment.Substring(separatorIndex + 1);
+
+        if (string.IsNullOrEmpty(childName))
+            return false;
+
+        return int.TryParse(indexText, out sameNameIndex);
+    }
+
+    private Transform FindChildByNameIndex(Transform parent, string childName, int sameNameIndex)
+    {
+        if (parent == null)
+            return null;
+
+        int currentIndex = 0;
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform child = parent.GetChild(i);
+            if (child.name != childName)
+                continue;
+
+            if (currentIndex == sameNameIndex)
+                return child;
+
+            currentIndex++;
+        }
+
+        return null;
     }
 
     // ---------------------------
