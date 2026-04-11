@@ -52,6 +52,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
     private string defaultCloseButtonText = "Close";
     private string comicClosePropertyKey;
     private string comicClosedPropertyKey;
+    private string comicCloseRoundPropertyKey;
     private bool closeListenerRegistered;
     private static SlideshowUI activeInstance;
 
@@ -72,7 +73,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         currentIndex = 0;
         EnsureCloseButtonSetup();
         ResetLocalCloseState();
-        ResetSharedClosedStateIfNeeded();
+        BeginCloseGateRoundIfNeeded();
 
         // Play audio when panel is enabled
         if (audioSource && onEnableClip)
@@ -148,6 +149,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
 
         comicClosePropertyKey = BuildComicClosePropertyKey();
         comicClosedPropertyKey = comicClosePropertyKey + "_Done";
+        comicCloseRoundPropertyKey = comicClosePropertyKey + "_Round";
 
         if (!closeListenerRegistered)
         {
@@ -326,6 +328,10 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
             return;
         }
 
+        int currentRound = GetCurrentCloseRound();
+        if (currentRound <= 0)
+            return;
+
         if (!HasLocalPlayerClickedClose())
         {
             SetLocalPlayerCloseClicked(true);
@@ -361,6 +367,14 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         {
             RestoreDefaultCloseButtonText();
             closeButton.interactable = true;
+            return;
+        }
+
+        int currentRound = GetCurrentCloseRound();
+        if (currentRound <= 0)
+        {
+            SetCloseButtonText("Waiting...");
+            closeButton.interactable = false;
             return;
         }
 
@@ -415,14 +429,17 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         SetLocalPlayerCloseClicked(false);
     }
 
-    private void ResetSharedClosedStateIfNeeded()
+    private void BeginCloseGateRoundIfNeeded()
     {
         if (!ShouldUseSharedCloseGate() || !PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom == null)
             return;
 
+        int nextRound = GetCurrentCloseRound() + 1;
+
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
         {
-            [comicClosedPropertyKey] = false
+            [comicClosedPropertyKey] = false,
+            [comicCloseRoundPropertyKey] = nextRound
         });
     }
 
@@ -445,9 +462,12 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         if (!ShouldUseSharedCloseGate() || PhotonNetwork.LocalPlayer == null)
             return;
 
+        int currentRound = GetCurrentCloseRound();
+        int clickedRound = clicked && currentRound > 0 ? currentRound : -1;
+
         PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
         {
-            [comicClosePropertyKey] = clicked
+            [comicClosePropertyKey] = clickedRound
         });
     }
 
@@ -461,11 +481,15 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         if (player == null || string.IsNullOrEmpty(comicClosePropertyKey))
             return false;
 
+        int currentRound = GetCurrentCloseRound();
+        if (currentRound <= 0)
+            return false;
+
         if (player.CustomProperties != null &&
             player.CustomProperties.TryGetValue(comicClosePropertyKey, out object value) &&
-            value is bool clicked)
+            value is int clickedRound)
         {
-            return clicked;
+            return clickedRound == currentRound;
         }
 
         return false;
@@ -489,7 +513,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
 
     private string BuildComicClosePropertyKey()
     {
-        string rawId = string.IsNullOrWhiteSpace(comicId) ? gameObject.name : comicId;
+        string rawId = string.IsNullOrWhiteSpace(comicId) ? BuildStableComicPath() : comicId;
         rawId = rawId.Trim();
 
         char[] chars = rawId.ToCharArray();
@@ -500,6 +524,35 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         }
 
         return "ComicClose_" + new string(chars);
+    }
+
+    private string BuildStableComicPath()
+    {
+        System.Collections.Generic.Stack<string> parts = new System.Collections.Generic.Stack<string>();
+        Transform current = transform;
+
+        while (current != null)
+        {
+            parts.Push(current.name);
+            current = current.parent;
+        }
+
+        return string.Join("/", parts.ToArray());
+    }
+
+    private int GetCurrentCloseRound()
+    {
+        if (!ShouldUseSharedCloseGate() || PhotonNetwork.CurrentRoom == null || string.IsNullOrEmpty(comicCloseRoundPropertyKey))
+            return 0;
+
+        if (PhotonNetwork.CurrentRoom.CustomProperties != null &&
+            PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(comicCloseRoundPropertyKey, out object value) &&
+            value is int round)
+        {
+            return round;
+        }
+
+        return 0;
     }
 
     private void SetCloseButtonText(string value)
@@ -540,14 +593,21 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
-        if (!ShouldUseSharedCloseGate() || propertiesThatChanged == null || string.IsNullOrEmpty(comicClosedPropertyKey))
+        if (!ShouldUseSharedCloseGate() || propertiesThatChanged == null)
             return;
 
-        if (!propertiesThatChanged.TryGetValue(comicClosedPropertyKey, out object value))
-            return;
+        if (!string.IsNullOrEmpty(comicCloseRoundPropertyKey) && propertiesThatChanged.ContainsKey(comicCloseRoundPropertyKey))
+        {
+            ResetLocalCloseState();
+            RefreshCloseGateUI();
+        }
 
-        if (value is bool isClosed && isClosed)
+        if (!string.IsNullOrEmpty(comicClosedPropertyKey) &&
+            propertiesThatChanged.TryGetValue(comicClosedPropertyKey, out object value) &&
+            value is bool isClosed && isClosed)
+        {
             CompleteClose();
+        }
     }
 
     private bool HasAnyPlayerClickedClose()
