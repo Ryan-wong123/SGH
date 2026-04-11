@@ -54,7 +54,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
 
             foreach (var baseCard in slot.GetCardsInSlot())
             {
-                var card = baseCard as Activity9DraggableCard;
+                var card = baseCard as DraggableCard;
                 if (card == null) continue;                // skip non-Activity9 cards
 
                 var img = card.GetComponent<Image>();
@@ -72,7 +72,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
             var cards = slot.GetCardsInSlot();
             if (cards.Count > 0)
             {
-                var card = cards[0] as Activity9DraggableCard;
+                var card = cards[0] as DraggableCard;
                 if (card == null) continue;
 
                 // Save the Stage 1 answer in the slot
@@ -110,7 +110,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
 
             foreach (var baseCard in slot.GetCardsInSlot())
             {
-                var card = baseCard as Activity9DraggableCard;
+                var card = baseCard as DraggableCard;
                 if (card == null) continue;
 
                 var img = card.GetComponent<Image>();
@@ -128,7 +128,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
             var cards = slot.GetCardsInSlot();
             if (cards.Count > 0)
             {
-                var card = cards[0] as Activity9DraggableCard;
+                var card = cards[0] as DraggableCard;
                 if (card == null) continue;
 
                 bool isCorrect = slot.IsCardCorrect(card);
@@ -156,7 +156,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
 
             foreach (var baseCard in slot.GetCardsInSlot())
             {
-                var card = baseCard as Activity9DraggableCard;
+                var card = baseCard as DraggableCard;
                 if (card == null) continue;
 
                 var img = card.GetComponent<Image>();

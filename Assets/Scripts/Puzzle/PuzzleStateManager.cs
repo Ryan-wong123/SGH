@@ -186,7 +186,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         DropSlot.ResetAllSlots();
 
-        foreach (var card in FindObjectsOfType<Activity1DraggableCard>())
+        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1))
         {
             Image img = card.GetComponent<Image>();
             if (img != null) img.color = Color.white;
@@ -222,7 +222,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         DropSlot.ResetAllSlots();
         PuzzleTileManager.Instance?.ResetPuzzle();
 
-        foreach (var card in FindObjectsOfType<Activity2DraggableCard>())
+        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity2))
         {
             Image img = card.GetComponent<Image>();
             if (img != null) img.color = Color.white;
@@ -293,7 +293,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Reloading Puzzle 10");
         DropSlot.ResetAllSlots();
-        foreach (var card in FindObjectsOfType<Activity6DraggableCard>())
+        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity6))
         {
             Image img = card.GetComponent<Image>();
             if (img != null) img.color = Color.white;
@@ -312,7 +312,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Reloading Puzzle 11");
         DropSlot.ResetAllSlots();
-        foreach (var card in FindObjectsOfType<Activity9DraggableCard>())
+        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity9))
         {
             Image img = card.GetComponent<Image>();
             if (img != null) img.color = Color.white;
@@ -344,7 +344,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             }
         }
 
-        foreach (Activity1DraggableCard card in FindObjectsOfType<Activity1DraggableCard>())
+        foreach (DraggableCard card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1))
             card.ShowBack();
 
         miniPuzzle1Panel1?.SetActive(false);
@@ -829,5 +829,14 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             [RP_LOCK_OWNER] = -1
         };
         room.SetCustomProperties(ht);
+    }
+
+    private IEnumerable<DraggableCard> FindCardsByBehavior(DraggableCard.DraggableCardBehavior behavior)
+    {
+        foreach (var card in FindObjectsOfType<DraggableCard>())
+        {
+            if (card.Behavior == behavior)
+                yield return card;
+        }
     }
 }

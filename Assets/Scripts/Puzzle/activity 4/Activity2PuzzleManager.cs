@@ -91,7 +91,7 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
 
         foreach (Activity2DropSlot slot in Activity2DropSlot.allDropSlots)
         {
-            foreach (Activity2DraggableCard card in slot.GetCardsInSlot())
+            foreach (DraggableCard card in slot.GetCardsInSlot())
             {
                 Image img = card.GetComponent<Image>();
                 if (img != null && img.color == Color.red)

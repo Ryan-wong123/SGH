@@ -66,11 +66,7 @@ public class DropSlot : MonoBehaviour, IDropHandler
 
     protected virtual void AcceptCard(DraggableCard card)
     {
-        card.transform.SetParent(transform);
-
-        var rect = card.GetComponent<RectTransform>();
-        rect.anchoredPosition = positionSnap;
-        rect.localScale = scaleSnap;
+        card.ApplyLayoutState(transform, positionSnap, scaleSnap);
 
         card.trueHome = transform.parent;
         cardImage = card.GetComponent<Image>();

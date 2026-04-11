@@ -66,7 +66,7 @@ public class SymptomsCardManager : MonoBehaviour, IPuzzle
         {
             foreach (DraggableCard card in slot.GetCardsInSlot())
             {
-                string spriteName = (card is Activity1DraggableCard a1Card) ? a1Card.backSprite.name : "unknown";
+                string spriteName = card.backSprite != null ? card.backSprite.name : "unknown";
                 Debug.Log($"[Submit Puzzle 2] Card: {card.name}, Sprite: {spriteName}");
 
                 bool isCorrect = slot.IsCardCorrect(card);

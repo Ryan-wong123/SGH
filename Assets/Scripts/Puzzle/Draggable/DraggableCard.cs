@@ -11,15 +11,36 @@ public class DraggableCard : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler,
     IPunObservable, IPunOwnershipCallbacks
 {
+    public enum DraggableCardBehavior
+    {
+        Auto,
+        Default,
+        Activity1,
+        Activity2,
+        Activity6,
+        Activity9
+    }
+
     [Header("UI References")]
     [SerializeField] protected Canvas canvas;
 
     [SerializeField] protected Transform panel1GridLayout;  // Right Slot All Symptoms
     [SerializeField] protected Transform panel2GridLayout;  // Left Slot Correct Symptom
+    [SerializeField] protected Transform panel3GridLayout;
 
     [Header("Networking Path Root (IMPORTANT)")]
     [Tooltip("Root used to compute hierarchy paths for parenting sync. Usually your Canvas transform.")]
     [SerializeField] private Transform pathRoot;
+
+    [Header("Puzzle Behavior")]
+    [SerializeField] private DraggableCardBehavior cardBehavior = DraggableCardBehavior.Auto;
+
+    [Header("Puzzle Metadata")]
+    [SerializeField] public string symptomName;
+    [SerializeField] public Sprite backSprite;
+    [SerializeField] public string stepName;
+    [SerializeField] public string lapsesAnswer;
+    [SerializeField] public bool isLocked;
 
     protected Image cardImage;
     [SerializeField] protected Sprite frontSprite;
@@ -45,6 +66,14 @@ public class DraggableCard : MonoBehaviour,
     private Vector2 netScale;
     private string netParentPath;
     private bool netDragging; // "someone is dragging" (owner sends)
+
+    private bool isFlipped;
+    private bool acceptedThisDrag;
+    private Transform dragStartParent;
+    private Vector2 dragStartAnchoredPos;
+    private Vector2 dragStartScale;
+
+    public DraggableCardBehavior Behavior => ResolveBehavior();
 
     protected virtual void Awake()
     {
@@ -78,6 +107,9 @@ public class DraggableCard : MonoBehaviour,
         // Do NOT disable raycasts/interactable for non-owners here.
         // Otherwise other players can never click to request ownership.
         SetInteractableState();
+
+        if (Behavior == DraggableCardBehavior.Activity1)
+            ShowFront();
     }
 
     private bool IsNetworked => pv != null;
@@ -104,6 +136,11 @@ public class DraggableCard : MonoBehaviour,
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
+        if (isLocked) return;
+
+        RecordDragOrigin();
+        acceptedThisDrag = false;
+
         if (SomeoneElseDragging()) return;
 
         if (IsNetworked && !pv.IsMine)
@@ -129,7 +166,7 @@ public class DraggableCard : MonoBehaviour,
         lastSlotOrParent = transform.parent;
 
         // Move to top drag layer (canvas)
-        SetParentLocal(canvas.transform);
+        SetParentLocal(canvas.transform, true);
     }
 
     public virtual void OnDrag(PointerEventData eventData)
@@ -144,42 +181,51 @@ public class DraggableCard : MonoBehaviour,
 
     public virtual void OnEndDrag(PointerEventData eventData)
     {
-        if (IsNetworked && !pv.IsMine) return;
-        if (waitingForOwnership) return;
+        if (!TryCompleteDrag())
+            return;
+
+        if (transform.parent != canvas.transform && transform.parent != null)
+            return;
+
+        switch (Behavior)
+        {
+            case DraggableCardBehavior.Activity1:
+                HandleActivity1EndDrag();
+                break;
+            case DraggableCardBehavior.Activity2:
+                HandleActivity2EndDrag();
+                break;
+            case DraggableCardBehavior.Activity6:
+                HandleActivity6EndDrag();
+                break;
+            case DraggableCardBehavior.Activity9:
+                HandleActivity9EndDrag();
+                break;
+            default:
+                HandleDefaultEndDrag();
+                break;
+        }
+    }
+
+    protected bool TryCompleteDrag()
+    {
+        if (IsNetworked && !pv.IsMine)
+            return false;
+
+        if (waitingForOwnership)
+        {
+            waitingForOwnership = false;
+            SetInteractableState();
+            return false;
+        }
 
         isDraggingLocal = false;
-        canvasGroup.blocksRaycasts = true;
 
-        if (transform.parent == canvas.transform || transform.parent == null)
-        {
-            bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
+        if (canvasGroup != null)
+            canvasGroup.blocksRaycasts = true;
 
-            if (IsPointerOverPanel("Panel1") && fromPanel2)
-            {
-                SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
-            }
-            else if (IsPointerOverPanel("Panel2") && fromPanel2)
-            {
-                Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
-                if (emptySlot != null)
-                {
-                    SnapTo(emptySlot, 100, -100, 0.6409343f, 0.66764f);
-                    rectTransform.localScale = Vector2.one;
-                }
-                else
-                {
-                    SnapTo(panel2GridLayout, 100, -100, 0.6409343f, 0.66764f);
-                    rectTransform.localScale = Vector2.one;
-                }
-            }
-            else
-            {
-                SnapTo(trueHome, 100, -100, 0.6409343f, 0.66764f);
-            }
-
-            var img = GetComponent<Image>();
-            if (img != null) img.color = Color.white;
-        }
+        SetInteractableState();
+        return true;
     }
 
     public void SnapBack()
@@ -209,14 +255,26 @@ public class DraggableCard : MonoBehaviour,
 
     protected virtual void SnapTo(Transform parent, float xPos, float yPos, float xScale, float yScale)
     {
-        SetParentLocal(parent);
-        rectTransform.anchoredPosition = new Vector2(xPos, yPos);
-        rectTransform.localScale = new Vector2(xScale, yScale);
+        ApplyLayoutState(parent, new Vector2(xPos, yPos), new Vector2(xScale, yScale));
     }
 
-    private void SetParentLocal(Transform newParent)
+    public void ApplyLayoutState(Transform parent, Vector2 anchoredPosition, Vector2 scale)
     {
-        transform.SetParent(newParent);
+        if (parent == null) return;
+
+        SetParentLocal(parent, false);
+        rectTransform.anchoredPosition = anchoredPosition;
+        rectTransform.localScale = scale;
+
+        if (parent is RectTransform parentRect)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+        }
+    }
+
+    protected void SetParentLocal(Transform newParent, bool worldPositionStays = true)
+    {
+        transform.SetParent(newParent, worldPositionStays);
     }
 
     protected Transform FindFirstEmptyChild(Transform gridParent)
@@ -250,7 +308,9 @@ public class DraggableCard : MonoBehaviour,
 
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            Sprite spriteToShow = frontSprite;
+            Sprite spriteToShow = (Behavior == DraggableCardBehavior.Activity1 && isFlipped && backSprite != null)
+                ? backSprite
+                : frontSprite;
             CardPopupManager.Instance.ShowCard(spriteToShow);
         }
     }
@@ -259,11 +319,24 @@ public class DraggableCard : MonoBehaviour,
     {
         if (IsNetworked && !pv.IsMine) return;
 
-        SetParentLocal(originalParent);
+        SetParentLocal(originalParent, true);
         transform.position = originalPosition;
 
         if (cardImage != null)
             cardImage.color = Color.white;
+
+        acceptedThisDrag = false;
+
+        if (Behavior == DraggableCardBehavior.Activity1)
+        {
+            isFlipped = false;
+            ShowFront();
+        }
+
+        if (Behavior == DraggableCardBehavior.Activity9)
+        {
+            isLocked = false;
+        }
     }
 
     // ---------------------------
@@ -300,11 +373,16 @@ public class DraggableCard : MonoBehaviour,
         Transform parent = FindByPath(netParentPath);
         if (parent != null && transform.parent != parent)
         {
-            transform.SetParent(parent);
+            SetParentLocal(parent, false);
         }
 
         rectTransform.anchoredPosition = netAnchoredPos;
         rectTransform.localScale = netScale;
+
+        if (parent is RectTransform parentRect)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+        }
 
         // Lock/unlock interaction based on whether someone else is dragging
         SetInteractableState();
@@ -338,7 +416,20 @@ public class DraggableCard : MonoBehaviour,
     // ---------------------------
     // Ownership callbacks
     // ---------------------------
-    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer) { }
+    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
+    {
+        if (pv == null || targetView != pv || requestingPlayer == null)
+            return;
+
+        if (pv.Owner == requestingPlayer)
+            return;
+
+        // Always allow the next player to take control of draggable puzzle cards.
+        if (pv.IsMine || PhotonNetwork.IsMasterClient)
+        {
+            pv.TransferOwnership(requestingPlayer);
+        }
+    }
 
     public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
     {
@@ -359,5 +450,238 @@ public class DraggableCard : MonoBehaviour,
 
         waitingForOwnership = false;
         SetInteractableState();
+    }
+
+    public void MarkAcceptedThisDrag()
+    {
+        acceptedThisDrag = true;
+    }
+
+    public void RevertToDragOrigin()
+    {
+        if (dragStartParent != null)
+        {
+            ApplyLayoutState(dragStartParent, dragStartAnchoredPos, dragStartScale);
+            return;
+        }
+
+        switch (Behavior)
+        {
+            case DraggableCardBehavior.Activity2:
+            case DraggableCardBehavior.Activity9:
+                SnapTo(panel1GridLayout, 100, -100, 0.66f, 0.66f);
+                break;
+            case DraggableCardBehavior.Activity6:
+                SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.6409343f);
+                break;
+            default:
+                SnapTo(trueHome, 100, -100, 0.6409343f, 0.66764f);
+                break;
+        }
+    }
+
+    public void ShowFront()
+    {
+        if (cardImage != null && frontSprite != null)
+        {
+            isFlipped = false;
+            cardImage.sprite = frontSprite;
+        }
+    }
+
+    public void ShowBack()
+    {
+        if (cardImage != null && backSprite != null)
+        {
+            isFlipped = true;
+            cardImage.sprite = backSprite;
+        }
+    }
+
+    private DraggableCardBehavior ResolveBehavior()
+    {
+        if (cardBehavior != DraggableCardBehavior.Auto)
+            return cardBehavior;
+
+        return DraggableCardBehavior.Default;
+    }
+
+    private void RecordDragOrigin()
+    {
+        dragStartParent = transform.parent;
+        dragStartAnchoredPos = rectTransform.anchoredPosition;
+        dragStartScale = rectTransform.localScale;
+    }
+
+    private void HandleDefaultEndDrag()
+    {
+        bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
+
+        if (IsPointerOverPanel("Panel1") && fromPanel2)
+        {
+            SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
+        }
+        else if (IsPointerOverPanel("Panel2") && fromPanel2)
+        {
+            Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+            if (emptySlot != null)
+            {
+                SnapTo(emptySlot, 100, -100, 0.6409343f, 0.66764f);
+                rectTransform.localScale = Vector2.one;
+            }
+            else
+            {
+                SnapTo(panel2GridLayout, 100, -100, 0.6409343f, 0.66764f);
+                rectTransform.localScale = Vector2.one;
+            }
+        }
+        else
+        {
+            SnapTo(trueHome, 100, -100, 0.6409343f, 0.66764f);
+        }
+
+        ResetCardColor();
+    }
+
+    private void HandleActivity1EndDrag()
+    {
+        bool droppedOnPanel1 = IsPointerOverPanel("Panel1");
+
+        if (!acceptedThisDrag && !droppedOnPanel1)
+        {
+            Debug.Log("[DraggableCard] Activity1 dropped outside a slot and Panel1 -> revert to drag origin");
+            RevertToDragOrigin();
+            ResetCardColor();
+            return;
+        }
+
+        bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.IsChildOf(panel2GridLayout);
+        bool fromPanel3 = lastSlotOrParent != null && lastSlotOrParent.IsChildOf(panel3GridLayout);
+
+        if (IsPointerOverPanel("Panel1") && fromPanel2)
+        {
+            SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
+        }
+        else if (IsPointerOverPanel("Panel2") && fromPanel2 && !panel1GridLayout.gameObject.activeSelf)
+        {
+            Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+            SnapTo(emptySlot ?? panel2GridLayout, 140, -160, 1, 1);
+        }
+        else if (IsPointerOverPanel("Panel2") && fromPanel2)
+        {
+            SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
+        }
+        else if (IsPointerOverPanel("Panel3") && fromPanel2)
+        {
+            Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+            SnapTo(emptySlot ?? panel2GridLayout, 140, -160, 1, 1);
+        }
+        else if ((IsPointerOverPanel("Panel3") && fromPanel3) || (IsPointerOverPanel("Panel2") && fromPanel3))
+        {
+            Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+            SnapTo(emptySlot ?? panel2GridLayout, 140, -160, 1, 1);
+        }
+        else
+        {
+            SnapTo(trueHome, 100, -100, 0.6409343f, 0.66764f);
+        }
+
+        ResetCardColor();
+    }
+
+    private void HandleActivity2EndDrag()
+    {
+        bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
+
+        if (IsPointerOverPanel("Panel1") && fromPanel2)
+        {
+            SnapTo(panel1GridLayout, 150, -150, 0.66f, 0.66f);
+        }
+        else if (IsPointerOverPanel("Panel2") && fromPanel2)
+        {
+            Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+            if (emptySlot != null)
+            {
+                SnapTo(emptySlot, 150, -150, 0.66f, 0.66f);
+                rectTransform.localScale = Vector2.one;
+            }
+            else
+            {
+                SnapTo(panel2GridLayout, 150, -150, 0.66f, 0.66f);
+                rectTransform.localScale = Vector2.one;
+            }
+        }
+        else
+        {
+            SnapTo(panel1GridLayout, 100, -100, 0.66f, 0.66f);
+        }
+
+        ResetCardColor();
+    }
+
+    private void HandleActivity6EndDrag()
+    {
+        bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
+
+        if (IsPointerOverPanel("Panel1") && fromPanel2)
+        {
+            SnapTo(panel1GridLayout, 150, -150, 0.6409343f, 0.6409343f);
+        }
+        else if (IsPointerOverPanel("Panel2") && fromPanel2)
+        {
+            Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+            if (emptySlot != null)
+            {
+                SnapTo(emptySlot, 225, -230, 1.55f, 1.55f);
+                rectTransform.localScale = new Vector2(1.55f, 1.55f);
+            }
+            else
+            {
+                SnapTo(panel2GridLayout, 150, -150, 1.55f, 1.55f);
+                rectTransform.localScale = Vector2.one;
+            }
+        }
+        else
+        {
+            SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.6409343f);
+        }
+
+        ResetCardColor();
+    }
+
+    private void HandleActivity9EndDrag()
+    {
+        bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
+
+        if (IsPointerOverPanel("Panel1") && fromPanel2)
+        {
+            SnapTo(panel1GridLayout, 150, -150, 0.66f, 0.66f);
+        }
+        else if (IsPointerOverPanel("Panel2") && fromPanel2)
+        {
+            Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+            if (emptySlot != null)
+            {
+                SnapTo(emptySlot, 150, -150, 0.66f, 0.66f);
+                rectTransform.localScale = Vector2.one;
+            }
+            else
+            {
+                SnapTo(panel2GridLayout, 150, -150, 0.66f, 0.66f);
+                rectTransform.localScale = Vector2.one;
+            }
+        }
+        else
+        {
+            SnapTo(panel1GridLayout, 100, -100, 0.66f, 0.66f);
+        }
+
+        ResetCardColor();
+    }
+
+    private void ResetCardColor()
+    {
+        if (cardImage != null)
+            cardImage.color = Color.white;
     }
 }

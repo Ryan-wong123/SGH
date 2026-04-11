@@ -19,8 +19,7 @@ public class Activity1DropSlot : DropSlot
     protected override void AcceptCard(DraggableCard card)
     {
         // FIX: tell Activity1 card that this drag was accepted by a real slot
-        if (card is Activity1DraggableCard a1Card)
-            a1Card.MarkAcceptedThisDrag();
+        card.MarkAcceptedThisDrag();
 
         // Keep base behavior (parenting + snap pos/scale + trueHome assignment)
         base.AcceptCard(card);
@@ -29,10 +28,10 @@ public class Activity1DropSlot : DropSlot
     protected override void TrySnapBack(GameObject droppedObj)
     {
         // If slot occupied, revert to the drag origin (not SnapBack's special panel logic)
-        var a1Card = droppedObj != null ? droppedObj.GetComponent<Activity1DraggableCard>() : null;
-        if (a1Card != null)
+        var card = droppedObj != null ? droppedObj.GetComponent<DraggableCard>() : null;
+        if (card != null)
         {
-            a1Card.RevertToDragOrigin();
+            card.RevertToDragOrigin();
             return;
         }
 
@@ -42,13 +41,13 @@ public class Activity1DropSlot : DropSlot
 
     public override bool IsCardCorrect(DraggableCard card)
     {
-        if (card is Activity1DraggableCard a1Card)
+        if (card != null)
         {
             if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle1)
-                return correctAnswers.Contains(a1Card.symptomName);
+                return correctAnswers.Contains(card.symptomName);
             else if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle2)
             {
-                string spriteName = a1Card.backSprite != null ? a1Card.backSprite.name.ToLower() : "";
+                string spriteName = card.backSprite != null ? card.backSprite.name.ToLower() : "";
                 Debug.Log($"[IsCardCorrect - Puzzle2] Card Sprite: {spriteName}, Slot expects: {slotColorName}");
                 return spriteName.Contains(slotColorName.ToLower());
             }
