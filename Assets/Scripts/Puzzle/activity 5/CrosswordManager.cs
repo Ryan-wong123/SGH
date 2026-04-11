@@ -10,7 +10,16 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback
 {
     private const byte CrosswordTextSyncEventCode = 41;
+    private const byte CrosswordResultSyncEventCode = 43;
     private const string CrosswordCellPropertyPrefix = "P5CW_";
+    private const string CrosswordCellResultPropertyPrefix = "P9CW_RESULT_";
+
+    private enum CrosswordCellResultState
+    {
+        None = 0,
+        Correct = 1,
+        Wrong = 2
+    }
 
     public GameObject cellPrefab;
     public Transform gridParent; // A GridLayoutGroup
@@ -45,6 +54,7 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback
     {
         GenerateGrid();
         ApplyRoomSyncedTexts();
+        ApplyRoomSyncedResultStates();
     }
 
     private void OnEnable()
@@ -52,6 +62,7 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback
         PhotonNetwork.AddCallbackTarget(this);
         RegisterExistingGridListeners();
         ApplyRoomSyncedTexts();
+        ApplyRoomSyncedResultStates();
     }
 
     private void OnDisable()
@@ -162,7 +173,16 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback
     public void OnEvent(EventData photonEvent)
     {
         if (photonEvent.Code != CrosswordTextSyncEventCode)
+        {
+            if (photonEvent.Code != CrosswordResultSyncEventCode)
+                return;
+
+            if (!(photonEvent.CustomData is object[] resultData) || resultData.Length < 3)
+                return;
+
+            ApplyRemoteResultState((int)resultData[0], (int)resultData[1], (CrosswordCellResultState)(int)resultData[2]);
             return;
+        }
 
         if (!(photonEvent.CustomData is object[] data) || data.Length < 5)
             return;
@@ -217,6 +237,28 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback
         }
     }
 
+    private void ApplyRoomSyncedResultStates()
+    {
+        if (grid == null || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        for (int y = 0; y < gridSize; y++)
+        {
+            for (int x = 0; x < gridSize; x++)
+            {
+                CrosswordCell cell = grid[y, x];
+                if (cell == null || cell.inputField == null || !cell.inputField.interactable)
+                    continue;
+
+                string key = BuildCellResultPropertyKey(x, y);
+                if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(key))
+                    continue;
+
+                ApplyRemoteResultState(x, y, (CrosswordCellResultState)(int)PhotonNetwork.CurrentRoom.CustomProperties[key]);
+            }
+        }
+    }
+
     private void ClearSyncedCellTexts()
     {
         if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
@@ -238,9 +280,81 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback
         PhotonNetwork.CurrentRoom.SetCustomProperties(clearedValues);
     }
 
+    private void ClearSyncedCellResults()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        Hashtable clearedValues = new Hashtable();
+
+        for (int y = 0; y < gridSize; y++)
+        {
+            for (int x = 0; x < gridSize; x++)
+            {
+                if (solution[y, x] == '\0')
+                    continue;
+
+                clearedValues[BuildCellResultPropertyKey(x, y)] = (int)CrosswordCellResultState.None;
+            }
+        }
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(clearedValues);
+    }
+
     private static string BuildCellPropertyKey(int x, int y)
     {
         return $"{CrosswordCellPropertyPrefix}{x}_{y}";
+    }
+
+    private static string BuildCellResultPropertyKey(int x, int y)
+    {
+        return $"{CrosswordCellResultPropertyPrefix}{x}_{y}";
+    }
+
+    private void SetCellResultState(int x, int y, CrosswordCellResultState state, bool sync = true)
+    {
+        if (grid == null || y < 0 || y >= gridSize || x < 0 || x >= gridSize)
+            return;
+
+        CrosswordCell cell = grid[y, x];
+        if (cell == null || cell.inputField == null)
+            return;
+
+        ApplyInputFieldResultColor(cell.inputField, state);
+
+        if (!sync || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
+        {
+            [BuildCellResultPropertyKey(x, y)] = (int)state
+        });
+
+        PhotonNetwork.RaiseEvent(
+            CrosswordResultSyncEventCode,
+            new object[] { x, y, (int)state },
+            new RaiseEventOptions { Receivers = ReceiverGroup.Others },
+            SendOptions.SendReliable);
+    }
+
+    private void ApplyRemoteResultState(int x, int y, CrosswordCellResultState state)
+    {
+        SetCellResultState(x, y, state, false);
+    }
+
+    private static void ApplyInputFieldResultColor(TMP_InputField inputField, CrosswordCellResultState state)
+    {
+        if (inputField == null)
+            return;
+
+        Color color = Color.white;
+        if (state == CrosswordCellResultState.Correct)
+            color = Color.green;
+        else if (state == CrosswordCellResultState.Wrong)
+            color = Color.red;
+
+        if (inputField.image != null)
+            inputField.image.color = color;
     }
 
 
@@ -260,11 +374,11 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback
                 if (char.ToUpper(typed) != char.ToUpper(expected))
                 {
                     correct = false;
-                    grid[y, x].inputField.SetSyncedFeedbackColor(Color.red);
+                    SetCellResultState(x, y, CrosswordCellResultState.Wrong);
                 }
                 else
                 {
-                    grid[y, x].inputField.SetSyncedFeedbackColor(Color.green);
+                    SetCellResultState(x, y, CrosswordCellResultState.Correct);
                 }
             }
         }
@@ -281,6 +395,7 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback
         lastSeqBySender.Clear();
         localSeq = 0;
         ClearSyncedCellTexts();
+        ClearSyncedCellResults();
 
         // Destroy old grid first
         foreach (Transform child in gridParent)
@@ -290,6 +405,8 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback
 
         // Recreate the grid fresh
         GenerateGrid();
+        ApplyRoomSyncedTexts();
+        ApplyRoomSyncedResultStates();
 
         Debug.Log("Crossword puzzle reset.");
     }
