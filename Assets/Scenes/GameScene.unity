@@ -1433,13 +1433,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 15199535}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 2010036956}
   panel2GridLayout: {fileID: 1505633663}
   pathRoot: {fileID: 0}
+  cardBehavior: 5
   frontSprite: {fileID: 21300000, guid: 241d029883683bc47b9d7aa7de0f78a8, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -2947,13 +2948,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 39374691}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 12e61b0f6f1767f49a14eb7a9fb34c8c, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -6682,13 +6684,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 107259309}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 9c50d6000001faa4e8b3d51c30a66335, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -9521,13 +9524,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 143838282}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 1ba9cfa659cb7e04783ef6839bb6b89b, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -10916,13 +10920,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 168943984}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 81ff19e587f5b254c929c37a6b8a5263, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -13164,13 +13169,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 206797490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: d2fcc228c3bd4bf468a00cee19357099, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -16624,13 +16630,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 271167811}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1200996390}
   panel2GridLayout: {fileID: 1673625621}
   pathRoot: {fileID: 0}
+  cardBehavior: 5
   frontSprite: {fileID: 21300000, guid: 934e21ff35429fe4081c1d929b2f8985, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -17459,13 +17466,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 292843699}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 47a073de6f58d34449c5a39c41bf05fe, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -19350,13 +19358,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 316237436}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: afb7b4782e6eaa7498d4138ca47b6232, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -23859,13 +23868,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 383393036}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 0608788293e6a5d4fa8649a5ff1e68b5, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -27830,13 +27840,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 438539184}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 5823e907f20caf84ead8c45184a2e803, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -32866,13 +32877,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 512882003}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 0c12ea78968f96142b266d10874aa0d1, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -35083,13 +35095,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 544743745}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: e9bd65b31cd505d45a30f3a791e2cfdd, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -38331,13 +38344,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 612382123}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 67abe01c4e4db9d4a859993ccd7ca800, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -39156,13 +39170,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 628841543}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: b7ce66a987730cd41ad21089f4b770c1, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -40382,13 +40397,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 643503751}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 9ddf0c2b87d60ab4f8a0937b66bb12c9, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -41846,13 +41862,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 666637849}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: f87f4219fb0d89d40b71bf668ae97a49, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -43027,13 +43044,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 683897058}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 78f25a2404351614b8bdd8cf5e44a122, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -45690,13 +45708,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 716920875}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 95a5cb2948380f64bafa36f0f9136e95, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -45825,13 +45844,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 719114440}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 7a901b3e4086a634ea2aebd865afde74, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -47507,13 +47527,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 743652108}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 2010036956}
   panel2GridLayout: {fileID: 1505633663}
   pathRoot: {fileID: 0}
+  cardBehavior: 5
   frontSprite: {fileID: 21300000, guid: f912f0d2344eaa34ab2dc1244a207156, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -50495,13 +50516,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 797186866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 3476617aae435444a8d86601b5eda9d4, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -52659,13 +52681,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 830719367}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1200996390}
   panel2GridLayout: {fileID: 1673625621}
   pathRoot: {fileID: 0}
+  cardBehavior: 5
   frontSprite: {fileID: 21300000, guid: 037bfa0b408ecb943bc22c484600ebd3, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -53477,13 +53500,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 843600295}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 0a43e94ee0256dd48ab96efdf7d5bfd2, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -54742,13 +54766,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 862475563}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: c3fb3e48209806f478ed9865f08e41ae, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -55410,13 +55435,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 870812149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 735236a131571dc4cb017394e2daf4cf, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -57367,13 +57393,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 904675579}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1200996390}
   panel2GridLayout: {fileID: 1673625621}
   pathRoot: {fileID: 0}
+  cardBehavior: 5
   frontSprite: {fileID: 21300000, guid: c2ffef2eac104aa458df50a9783df0ea, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -59084,13 +59111,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 936852556}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 1cfd3752635cf6f41ad2f870a95d9455, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -59988,13 +60016,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 959157922}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 96f4926e16ea69f46a7b813e09646230, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -62915,13 +62944,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1016945830}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: a726fa3a081729945802c83f4b57007e, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -64581,13 +64611,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1043129509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: ee3a38a6c136908458be73b3e7527270, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -65457,13 +65488,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1056254387}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 34a1e95a3aa596345b5ddf2fb777d739, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -65722,13 +65754,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1062663324}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 36f74e88a15b97648ab7e67cfebc4660, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -68926,13 +68959,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1111495339}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 2010036956}
   panel2GridLayout: {fileID: 1505633663}
   pathRoot: {fileID: 0}
+  cardBehavior: 5
   frontSprite: {fileID: 21300000, guid: 1557ddf8d6f11b64e9646c110e2befcb, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -69880,13 +69914,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1123054290}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 2010036956}
   panel2GridLayout: {fileID: 1505633663}
   pathRoot: {fileID: 0}
+  cardBehavior: 5
   frontSprite: {fileID: 21300000, guid: 481fbde59fb9429438e1bc6a10b39e7a, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -71315,13 +71350,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1149908849}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: f2e108d5702c49a40b8b739d3c1b56cc, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -72252,13 +72288,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1167287921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: dede98463ecca384b80d04dbf4e01f10, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -78203,13 +78240,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1254255057}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: e2bf5b9b77f2d97429a3c370b36ec0c6, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -83620,13 +83658,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1322126562}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 6677bc48d285d8c48952888a3df9ce13, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -87862,13 +87901,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1388696225}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 4122616fdf1db1447be6de06923e6249, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -89016,13 +89056,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1403568190}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 83c0e0c79028eec4ab121cb6d40cf734, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -89314,13 +89355,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1405390082}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 80a1d28708da9894eafb6ef132ca6578, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -90266,13 +90308,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1420566418}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 2b1c6941183dd8947bc08352246596c4, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -94134,13 +94177,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1472552756}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: db33e2adc988c1d429848a9a7c2d9664, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -98045,13 +98089,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1510928818}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 563f6840a6d22124a911e3dd9dd5c58d, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -99170,13 +99215,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1521350637}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 868f094453da9274f97a9356a4da93d1, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -99966,13 +100012,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1532583504}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: f1657bc30db5d0548a5dad3e94122bc4, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -100194,13 +100241,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1533712705}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 972fc88f4531ecd49b7b66f8039da007, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -105742,13 +105790,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1629859606}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1200996390}
   panel2GridLayout: {fileID: 1673625621}
   pathRoot: {fileID: 0}
+  cardBehavior: 5
   frontSprite: {fileID: 21300000, guid: c40c57e7f5cf98f4a8e78aec6d487cb5, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -106327,13 +106376,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1638348091}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 3702f7342da4d874ebfd06b976f40776, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -113386,13 +113436,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1738507436}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: d5933b87efa0d57419290ca2a28dbcfb, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -115322,13 +115373,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1775826474}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 17fc6b34398813f4b805e121f8dd7bcd, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -120786,13 +120838,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1822759098}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 1ed9b88abaa3e5b48a60146023455cdf, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -124069,13 +124122,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1861615196}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: e4f8c42a6cacf4a4998a1aa77cdc248f, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -127232,13 +127286,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1913724028}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 9351c03a8d801d24fae6f8ad3aa69171, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -131452,13 +131507,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1967200248}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: ea04680fa595d524d83e4b4ced118086, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -131726,13 +131782,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1968617448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 332966d46eb647d40b2384c0a7b00677, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -132465,13 +132522,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1976127335}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 6577d6ba0463bce4da2b8282f1675a06, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -133747,13 +133805,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2000895855}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: dbe7764c72be6dd4880875138a3cb6c7, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -135327,13 +135386,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2021751250}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: bab01356e5fc98843b0cbcda2739831c, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -135660,13 +135720,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2027945687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 823825939b217344ca1def38ea1e22c5, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -135897,13 +135958,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2030210968}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 19800289e7b7c394c92a3a69ab1f928b, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -137960,13 +138022,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2069310561}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 042f0b6a8f01b724da639c7d8ce0f653, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 3431203}
   panel2GridLayout: {fileID: 1945308135}
   pathRoot: {fileID: 0}
+  cardBehavior: 2
   frontSprite: {fileID: 21300000, guid: 853569e528db8334c954c44d63a3de19, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -141339,13 +141402,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2097181830}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d26658e1984520c45a25be7dd0b6898e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 2010036956}
   panel2GridLayout: {fileID: 1505633663}
   pathRoot: {fileID: 0}
+  cardBehavior: 5
   frontSprite: {fileID: 21300000, guid: 66e220120438912498a30b40e347b542, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -141543,13 +141607,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2098151717}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: 7079fcb6888e3d844bef2536a09a9591, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -141966,13 +142031,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2101223947}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c7ec2d6f1c5824ab1b50380c718e10, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1283897281}
   panel2GridLayout: {fileID: 1064109160}
   pathRoot: {fileID: 0}
+  cardBehavior: 4
   frontSprite: {fileID: 21300000, guid: ae8db83e1c1f43f4f8544649f23fd974, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -144227,13 +144293,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2120120166}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 531601ae731f4174daafbedee2ad6686, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}
@@ -145908,13 +145975,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 2137717282}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d84eec74a97854bb6823d6f76ffe3e, type: 3}
+  m_Script: {fileID: 11500000, guid: b4340f3027613c344a46c383c5f78cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 889139441}
   panel1GridLayout: {fileID: 1707974237}
   panel2GridLayout: {fileID: 76714759}
   pathRoot: {fileID: 0}
+  cardBehavior: 3
   frontSprite: {fileID: 21300000, guid: 207747250ecd7f74e923b4fabc014616, type: 3}
   trueHome: {fileID: 0}
   lastSlotOrParent: {fileID: 0}

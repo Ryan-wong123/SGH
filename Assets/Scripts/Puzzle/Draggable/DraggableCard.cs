@@ -503,11 +503,6 @@ public class DraggableCard : MonoBehaviour,
         if (cardBehavior != DraggableCardBehavior.Auto)
             return cardBehavior;
 
-        if (this is Activity1DraggableCard) return DraggableCardBehavior.Activity1;
-        if (this is Activity2DraggableCard) return DraggableCardBehavior.Activity2;
-        if (this is Activity6DraggableCard) return DraggableCardBehavior.Activity6;
-        if (this is Activity9DraggableCard) return DraggableCardBehavior.Activity9;
-
         return DraggableCardBehavior.Default;
     }
 

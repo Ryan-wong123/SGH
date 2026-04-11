@@ -64,7 +64,6 @@
     <Compile Include="Assets\Scripts\Puzzle\Rotating Puzzle\PuzzleTile.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryUIManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\activity 8\Activity6DraggableCard.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanTest.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
     <Compile Include="Assets\Scripts\Interactable\HighlightEffect.cs" />
@@ -88,7 +87,6 @@
     <Compile Include="Assets\Scripts\Puzzle\Draggable\DraggableCard.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 9\WordSearchManager.cs" />
     <Compile Include="Assets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\activity 11\Activity9DraggableCard.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
     <Compile Include="Assets\Scripts\Player\ObjectivePointer.cs" />
@@ -137,7 +135,6 @@
     <Compile Include="Assets\Scripts\UI\SideBarMenuManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Puzzle\PhotonSyncedUIButtonColor.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\activity 4\Activity2DraggableCard.cs" />
     <Compile Include="Assets\LeanTween\Framework\LeanTweenExt.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
@@ -169,7 +166,6 @@
     <Compile Include="Assets\Scripts\Interactable\IHighlightable.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 3\PictureGridManager.cs" />
-    <Compile Include="Assets\Scripts\Puzzle\activity 1\Activity1DraggableCard.cs" />
     <Compile Include="Assets\Scripts\QueueNumberDisplay.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 11\DeathLapsesManager.cs" />
     <Compile Include="Assets\Scripts\TriggerComic.cs" />
