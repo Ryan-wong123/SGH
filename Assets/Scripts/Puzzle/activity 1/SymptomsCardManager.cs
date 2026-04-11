@@ -25,8 +25,7 @@ public class SymptomsCardManager : MonoBehaviour, IPuzzle
                 DraggableCard card = cards[0];
                 bool isCorrect = slot.IsCardCorrect(card);
 
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = isCorrect ? Color.green : Color.red;
+                card.SetSyncedFeedbackColor(isCorrect ? Color.green : Color.red);
 
                 if (isCorrect) correct++;
             }
@@ -56,7 +55,7 @@ public class SymptomsCardManager : MonoBehaviour, IPuzzle
                 Image img = card.GetComponent<Image>();
                 if (img != null && img.color == Color.red)
                 {
-                    img.color = Color.white;
+                    card.ResetSyncedFeedbackColor();
                 }
             }
         }

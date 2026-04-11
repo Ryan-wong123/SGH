@@ -345,8 +345,7 @@ public class DraggableCard : MonoBehaviour,
         SetParentLocal(originalParent, true);
         transform.position = originalPosition;
 
-        if (cardImage != null)
-            cardImage.color = Color.white;
+        ApplyCardColor(Color.white);
 
         acceptedThisDrag = false;
 
@@ -362,6 +361,19 @@ public class DraggableCard : MonoBehaviour,
         }
 
         SetDragTagVisible(false, string.Empty);
+    }
+
+    public void SetCardColorAndSync(Color color)
+    {
+        ApplyCardColor(color);
+
+        if (IsNetworked && PhotonNetwork.InRoom)
+            pv.RPC(nameof(RPC_SetCardColor), RpcTarget.Others, color.r, color.g, color.b, color.a);
+    }
+
+    public void ResetCardColorAndSync()
+    {
+        SetCardColorAndSync(Color.white);
     }
 
     // ---------------------------
@@ -414,6 +426,18 @@ public class DraggableCard : MonoBehaviour,
         // Lock/unlock interaction based on whether someone else is dragging
         SetInteractableState();
         SetDragTagVisible(netDragging, netDraggingPlayerName);
+    }
+
+    [PunRPC]
+    private void RPC_SetCardColor(float r, float g, float b, float a)
+    {
+        ApplyCardColor(new Color(r, g, b, a));
+    }
+
+    private void ApplyCardColor(Color color)
+    {
+        if (cardImage != null)
+            cardImage.color = color;
     }
 
     private string GetPathFromRoot(Transform target)

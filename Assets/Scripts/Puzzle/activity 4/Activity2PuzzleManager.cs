@@ -33,8 +33,7 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
         {
             foreach (DraggableCard card in slot.GetCardsInSlot())
             {
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = Color.white;
+                card.ResetSyncedFeedbackColor();
             }
         }
 
@@ -45,8 +44,7 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
             {
                 bool isCorrect = slot.IsCardCorrect(card);
 
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = isCorrect ? Color.green : Color.red;
+                card.SetSyncedFeedbackColor(isCorrect ? Color.green : Color.red);
 
                 if (isCorrect) correct++;
             }
@@ -90,16 +88,16 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
         {
             return false;
         }
-        input1.GetComponent<Image>().color = input1.text == "15" ? Color.green : Color.red;
-        input2.GetComponent<Image>().color = input2.text == "4" ? Color.green : Color.red;
+        input1.SetSyncedFeedbackColor(input1.text == "15" ? Color.green : Color.red);
+        input2.SetSyncedFeedbackColor(input2.text == "4" ? Color.green : Color.red);
         return input1.text == "15" && input2.text == "4";
   
     }
 
     public void ResetActivity2Part2()
     {
-        input1.GetComponent<Image>().color = Color.white;
-        input2.GetComponent<Image>().color = Color.white;
+        input1.ResetSyncedFeedbackColor();
+        input2.ResetSyncedFeedbackColor();
         input1.text = "";
         input2.text = "";
     }
@@ -115,7 +113,7 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle
                 Image img = card.GetComponent<Image>();
                 if (img != null && img.color == Color.red)
                 {
-                    img.color = Color.white;
+                    card.ResetSyncedFeedbackColor();
                 }
             }
         }

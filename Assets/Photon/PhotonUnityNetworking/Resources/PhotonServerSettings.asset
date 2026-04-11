@@ -97,6 +97,8 @@ MonoBehaviour:
   - RPC_InsulinGoToPart2
   - RPC_DeathLapsesGoToStage2
   - RPC_SetState
+  - RPC_SetBackgroundColor
+  - RPC_SetCardColor
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -34,15 +34,13 @@ public class RiskTable : MonoBehaviour, IPuzzle
         {
             if (entry.dropdown == null) continue;
 
-            Image img = entry.dropdown.targetGraphic as Image;
-
             if (entry.dropdown.value == entry.correctIndex)
             {
-                if (img) img.color = correctColor;
+                entry.dropdown.SetSyncedFeedbackColor(correctColor);
             }
             else
             {
-                if (img) img.color = wrongColor;
+                entry.dropdown.SetSyncedFeedbackColor(wrongColor);
                 allCorrect = false;
             }
         }
@@ -72,11 +70,7 @@ public class RiskTable : MonoBehaviour, IPuzzle
             entry.dropdown.RefreshShownValue();
 
             // Reset color back to default
-            Image img = entry.dropdown.targetGraphic as Image;
-            if (img != null)
-            {
-                img.color = defaultColor;
-            }
+            entry.dropdown.SetSyncedFeedbackColor(defaultColor);
         }
 
         Debug.Log("RiskTable puzzle reset.");

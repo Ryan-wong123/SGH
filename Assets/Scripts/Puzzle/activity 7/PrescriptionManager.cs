@@ -38,7 +38,7 @@ public class PrescriptionManager : MonoBehaviour, IPuzzle
 
         bool correct1 = input == "28";
 
-        prescriptionAmount.image.color = correct1 ? Color.green : Color.red;
+        prescriptionAmount.SetSyncedFeedbackColor(correct1 ? Color.green : Color.red);
 
         return correct1;
     }
@@ -50,7 +50,7 @@ public class PrescriptionManager : MonoBehaviour, IPuzzle
     {
         // Reset Diary 1 Inputs
         prescriptionAmount.text = "";
-        prescriptionAmount.image.color = Color.white;
+        prescriptionAmount.ResetSyncedFeedbackColor();
 
         Debug.Log("Prescription puzzle reset.");
     }

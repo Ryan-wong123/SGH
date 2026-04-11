@@ -35,7 +35,7 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
         // Check correctness
         if (selected == correctSyringeIndex)
         {
-            syringeDropdown.GetComponent<Image>().color = correctColor;
+            syringeDropdown.SetSyncedFeedbackColor(correctColor);
             // Optional delay before showing result (remove if not needed)
             yield return new WaitForSeconds(2f);
 
@@ -46,7 +46,7 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
         }
            
         else
-            syringeDropdown.GetComponent<Image>().color = wrongColor;
+            syringeDropdown.SetSyncedFeedbackColor(wrongColor);
 
         part1AdvanceRoutine = null;
     }
@@ -69,8 +69,7 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
         {
             foreach (DraggableCard card in slot.GetCardsInSlot())
             {
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = Color.white;
+                card.ResetSyncedFeedbackColor();
             }
         }
 
@@ -81,8 +80,7 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
             {
                 bool isCorrect = slot.IsCardCorrect(card);
 
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = isCorrect ? Color.green : Color.red;
+                card.SetSyncedFeedbackColor(isCorrect ? Color.green : Color.red);
 
                 if (isCorrect) correct++;
             }
@@ -109,7 +107,7 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
                 Image img = card.GetComponent<Image>();
                 if (img != null && img.color == Color.red)
                 {
-                    img.color = Color.white;
+                    card.ResetSyncedFeedbackColor();
                 }
             }
         }
@@ -126,7 +124,7 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
         {
             syringeDropdown.value = 0;                   // Reset selection to first option
             syringeDropdown.RefreshShownValue();         // Update UI
-            syringeDropdown.GetComponent<Image>().color = defaultColor;
+            syringeDropdown.SetSyncedFeedbackColor(defaultColor);
         }
 
         // -----------------------------

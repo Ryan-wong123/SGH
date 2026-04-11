@@ -260,11 +260,11 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback
                 if (char.ToUpper(typed) != char.ToUpper(expected))
                 {
                     correct = false;
-                    grid[y, x].inputField.image.color = Color.red;
+                    grid[y, x].inputField.SetSyncedFeedbackColor(Color.red);
                 }
                 else
                 {
-                    grid[y, x].inputField.image.color = Color.green;
+                    grid[y, x].inputField.SetSyncedFeedbackColor(Color.green);
                 }
             }
         }

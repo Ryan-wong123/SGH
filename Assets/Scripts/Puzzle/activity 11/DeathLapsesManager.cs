@@ -63,8 +63,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
                 var card = baseCard as DraggableCard;
                 if (card == null) continue;                // skip non-Activity9 cards
 
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = Color.white;
+                card.ResetSyncedFeedbackColor();
             }
         }
 
@@ -86,8 +85,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
 
                 bool isCorrect = slot.IsCardCorrect(card);
 
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = isCorrect ? Color.green : Color.red;
+                card.SetSyncedFeedbackColor(isCorrect ? Color.green : Color.red);
 
                 if (isCorrect) correct++;
 
@@ -119,8 +117,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
                 var card = baseCard as DraggableCard;
                 if (card == null) continue;
 
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = Color.white;
+                card.ResetSyncedFeedbackColor();
             }
         }
 
@@ -139,8 +136,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
 
                 bool isCorrect = slot.IsCardCorrect(card);
 
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = isCorrect ? Color.green : Color.red;
+                card.SetSyncedFeedbackColor(isCorrect ? Color.green : Color.red);
 
                 if (isCorrect) correct++;
             }
@@ -168,7 +164,7 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle
                 var img = card.GetComponent<Image>();
                 if (img != null && img.color == Color.red)
                 {
-                    img.color = Color.white;
+                    card.ResetSyncedFeedbackColor();
                 }
             }
         }
