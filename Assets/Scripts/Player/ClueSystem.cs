@@ -165,6 +165,38 @@ public class ClueSystem : MonoBehaviour
     /// <summary>Return whether a clue has been collected.</summary>
     public bool HasClue(string id) => collected.Contains(id);
 
+    public bool TryShowClueImageById(string id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+            return false;
+
+        foreach (var def in allClues)
+        {
+            if (def == null || string.IsNullOrWhiteSpace(def.id))
+                continue;
+
+            if (!string.Equals(def.id, id, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (def.fullImage == null)
+            {
+                Debug.LogWarning($"[ClueSystem] Clue '{id}' does not have a fullImage assigned.");
+                return false;
+            }
+
+            if (ClueUI.Instance == null)
+            {
+                Debug.LogWarning("[ClueSystem] ClueUI not present in scene.");
+                return false;
+            }
+
+            ClueUI.Instance.ShowImage(def.fullImage);
+            return true;
+        }
+
+        return false;
+    }
+
     /// <summary>Clear all collected clues (e.g., on level reset).</summary>
     public void ClearAllClues()
     {

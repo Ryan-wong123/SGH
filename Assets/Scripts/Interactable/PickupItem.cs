@@ -1,6 +1,7 @@
-﻿using UnityEngine;
-using Photon.Pun;
 using System.Collections;
+using Photon.Pun;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
 {
@@ -8,6 +9,8 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
     [SerializeField] private string itemName = "Key";
     [SerializeField] private bool isClue = false;
     [SerializeField] private string notificationMessage = "";
+    [FormerlySerializedAs("sharedCluePanelId")]
+    [SerializeField] private string sharedDisplayId = "";
 
     private HighlightEffect highlightEffect;
 
@@ -24,7 +27,8 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
     void SetupPhotonView()
     {
         PhotonView view = GetComponent<PhotonView>();
-        if (view == null) view = gameObject.AddComponent<PhotonView>();
+        if (view == null)
+            view = gameObject.AddComponent<PhotonView>();
 
         view.OwnershipTransfer = OwnershipOption.Fixed;
         view.Synchronization = ViewSynchronization.UnreliableOnChange;
@@ -38,19 +42,16 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
 
     public void Interact()
     {
-        // ------ 1) POPUP (LOCAL) ------
-
         string popupText = notificationMessage != "" ? notificationMessage : $"Picked up: {itemName}";
-               
+
         CluePopupUI.Instance?.Show(popupText);
 
-        // ------ 2) SYNC STATE (BUFFERED) ------
         photonView.RPC(nameof(SyncItemPickup), RpcTarget.AllBuffered, itemName, isClue);
-
-        // ------ 3) POPUP (OTHERS, NON-BUFFERED) ------
         photonView.RPC(nameof(ShowPickupPopupRemote), RpcTarget.Others, popupText);
 
-        // ------ 4) DESTROY VIA MASTER ------
+        if (TryGetSharedDisplayId(out string displayId))
+            photonView.RPC(nameof(ShowSharedDisplay), RpcTarget.All, displayId);
+
         photonView.RPC(nameof(RequestDestroy), RpcTarget.MasterClient);
     }
 
@@ -71,7 +72,7 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
             }
 
             ClueSystem.Instance.AddClue(pickedName);
-            ClueSystem.Instance.RefreshUI(); // omit if ClueSystem auto-updates
+            ClueSystem.Instance.RefreshUI();
         }
         else
         {
@@ -89,21 +90,53 @@ public class PickupItem : MonoBehaviourPun, IInteractable, IHighlightable
     [PunRPC]
     void ShowPickupPopupRemote(string text)
     {
-        // Non-buffered: only current peers see it (no replay for late joiners)
         CluePopupUI.Instance?.Show(text);
+    }
+
+    [PunRPC]
+    void ShowSharedDisplay(string displayId)
+    {
+        if (string.IsNullOrWhiteSpace(displayId))
+            return;
+
+        StartCoroutine(ShowSharedDisplaySafe(displayId));
+    }
+
+    private IEnumerator ShowSharedDisplaySafe(string displayId)
+    {
+        while (ClueUI.Instance == null && ClueSystem.Instance == null)
+            yield return null;
+
+        if (ClueUI.Instance != null && ClueUI.Instance.ShowById(displayId))
+            yield break;
+
+        if (ClueSystem.Instance != null && ClueSystem.Instance.TryShowClueImageById(displayId))
+            yield break;
+
+        Debug.LogWarning($"[PickupItem] No shared display found for id '{displayId}'.");
     }
 
     [PunRPC]
     void RequestDestroy()
     {
         if (PhotonNetwork.IsMasterClient)
-        {
             PhotonNetwork.Destroy(gameObject);
-        }
     }
 
     public string GetInteractionPrompt()
     {
         return $"Press E to pick up {itemName}";
+    }
+
+    private bool TryGetSharedDisplayId(out string displayId)
+    {
+        if (!string.IsNullOrWhiteSpace(sharedDisplayId))
+        {
+            displayId = sharedDisplayId.Trim();
+            return true;
+        }
+
+        displayId = null;
+        return false;
     }
 }

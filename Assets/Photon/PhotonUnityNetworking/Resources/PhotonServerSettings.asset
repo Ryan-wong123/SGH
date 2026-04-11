@@ -99,6 +99,7 @@ MonoBehaviour:
   - RPC_SetState
   - RPC_SetBackgroundColor
   - RPC_SetCardColor
+  - ShowSharedDisplay
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
