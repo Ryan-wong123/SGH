@@ -31,10 +31,7 @@ public class Activity9DraggableCard : DraggableCard
     {
         if (dragStartParent != null)
         {
-            // IMPORTANT: worldPositionStays=false keeps UI local placement stable
-            transform.SetParent(dragStartParent, false);
-            rectTransform.anchoredPosition = dragStartAnchoredPos;
-            rectTransform.localScale = dragStartScale;
+            ApplyLayoutState(dragStartParent, dragStartAnchoredPos, dragStartScale);
         }
         else
         {

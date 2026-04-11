@@ -129,7 +129,7 @@ public class DraggableCard : MonoBehaviour,
         lastSlotOrParent = transform.parent;
 
         // Move to top drag layer (canvas)
-        SetParentLocal(canvas.transform);
+        SetParentLocal(canvas.transform, true);
     }
 
     public virtual void OnDrag(PointerEventData eventData)
@@ -227,14 +227,26 @@ public class DraggableCard : MonoBehaviour,
 
     protected virtual void SnapTo(Transform parent, float xPos, float yPos, float xScale, float yScale)
     {
-        SetParentLocal(parent);
-        rectTransform.anchoredPosition = new Vector2(xPos, yPos);
-        rectTransform.localScale = new Vector2(xScale, yScale);
+        ApplyLayoutState(parent, new Vector2(xPos, yPos), new Vector2(xScale, yScale));
     }
 
-    private void SetParentLocal(Transform newParent)
+    public void ApplyLayoutState(Transform parent, Vector2 anchoredPosition, Vector2 scale)
     {
-        transform.SetParent(newParent);
+        if (parent == null) return;
+
+        SetParentLocal(parent, false);
+        rectTransform.anchoredPosition = anchoredPosition;
+        rectTransform.localScale = scale;
+
+        if (parent is RectTransform parentRect)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+        }
+    }
+
+    protected void SetParentLocal(Transform newParent, bool worldPositionStays = true)
+    {
+        transform.SetParent(newParent, worldPositionStays);
     }
 
     protected Transform FindFirstEmptyChild(Transform gridParent)
@@ -277,7 +289,7 @@ public class DraggableCard : MonoBehaviour,
     {
         if (IsNetworked && !pv.IsMine) return;
 
-        SetParentLocal(originalParent);
+        SetParentLocal(originalParent, true);
         transform.position = originalPosition;
 
         if (cardImage != null)
@@ -318,11 +330,16 @@ public class DraggableCard : MonoBehaviour,
         Transform parent = FindByPath(netParentPath);
         if (parent != null && transform.parent != parent)
         {
-            transform.SetParent(parent);
+            SetParentLocal(parent, false);
         }
 
         rectTransform.anchoredPosition = netAnchoredPos;
         rectTransform.localScale = netScale;
+
+        if (parent is RectTransform parentRect)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+        }
 
         // Lock/unlock interaction based on whether someone else is dragging
         SetInteractableState();

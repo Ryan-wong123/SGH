@@ -97,9 +97,7 @@ public class Activity1DraggableCard : DraggableCard
     {
         if (dragStartParent != null)
         {
-            transform.SetParent(dragStartParent);
-            rectTransform.anchoredPosition = dragStartAnchoredPos;
-            rectTransform.localScale = dragStartScale;
+            ApplyLayoutState(dragStartParent, dragStartAnchoredPos, dragStartScale);
         }
         else
         {

@@ -30,9 +30,7 @@ public class Activity2DraggableCard : DraggableCard
         // (SnapBack() has a similar guard in parent, but we're not modifying parent)
         if (dragStartParent != null)
         {
-            transform.SetParent(dragStartParent);
-            rectTransform.anchoredPosition = dragStartAnchoredPos;
-            rectTransform.localScale = dragStartScale;
+            ApplyLayoutState(dragStartParent, dragStartAnchoredPos, dragStartScale);
         }
         else
         {
