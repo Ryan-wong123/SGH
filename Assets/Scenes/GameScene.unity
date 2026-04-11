@@ -17048,8 +17048,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear Yellow
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1001 &277212286
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23609,8 +23607,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear Green
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &375821205
 GameObject:
   m_ObjectHideFlags: 0
@@ -30713,8 +30709,6 @@ MonoBehaviour:
   - sweating
   - dizziness
   - anxious
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1001 &473806260
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -43615,8 +43609,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear Green
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1001 &686442287
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44427,8 +44419,6 @@ MonoBehaviour:
   - sweating
   - dizziness
   - anxious
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &696707550
 GameObject:
   m_ObjectHideFlags: 0
@@ -47587,8 +47577,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear red
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &738538159
 GameObject:
   m_ObjectHideFlags: 0
@@ -48838,8 +48826,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear red
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1001 &758472112
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -49005,8 +48991,6 @@ MonoBehaviour:
   - sweating
   - dizziness
   - anxious
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &759394120
 GameObject:
   m_ObjectHideFlags: 0
@@ -59549,8 +59533,6 @@ MonoBehaviour:
   - sweating
   - dizziness
   - anxious
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1001 &930309306
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60815,8 +60797,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear Yellow
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &955560947
 GameObject:
   m_ObjectHideFlags: 0
@@ -63332,8 +63312,6 @@ MonoBehaviour:
   - sweating
   - dizziness
   - anxious
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1010425279
 GameObject:
   m_ObjectHideFlags: 0
@@ -66655,8 +66633,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear red
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1062663324
 GameObject:
   m_ObjectHideFlags: 0
@@ -69354,8 +69330,6 @@ MonoBehaviour:
   - sweating
   - dizziness
   - anxious
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1094748228
 GameObject:
   m_ObjectHideFlags: 0
@@ -69680,8 +69654,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear red
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1001 &1098494943
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -80285,8 +80257,6 @@ MonoBehaviour:
   - sweating
   - dizziness
   - anxious
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1274369862
 GameObject:
   m_ObjectHideFlags: 0
@@ -84071,8 +84041,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear red
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1310470263
 GameObject:
   m_ObjectHideFlags: 0
@@ -85705,8 +85673,6 @@ MonoBehaviour:
   - sweating
   - dizziness
   - anxious
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1345376291
 GameObject:
   m_ObjectHideFlags: 0
@@ -90148,8 +90114,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear Green
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1400453303
 GameObject:
   m_ObjectHideFlags: 0
@@ -93424,8 +93388,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear Yellow
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1442500061
 GameObject:
   m_ObjectHideFlags: 0
@@ -94534,8 +94496,6 @@ MonoBehaviour:
   - sweating
   - dizziness
   - anxious
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1457042080
 GameObject:
   m_ObjectHideFlags: 0
@@ -95924,8 +95884,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear Green
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1471416010
 GameObject:
   m_ObjectHideFlags: 0
@@ -103717,8 +103675,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear Yellow
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &1552272716
 GameObject:
   m_ObjectHideFlags: 0
@@ -135580,8 +135536,6 @@ MonoBehaviour:
   - sweating
   - dizziness
   - anxious
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1001 &2000244102
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -136832,8 +136786,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear Yellow
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &2015785738
 GameObject:
   m_ObjectHideFlags: 0
@@ -138068,8 +138020,6 @@ MonoBehaviour:
   scaleSnap: {x: 1, y: 1}
   correctAnswers:
   - Gummy Bear Green
-  slotColorName: 
-  requiredCorrect: 10
 --- !u!1 &2030210968
 GameObject:
   m_ObjectHideFlags: 0

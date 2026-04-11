@@ -10,6 +10,7 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
     public List<int> correctIndexes; // e.g. [0, 4, 7, 9, 15, 19]
 
     private HashSet<int> selectedIndexes = new HashSet<int>();
+    private readonly List<PhotonSyncedUIButtonColor> syncedButtons = new List<PhotonSyncedUIButtonColor>();
 
     public Color defaultColor = Color.white;
     public Color selectedColor = Color.yellow;
@@ -25,12 +26,30 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
     {
         for (int i = 0; i < pictureButtons.Count; i++)
         {
+            var syncedButton = pictureButtons[i].GetComponent<PhotonSyncedUIButtonColor>();
+            if (syncedButton != null)
+            {
+                syncedButton.StateChanged += HandleSyncedButtonStateChanged;
+                syncedButtons.Add(syncedButton);
+                continue;
+            }
+
             int index = i; // Needed to avoid closure issues
             pictureButtons[i].onClick.AddListener(() => OnPictureClick(index));
         }
 
+        RebuildSelectedIndexesFromButtons();
         RefreshSubmitButtonVisibility();
         UpdateSelectedCountText();
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var syncedButton in syncedButtons)
+        {
+            if (syncedButton != null)
+                syncedButton.StateChanged -= HandleSyncedButtonStateChanged;
+        }
     }
 
     void OnPictureClick(int index)
@@ -62,6 +81,32 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
         }
     }
 
+    private void HandleSyncedButtonStateChanged(PhotonSyncedUIButtonColor _)
+    {
+        RebuildSelectedIndexesFromButtons();
+        RefreshSubmitButtonVisibility();
+        UpdateSelectedCountText();
+    }
+
+    private void RebuildSelectedIndexesFromButtons()
+    {
+        selectedIndexes.Clear();
+
+        for (int i = 0; i < pictureButtons.Count; i++)
+        {
+            var syncedButton = pictureButtons[i].GetComponent<PhotonSyncedUIButtonColor>();
+            if (syncedButton != null && syncedButton.IsSelected)
+            {
+                selectedIndexes.Add(i);
+                continue;
+            }
+
+            var image = pictureButtons[i].GetComponent<Image>();
+            if (image != null && (image.color == selectedColor || image.color == correctColor || image.color == wrongColor))
+                selectedIndexes.Add(i);
+        }
+    }
+
     // ✅ FULL FIX IS HERE:
     // Instead of directly setting Image.color (local only),
     // we translate the color intention into a synced button-state call.
@@ -88,7 +133,7 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
         if (color == defaultColor)
         {
             // back to normal (not selected, not correct/wrong)
-            synced.ClearResultAndSync();
+            synced.ResetStateAndSync();
         }
         else if (color == selectedColor)
         {
@@ -113,6 +158,8 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
 
     public bool CheckAnswers()
     {
+        RebuildSelectedIndexesFromButtons();
+
         bool allCorrect = true;
 
         foreach (int index in selectedIndexes)

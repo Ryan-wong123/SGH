@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
@@ -8,6 +9,8 @@ using Photon.Pun;
 [RequireComponent(typeof(Image))]
 public class PhotonSyncedUIButtonColor : MonoBehaviourPun
 {
+    public event Action<PhotonSyncedUIButtonColor> StateChanged;
+
     public enum VisualState
     {
         Normal = 0,
@@ -38,6 +41,9 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
 
     // MULTI-SELECT state lives per-button (synced)
     [SerializeField] private bool isSelected = false;
+
+    public bool IsSelected => isSelected;
+    public VisualState CurrentResultState => resultState;
 
     // GROUP selection state (kept for compatibility, not used for multi-select)
     private static readonly Dictionary<string, List<PhotonSyncedUIButtonColor>> Groups = new();
@@ -83,7 +89,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         if (!PhotonNetwork.InRoom)
         {
             isSelected = nextSelected;
-            ApplyVisual();
+            NotifyStateChanged();
             return;
         }
 
@@ -101,7 +107,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         if (resultState == VisualState.Selected && !isSelected)
             resultState = VisualState.Normal;
 
-        ApplyVisual();
+        NotifyStateChanged();
     }
 
     // ─────────────────────────────
@@ -122,6 +128,19 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         SetResultAndSync(VisualState.Normal);
     }
 
+    public void ResetStateAndSync()
+    {
+        if (!PhotonNetwork.InRoom)
+        {
+            isSelected = false;
+            resultState = VisualState.Normal;
+            NotifyStateChanged();
+            return;
+        }
+
+        photonView.RPC(nameof(RPC_SetState), RpcTarget.AllViaServer, false, (int)VisualState.Normal);
+    }
+
     public void MarkSelectedAndSync()
     {
         // In multi-select, "selected" is a separate flag.
@@ -129,7 +148,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         if (!PhotonNetwork.InRoom)
         {
             isSelected = true;
-            ApplyVisual();
+            NotifyStateChanged();
             return;
         }
 
@@ -141,7 +160,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         if (!PhotonNetwork.InRoom)
         {
             isSelected = false;
-            ApplyVisual();
+            NotifyStateChanged();
             return;
         }
 
@@ -155,7 +174,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
             resultState = newState;
 
             // if setting to Normal, keep selection highlight if selected
-            ApplyVisual();
+            NotifyStateChanged();
             return;
         }
 
@@ -171,7 +190,15 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         if (resultState == VisualState.Selected)
             isSelected = true;
 
-        ApplyVisual();
+        NotifyStateChanged();
+    }
+
+    [PunRPC]
+    private void RPC_SetState(bool selected, int state)
+    {
+        isSelected = selected;
+        resultState = (VisualState)state;
+        NotifyStateChanged();
     }
 
     // ─────────────────────────────
@@ -204,6 +231,12 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
             case VisualState.Wrong: image.color = wrongColor; break;
             default: image.color = normalColor; break;
         }
+    }
+
+    private void NotifyStateChanged()
+    {
+        ApplyVisual();
+        StateChanged?.Invoke(this);
     }
 
     // ─────────────────────────────
