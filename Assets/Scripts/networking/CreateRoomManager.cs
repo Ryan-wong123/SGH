@@ -9,6 +9,11 @@ using System.Collections.Generic;
 
 public class CreateRoomManager : Network
 {
+    private const string RoomPasswordPropertyKey = "RoomPassword";
+    private const string PasswordCharacters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    private const int PlayerRejoinTtlMs = 300000;
+    private const int EmptyRoomTtlMs = 300000;
+
     //room name input field
     [SerializeField] private TMP_InputField roomNameInput;
     //dropdown field of maximum players allowed per room
@@ -24,6 +29,7 @@ public class CreateRoomManager : Network
     //cache value of room name and max players of that room
     private string cachedRoomName;
     private byte cachedMaxPlayers;
+    private string cachedRoomPassword;
 
     private void Start()
     {
@@ -79,9 +85,10 @@ public class CreateRoomManager : Network
         //cache values for retrying to create room if create room fails
         cachedRoomName = roomName;
         cachedMaxPlayers = maxPlayers;
+        cachedRoomPassword = GenerateRoomPassword();
 
         //create room with the options
-        RoomOptions options = new RoomOptions { MaxPlayers = maxPlayers };
+        RoomOptions options = BuildRoomOptions(maxPlayers, cachedRoomPassword);
         PhotonNetwork.CreateRoom(roomName, options);
     }
 
@@ -101,7 +108,35 @@ public class CreateRoomManager : Network
     {
         //wait 2 seconds before retry create room again with cached options
         yield return new WaitForSeconds(2f);
-        RoomOptions options = new RoomOptions { MaxPlayers = cachedMaxPlayers };
+        RoomOptions options = BuildRoomOptions(cachedMaxPlayers, cachedRoomPassword);
         PhotonNetwork.CreateRoom(cachedRoomName, options);
+    }
+
+    private static RoomOptions BuildRoomOptions(byte maxPlayers, string roomPassword)
+    {
+        return new RoomOptions
+        {
+            MaxPlayers = maxPlayers,
+            PlayerTtl = PlayerRejoinTtlMs,
+            EmptyRoomTtl = EmptyRoomTtlMs,
+            PublishUserId = true,
+            CustomRoomProperties = new ExitGames.Client.Photon.Hashtable
+            {
+                { RoomPasswordPropertyKey, roomPassword }
+            },
+            CustomRoomPropertiesForLobby = new[] { RoomPasswordPropertyKey }
+        };
+    }
+
+    private static string GenerateRoomPassword()
+    {
+        char[] password = new char[6];
+
+        for (int i = 0; i < password.Length; i++)
+        {
+            password[i] = PasswordCharacters[Random.Range(0, PasswordCharacters.Length)];
+        }
+
+        return new string(password);
     }
 }

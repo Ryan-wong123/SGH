@@ -3,10 +3,17 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
+using ExitGames.Client.Photon;
+using System;
 
 
 public class Network : MonoBehaviourPunCallbacks
 {
+    private const string PlayerTagPropertyKey = "PlayerTag";
+    private const string PhotonUserIdPrefKey = "PhotonUserId";
+    private const string PhotonNicknamePrefKey = "PhotonNickname";
+    private const string RejoinRoomPrefKey = "PhotonRejoinRoom";
+
     //game version
     [SerializeField] private string gameVersion = "1.0";
     //maximum number of player in 1 room
@@ -20,20 +27,36 @@ public class Network : MonoBehaviourPunCallbacks
     [SerializeField] private Button goToRoomListButton;
     //join room manager component
     [SerializeField] private JoinRoomManager joinRoomManager;
+    private static bool isAttemptingStoredRoomRejoin;
 
     private void Start()
     {
+        EnsurePersistentUserId();
+        RestoreSavedNickname();
+
         //connect to photon server with settings
         Debug.Log("Connecting to Photon...");
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.GameVersion = gameVersion;
-        PhotonNetwork.ConnectUsingSettings();
+
+        // If already connected, don't reconnect (reconnecting can kick you out / reset state)
+        if (PhotonNetwork.IsConnected)
+        {
+            Debug.Log("Already connected. Ensuring lobby...");
+            EnsureLobbyJoined();
+        }
+        else
+        {
+            Debug.Log("Connecting to Photon...");
+            PhotonNetwork.ConnectUsingSettings();
+        }
 
         //get username and start game 
+        goToRoomListButton.onClick.RemoveAllListeners();
         goToRoomListButton.onClick.AddListener(() =>
         {
             //check if username field is empty
-            string username = usernameInput.text;
+            string username = usernameInput.text.Trim();
             if (string.IsNullOrEmpty(username))
             {
                 //update placeholder text if username is empty
@@ -49,17 +72,123 @@ public class Network : MonoBehaviourPunCallbacks
 
             //set username 
             PhotonNetwork.NickName = username;
+            PlayerPrefs.SetString(PhotonNicknamePrefKey, username);
+            PlayerPrefs.Save();
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
+            {
+                { PlayerTagPropertyKey, username }
+            });
+
             //disable home panel and show the room list panel with create room button
             homePanel.SetActive(false);
             joinRoomManager.setRoomListPanelActive(true);
             joinRoomManager.setToggleRoomListPanelButtonActive(true);
+            EnsureLobbyJoined();
         });
     }
 
+    protected static void CacheCurrentRoomForRejoin()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+        {
+            return;
+        }
+
+        PlayerPrefs.SetString(RejoinRoomPrefKey, PhotonNetwork.CurrentRoom.Name);
+        PlayerPrefs.Save();
+    }
+
+    public static void ClearCachedRoomRejoin()
+    {
+        PlayerPrefs.DeleteKey(RejoinRoomPrefKey);
+        PlayerPrefs.Save();
+        isAttemptingStoredRoomRejoin = false;
+    }
+
+    private static string GetCachedRoomName()
+    {
+        return PlayerPrefs.GetString(RejoinRoomPrefKey, string.Empty);
+    }
+
+    private void EnsurePersistentUserId()
+    {
+        string userId = PlayerPrefs.GetString(PhotonUserIdPrefKey, string.Empty);
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            userId = Guid.NewGuid().ToString("N");
+            PlayerPrefs.SetString(PhotonUserIdPrefKey, userId);
+            PlayerPrefs.Save();
+        }
+
+        PhotonNetwork.AuthValues ??= new AuthenticationValues();
+        PhotonNetwork.AuthValues.UserId = userId;
+    }
+
+    private void RestoreSavedNickname()
+    {
+        string savedNickname = PlayerPrefs.GetString(PhotonNicknamePrefKey, string.Empty);
+        if (string.IsNullOrWhiteSpace(savedNickname))
+        {
+            return;
+        }
+
+        PhotonNetwork.NickName = savedNickname;
+
+        if (usernameInput != null && string.IsNullOrWhiteSpace(usernameInput.text))
+        {
+            usernameInput.text = savedNickname;
+        }
+    }
+
+    private void ApplyLocalPlayerTag()
+    {
+        if (PhotonNetwork.LocalPlayer == null || string.IsNullOrWhiteSpace(PhotonNetwork.NickName))
+        {
+            return;
+        }
+
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable
+        {
+            { PlayerTagPropertyKey, PhotonNetwork.NickName }
+        });
+    }
+
+    private bool TryRejoinCachedRoom()
+    {
+        string cachedRoomName = GetCachedRoomName();
+        if (string.IsNullOrWhiteSpace(cachedRoomName) || !PhotonNetwork.IsConnectedAndReady || PhotonNetwork.InRoom)
+        {
+            return false;
+        }
+
+        isAttemptingStoredRoomRejoin = PhotonNetwork.RejoinRoom(cachedRoomName);
+        Debug.Log(isAttemptingStoredRoomRejoin
+            ? $"Attempting to rejoin cached room '{cachedRoomName}'."
+            : $"Failed to start rejoin for cached room '{cachedRoomName}'.");
+
+        return isAttemptingStoredRoomRejoin;
+    }
+
+    private void EnsureLobbyJoined()
+    {
+        // If you're in a room, you cannot join lobby yet
+        if (PhotonNetwork.InRoom) return;
+
+        // If connected to Master but not in lobby, join lobby
+        if (!PhotonNetwork.InLobby && PhotonNetwork.IsConnectedAndReady)
+        {
+            PhotonNetwork.JoinLobby();
+        }
+    }
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to Photon Master Server");
-        PhotonNetwork.JoinLobby();
+        ApplyLocalPlayerTag();
+
+        if (!TryRejoinCachedRoom())
+        {
+            PhotonNetwork.JoinLobby();
+        }
     }
 
     public override void OnJoinedLobby()
@@ -70,5 +199,42 @@ public class Network : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.LogError($"Disconnected from Photon: {cause}");
+
+        string cachedRoomName = GetCachedRoomName();
+        if (!string.IsNullOrWhiteSpace(cachedRoomName))
+        {
+            bool reconnectStarted = PhotonNetwork.ReconnectAndRejoin();
+            Debug.Log(reconnectStarted
+                ? $"ReconnectAndRejoin started for room '{cachedRoomName}'."
+                : $"ReconnectAndRejoin could not start for room '{cachedRoomName}'. Waiting for a fresh connection to rejoin.");
+        }
+    }
+
+    public override void OnJoinedRoom()
+    {
+        CacheCurrentRoomForRejoin();
+        ApplyLocalPlayerTag();
+        isAttemptingStoredRoomRejoin = false;
+    }
+
+    public override void OnLeftRoom()
+    {
+        ClearCachedRoomRejoin();
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.LogWarning($"Join room failed ({returnCode}): {message}");
+
+        if (!isAttemptingStoredRoomRejoin)
+        {
+            return;
+        }
+
+        ClearCachedRoomRejoin();
+        if (PhotonNetwork.IsConnectedAndReady && !PhotonNetwork.InLobby)
+        {
+            PhotonNetwork.JoinLobby();
+        }
     }
 }

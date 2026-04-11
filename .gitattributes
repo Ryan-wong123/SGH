@@ -1,2 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+"Assets/Objects/property bag/medicine bottle/medicine bottle.fbx" filter=lfs diff=lfs merge=lfs -text
+"Assets/Objects/property bag/medicine tablet/medicine tablet.fbx" filter=lfs diff=lfs merge=lfs -text
+"Assets/Objects/property bag/pouch/model.obj" filter=lfs diff=lfs merge=lfs -text
