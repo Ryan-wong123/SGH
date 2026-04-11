@@ -30,13 +30,13 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     [Header("Puzzle 1 Correct Symptoms")]
     public HashSet<string> correctSymptomsFromPuzzle1 = new();
 
-    [Header("puzzle 1&2")]
-    [SerializeField] private GameObject mainminiPuzzle1Panel1;
-    [SerializeField] private GameObject miniPuzzle1Panel1;
-    [SerializeField] private GameObject miniPuzzle1Panel2;
-    [SerializeField] private GameObject miniPuzzle1Header1;
-    [SerializeField] private GameObject miniPuzzle1Header2;
+    [Header("puzzle 1 ")]
+    [SerializeField] private GameObject Puzzle1Panel; 
     [SerializeField] private SymptomsCardManager symptomsCardManager;
+
+    [Header("puzzle 2")]
+    [SerializeField] private GameObject Puzzle2Panel;
+    [SerializeField] private BearCardManager bearCardManager;
 
     [Header("puzzle 3")]
     [SerializeField] private GameObject Puzzle3Panel;
@@ -124,7 +124,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         puzzleHandlers = new Dictionary<PuzzleStage, IPuzzle>
         {
             { PuzzleStage.Puzzle1, symptomsCardManager },
-            { PuzzleStage.Puzzle2, symptomsCardManager },
+            { PuzzleStage.Puzzle2, bearCardManager },
             { PuzzleStage.Puzzle3, pictureGridManager },
             { PuzzleStage.Puzzle4, activity2PuzzleManager },
             { PuzzleStage.Puzzle5, wordSearchManager  },
@@ -145,8 +145,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     private void InitStagePanels()
     {
         stagePanels.Clear();
-        stagePanels[PuzzleStage.Puzzle1] = mainminiPuzzle1Panel1;
-        stagePanels[PuzzleStage.Puzzle2] = mainminiPuzzle1Panel1;
+        stagePanels[PuzzleStage.Puzzle1] = Puzzle1Panel;
+        stagePanels[PuzzleStage.Puzzle2] = Puzzle2Panel;
         stagePanels[PuzzleStage.Puzzle3] = Puzzle3Panel;
         stagePanels[PuzzleStage.Puzzle4] = Puzzle4Panel;
         stagePanels[PuzzleStage.Puzzle5] = Puzzle5Panel;
@@ -194,11 +194,13 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             card.ShowFront();
         }
 
-        miniPuzzle1Panel1?.SetActive(true);
-        miniPuzzle1Header1?.SetActive(true);
-        miniPuzzle1Panel2?.SetActive(false);
-        miniPuzzle1Header2?.SetActive(false);
-
+        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1_2))
+        {
+            Image img = card.GetComponent<Image>();
+            if (img != null) img.color = Color.white;
+            card.ResetCard();
+            card.ShowFront();
+        }
 
         CurrentStage = PuzzleStage.Puzzle1;
 
@@ -335,22 +337,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Puzzle 1 complete! Now starting Puzzle 2...");
 
-        foreach (DropSlot slot in DropSlot.allDropSlots)
-        {
-            foreach (DraggableCard card in slot.GetCardsInSlot())
-            {
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = Color.white;
-            }
-        }
-
-        foreach (DraggableCard card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1))
-            card.ShowBack();
-
-        miniPuzzle1Panel1?.SetActive(false);
-        miniPuzzle1Panel2?.SetActive(true);
-        if (miniPuzzle1Header1) miniPuzzle1Header1.SetActive(false);
-        if (miniPuzzle1Header2) miniPuzzle1Header2.SetActive(true);
+        Puzzle1Panel?.SetActive(false);
+        Puzzle2Panel?.SetActive(true);
 
         CurrentStage = PuzzleStage.Puzzle2;
     }
@@ -359,11 +347,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Puzzle 2 complete! You win!");
 
-        miniPuzzle1Panel2?.SetActive(false);
-        if (miniPuzzle1Header2) miniPuzzle1Header2.SetActive(false);
-        mainminiPuzzle1Panel1?.SetActive(false);
+        Puzzle2Panel?.SetActive(false);
 
-        
         GetKeyUponCompletion(puzzle1Object, "Time Crystal1");
 
         CurrentStage = PuzzleStage.Puzzle3;

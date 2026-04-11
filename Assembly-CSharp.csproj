@@ -84,6 +84,7 @@
     <Compile Include="Assets\Scripts\UI\SlideShowUI.cs" />
     <Compile Include="Assets\Scripts\Interactable\MovementTargetNetworked.cs" />
     <Compile Include="Assets\Scripts\networking\JoinRoomManager.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\activity 2\BearCardManager.cs" />
     <Compile Include="Assets\Scripts\Puzzle\Draggable\DraggableCard.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 9\WordSearchManager.cs" />
     <Compile Include="Assets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
     <Compile Include="Assets\Scripts\UI\ClueUI.cs" />
     <Compile Include="Assets\Scripts\Puzzle\PuzzleScoreTracker.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\activity 2\Activity1_2DropSlot.cs" />
     <Compile Include="Assets\Scripts\UI\CluePopupUI.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 1\Activity1DropSlot.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 5\CrosswordCell.cs" />
