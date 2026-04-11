@@ -6,11 +6,14 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
 
 public class DraggableCard : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler,
     IPunObservable, IPunOwnershipCallbacks
 {
+    private const string PlayerTagPropertyKey = "PlayerTag";
+
     public enum DraggableCardBehavior
     {
         Auto,
@@ -42,6 +45,13 @@ public class DraggableCard : MonoBehaviour,
     [SerializeField] public string lapsesAnswer;
     [SerializeField] public bool isLocked;
 
+    [Header("Drag Player Tag")]
+    [SerializeField] private Vector2 dragTagSize = new Vector2(220f, 34f);
+    [SerializeField] private Vector2 dragTagOffset = new Vector2(0f, -8f);
+    [SerializeField] private Color dragTagBackgroundColor = new Color(0f, 0f, 0f, 0.8f);
+    [SerializeField] private Color dragTagTextColor = Color.white;
+    [SerializeField] private float dragTagFontSize = 22f;
+
     protected Image cardImage;
     [SerializeField] protected Sprite frontSprite;
 
@@ -66,12 +76,17 @@ public class DraggableCard : MonoBehaviour,
     private Vector2 netScale;
     private string netParentPath;
     private bool netDragging; // "someone is dragging" (owner sends)
+    private string netDraggingPlayerName;
 
     private bool isFlipped;
     private bool acceptedThisDrag;
     private Transform dragStartParent;
     private Vector2 dragStartAnchoredPos;
     private Vector2 dragStartScale;
+
+    private RectTransform dragTagRect;
+    private Image dragTagBackground;
+    private TextMeshProUGUI dragTagText;
 
     public DraggableCardBehavior Behavior => ResolveBehavior();
 
@@ -81,6 +96,9 @@ public class DraggableCard : MonoBehaviour,
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         pv = GetComponent<PhotonView>();
+
+        EnsureDragPlayerTag();
+        SetDragTagVisible(false, string.Empty);
     }
 
     protected virtual void OnEnable()
@@ -167,6 +185,7 @@ public class DraggableCard : MonoBehaviour,
 
         // Move to top drag layer (canvas)
         SetParentLocal(canvas.transform, true);
+        SetDragTagVisible(true, GetLocalPlayerDisplayName());
     }
 
     public virtual void OnDrag(PointerEventData eventData)
@@ -220,6 +239,7 @@ public class DraggableCard : MonoBehaviour,
         }
 
         isDraggingLocal = false;
+        SetDragTagVisible(false, string.Empty);
 
         if (canvasGroup != null)
             canvasGroup.blocksRaycasts = true;
@@ -337,6 +357,8 @@ public class DraggableCard : MonoBehaviour,
         {
             isLocked = false;
         }
+
+        SetDragTagVisible(false, string.Empty);
     }
 
     // ---------------------------
@@ -350,6 +372,7 @@ public class DraggableCard : MonoBehaviour,
         {
             string parentPath = GetPathFromRoot(transform.parent);
             stream.SendNext(isDraggingLocal);
+            stream.SendNext(isDraggingLocal ? GetLocalPlayerDisplayName() : string.Empty);
             stream.SendNext(parentPath);
             stream.SendNext(rectTransform.anchoredPosition);
             stream.SendNext((Vector2)rectTransform.localScale);
@@ -357,6 +380,7 @@ public class DraggableCard : MonoBehaviour,
         else
         {
             netDragging = (bool)stream.ReceiveNext();
+            netDraggingPlayerName = (string)stream.ReceiveNext();
             netParentPath = (string)stream.ReceiveNext();
             netAnchoredPos = (Vector2)stream.ReceiveNext();
             netScale = (Vector2)stream.ReceiveNext();
@@ -386,6 +410,7 @@ public class DraggableCard : MonoBehaviour,
 
         // Lock/unlock interaction based on whether someone else is dragging
         SetInteractableState();
+        SetDragTagVisible(netDragging, netDraggingPlayerName);
     }
 
     private string GetPathFromRoot(Transform target)
@@ -683,5 +708,92 @@ public class DraggableCard : MonoBehaviour,
     {
         if (cardImage != null)
             cardImage.color = Color.white;
+    }
+
+    private void EnsureDragPlayerTag()
+    {
+        if (dragTagRect != null)
+        {
+            return;
+        }
+
+        GameObject tagObject = new GameObject("DragPlayerTag", typeof(RectTransform), typeof(Image));
+        tagObject.transform.SetParent(transform, false);
+
+        dragTagRect = tagObject.GetComponent<RectTransform>();
+        dragTagRect.anchorMin = new Vector2(0.5f, 0f);
+        dragTagRect.anchorMax = new Vector2(0.5f, 0f);
+        dragTagRect.pivot = new Vector2(0.5f, 1f);
+        dragTagRect.anchoredPosition = dragTagOffset;
+        dragTagRect.sizeDelta = dragTagSize;
+
+        dragTagBackground = tagObject.GetComponent<Image>();
+        dragTagBackground.color = dragTagBackgroundColor;
+        dragTagBackground.raycastTarget = false;
+
+        GameObject textObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+        textObject.transform.SetParent(tagObject.transform, false);
+
+        RectTransform textRect = textObject.GetComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = new Vector2(10f, 4f);
+        textRect.offsetMax = new Vector2(-10f, -4f);
+
+        dragTagText = textObject.GetComponent<TextMeshProUGUI>();
+        dragTagText.alignment = TextAlignmentOptions.Center;
+        dragTagText.fontSize = dragTagFontSize;
+        dragTagText.color = dragTagTextColor;
+        dragTagText.enableWordWrapping = false;
+        dragTagText.overflowMode = TextOverflowModes.Ellipsis;
+        dragTagText.raycastTarget = false;
+    }
+
+    private void SetDragTagVisible(bool visible, string playerName)
+    {
+        if (dragTagRect == null)
+        {
+            return;
+        }
+
+        bool shouldShow = visible && !string.IsNullOrWhiteSpace(playerName);
+
+        if (dragTagText != null)
+        {
+            dragTagText.text = shouldShow ? playerName.Trim() : string.Empty;
+        }
+
+        if (dragTagRect.gameObject.activeSelf != shouldShow)
+        {
+            dragTagRect.gameObject.SetActive(shouldShow);
+        }
+    }
+
+    private string GetLocalPlayerDisplayName()
+    {
+        return GetPlayerDisplayName(PhotonNetwork.LocalPlayer);
+    }
+
+    private string GetPlayerDisplayName(Player player)
+    {
+        if (player == null)
+        {
+            return "Player";
+        }
+
+        if (player.CustomProperties != null &&
+            player.CustomProperties.TryGetValue(PlayerTagPropertyKey, out object tagValue) &&
+            tagValue is string tag &&
+            !string.IsNullOrWhiteSpace(tag))
+        {
+            return tag.Trim();
+        }
+
+        if (!string.IsNullOrWhiteSpace(player.NickName))
+        {
+            return player.NickName.Trim();
+        }
+
+        return $"Player {player.ActorNumber}";
     }
 }
