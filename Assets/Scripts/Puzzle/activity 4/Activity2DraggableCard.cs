@@ -43,7 +43,8 @@ public class Activity2DraggableCard : DraggableCard
 
     public override void OnEndDrag(PointerEventData eventData)
     {
-        canvasGroup.blocksRaycasts = true;
+        if (!TryCompleteDrag())
+            return;
 
         if (transform.parent == canvas.transform || transform.parent == null)
         {

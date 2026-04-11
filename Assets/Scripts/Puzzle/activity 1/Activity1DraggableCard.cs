@@ -110,9 +110,10 @@ public class Activity1DraggableCard : DraggableCard
 
     public override void OnEndDrag(PointerEventData eventData)
     {
-        // Keep your existing behavior (do not call base.OnEndDrag because your Activity1 already overrides logic)
-        canvasGroup.blocksRaycasts = true;
+        if (!TryCompleteDrag())
+            return;
 
+        // Keep your existing behavior (do not call base.OnEndDrag because your Activity1 already overrides logic)
         if (transform.parent == canvas.transform || transform.parent == null)
         {
             // FIX v2:

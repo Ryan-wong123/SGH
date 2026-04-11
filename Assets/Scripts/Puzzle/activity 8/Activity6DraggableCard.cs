@@ -43,7 +43,8 @@ public class Activity6DraggableCard : DraggableCard
 
     public override void OnEndDrag(PointerEventData eventData)
     {
-        canvasGroup.blocksRaycasts = true;
+        if (!TryCompleteDrag())
+            return;
 
         // If we are already inside a slot (NOT on the canvas), do nothing.
         // This prevents any "panel snap" overriding a successful drop/revert.

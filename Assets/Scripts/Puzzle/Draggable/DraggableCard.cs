@@ -144,11 +144,8 @@ public class DraggableCard : MonoBehaviour,
 
     public virtual void OnEndDrag(PointerEventData eventData)
     {
-        if (IsNetworked && !pv.IsMine) return;
-        if (waitingForOwnership) return;
-
-        isDraggingLocal = false;
-        canvasGroup.blocksRaycasts = true;
+        if (!TryCompleteDrag())
+            return;
 
         if (transform.parent == canvas.transform || transform.parent == null)
         {
@@ -180,6 +177,27 @@ public class DraggableCard : MonoBehaviour,
             var img = GetComponent<Image>();
             if (img != null) img.color = Color.white;
         }
+    }
+
+    protected bool TryCompleteDrag()
+    {
+        if (IsNetworked && !pv.IsMine)
+            return false;
+
+        if (waitingForOwnership)
+        {
+            waitingForOwnership = false;
+            SetInteractableState();
+            return false;
+        }
+
+        isDraggingLocal = false;
+
+        if (canvasGroup != null)
+            canvasGroup.blocksRaycasts = true;
+
+        SetInteractableState();
+        return true;
     }
 
     public void SnapBack()
@@ -338,7 +356,20 @@ public class DraggableCard : MonoBehaviour,
     // ---------------------------
     // Ownership callbacks
     // ---------------------------
-    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer) { }
+    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
+    {
+        if (pv == null || targetView != pv || requestingPlayer == null)
+            return;
+
+        if (pv.Owner == requestingPlayer)
+            return;
+
+        // Always allow the next player to take control of draggable puzzle cards.
+        if (pv.IsMine || PhotonNetwork.IsMasterClient)
+        {
+            pv.TransferOwnership(requestingPlayer);
+        }
+    }
 
     public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
     {
