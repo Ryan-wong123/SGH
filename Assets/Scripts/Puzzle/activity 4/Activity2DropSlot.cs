@@ -22,11 +22,11 @@ public class Activity2DropSlot : DropSlot
         // If already occupied -> revert to origin slot (NOT outside)
         if (transform.childCount > 0)
         {
-            var cardA2 = droppedObj.GetComponent<Activity2DraggableCard>();
-            if (cardA2 != null)
+            var card = droppedObj.GetComponent<DraggableCard>();
+            if (card != null)
             {
                 Debug.Log("[Activity2DropSlot] Occupied -> revert to drag origin slot");
-                cardA2.RevertToDragOrigin();
+                card.RevertToDragOrigin();
             }
             else
             {
@@ -43,11 +43,11 @@ public class Activity2DropSlot : DropSlot
 
     public override bool IsCardCorrect(DraggableCard card)
     {
-        if (card is Activity2DraggableCard a2Card)
+        if (card != null)
         {
             if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle4)
             {
-                string cardStep = a2Card.stepName?.Trim().ToLower() ?? "";
+                string cardStep = card.stepName?.Trim().ToLower() ?? "";
                 string slotStep = stepName.Trim().ToLower();
 
                 Debug.Log($"[IsCardCorrect - Puzzle4] Card Step: {cardStep}, Slot Expects: {slotStep}");

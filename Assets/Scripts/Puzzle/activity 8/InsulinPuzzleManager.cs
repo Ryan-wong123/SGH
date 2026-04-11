@@ -89,7 +89,7 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle
 
         foreach (Activity6DropSlot slot in Activity6DropSlot.allDropSlots)
         {
-            foreach (Activity6DraggableCard card in slot.GetCardsInSlot())
+            foreach (DraggableCard card in slot.GetCardsInSlot())
             {
                 Image img = card.GetComponent<Image>();
                 if (img != null && img.color == Color.red)

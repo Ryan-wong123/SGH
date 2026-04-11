@@ -25,11 +25,11 @@ public class Activity9DropSlot : DropSlot
         // Occupied slot => revert to origin slot
         if (transform.childCount > 0)
         {
-            var a9Card = droppedObj.GetComponent<Activity9DraggableCard>();
-            if (a9Card != null)
+            var card = droppedObj.GetComponent<DraggableCard>();
+            if (card != null)
             {
                 Debug.Log("[Activity9DropSlot] Occupied -> revert to drag origin slot");
-                a9Card.RevertToDragOrigin();
+                card.RevertToDragOrigin();
             }
             else
             {
@@ -46,9 +46,9 @@ public class Activity9DropSlot : DropSlot
 
     public override bool IsCardCorrect(DraggableCard card)
     {
-        if (card is Activity9DraggableCard a1Card)
+        if (card != null)
         {
-            string stage2Answer = a1Card.lapsesAnswer.Trim().ToLower();
+            string stage2Answer = card.lapsesAnswer.Trim().ToLower();
             string expectedAnswer = stage1Answer.Trim().ToLower();
 
             // ✅ For Stage 2, use linked Stage 1 slot
