@@ -14,16 +14,6 @@ public class SymptomsCardManager : MonoBehaviour, IPuzzle
         int filled = 0;
         int correct = 0;
 
-        // Reset all card visuals
-        foreach (DropSlot slot in DropSlot.allDropSlots)
-        {
-            foreach (DraggableCard card in slot.GetCardsInSlot())
-            {
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = Color.white;
-            }
-        }
-
         // Evaluate each slot
         foreach (DropSlot slot in DropSlot.allDropSlots)
         {
@@ -46,55 +36,13 @@ public class SymptomsCardManager : MonoBehaviour, IPuzzle
         return filled == totalSlots && correct == totalSlots;
     }
 
-    public bool AreAllPuzzle2CardsCorrect()
-    {
-
-        int correct = 0;
-
-        // Reset all card visuals
-        foreach (DropSlot slot in DropSlot.allDropSlots)
-        {
-            foreach (DraggableCard card in slot.GetCardsInSlot())
-            {
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = Color.white;
-            }
-        }
-
-        // Evaluate placed cards only
-        foreach (DropSlot slot in DropSlot.allDropSlots)
-        {
-            foreach (DraggableCard card in slot.GetCardsInSlot())
-            {
-                string spriteName = card.backSprite != null ? card.backSprite.name : "unknown";
-                Debug.Log($"[Submit Puzzle 2] Card: {card.name}, Sprite: {spriteName}");
-
-                bool isCorrect = slot.IsCardCorrect(card);
-
-                var img = card.GetComponent<Image>();
-                if (img != null) img.color = isCorrect ? Color.green : Color.red;
-
-                if (isCorrect) correct++;
-            }
-        }
-
-        StartCoroutine(ResetIncorrectCardColorsAfterDelay(1f));
-
-        Debug.Log($"[Puzzle 2] Correct: {correct} / Required: {required}");
-
-        return correct >= required;
-    }
     public bool IsSolved()
     {
         if (AreAllPuzzle1CardsCorrect())
         {
             return true;
         }
-        else if (AreAllPuzzle2CardsCorrect())
-        {
-            return true;
-        }
-
+ 
         return false;
     }
     private IEnumerator ResetIncorrectCardColorsAfterDelay(float delaySeconds)

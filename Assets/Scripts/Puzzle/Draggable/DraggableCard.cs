@@ -19,6 +19,7 @@ public class DraggableCard : MonoBehaviour,
         Auto,
         Default,
         Activity1,
+        Activity1_2,
         Activity2,
         Activity6,
         Activity9
@@ -29,7 +30,6 @@ public class DraggableCard : MonoBehaviour,
 
     [SerializeField] protected Transform panel1GridLayout;  // Right Slot All Symptoms
     [SerializeField] protected Transform panel2GridLayout;  // Left Slot Correct Symptom
-    [SerializeField] protected Transform panel3GridLayout;
 
     [Header("Networking Path Root (IMPORTANT)")]
     [Tooltip("Root used to compute hierarchy paths for parenting sync. Usually your Canvas transform.")]
@@ -210,6 +210,9 @@ public class DraggableCard : MonoBehaviour,
         {
             case DraggableCardBehavior.Activity1:
                 HandleActivity1EndDrag();
+                break;
+            case DraggableCardBehavior.Activity1_2:
+                HandleActivity1_2EndDrag();
                 break;
             case DraggableCardBehavior.Activity2:
                 HandleActivity2EndDrag();
@@ -581,27 +584,12 @@ public class DraggableCard : MonoBehaviour,
         }
 
         bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.IsChildOf(panel2GridLayout);
-        bool fromPanel3 = lastSlotOrParent != null && lastSlotOrParent.IsChildOf(panel3GridLayout);
 
         if (IsPointerOverPanel("Panel1") && fromPanel2)
         {
             SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
         }
-        else if (IsPointerOverPanel("Panel2") && fromPanel2 && !panel1GridLayout.gameObject.activeSelf)
-        {
-            Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
-            SnapTo(emptySlot ?? panel2GridLayout, 140, -160, 1, 1);
-        }
         else if (IsPointerOverPanel("Panel2") && fromPanel2)
-        {
-            SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
-        }
-        else if (IsPointerOverPanel("Panel3") && fromPanel2)
-        {
-            Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
-            SnapTo(emptySlot ?? panel2GridLayout, 140, -160, 1, 1);
-        }
-        else if ((IsPointerOverPanel("Panel3") && fromPanel3) || (IsPointerOverPanel("Panel2") && fromPanel3))
         {
             Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
             SnapTo(emptySlot ?? panel2GridLayout, 140, -160, 1, 1);
@@ -613,7 +601,26 @@ public class DraggableCard : MonoBehaviour,
 
         ResetCardColor();
     }
+    private void HandleActivity1_2EndDrag()
+    {
+        bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;
 
+        if (IsPointerOverPanel("Panel1") && fromPanel2)
+        {
+            SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
+        }
+        else if (IsPointerOverPanel("Panel2") && fromPanel2)
+        {
+            Transform emptySlot = FindFirstEmptyChild(panel2GridLayout);
+            SnapTo(emptySlot ?? panel2GridLayout, 140, -160, 1, 1);
+        }
+        else
+        {
+            SnapTo(panel1GridLayout, 100, -100, 0.6409343f, 0.66764f);
+        }
+
+        ResetCardColor();
+    }
     private void HandleActivity2EndDrag()
     {
         bool fromPanel2 = lastSlotOrParent != null && lastSlotOrParent.parent == panel2GridLayout;

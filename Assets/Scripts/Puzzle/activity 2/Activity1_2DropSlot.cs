@@ -1,0 +1,47 @@
+using UnityEngine;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
+using static PuzzleStateManager;
+using UnityEngine.UI;
+
+public class Activity1_2DropSlot : DropSlot
+{
+    [Header("Puzzle 1 Settings")]
+    [SerializeField] public List<string> correctAnswers = new();
+
+    // -----------------------------
+    // FIX: mark acceptance + revert-to-origin on occupied slot
+    // -----------------------------
+    protected override void AcceptCard(DraggableCard card)
+    {
+        // FIX: tell Activity1 card that this drag was accepted by a real slot
+        card.MarkAcceptedThisDrag();
+
+        // Keep base behavior (parenting + snap pos/scale + trueHome assignment)
+        base.AcceptCard(card);
+    }
+
+    protected override void TrySnapBack(GameObject droppedObj)
+    {
+        // If slot occupied, revert to the drag origin (not SnapBack's special panel logic)
+        var card = droppedObj != null ? droppedObj.GetComponent<DraggableCard>() : null;
+        if (card != null)
+        {
+            card.RevertToDragOrigin();
+            return;
+        }
+
+        // Fallback
+        base.TrySnapBack(droppedObj);
+    }
+
+    public override bool IsCardCorrect(DraggableCard card)
+    {
+        if (card != null)
+        {
+            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle2)
+                return correctAnswers.Contains(card.symptomName);
+        }
+        return false;
+    }
+}
