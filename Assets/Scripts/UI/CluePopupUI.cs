@@ -40,6 +40,20 @@ public class CluePopupUI : MonoBehaviour
         if (!isShowing) StartCoroutine(RunQueue());
     }
 
+    /// <summary>Show a popup message after a real-time delay.</summary>
+    public void ShowDelayed(string text, float delaySeconds)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return;
+
+        if (delaySeconds <= 0f)
+        {
+            Show(text);
+            return;
+        }
+
+        StartCoroutine(DelayedShow(text, delaySeconds));
+    }
+
     private IEnumerator RunQueue()
     {
         isShowing = true;
@@ -49,6 +63,12 @@ public class CluePopupUI : MonoBehaviour
             yield return StartCoroutine(PlayOnce(text));
         }
         isShowing = false;
+    }
+
+    private IEnumerator DelayedShow(string text, float delaySeconds)
+    {
+        yield return new WaitForSecondsRealtime(delaySeconds);
+        Show(text);
     }
 
     private IEnumerator PlayOnce(string text)
