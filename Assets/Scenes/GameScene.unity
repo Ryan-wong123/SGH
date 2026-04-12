@@ -141183,10 +141183,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   puzzleStateManager: {fileID: 2075314851}
+  cluePopupUI: {fileID: 0}
   masterControls: 1
   pollIntervalSeconds: 0.1
   bufferStageRpcForLateJoiners: 1
   playEnterAudioOnInitialApply: 0
+  showPopupMessagesOnInitialApply: 0
   directives:
   - stage: 0
     activateOnEnter:
@@ -141206,6 +141208,12 @@ MonoBehaviour:
       useDate: 1
       dateOffsetDays: 0
       dateFormat: dd MMM yyyy
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: 
+      delaySeconds: 0
     enterAudioSource: {fileID: 0}
     enterAudioClip: {fileID: 0}
     enterAudioVolume: 1
@@ -141226,6 +141234,12 @@ MonoBehaviour:
       useDate: 0
       dateOffsetDays: 0
       dateFormat: 
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: 
+      delaySeconds: 0
     enterAudioSource: {fileID: 0}
     enterAudioClip: {fileID: 0}
     enterAudioVolume: 1
@@ -141254,6 +141268,12 @@ MonoBehaviour:
       useDate: 0
       dateOffsetDays: 0
       dateFormat: 
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: 
+      delaySeconds: 0
     enterAudioSource: {fileID: 1591424797}
     enterAudioClip: {fileID: 8300000, guid: a95379de740e7874a916da6ef249947a, type: 3}
     enterAudioVolume: 1
@@ -141271,6 +141291,12 @@ MonoBehaviour:
     keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives: []
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: Continue your journey beyond this door
+      delaySeconds: 3
     enterAudioSource: {fileID: 0}
     enterAudioClip: {fileID: 0}
     enterAudioVolume: 1
@@ -141296,6 +141322,12 @@ MonoBehaviour:
       text: 154 \nPharmacy
       flashBoardWhenShown: 1
     statusTextDirectives: []
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: 
+      delaySeconds: 0
     enterAudioSource: {fileID: 454907336}
     enterAudioClip: {fileID: 8300000, guid: 0c9aa1c851cfd044e856c31780cc0596, type: 3}
     enterAudioVolume: 1
@@ -141312,6 +141344,12 @@ MonoBehaviour:
     keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives: []
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: Continue your journey beyond this door
+      delaySeconds: 38
     enterAudioSource: {fileID: 0}
     enterAudioClip: {fileID: 0}
     enterAudioVolume: 1
@@ -141330,6 +141368,12 @@ MonoBehaviour:
     keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives: []
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: 
+      delaySeconds: 0
     enterAudioSource: {fileID: 0}
     enterAudioClip: {fileID: 0}
     enterAudioVolume: 1
@@ -141347,6 +141391,12 @@ MonoBehaviour:
     keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives: []
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: 
+      delaySeconds: 0
     enterAudioSource: {fileID: 0}
     enterAudioClip: {fileID: 0}
     enterAudioVolume: 1
@@ -141364,6 +141414,54 @@ MonoBehaviour:
     keepEnabledComponents: []
     queueDisplayDirectives: []
     statusTextDirectives: []
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: Continue your journey beyond this door
+      delaySeconds: 3
+    enterAudioSource: {fileID: 0}
+    enterAudioClip: {fileID: 0}
+    enterAudioVolume: 1
+    usePlayOneShot: 1
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
+  - stage: 1
+    activateOnEnter: []
+    deactivateOnExit: []
+    disableAllComponentsOnEnter: []
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
+    queueDisplayDirectives: []
+    statusTextDirectives: []
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: Continue your journey beyond this door
+      delaySeconds: 3
+    enterAudioSource: {fileID: 0}
+    enterAudioClip: {fileID: 0}
+    enterAudioVolume: 1
+    usePlayOneShot: 1
+    onEnter:
+      m_PersistentCalls:
+        m_Calls: []
+  - stage: 3
+    activateOnEnter: []
+    deactivateOnExit: []
+    disableAllComponentsOnEnter: []
+    disableAlsoChildren: 1
+    keepEnabledComponents: []
+    queueDisplayDirectives: []
+    statusTextDirectives: []
+    popupOnEnter:
+      message: 
+      delaySeconds: 0
+    popupOnExit:
+      message: Continue your journey beyond this door
+      delaySeconds: 3
     enterAudioSource: {fileID: 0}
     enterAudioClip: {fileID: 0}
     enterAudioVolume: 1
