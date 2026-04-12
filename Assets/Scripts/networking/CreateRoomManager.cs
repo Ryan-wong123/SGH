@@ -43,9 +43,11 @@ public class CreateRoomManager : Network
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        base.OnRoomListUpdate(roomList);
+
         foreach (RoomInfo info in roomList)
         {
-            if (info.RemovedFromList)
+            if (info.RemovedFromList || !info.IsOpen || !info.IsVisible)
                 cachedRoomList.Remove(info.Name);
             else
                 cachedRoomList[info.Name] = info;

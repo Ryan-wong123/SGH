@@ -80,9 +80,11 @@ public class JoinRoomManager : Network
     //update the room list
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        base.OnRoomListUpdate(roomList);
+
         foreach (RoomInfo info in roomList)
         {
-            if (info.RemovedFromList)
+            if (info.RemovedFromList || !info.IsOpen || !info.IsVisible)
             {
                 cachedRoomList.Remove(info.Name);
             }
@@ -238,7 +240,7 @@ public class JoinRoomManager : Network
         if (!PhotonNetwork.IsMasterClient) return;
 
         PhotonNetwork.CurrentRoom.IsVisible = false;
-        PhotonNetwork.CurrentRoom.IsOpen = true;
+        PhotonNetwork.CurrentRoom.IsOpen = false;
 
         // Tell everyone to show loading UI + start tracking progress
         photonView.RPC(nameof(RPC_BeginLoading), RpcTarget.All, "GameScene");
