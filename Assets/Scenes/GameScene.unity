@@ -2672,6 +2672,8 @@ MonoBehaviour:
   closeButton: {fileID: 1956943073}
   requireAllPlayersToClickClose: 1
   comicId: 
+  advancePuzzleStageOnClose: 0
+  closeTargetStage: 1
   slides:
   - image: {fileID: 21300000, guid: cb89f27eadf20b94693972fd608bc7e2, type: 3}
     duration: 0
@@ -17289,6 +17291,8 @@ MonoBehaviour:
   closeButton: {fileID: 1956943073}
   requireAllPlayersToClickClose: 1
   comicId: 
+  advancePuzzleStageOnClose: 0
+  closeTargetStage: 1
   slides:
   - image: {fileID: 21300000, guid: eea95a74ab62d734d98dea191caa68f6, type: 3}
     duration: 0
@@ -23748,6 +23752,8 @@ MonoBehaviour:
   closeButton: {fileID: 1956943073}
   requireAllPlayersToClickClose: 1
   comicId: 
+  advancePuzzleStageOnClose: 0
+  closeTargetStage: 1
   slides:
   - image: {fileID: 21300000, guid: 6d00624cb5cd61c4a9dbb9934853cca2, type: 3}
     duration: 0
@@ -40238,6 +40244,8 @@ MonoBehaviour:
   closeButton: {fileID: 1956943073}
   requireAllPlayersToClickClose: 1
   comicId: 
+  advancePuzzleStageOnClose: 1
+  closeTargetStage: 1
   slides:
   - image: {fileID: 21300000, guid: 0452724263d9f7747a80381ca589ca0c, type: 3}
     duration: 0
@@ -42779,6 +42787,8 @@ MonoBehaviour:
   closeButton: {fileID: 1956943073}
   requireAllPlayersToClickClose: 1
   comicId: 
+  advancePuzzleStageOnClose: 0
+  closeTargetStage: 1
   slides:
   - image: {fileID: 21300000, guid: 7bbc9c7f3bb2cee4ebe2e33dadbff597, type: 3}
     duration: 4
@@ -113522,7 +113532,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 8
+          m_IntArgument: 9
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -114742,6 +114752,8 @@ MonoBehaviour:
   closeButton: {fileID: 1956943073}
   requireAllPlayersToClickClose: 1
   comicId: 
+  advancePuzzleStageOnClose: 0
+  closeTargetStage: 1
   slides:
   - image: {fileID: 21300000, guid: 1d1238d91f7415440bbef09cab3bc99b, type: 3}
     duration: 0
@@ -121758,6 +121770,8 @@ MonoBehaviour:
   closeButton: {fileID: 1956943073}
   requireAllPlayersToClickClose: 1
   comicId: 
+  advancePuzzleStageOnClose: 0
+  closeTargetStage: 1
   slides:
   - image: {fileID: 21300000, guid: 190e44f341c104b4fac8c41245a969c9, type: 3}
     duration: 0
@@ -141221,7 +141235,7 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  - stage: 2
+  - stage: 3
     activateOnEnter: []
     deactivateOnExit: []
     disableAllComponentsOnEnter: []
@@ -141247,7 +141261,7 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  - stage: 4
+  - stage: 5
     activateOnEnter: []
     deactivateOnExit: []
     disableAllComponentsOnEnter: []
@@ -141281,7 +141295,7 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  - stage: 5
+  - stage: 6
     activateOnEnter: []
     deactivateOnExit:
     - {fileID: 1827917964}
@@ -141304,7 +141318,7 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  - stage: 6
+  - stage: 7
     activateOnEnter:
     - {fileID: 1933334847}
     - {fileID: 128019990}
@@ -141335,7 +141349,7 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  - stage: 7
+  - stage: 8
     activateOnEnter:
     - {fileID: 214535468}
     deactivateOnExit: []
@@ -141357,7 +141371,7 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  - stage: 8
+  - stage: 9
     activateOnEnter:
     - {fileID: 1595557880}
     - {fileID: 677627189}
@@ -141381,7 +141395,7 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  - stage: 10
+  - stage: 11
     activateOnEnter:
     - {fileID: 840095269}
     deactivateOnExit: []
@@ -141404,7 +141418,7 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  - stage: 9
+  - stage: 10
     activateOnEnter:
     - {fileID: 229672769}
     deactivateOnExit: []
@@ -141427,7 +141441,7 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  - stage: 1
+  - stage: 2
     activateOnEnter: []
     deactivateOnExit: []
     disableAllComponentsOnEnter: []
@@ -141448,7 +141462,7 @@ MonoBehaviour:
     onEnter:
       m_PersistentCalls:
         m_Calls: []
-  - stage: 3
+  - stage: 4
     activateOnEnter: []
     deactivateOnExit: []
     disableAllComponentsOnEnter: []

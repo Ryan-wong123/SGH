@@ -18,6 +18,10 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
     [SerializeField] private bool requireAllPlayersToClickClose = true;
     [SerializeField] private string comicId;
 
+    [Header("Stage Transition")]
+    [SerializeField] private bool advancePuzzleStageOnClose;
+    [SerializeField] private PuzzleStateManager.PuzzleStage closeTargetStage = PuzzleStateManager.PuzzleStage.Puzzle1;
+
     public enum SlideOrientationMode
     {
         Auto,
@@ -419,6 +423,18 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         }
 
         ClosePanelAndResetCamera.ResetCameraAndCursor();
+        TryAdvancePuzzleStageOnClose();
+    }
+
+    private void TryAdvancePuzzleStageOnClose()
+    {
+        if (!advancePuzzleStageOnClose || PuzzleStateManager.Instance == null)
+            return;
+
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
+            return;
+
+        PuzzleStateManager.Instance.BroadcastStageTransition(closeTargetStage);
     }
 
     private void ResetLocalCloseState()
