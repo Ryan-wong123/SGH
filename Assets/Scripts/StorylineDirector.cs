@@ -11,6 +11,7 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 {
     [Header("Refs")]
     [SerializeField] private PuzzleStateManager puzzleStateManager;
+    [SerializeField] private CluePopupUI cluePopupUI;
 
     [Header("Behaviour")]
     [Tooltip("Only Master Client drives and broadcasts effects when using Photon.")]
@@ -25,6 +26,10 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     [Header("Audio (Stage Enter)")]
     [Tooltip("If false, stage enter audio will NOT play on the very first apply on each client (prevents late-join buffered RPC from playing audio).")]
     [SerializeField] private bool playEnterAudioOnInitialApply = false;
+
+    [Header("Popup (Stage Enter/Exit)")]
+    [Tooltip("If false, clue popup messages will NOT show on the very first apply on each client (prevents late-join buffered RPC from showing stale messages).")]
+    [SerializeField] private bool showPopupMessagesOnInitialApply = false;
 
     [Header("Per-Stage Directives")]
     [SerializeField] private List<StageDirective> directives = new();
@@ -73,6 +78,18 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     }
 
     [Serializable]
+    public class PopupMessageDirective
+    {
+        [Tooltip("Popup message shown through CluePopupUI. Leave empty to disable.")]
+        [TextArea(2, 4)]
+        public string message = "";
+
+        [Tooltip("Delay in seconds before the popup message is shown.")]
+        [Min(0f)]
+        public float delaySeconds = 0f;
+    }
+
+    [Serializable]
     public class StageDirective
     {
         public PuzzleStateManager.PuzzleStage stage;
@@ -98,6 +115,10 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 
         [Header("Status Text Directives (optional, multiple targets)")]
         public List<StatusTextDirective> statusTextDirectives = new();
+
+        [Header("Clue Popup Messages (optional)")]
+        public PopupMessageDirective popupOnEnter = new();
+        public PopupMessageDirective popupOnExit = new();
 
         [Header("Stage Enter Audio (optional)")]
         [Tooltip("AudioSource used to play audio when entering this stage.")]
@@ -175,6 +196,12 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
         // multiple status text outputs for this stage
         string[] statusTexts = CollectStatusTexts(newDirective, stage);
 
+        string exitPopupText = previous.HasValue ? CollectPopupMessage(prevDirective?.popupOnExit, previous.Value) : "";
+        float exitPopupDelay = previous.HasValue ? CollectPopupDelay(prevDirective?.popupOnExit) : 0f;
+
+        string enterPopupText = CollectPopupMessage(newDirective?.popupOnEnter, stage);
+        float enterPopupDelay = CollectPopupDelay(newDirective?.popupOnEnter);
+
         //disable get component paths
         string[] disableAllCompPaths = CollectHierarchyPaths(newDirective?.disableAllComponentsOnEnter);
         bool disableAlsoChildren = newDirective != null && newDirective.disableAlsoChildren;
@@ -189,6 +216,10 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
             activatePaths,
             queueTexts,
             statusTexts,
+            exitPopupText,
+            exitPopupDelay,
+            enterPopupText,
+            enterPopupDelay,
             disableAllCompPaths,
             disableAlsoChildren,
             keepEnabledCompPaths
@@ -196,7 +227,7 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void RPC_ApplyStageEffects(int stageInt, string[] deactivatePaths, string[] activatePaths, string[] queueTexts, string[] statusTexts, string[] disableAllCompPaths, bool disableAlsoChildren, string[] keepEnabledCompPaths)
+    private void RPC_ApplyStageEffects(int stageInt, string[] deactivatePaths, string[] activatePaths, string[] queueTexts, string[] statusTexts, string exitPopupText, float exitPopupDelay, string enterPopupText, float enterPopupDelay, string[] disableAllCompPaths, bool disableAlsoChildren, string[] keepEnabledCompPaths)
     {
         bool isInitialApply = !_hasAppliedStageOnce;
         _hasAppliedStageOnce = true;
@@ -223,6 +254,9 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 
         // 5) Play enter audio on stage enter
         PlayStageEnterAudio(directive, isInitialApply);
+
+        // 6) Show clue popup messages tied to this transition
+        ApplyPopupMessages(exitPopupText, exitPopupDelay, enterPopupText, enterPopupDelay, isInitialApply);
 
         // Local-only hooks
         directive?.onEnter?.Invoke();
@@ -365,6 +399,12 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 
         // Play enter audio on stage enter (local mode too)
         PlayStageEnterAudio(newDirective, isInitialApply);
+
+        string exitPopupText = previous.HasValue ? CollectPopupMessage(prevDirective?.popupOnExit, previous.Value) : "";
+        float exitPopupDelay = previous.HasValue ? CollectPopupDelay(prevDirective?.popupOnExit) : 0f;
+        string enterPopupText = CollectPopupMessage(newDirective.popupOnEnter, stage);
+        float enterPopupDelay = CollectPopupDelay(newDirective.popupOnEnter);
+        ApplyPopupMessages(exitPopupText, exitPopupDelay, enterPopupText, enterPopupDelay, isInitialApply);
 
         newDirective.onEnter?.Invoke();
     }
@@ -679,6 +719,38 @@ public class StorylineDirector : MonoBehaviourPunCallbacks
 
             s.target.text = statusTexts[i];
         }
+    }
+
+    private string CollectPopupMessage(PopupMessageDirective directive, PuzzleStateManager.PuzzleStage stage)
+    {
+        if (directive == null || string.IsNullOrWhiteSpace(directive.message))
+            return "";
+
+        return FormatQueueText(directive.message, stage);
+    }
+
+    private static float CollectPopupDelay(PopupMessageDirective directive)
+    {
+        if (directive == null)
+            return 0f;
+
+        return Mathf.Max(0f, directive.delaySeconds);
+    }
+
+    private void ApplyPopupMessages(string exitPopupText, float exitPopupDelay, string enterPopupText, float enterPopupDelay, bool isInitialApply)
+    {
+        if (isInitialApply && !showPopupMessagesOnInitialApply)
+            return;
+
+        var popup = cluePopupUI != null ? cluePopupUI : CluePopupUI.Instance;
+        if (popup == null)
+            return;
+
+        if (!string.IsNullOrWhiteSpace(exitPopupText))
+            popup.ShowDelayed(exitPopupText, exitPopupDelay);
+
+        if (!string.IsNullOrWhiteSpace(enterPopupText))
+            popup.ShowDelayed(enterPopupText, enterPopupDelay);
     }
 
     private static string ReplaceDateTokens(string input, string dateFormat, DateTime baseDate)

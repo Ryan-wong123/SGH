@@ -25,7 +25,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     public static PuzzleStateManager Instance;
 
     [Header("Puzzle State")]
-    public PuzzleStage CurrentStage = PuzzleStage.Puzzle1;
+    public PuzzleStage CurrentStage = PuzzleStage.Puzzle0;
 
     [Header("Puzzle 1 Correct Symptoms")]
     public HashSet<string> correctSymptomsFromPuzzle1 = new();
@@ -98,17 +98,18 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
     public enum PuzzleStage
     {
-        Puzzle1,
-        Puzzle2,
-        Puzzle3,
-        Puzzle4,
-        Puzzle5,
-        Puzzle6,
-        Puzzle7,
-        Puzzle8,
-        Puzzle9,
-        Puzzle10,
-        Puzzle11
+        Puzzle0 = 0,
+        Puzzle1 = 1,
+        Puzzle2 = 2,
+        Puzzle3 = 3,
+        Puzzle4 = 4,
+        Puzzle5 = 5,
+        Puzzle6 = 6,
+        Puzzle7 = 7,
+        Puzzle8 = 8,
+        Puzzle9 = 9,
+        Puzzle10 = 10,
+        Puzzle11 = 11
     }
 
     private void Awake()
@@ -168,8 +169,9 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         Debug.Log("Timer expired — reloading current puzzle stage.");
         switch (CurrentStage)
         {
-            case PuzzleStage.Puzzle1: ReloadPuzzle1and2(); break;
-            case PuzzleStage.Puzzle2: ReloadPuzzle1and2(); break;
+            case PuzzleStage.Puzzle0: break;
+            case PuzzleStage.Puzzle1: ReloadPuzzle1(); break;
+            case PuzzleStage.Puzzle2: ReloadPuzzle2(); break;
             case PuzzleStage.Puzzle3: ReloadPuzzle3(); break;
             case PuzzleStage.Puzzle4: ReloadPuzzle4(); break;
             case PuzzleStage.Puzzle5: ReloadPuzzle5(); break;
@@ -182,7 +184,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void ReloadPuzzle1and2()
+    public void ReloadPuzzle1()
     {
         Debug.Log("Reloading Puzzle 1 and 2");
 
@@ -195,6 +197,18 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             card.ShowFront();
         }
 
+        CurrentStage = PuzzleStage.Puzzle1;
+
+        if (PhotonNetwork.IsMasterClient)
+            FindObjectOfType<GameTimerManager>()?.StartTimer();
+    }
+
+    public void ReloadPuzzle2()
+    {
+        Debug.Log("Reloading Puzzle 1 and 2");
+
+        DropSlot.ResetAllSlots();
+
         foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1_2))
         {
             card.ResetSyncedFeedbackColor();
@@ -202,11 +216,12 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             card.ShowFront();
         }
 
-        CurrentStage = PuzzleStage.Puzzle1;
+        CurrentStage = PuzzleStage.Puzzle2;
 
         if (PhotonNetwork.IsMasterClient)
             FindObjectOfType<GameTimerManager>()?.StartTimer();
     }
+
 
     public void ReloadPuzzle3()
     {
@@ -560,6 +575,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         switch (stage)
         {
+            case PuzzleStage.Puzzle0: Debug.Log("Opening comic closed. Waiting for Puzzle 1."); break;
             case PuzzleStage.Puzzle1: HandlePuzzle1Complete(); break;
             case PuzzleStage.Puzzle2: HandlePuzzle2Complete(); break;
             case PuzzleStage.Puzzle3: HandlePuzzle3Complete(); break;
@@ -573,6 +589,19 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             case PuzzleStage.Puzzle11: HandlePuzzle11Complete(); break;
             default: Debug.LogWarning("Unhandled puzzle completion"); break;
         }
+    }
+
+    public void BroadcastStageTransition(PuzzleStage stage)
+    {
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+        {
+            if (PhotonNetwork.IsMasterClient)
+                photonView.RPC(nameof(RPC_SetStageForAll), RpcTarget.AllBuffered, (int)stage);
+
+            return;
+        }
+
+        SetCurrentStage(stage);
     }
 
     // Use RPC to advance for everyone after delay (fair-turn compatible)
@@ -679,6 +708,12 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
+    private void RPC_SetStageForAll(int stageInt)
+    {
+        SetCurrentStage((PuzzleStage)stageInt);
+    }
+
+    [PunRPC]
     private void RPC_AdvanceStageForAll(int stageInt)
     {
         var stage = (PuzzleStage)stageInt;
@@ -702,6 +737,15 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             // If everyone has taken a turn, bump the round (which resets PP_PLAYED_ROUND on all via OnRoomPropertiesUpdate).
             MaybeAdvanceRoundIfEveryonePlayed();
         }
+    }
+
+    private void SetCurrentStage(PuzzleStage stage)
+    {
+        if (CurrentStage == stage)
+            return;
+
+        CurrentStage = stage;
+        RefreshSubmitButtonVisibility();
     }
 
     private GameObject GetPanelForStage(PuzzleStage stage) =>
