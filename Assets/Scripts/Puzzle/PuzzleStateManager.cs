@@ -12,6 +12,14 @@ using Hashtable = ExitGames.Client.Photon.Hashtable; // alias Photon Hashtable
 
 public class PuzzleStateManager : MonoBehaviourPunCallbacks
 {
+    [Serializable]
+    private class PuzzleClueReward
+    {
+        public PuzzleStage stage;
+        public string clueId;
+        [Tooltip("Optional popup override. Leave empty to use 'Clue picked up: <clue name>'.")]
+        public string popupMessage;
+    }
 
     [Header("puzzle trigger object")]
     [SerializeField] private GameObject puzzle1Object;
@@ -80,6 +88,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject Puzzle11Panel;
     [SerializeField] private GameObject movementTargetPuzzle11;
 
+    [Header("Puzzle Clue Rewards")]
+    [SerializeField] private List<PuzzleClueReward> puzzleClueRewards = new();
 
     private Dictionary<PuzzleStage, IPuzzle> puzzleHandlers;
 
@@ -560,12 +570,22 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC] private void RPC_AddSharedInventoryItem(string itemName) => StartCoroutine(DelayedAddItem(itemName));
+    [PunRPC] private void RPC_AddSharedClue(string clueId) => StartCoroutine(DelayedAddClue(clueId));
+    [PunRPC] private void RPC_ShowSharedCluePopup(string popupText) => CluePopupUI.Instance?.Show(popupText);
 
     private IEnumerator DelayedAddItem(string itemName)
     {
         while (InventorySystem.Instance == null || InventoryUIManager.Instance == null) yield return null;
         InventorySystem.Instance.AddItem(itemName);
         InventoryUIManager.Instance.UpdateInventoryUI();
+    }
+
+    private IEnumerator DelayedAddClue(string clueId)
+    {
+        while (ClueSystem.Instance == null)
+            yield return null;
+
+        ClueSystem.Instance.AddClue(clueId);
     }
 
     public void DelayThen(Action callback, float delay = 10f) => StartCoroutine(DelayedCallback(callback, delay));
@@ -589,6 +609,65 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             case PuzzleStage.Puzzle11: HandlePuzzle11Complete(); break;
             default: Debug.LogWarning("Unhandled puzzle completion"); break;
         }
+
+        AwardClueReward(stage);
+    }
+
+    private void AwardClueReward(PuzzleStage stage)
+    {
+        if (!TryGetClueReward(stage, out var reward))
+            return;
+
+        string clueId = reward.clueId?.Trim();
+        if (string.IsNullOrWhiteSpace(clueId))
+            return;
+
+        string popupText = BuildCluePopupText(reward);
+
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+        {
+            CluePopupUI.Instance?.Show(popupText);
+            photonView.RPC(nameof(RPC_AddSharedClue), RpcTarget.AllBuffered, clueId);
+            photonView.RPC(nameof(RPC_ShowSharedCluePopup), RpcTarget.Others, popupText);
+            return;
+        }
+
+        CluePopupUI.Instance?.Show(popupText);
+        StartCoroutine(DelayedAddClue(clueId));
+    }
+
+    private bool TryGetClueReward(PuzzleStage stage, out PuzzleClueReward reward)
+    {
+        if (puzzleClueRewards != null)
+        {
+            foreach (var entry in puzzleClueRewards)
+            {
+                if (entry == null || entry.stage != stage)
+                    continue;
+
+                reward = entry;
+                return true;
+            }
+        }
+
+        reward = null;
+        return false;
+    }
+
+    private string BuildCluePopupText(PuzzleClueReward reward)
+    {
+        if (reward != null && !string.IsNullOrWhiteSpace(reward.popupMessage))
+            return reward.popupMessage.Trim();
+
+        return $"Clue picked up: {FormatClueName(reward?.clueId)}";
+    }
+
+    private static string FormatClueName(string clueId)
+    {
+        if (string.IsNullOrWhiteSpace(clueId))
+            return "New clue";
+
+        return clueId.Replace('_', ' ').Trim();
     }
 
     public void BroadcastStageTransition(PuzzleStage stage)

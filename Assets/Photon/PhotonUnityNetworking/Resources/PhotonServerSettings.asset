@@ -102,6 +102,8 @@ MonoBehaviour:
   - ShowSharedDisplay
   - RPC_TransitionToStage
   - RPC_SetStageForAll
+  - RPC_AddSharedClue
+  - RPC_ShowSharedCluePopup
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

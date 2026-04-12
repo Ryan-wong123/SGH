@@ -154,12 +154,17 @@ public class ClueSystem : MonoBehaviour
     }
 
     /// <summary>Add a clue by ID (call from PickupItem when a clue is collected).</summary>
-    public void AddClue(string id)
+    public bool AddClue(string id)
     {
-        if (string.IsNullOrWhiteSpace(id)) return;
-        collected.Add(id);
+        if (string.IsNullOrWhiteSpace(id))
+            return false;
+
+        bool wasNew = collected.Add(id);
         RefreshUI();
-        ClueUI.Instance?.IncrementUnread();
+        if (wasNew)
+            ClueUI.Instance?.IncrementUnread();
+
+        return wasNew;
     }
 
     /// <summary>Return whether a clue has been collected.</summary>
