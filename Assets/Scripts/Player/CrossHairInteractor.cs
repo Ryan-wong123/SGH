@@ -7,20 +7,22 @@ public class CrosshairInteractor : MonoBehaviourPun
     [Header("Raycast")]
     [SerializeField] private Camera playerCamera;
     [SerializeField] private float interactDistance = 3f;
+
     [Tooltip("Layers that contain interactable things (doors, keypad buttons, etc.).")]
     [SerializeField] private LayerMask interactableLayer = ~0; // default to everything if not set
+
     [Tooltip("If true, we try to click keypad buttons even if a door is slightly in front.")]
     [SerializeField] private bool preferKeypadButtons = true;
 
     [Header("UI")]
-    [SerializeField] private GameObject interactionUIPanel; // optional container
+    [SerializeField] private GameObject interactionUIPanel; // optional container/background
     private TextMeshProUGUI interactionLabel;
 
     // State
     private IInteractable currentTarget;
     private IHighlightable currentHighlight;
 
-    void Start()
+    private void Start()
     {
         if (!photonView.IsMine) return;
 
@@ -31,15 +33,26 @@ public class CrosshairInteractor : MonoBehaviourPun
                 Debug.LogError($"{name}: playerCamera is not assigned and no MainCamera found.");
         }
 
-        var labelObj = GameObject.Find("Cross Hair Text");
-        if (labelObj != null)
+        if (interactionUIPanel != null)
+            interactionLabel = interactionUIPanel.GetComponentInChildren<TextMeshProUGUI>(true);
+
+        if (interactionLabel == null)
         {
-            interactionLabel = labelObj.GetComponent<TextMeshProUGUI>();
-            if (interactionLabel != null) interactionLabel.gameObject.SetActive(false);
+            var labelObj = GameObject.Find("Cross Hair Text");
+            if (labelObj != null)
+                interactionLabel = labelObj.GetComponent<TextMeshProUGUI>();
+        }
+
+        if (interactionLabel != null)
+        {
+            if (interactionUIPanel == null && interactionLabel.transform.parent != null)
+                interactionUIPanel = interactionLabel.transform.parent.gameObject;
+
+            SetInteractionUIVisible(false);
         }
     }
 
-    void Update()
+    private void Update()
     {
         if (!photonView.IsMine || playerCamera == null) return;
 
@@ -142,8 +155,8 @@ public class CrosshairInteractor : MonoBehaviourPun
             {
                 string prompt = interactable.GetInteractionPrompt();
                 bool show = !string.IsNullOrEmpty(prompt);
-                interactionLabel.gameObject.SetActive(show);
                 if (show) interactionLabel.text = prompt;
+                SetInteractionUIVisible(show);
             }
 
             // Track current target (for potential prompt refresh later)
@@ -152,8 +165,7 @@ public class CrosshairInteractor : MonoBehaviourPun
         }
         else
         {
-            if (interactionLabel != null)
-                interactionLabel.gameObject.SetActive(false);
+            SetInteractionUIVisible(false);
             currentTarget = null;
         }
 
@@ -178,8 +190,7 @@ public class CrosshairInteractor : MonoBehaviourPun
     {
         currentTarget = null;
 
-        if (interactionLabel != null)
-            interactionLabel.gameObject.SetActive(false);
+        SetInteractionUIVisible(false);
 
         if (currentHighlight != null)
         {
@@ -189,6 +200,18 @@ public class CrosshairInteractor : MonoBehaviourPun
     }
 
     // ---------- Safe helpers for IHighlightable ----------
+
+    private void SetInteractionUIVisible(bool visible)
+    {
+        if (interactionUIPanel != null)
+        {
+            interactionUIPanel.SetActive(visible);
+            return;
+        }
+
+        if (interactionLabel != null)
+            interactionLabel.gameObject.SetActive(visible);
+    }
 
     // Unity "alive" check for interface-backed components
     private static bool IsUnityAlive(IHighlightable h)
