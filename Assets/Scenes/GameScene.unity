@@ -57584,12 +57584,12 @@ RectTransform:
   m_Children:
   - {fileID: 1220732228}
   - {fileID: 140398809}
+  - {fileID: 9756558}
   - {fileID: 483157988}
   - {fileID: 1823339983}
   - {fileID: 326284109}
   - {fileID: 1902989968}
   - {fileID: 697941974}
-  - {fileID: 9756558}
   - {fileID: 1771686091}
   - {fileID: 1987905639}
   - {fileID: 1595557881}
@@ -131363,7 +131363,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Right click on clue to zoom in
+  m_text: "Crack the code to unlock the next chamber\n (Right click on clue to zoom
+    in)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -131390,8 +131391,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
