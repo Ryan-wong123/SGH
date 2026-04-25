@@ -40362,6 +40362,9 @@ MonoBehaviour:
   advancePuzzleStageOnClose: 1
   closeTargetStage: 1
   slides:
+  - image: {fileID: 21300000, guid: 6418fcf86403c714dad97631e91c39ee, type: 3}
+    duration: 0
+    orientationMode: 0
   - image: {fileID: 21300000, guid: 0452724263d9f7747a80381ca589ca0c, type: 3}
     duration: 0
     orientationMode: 0
