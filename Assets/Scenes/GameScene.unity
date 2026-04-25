@@ -8727,7 +8727,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6809dc1d11d554541986c788a43ed622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Glucose_Diary
+  itemName: Glucose Diary
   isClue: 1
   notificationMessage: 
   sharedDisplayId: 
@@ -141118,7 +141118,7 @@ MonoBehaviour:
     lockedSprite: {fileID: 21300000, guid: 5cd9e206726399e4b9680a81e82548e1, type: 3}
     revealedSprite: {fileID: 21300000, guid: 23e7788ed0b60d54ebc8c7388a87b214, type: 3}
     fullImage: {fileID: 21300000, guid: 232a29c25bd12a34db9a24c4a50864a7, type: 3}
-  - id: Glucose_Diary
+  - id: Glucose Diary
     lockedSprite: {fileID: 21300000, guid: 8b71fa391ae2e8547b6b6e3436b996ae, type: 3}
     revealedSprite: {fileID: 21300000, guid: 4e13a2281fd019c4f8e30b510e56497b, type: 3}
     fullImage: {fileID: 21300000, guid: 947ee554512aded45af94dbfdaf80415, type: 3}
