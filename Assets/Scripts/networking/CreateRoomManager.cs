@@ -11,8 +11,8 @@ public class CreateRoomManager : Network
 {
     private const string RoomPasswordPropertyKey = "RoomPassword";
     private const string PasswordCharacters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    private const int PlayerRejoinTtlMs = 300000;
-    private const int EmptyRoomTtlMs = 300000;
+    private const int PlayerRejoinTtlMs = 600000;
+    private const int EmptyRoomTtlMs = 0;
 
     //room name input field
     [SerializeField] private TMP_InputField roomNameInput;
