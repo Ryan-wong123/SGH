@@ -58,6 +58,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
     private string comicClosedPropertyKey;
     private string comicCloseRoundPropertyKey;
     private bool closeListenerRegistered;
+    private bool pendingCloseClick;
     private static SlideshowUI activeInstance;
 
     [Header("Image Layout")]
@@ -76,6 +77,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         activeInstance = this;
         currentIndex = 0;
         EnsureCloseButtonSetup();
+        pendingCloseClick = false;
         ResetLocalCloseState();
         BeginCloseGateRoundIfNeeded();
 
@@ -334,7 +336,13 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
 
         int currentRound = GetCurrentCloseRound();
         if (currentRound <= 0)
+        {
+            pendingCloseClick = true;
+            RefreshCloseGateUI();
             return;
+        }
+
+        pendingCloseClick = false;
 
         if (!HasLocalPlayerClickedClose())
         {
@@ -343,10 +351,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
 
         RefreshCloseGateUI();
 
-        if (GetRemainingPlayersCount() == 0)
-        {
-            MarkComicClosedForEveryone();
-        }
+        TryCompleteSharedCloseGate();
     }
 
     private bool ShouldUseSharedCloseGate()
@@ -377,8 +382,8 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         int currentRound = GetCurrentCloseRound();
         if (currentRound <= 0)
         {
-            SetCloseButtonText("Waiting...");
-            closeButton.interactable = false;
+            SetCloseButtonText($"Waiting for ({PhotonNetwork.PlayerList.Length} players to close)");
+            closeButton.interactable = !pendingCloseClick;
             return;
         }
 
@@ -387,14 +392,14 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
 
         if (remainingPlayers <= 0)
         {
-            SetCloseButtonText(defaultCloseButtonText);
-            closeButton.interactable = true;
+            SetCloseButtonText("Closing...");
+            closeButton.interactable = false;
             return;
         }
 
         SetCloseButtonText(localClicked
-            ? $"Waiting ({remainingPlayers} left)"
-            : $"Close ({remainingPlayers} left)");
+            ? $"Waiting for ({remainingPlayers} players to close)"
+            : $"Waiting for ({remainingPlayers} players to close)");
 
         closeButton.interactable = !localClicked;
     }
@@ -471,6 +476,15 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         {
             [comicClosedPropertyKey] = true
         });
+    }
+
+    private void TryCompleteSharedCloseGate()
+    {
+        if (!ShouldUseSharedCloseGate())
+            return;
+
+        if (GetRemainingPlayersCount() == 0 && HasAnyPlayerClickedClose())
+            MarkComicClosedForEveryone();
     }
 
     private void SetLocalPlayerCloseClicked(bool clicked)
@@ -592,6 +606,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
             return;
 
         RefreshCloseGateUI();
+        TryCompleteSharedCloseGate();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -603,8 +618,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
     {
         RefreshCloseGateUI();
 
-        if (ShouldUseSharedCloseGate() && GetRemainingPlayersCount() == 0 && HasAnyPlayerClickedClose())
-            MarkComicClosedForEveryone();
+        TryCompleteSharedCloseGate();
     }
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
@@ -615,7 +629,15 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         if (!string.IsNullOrEmpty(comicCloseRoundPropertyKey) && propertiesThatChanged.ContainsKey(comicCloseRoundPropertyKey))
         {
             ResetLocalCloseState();
+
+            if (pendingCloseClick)
+            {
+                pendingCloseClick = false;
+                SetLocalPlayerCloseClicked(true);
+            }
+
             RefreshCloseGateUI();
+            TryCompleteSharedCloseGate();
         }
 
         if (!string.IsNullOrEmpty(comicClosedPropertyKey) &&
