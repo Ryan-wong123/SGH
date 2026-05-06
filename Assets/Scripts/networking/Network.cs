@@ -35,6 +35,7 @@ public class Network : MonoBehaviourPunCallbacks
     {
         EnsurePersistentUserId();
         RestoreSavedNickname();
+        EnsureChatManagerExists();
 
         //connect to photon server with settings
         Debug.Log("Connecting to Photon...");
@@ -87,6 +88,16 @@ public class Network : MonoBehaviourPunCallbacks
             joinRoomManager.setToggleRoomListPanelButtonActive(true);
             EnsureLobbyJoined();
         });
+    }
+
+    private static void EnsureChatManagerExists()
+    {
+        if (ChatManager.Instance != null || FindAnyObjectByType<ChatManager>() != null)
+        {
+            return;
+        }
+
+        new GameObject("ChatManager").AddComponent<ChatManager>();
     }
 
     protected static void CacheCurrentRoomForRejoin()
