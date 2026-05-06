@@ -3,12 +3,16 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 [RequireComponent(typeof(PhotonView))]
 [RequireComponent(typeof(Button))]
 [RequireComponent(typeof(Image))]
 public class PhotonSyncedUIButtonColor : MonoBehaviourPun
 {
+    private const string SelectedPropertyPrefix = "UIButtonSelected_";
+    private const string ResultStatePropertyPrefix = "UIButtonResultState_";
+
     public event Action<PhotonSyncedUIButtonColor> StateChanged;
 
     public enum VisualState
@@ -66,6 +70,11 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         ApplyVisual();
     }
 
+    private void OnEnable()
+    {
+        ApplyPersistedRoomState();
+    }
+
     private void OnDestroy()
     {
         button.onClick.RemoveListener(OnLocalClick);
@@ -89,6 +98,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         if (!PhotonNetwork.InRoom)
         {
             isSelected = nextSelected;
+            PersistState();
             NotifyStateChanged();
             return;
         }
@@ -107,6 +117,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         if (!isSelected && (resultState == VisualState.Selected || resultState == VisualState.Wrong))
             resultState = VisualState.Normal;
 
+        PersistState();
         NotifyStateChanged();
     }
 
@@ -134,6 +145,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         {
             isSelected = false;
             resultState = VisualState.Normal;
+            PersistState();
             NotifyStateChanged();
             return;
         }
@@ -148,6 +160,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         if (!PhotonNetwork.InRoom)
         {
             isSelected = true;
+            PersistState();
             NotifyStateChanged();
             return;
         }
@@ -160,6 +173,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         if (!PhotonNetwork.InRoom)
         {
             isSelected = false;
+            PersistState();
             NotifyStateChanged();
             return;
         }
@@ -174,6 +188,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
             resultState = newState;
 
             // if setting to Normal, keep selection highlight if selected
+            PersistState();
             NotifyStateChanged();
             return;
         }
@@ -190,6 +205,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         if (resultState == VisualState.Selected)
             isSelected = true;
 
+        PersistState();
         NotifyStateChanged();
     }
 
@@ -198,6 +214,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
     {
         isSelected = selected;
         resultState = (VisualState)state;
+        PersistState();
         NotifyStateChanged();
     }
 
@@ -285,4 +302,45 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
         string path = string.Join("/", parts.ToArray());
         return $"Scene:{gameObject.scene.name}|{path}";
     }
+
+    private void PersistState()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
+        {
+            [BuildSelectedKey()] = isSelected,
+            [BuildResultStateKey()] = (int)resultState
+        });
+    }
+
+    private void ApplyPersistedRoomState()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
+        bool changed = false;
+
+        string selectedKey = BuildSelectedKey();
+        if (properties.ContainsKey(selectedKey) && properties[selectedKey] is bool selected)
+        {
+            isSelected = selected;
+            changed = true;
+        }
+
+        string resultStateKey = BuildResultStateKey();
+        if (properties.ContainsKey(resultStateKey) && properties[resultStateKey] is int state)
+        {
+            resultState = (VisualState)state;
+            changed = true;
+        }
+
+        if (changed)
+            NotifyStateChanged();
+    }
+
+    private string BuildSelectedKey() => $"{SelectedPropertyPrefix}{photonView.ViewID}";
+    private string BuildResultStateKey() => $"{ResultStatePropertyPrefix}{photonView.ViewID}";
 }

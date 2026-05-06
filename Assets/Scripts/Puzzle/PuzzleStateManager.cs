@@ -99,6 +99,11 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     private readonly Dictionary<PuzzleStage, GameObject> stagePanels = new();
     private GameObject currentPuzzlePanel;
     private int currentSubmitOwnerActorNumber = -1;
+    private bool localPlayerHasActivePuzzleLock;
+    private int localActivePuzzleLockOwnerActorNumber = -1;
+    private bool localPlayerHasPuzzleReentryAccess;
+    private PuzzleStage localPuzzleReentryStage = PuzzleStage.Puzzle0;
+    private int localPuzzleReentryOwnerActorNumber = -1;
 
     // ===== Room / Player property keys =====
     private const string RP_PUZZLE_LOCKED = "PuzzleLocked";   // bool
@@ -834,6 +839,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     {
         int resolvedSubmitOwnerActorNumber = ResolveSubmitOwnerActorNumber(submitOwnerActorNumber);
         currentSubmitOwnerActorNumber = resolvedSubmitOwnerActorNumber;
+        MarkLocalPuzzleReentryAccess(CurrentStage, resolvedSubmitOwnerActorNumber);
 
         var panel = GetPanelForStage(CurrentStage);
         if (panel != null)
@@ -897,6 +903,16 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         {
             int lockOwner = propertiesThatChanged[RP_LOCK_OWNER] is int owner ? owner : -1;
             currentSubmitOwnerActorNumber = IsActorInRoom(lockOwner) ? lockOwner : -1;
+
+            if (lockOwner < 0)
+                ClearLocalPuzzleAccess();
+        }
+
+        if (propertiesThatChanged.ContainsKey(RP_PUZZLE_LOCKED) &&
+            propertiesThatChanged[RP_PUZZLE_LOCKED] is bool locked &&
+            !locked)
+        {
+            ClearLocalPuzzleAccess();
         }
 
         RefreshSubmitButtonVisibility();
@@ -1071,7 +1087,32 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         // ✅ 1) If the puzzle is locked by ME, always allow me to reopen/close/reopen.
         if (locked && owner == me.ActorNumber)
         {
+            MarkLocalActivePuzzleLock(me.ActorNumber);
             return true; // don't change any props; I still hold the lock
+        }
+
+        if (localPlayerHasActivePuzzleLock && localActivePuzzleLockOwnerActorNumber == me.ActorNumber)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                room.SetCustomProperties(new Hashtable
+                {
+                    [RP_PUZZLE_LOCKED] = true,
+                    [RP_LOCK_OWNER] = me.ActorNumber
+                });
+            }
+            else
+            {
+                photonView.RPC(nameof(RPC_RequestLockFromMaster), RpcTarget.MasterClient, me.ActorNumber);
+            }
+
+            return true;
+        }
+
+        if (locked && HasLocalPuzzleReentryAccess(CurrentStage, owner))
+        {
+            currentSubmitOwnerActorNumber = owner;
+            return true;
         }
 
         // 2) If someone else holds it, block.
@@ -1105,6 +1146,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         }
 
         me.SetCustomProperties(new Hashtable { [PP_PLAYED_ROUND] = true });
+        MarkLocalActivePuzzleLock(me.ActorNumber);
         return true;
     }
 
@@ -1161,6 +1203,59 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     private bool ShouldExpectPlayerTurn(Player player)
     {
         return player != null && !player.IsInactive;
+    }
+
+    private void MarkLocalActivePuzzleLock(int actorNumber)
+    {
+        if (!IsLocalPlayerActor(actorNumber))
+            return;
+
+        localPlayerHasActivePuzzleLock = true;
+        localActivePuzzleLockOwnerActorNumber = actorNumber;
+        currentSubmitOwnerActorNumber = actorNumber;
+    }
+
+    private void ClearLocalActivePuzzleLock()
+    {
+        localPlayerHasActivePuzzleLock = false;
+        localActivePuzzleLockOwnerActorNumber = -1;
+    }
+
+    private void MarkLocalPuzzleReentryAccess(PuzzleStage stage, int ownerActorNumber)
+    {
+        if (ownerActorNumber <= 0)
+            return;
+
+        localPlayerHasPuzzleReentryAccess = true;
+        localPuzzleReentryStage = stage;
+        localPuzzleReentryOwnerActorNumber = ownerActorNumber;
+    }
+
+    private bool HasLocalPuzzleReentryAccess(PuzzleStage stage, int ownerActorNumber)
+    {
+        return localPlayerHasPuzzleReentryAccess &&
+               localPuzzleReentryStage == stage &&
+               localPuzzleReentryOwnerActorNumber == ownerActorNumber &&
+               ownerActorNumber > 0;
+    }
+
+    private void ClearLocalPuzzleReentryAccess()
+    {
+        localPlayerHasPuzzleReentryAccess = false;
+        localPuzzleReentryStage = PuzzleStage.Puzzle0;
+        localPuzzleReentryOwnerActorNumber = -1;
+    }
+
+    private void ClearLocalPuzzleAccess()
+    {
+        ClearLocalActivePuzzleLock();
+        ClearLocalPuzzleReentryAccess();
+    }
+
+    private bool IsLocalPlayerActor(int actorNumber)
+    {
+        return PhotonNetwork.LocalPlayer != null &&
+               PhotonNetwork.LocalPlayer.ActorNumber == actorNumber;
     }
 
     private IEnumerable<DraggableCard> FindCardsByBehavior(DraggableCard.DraggableCardBehavior behavior)

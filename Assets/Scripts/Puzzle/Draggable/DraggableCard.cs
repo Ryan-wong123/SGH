@@ -7,12 +7,17 @@ using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class DraggableCard : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler,
     IPunObservable, IPunOwnershipCallbacks
 {
     private const string PlayerTagPropertyKey = "PlayerTag";
+    private const string CardParentPathPropertyPrefix = "CardParentPath_";
+    private const string CardAnchoredPosPropertyPrefix = "CardAnchoredPos_";
+    private const string CardScalePropertyPrefix = "CardScale_";
+    private const string CardColorPropertyPrefix = "CardColor_";
 
     public enum DraggableCardBehavior
     {
@@ -104,6 +109,7 @@ public class DraggableCard : MonoBehaviour,
     protected virtual void OnEnable()
     {
         if (pv != null) PhotonNetwork.AddCallbackTarget(this);
+        ApplyPersistedRoomState();
     }
 
     protected virtual void OnDisable()
@@ -113,7 +119,7 @@ public class DraggableCard : MonoBehaviour,
 
     protected virtual void Start()
     {
-        if (pathRoot == null && canvas != null) pathRoot = canvas.transform;
+        EnsurePathRoot();
 
         if (trueHome == null)
             trueHome = transform.parent;
@@ -128,6 +134,8 @@ public class DraggableCard : MonoBehaviour,
 
         if (Behavior == DraggableCardBehavior.Activity1)
             ShowFront();
+
+        ApplyPersistedRoomState();
     }
 
     private bool IsNetworked => pv != null;
@@ -293,6 +301,8 @@ public class DraggableCard : MonoBehaviour,
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
         }
+
+        PersistLayoutStateIfAuthoritative();
     }
 
     protected void SetParentLocal(Transform newParent, bool worldPositionStays = true)
@@ -361,6 +371,7 @@ public class DraggableCard : MonoBehaviour,
         }
 
         SetDragTagVisible(false, string.Empty);
+        PersistLayoutStateIfAuthoritative();
     }
 
     public void SetCardColorAndSync(Color color)
@@ -369,6 +380,8 @@ public class DraggableCard : MonoBehaviour,
 
         if (IsNetworked && PhotonNetwork.InRoom)
             pv.RPC(nameof(RPC_SetCardColor), RpcTarget.Others, color.r, color.g, color.b, color.a);
+
+        PersistColorState(color);
     }
 
     public void ResetCardColorAndSync()
@@ -426,6 +439,122 @@ public class DraggableCard : MonoBehaviour,
         // Lock/unlock interaction based on whether someone else is dragging
         SetInteractableState();
         SetDragTagVisible(netDragging, netDraggingPlayerName);
+    }
+
+    private void PersistLayoutStateIfAuthoritative()
+    {
+        if (!IsNetworked || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null || !pv.IsMine)
+            return;
+
+        EnsurePathRoot();
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
+        {
+            [BuildCardParentPathKey()] = GetPathFromRoot(transform.parent),
+            [BuildCardAnchoredPosKey()] = EncodeVector2(rectTransform.anchoredPosition),
+            [BuildCardScaleKey()] = EncodeVector2(rectTransform.localScale)
+        });
+    }
+
+    private void PersistColorState(Color color)
+    {
+        if (!IsNetworked || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
+        {
+            [BuildCardColorKey()] = EncodeColor(color)
+        });
+    }
+
+    private void ApplyPersistedRoomState()
+    {
+        if (!IsNetworked || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
+            return;
+
+        EnsurePathRoot();
+
+        Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
+
+        string parentPathKey = BuildCardParentPathKey();
+        string anchoredPosKey = BuildCardAnchoredPosKey();
+        string scaleKey = BuildCardScaleKey();
+
+        if (properties.ContainsKey(parentPathKey) &&
+            properties.ContainsKey(anchoredPosKey) &&
+            properties.ContainsKey(scaleKey) &&
+            properties[parentPathKey] is string parentPath &&
+            TryDecodeVector2(properties[anchoredPosKey], out Vector2 anchoredPosition) &&
+            TryDecodeVector2(properties[scaleKey], out Vector2 scale))
+        {
+            Transform parent = FindByPath(parentPath);
+            if (parent != null)
+            {
+                SetParentLocal(parent, false);
+                rectTransform.anchoredPosition = anchoredPosition;
+                rectTransform.localScale = scale;
+
+                if (parent is RectTransform parentRect)
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+            }
+        }
+
+        string colorKey = BuildCardColorKey();
+        if (properties.ContainsKey(colorKey) && TryDecodeColor(properties[colorKey], out Color color))
+            ApplyCardColor(color);
+
+        SetInteractableState();
+    }
+
+    private string BuildCardParentPathKey() => $"{CardParentPathPropertyPrefix}{pv.ViewID}";
+    private string BuildCardAnchoredPosKey() => $"{CardAnchoredPosPropertyPrefix}{pv.ViewID}";
+    private string BuildCardScaleKey() => $"{CardScalePropertyPrefix}{pv.ViewID}";
+    private string BuildCardColorKey() => $"{CardColorPropertyPrefix}{pv.ViewID}";
+
+    private static float[] EncodeVector2(Vector2 value) => new[] { value.x, value.y };
+
+    private static bool TryDecodeVector2(object value, out Vector2 vector)
+    {
+        if (value is float[] xy && xy.Length >= 2)
+        {
+            vector = new Vector2(xy[0], xy[1]);
+            return true;
+        }
+
+        if (value is Vector2 storedVector)
+        {
+            vector = storedVector;
+            return true;
+        }
+
+        vector = Vector2.zero;
+        return false;
+    }
+
+    private static float[] EncodeColor(Color color) => new[] { color.r, color.g, color.b, color.a };
+
+    private static bool TryDecodeColor(object value, out Color color)
+    {
+        if (value is float[] rgba && rgba.Length >= 4)
+        {
+            color = new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
+            return true;
+        }
+
+        if (value is Color storedColor)
+        {
+            color = storedColor;
+            return true;
+        }
+
+        color = Color.white;
+        return false;
+    }
+
+    private void EnsurePathRoot()
+    {
+        if (pathRoot == null && canvas != null)
+            pathRoot = canvas.transform;
     }
 
     [PunRPC]
