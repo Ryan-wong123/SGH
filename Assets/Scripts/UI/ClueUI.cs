@@ -17,7 +17,7 @@ public class ClueEntry
     public GameObject panelRoot;
 }
 
-public class ClueUI : MonoBehaviourPunCallbacks
+public class ClueUI : MonoBehaviourPunCallbacks, IOnEventCallback
 {
     public static ClueUI Instance; // singleton for easy access from ClueSystem
 
@@ -50,16 +50,25 @@ public class ClueUI : MonoBehaviourPunCallbacks
     [SerializeField] private bool requireAllPlayersToClickClose = true;
     [SerializeField] private string clueCloseId = "SharedClue";
 
+    [Header("Close Button Auto Size")]
+    [SerializeField] private Vector2 closeButtonTextPadding = new Vector2(48f, 20f);
+    [SerializeField] private float closeButtonMaxWidth = 260f;
+
     private readonly Dictionary<string, GameObject> _panels = new();
     private GameObject _currentPanel;
     private Action _onClosed;
     private string _clueClosePropertyKey;
     private string _clueClosedPropertyKey;
     private string _clueCloseRoundPropertyKey;
+    private string _clueRemainingPropertyKey;
     private TMP_Text _closeButtonLabel;
     private string _defaultCloseButtonText = "Close";
+    private RectTransform _closeButtonRect;
+    private Vector2 _closeButtonMinSize;
     private bool _pendingCloseClick;
     private bool _allowSharedCloseHide;
+    private int _broadcastRemainingPlayers = -1;
+    private const byte ClueCloseRemainingEventCode = 42;
 
     [Header("Image Layout")]
     [SerializeField] private Vector2 portraitSize = new Vector2(600, 900);
@@ -91,6 +100,10 @@ public class ClueUI : MonoBehaviourPunCallbacks
         if (closeButton != null)
         {
             _closeButtonLabel = closeButton.GetComponentInChildren<TMP_Text>(true);
+            _closeButtonRect = closeButton.GetComponent<RectTransform>();
+            if (_closeButtonRect != null)
+                _closeButtonMinSize = _closeButtonRect.rect.size;
+
             if (_closeButtonLabel != null)
                 _defaultCloseButtonText = _closeButtonLabel.text;
 
@@ -124,6 +137,7 @@ public class ClueUI : MonoBehaviourPunCallbacks
         _onClosed = onClosed;
         _pendingCloseClick = false;
         _allowSharedCloseHide = false;
+        _broadcastRemainingPlayers = -1;
         EnsureCloseGateKeys(id);
 
         if (mainRoot != null) mainRoot.SetActive(true);
@@ -244,6 +258,7 @@ public class ClueUI : MonoBehaviourPunCallbacks
         _clueClosePropertyKey = "ClueClose_" + new string(chars);
         _clueClosedPropertyKey = _clueClosePropertyKey + "_Done";
         _clueCloseRoundPropertyKey = _clueClosePropertyKey + "_Round";
+        _clueRemainingPropertyKey = _clueClosePropertyKey + "_Remaining";
     }
 
     private void BeginCloseGateRoundIfNeeded()
@@ -256,7 +271,8 @@ public class ClueUI : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
         {
             [_clueClosedPropertyKey] = false,
-            [_clueCloseRoundPropertyKey] = nextRound
+            [_clueCloseRoundPropertyKey] = nextRound,
+            [_clueRemainingPropertyKey] = PhotonNetwork.PlayerList.Length
         });
     }
 
@@ -275,12 +291,16 @@ public class ClueUI : MonoBehaviourPunCallbacks
         int currentRound = GetCurrentCloseRound();
         if (currentRound <= 0)
         {
-            SetCloseButtonText($"Waiting for ({PhotonNetwork.PlayerList.Length} players to close)");
+            int setupRemainingPlayers = _broadcastRemainingPlayers >= 0
+                ? _broadcastRemainingPlayers
+                : PhotonNetwork.PlayerList.Length;
+
+            SetCloseButtonText($"Waiting for ({setupRemainingPlayers} players to close)");
             closeButton.interactable = !_pendingCloseClick;
             return;
         }
 
-        int remainingPlayers = GetRemainingPlayersCount();
+        int remainingPlayers = GetDisplayedRemainingPlayersCount();
         bool localClicked = HasLocalPlayerClickedClose() || _pendingCloseClick;
 
         if (remainingPlayers <= 0)
@@ -298,12 +318,34 @@ public class ClueUI : MonoBehaviourPunCallbacks
     private void SetCloseButtonText(string value)
     {
         if (_closeButtonLabel != null)
+        {
             _closeButtonLabel.text = value;
+            ResizeCloseButtonToText();
+        }
     }
 
     private void RestoreDefaultCloseButtonText()
     {
         SetCloseButtonText(_defaultCloseButtonText);
+    }
+
+    private void ResizeCloseButtonToText()
+    {
+        if (_closeButtonRect == null || _closeButtonLabel == null)
+            return;
+
+        _closeButtonLabel.ForceMeshUpdate();
+
+        float targetWidth = Mathf.Max(_closeButtonMinSize.x, closeButtonMaxWidth);
+        float wrappedTextWidth = Mathf.Max(1f, targetWidth - closeButtonTextPadding.x);
+        Vector2 preferredValues = _closeButtonLabel.GetPreferredValues(_closeButtonLabel.text, wrappedTextWidth, 0f);
+
+        float targetHeight = Mathf.Max(
+            _closeButtonMinSize.y,
+            preferredValues.y + closeButtonTextPadding.y);
+
+        _closeButtonRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetWidth);
+        _closeButtonRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetHeight);
     }
 
     private void TryCompleteSharedCloseGate()
@@ -336,11 +378,15 @@ public class ClueUI : MonoBehaviourPunCallbacks
 
         int currentRound = GetCurrentCloseRound();
         int clickedRound = clicked && currentRound > 0 ? currentRound : -1;
+        int remainingPlayers = CalculateRemainingPlayersCountWithLocalVote(clickedRound);
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
         {
-            [BuildPlayerClosePropertyKey(PhotonNetwork.LocalPlayer.ActorNumber)] = clickedRound
+            [BuildPlayerClosePropertyKey(PhotonNetwork.LocalPlayer.ActorNumber)] = clickedRound,
+            [_clueRemainingPropertyKey] = remainingPlayers
         });
+
+        BroadcastRemainingPlayers(remainingPlayers);
     }
 
     private bool HasLocalPlayerClickedClose()
@@ -387,6 +433,94 @@ public class ClueUI : MonoBehaviourPunCallbacks
         }
 
         return remaining;
+    }
+
+    private int GetDisplayedRemainingPlayersCount()
+    {
+        if (_broadcastRemainingPlayers >= 0)
+            return _broadcastRemainingPlayers;
+
+        if (PhotonNetwork.CurrentRoom != null &&
+            PhotonNetwork.CurrentRoom.CustomProperties != null &&
+            !string.IsNullOrEmpty(_clueRemainingPropertyKey) &&
+            PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(_clueRemainingPropertyKey, out object value) &&
+            value is int remaining)
+        {
+            return remaining;
+        }
+
+        return GetRemainingPlayersCount();
+    }
+
+    private int CalculateRemainingPlayersCountWithLocalVote(int localClickedRound)
+    {
+        if (!ShouldUseSharedCloseGate())
+            return 0;
+
+        int currentRound = GetCurrentCloseRound();
+        int remaining = 0;
+        Player[] players = PhotonNetwork.PlayerList;
+        for (int i = 0; i < players.Length; i++)
+        {
+            Player player = players[i];
+            bool clicked = player == PhotonNetwork.LocalPlayer
+                ? localClickedRound == currentRound
+                : HasPlayerClickedClose(player);
+
+            if (!clicked)
+                remaining++;
+        }
+
+        return remaining;
+    }
+
+    private void BroadcastRemainingPlayers(int remainingPlayers)
+    {
+        if (!PhotonNetwork.InRoom || string.IsNullOrEmpty(_clueClosePropertyKey))
+            return;
+
+        object[] content =
+        {
+            _clueClosePropertyKey,
+            GetCurrentCloseRound(),
+            remainingPlayers
+        };
+
+        PhotonNetwork.RaiseEvent(
+            ClueCloseRemainingEventCode,
+            content,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            SendOptions.SendReliable);
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code != ClueCloseRemainingEventCode)
+            return;
+
+        if (!ShouldUseSharedCloseGate() || !(photonEvent.CustomData is object[] content) || content.Length < 3)
+            return;
+
+        string closeKey = content[0] as string;
+        if (closeKey != _clueClosePropertyKey)
+            return;
+
+        if (!(content[1] is int round))
+            return;
+
+        if (!(content[2] is int remainingPlayers))
+            return;
+
+        int currentRound = GetCurrentCloseRound();
+        if (currentRound > 0 && round != currentRound)
+            return;
+
+        _broadcastRemainingPlayers = remainingPlayers;
+
+        if (HasLocalPlayerClickedClose())
+            _pendingCloseClick = false;
+
+        RefreshSharedCloseGateState();
     }
 
     private int GetCurrentCloseRound()
@@ -456,7 +590,8 @@ public class ClueUI : MonoBehaviourPunCallbacks
         if (!ShouldUseSharedCloseGate() || propertiesThatChanged == null)
             return;
 
-        bool closeVoteChanged = false;
+        bool closeVoteChanged = !string.IsNullOrEmpty(_clueRemainingPropertyKey) &&
+                                propertiesThatChanged.ContainsKey(_clueRemainingPropertyKey);
         foreach (object key in propertiesThatChanged.Keys)
         {
             if (key is string keyString && keyString.StartsWith(_clueClosePropertyKey + "_"))
@@ -468,6 +603,15 @@ public class ClueUI : MonoBehaviourPunCallbacks
 
         if (closeVoteChanged)
         {
+            if (!string.IsNullOrEmpty(_clueRemainingPropertyKey) &&
+                PhotonNetwork.CurrentRoom != null &&
+                PhotonNetwork.CurrentRoom.CustomProperties != null &&
+                PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(_clueRemainingPropertyKey, out object remainingValue) &&
+                remainingValue is int remainingPlayers)
+            {
+                _broadcastRemainingPlayers = remainingPlayers;
+            }
+
             if (HasLocalPlayerClickedClose())
                 _pendingCloseClick = false;
 

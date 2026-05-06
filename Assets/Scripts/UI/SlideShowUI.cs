@@ -51,9 +51,15 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
     [SerializeField] private bool loop = false;
     [SerializeField] private float defaultSlideDuration = 2f;
 
+    [Header("Close Button Auto Size")]
+    [SerializeField] private Vector2 closeButtonTextPadding = new Vector2(48f, 20f);
+    [SerializeField] private float closeButtonMaxWidth = 260f;
+
     private Coroutine autoPlayRoutine;
     private TMP_Text closeButtonLabel;
     private string defaultCloseButtonText = "Close";
+    private RectTransform closeButtonRect;
+    private Vector2 closeButtonMinSize;
     private string comicClosePropertyKey;
     private string comicClosedPropertyKey;
     private string comicCloseRoundPropertyKey;
@@ -148,6 +154,10 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
             return;
 
         closeButtonLabel = closeButton.GetComponentInChildren<TMP_Text>(true);
+        closeButtonRect = closeButton.GetComponent<RectTransform>();
+        if (closeButtonRect != null && closeButtonMinSize == Vector2.zero)
+            closeButtonMinSize = closeButtonRect.rect.size;
+
         if (closeButtonLabel != null && string.IsNullOrWhiteSpace(defaultCloseButtonText))
             defaultCloseButtonText = closeButtonLabel.text;
         else if (closeButtonLabel != null)
@@ -588,13 +598,35 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
     private void SetCloseButtonText(string value)
     {
         if (closeButtonLabel != null)
+        {
             closeButtonLabel.text = value;
+            ResizeCloseButtonToText();
+        }
     }
 
     private void RestoreDefaultCloseButtonText()
     {
         if (closeButtonLabel != null)
-            closeButtonLabel.text = defaultCloseButtonText;
+            SetCloseButtonText(defaultCloseButtonText);
+    }
+
+    private void ResizeCloseButtonToText()
+    {
+        if (closeButtonRect == null || closeButtonLabel == null)
+            return;
+
+        closeButtonLabel.ForceMeshUpdate();
+
+        float targetWidth = Mathf.Max(closeButtonMinSize.x, closeButtonMaxWidth);
+        float wrappedTextWidth = Mathf.Max(1f, targetWidth - closeButtonTextPadding.x);
+        Vector2 preferredValues = closeButtonLabel.GetPreferredValues(closeButtonLabel.text, wrappedTextWidth, 0f);
+
+        float targetHeight = Mathf.Max(
+            closeButtonMinSize.y,
+            preferredValues.y + closeButtonTextPadding.y);
+
+        closeButtonRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetWidth);
+        closeButtonRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetHeight);
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
