@@ -392,7 +392,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         int currentRound = GetCurrentCloseRound();
         if (currentRound <= 0)
         {
-            SetCloseButtonText($"Waiting for ({PhotonNetwork.PlayerList.Length} players to close)");
+            SetCloseButtonText($"Waiting for ({GetExpectedClosePlayerCount()} players to close)");
             closeButton.interactable = !pendingCloseClick;
             return;
         }
@@ -544,11 +544,35 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         Player[] players = PhotonNetwork.PlayerList;
         for (int i = 0; i < players.Length; i++)
         {
+            if (!ShouldExpectPlayerClose(players[i]))
+                continue;
+
             if (!HasPlayerClickedClose(players[i]))
                 remaining++;
         }
 
         return remaining;
+    }
+
+    private int GetExpectedClosePlayerCount()
+    {
+        if (!ShouldUseSharedCloseGate())
+            return 0;
+
+        int count = 0;
+        Player[] players = PhotonNetwork.PlayerList;
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (ShouldExpectPlayerClose(players[i]))
+                count++;
+        }
+
+        return count;
+    }
+
+    private bool ShouldExpectPlayerClose(Player player)
+    {
+        return player != null && !player.IsInactive;
     }
 
     private string BuildComicClosePropertyKey()
@@ -688,6 +712,9 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         Player[] players = PhotonNetwork.PlayerList;
         for (int i = 0; i < players.Length; i++)
         {
+            if (!ShouldExpectPlayerClose(players[i]))
+                continue;
+
             if (HasPlayerClickedClose(players[i]))
                 return true;
         }

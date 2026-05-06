@@ -1136,6 +1136,9 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         foreach (var p in PhotonNetwork.PlayerList)
         {
+            if (!ShouldExpectPlayerTurn(p))
+                continue;
+
             bool played = p.CustomProperties != null &&
                           p.CustomProperties.ContainsKey(PP_PLAYED_ROUND) &&
                           (bool)p.CustomProperties[PP_PLAYED_ROUND];
@@ -1153,6 +1156,11 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             [RP_LOCK_OWNER] = -1
         };
         room.SetCustomProperties(ht);
+    }
+
+    private bool ShouldExpectPlayerTurn(Player player)
+    {
+        return player != null && !player.IsInactive;
     }
 
     private IEnumerable<DraggableCard> FindCardsByBehavior(DraggableCard.DraggableCardBehavior behavior)
