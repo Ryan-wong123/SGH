@@ -832,8 +832,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
     public void OpenCurrentStagePanel(int submitOwnerActorNumber = -1)
     {
-        if (submitOwnerActorNumber > 0)
-            currentSubmitOwnerActorNumber = submitOwnerActorNumber;
+        int resolvedSubmitOwnerActorNumber = ResolveSubmitOwnerActorNumber(submitOwnerActorNumber);
+        currentSubmitOwnerActorNumber = resolvedSubmitOwnerActorNumber;
 
         var panel = GetPanelForStage(CurrentStage);
         if (panel != null)
@@ -893,6 +893,12 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             me.SetCustomProperties(meProps);
         }
 
+        if (propertiesThatChanged.ContainsKey(RP_LOCK_OWNER))
+        {
+            int lockOwner = propertiesThatChanged[RP_LOCK_OWNER] is int owner ? owner : -1;
+            currentSubmitOwnerActorNumber = IsActorInRoom(lockOwner) ? lockOwner : -1;
+        }
+
         RefreshSubmitButtonVisibility();
     }
 
@@ -906,19 +912,40 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER))
             owner = (int)room.CustomProperties[RP_LOCK_OWNER];
 
-        if (owner == otherPlayer.ActorNumber)
+        bool disconnectedPlayerOwnsSubmit =
+            owner == otherPlayer.ActorNumber ||
+            currentSubmitOwnerActorNumber == otherPlayer.ActorNumber;
+
+        if (disconnectedPlayerOwnsSubmit)
         {
-            var ht = new Hashtable { [RP_PUZZLE_LOCKED] = false, [RP_LOCK_OWNER] = -1 };
+            int replacementOwner = GetRandomActiveActorNumber(otherPlayer.ActorNumber);
+            bool hasReplacementOwner = replacementOwner > 0;
+
+            var ht = new Hashtable
+            {
+                [RP_PUZZLE_LOCKED] = hasReplacementOwner,
+                [RP_LOCK_OWNER] = replacementOwner
+            };
             room.SetCustomProperties(ht);
+            photonView.RPC(nameof(RPC_SetSubmitOwnerForAll), RpcTarget.All, replacementOwner);
         }
 
         MaybeAdvanceRoundIfEveryonePlayed();
+    }
+
+    [PunRPC]
+    private void RPC_SetSubmitOwnerForAll(int actorNumber)
+    {
+        currentSubmitOwnerActorNumber = IsActorInRoom(actorNumber) ? actorNumber : -1;
+        RefreshSubmitButtonVisibility();
     }
 
     public bool CanLocalPlayerSubmitCurrentAttempt()
     {
         if (!PhotonNetwork.IsConnected || PhotonNetwork.LocalPlayer == null)
             return true;
+
+        currentSubmitOwnerActorNumber = ResolveSubmitOwnerActorNumber(currentSubmitOwnerActorNumber);
 
         if (currentSubmitOwnerActorNumber > 0)
             return PhotonNetwork.LocalPlayer.ActorNumber == currentSubmitOwnerActorNumber;
@@ -938,6 +965,56 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             : -1;
 
         return owner < 0 || owner == PhotonNetwork.LocalPlayer.ActorNumber;
+    }
+
+    private int ResolveSubmitOwnerActorNumber(int requestedOwnerActorNumber)
+    {
+        if (!PhotonNetwork.IsConnected)
+            return requestedOwnerActorNumber;
+
+        if (IsActorInRoom(requestedOwnerActorNumber))
+            return requestedOwnerActorNumber;
+
+        var room = PhotonNetwork.CurrentRoom;
+        if (room != null &&
+            room.CustomProperties.ContainsKey(RP_LOCK_OWNER) &&
+            room.CustomProperties[RP_LOCK_OWNER] is int lockOwner &&
+            IsActorInRoom(lockOwner))
+        {
+            return lockOwner;
+        }
+
+        return -1;
+    }
+
+    private bool IsActorInRoom(int actorNumber)
+    {
+        if (actorNumber <= 0 || !PhotonNetwork.IsConnected)
+            return false;
+
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if (player != null && !player.IsInactive && player.ActorNumber == actorNumber)
+                return true;
+        }
+
+        return false;
+    }
+
+    private int GetRandomActiveActorNumber(int excludedActorNumber)
+    {
+        var activePlayers = new List<Player>();
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if (player != null && !player.IsInactive && player.ActorNumber != excludedActorNumber)
+                activePlayers.Add(player);
+        }
+
+        if (activePlayers.Count == 0)
+            return -1;
+
+        int randomIndex = UnityEngine.Random.Range(0, activePlayers.Count);
+        return activePlayers[randomIndex].ActorNumber;
     }
 
     private void RefreshSubmitButtonVisibility()
