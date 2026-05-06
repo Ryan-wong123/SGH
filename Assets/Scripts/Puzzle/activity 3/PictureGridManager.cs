@@ -95,9 +95,11 @@ public class PictureGridManager : MonoBehaviour, IPuzzle
         for (int i = 0; i < pictureButtons.Count; i++)
         {
             var syncedButton = pictureButtons[i].GetComponent<PhotonSyncedUIButtonColor>();
-            if (syncedButton != null && syncedButton.IsSelected)
+            if (syncedButton != null)
             {
-                selectedIndexes.Add(i);
+                if (syncedButton.IsSelected)
+                    selectedIndexes.Add(i);
+
                 continue;
             }
 

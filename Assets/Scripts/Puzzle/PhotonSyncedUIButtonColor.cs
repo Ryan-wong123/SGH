@@ -104,7 +104,7 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun
 
         // If you are using resultState.Selected to represent selection,
         // keep it consistent (so older code that checks resultState still works).
-        if (resultState == VisualState.Selected && !isSelected)
+        if (!isSelected && (resultState == VisualState.Selected || resultState == VisualState.Wrong))
             resultState = VisualState.Normal;
 
         NotifyStateChanged();
