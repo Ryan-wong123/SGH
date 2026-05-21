@@ -1,0 +1,14 @@
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PunDemos.DemoSlotcarEditor.dll
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PunDemos.DemoSlotcarEditor.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonRealtime.dll
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonUnityNetworking.dll
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.dll
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonUnityNetworking.Demos.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonRealtime.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonUnityNetworking.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PunDemos.DemoSlotcarEditor.csproj.AssemblyReference.cache
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PunDemos.DemoSlotcarEditor.csproj.CoreCompileInputs.cache
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PunDemos.72AEB034.Up2Date
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PunDemos.DemoSlotcarEditor.dll
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PunDemos.DemoSlotcarEditor.pdb

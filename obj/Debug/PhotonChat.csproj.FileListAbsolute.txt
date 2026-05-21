@@ -1,0 +1,6 @@
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonChat.dll
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonChat.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonChat.csproj.AssemblyReference.cache
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonChat.csproj.CoreCompileInputs.cache
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonChat.dll
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonChat.pdb

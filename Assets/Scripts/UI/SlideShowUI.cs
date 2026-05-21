@@ -392,7 +392,11 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         int currentRound = GetCurrentCloseRound();
         if (currentRound <= 0)
         {
-            SetCloseButtonText($"Waiting for ({GetExpectedClosePlayerCount()} players to close)");
+            if (pendingCloseClick)
+                SetCloseButtonText("Waiting for remaining players to close");
+            else
+                RestoreDefaultCloseButtonText();
+
             closeButton.interactable = !pendingCloseClick;
             return;
         }
@@ -407,11 +411,15 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
             return;
         }
 
-        SetCloseButtonText(localClicked
-            ? $"Waiting for ({remainingPlayers} players to close)"
-            : $"Waiting for ({remainingPlayers} players to close)");
+        if (localClicked)
+        {
+            SetCloseButtonText($"Waiting for ({remainingPlayers} players to close)");
+            closeButton.interactable = false;
+            return;
+        }
 
-        closeButton.interactable = !localClicked;
+        RestoreDefaultCloseButtonText();
+        closeButton.interactable = true;
     }
 
     private void CompleteClose()

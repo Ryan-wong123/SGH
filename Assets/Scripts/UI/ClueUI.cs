@@ -291,11 +291,11 @@ public class ClueUI : MonoBehaviourPunCallbacks, IOnEventCallback
         int currentRound = GetCurrentCloseRound();
         if (currentRound <= 0)
         {
-            int setupRemainingPlayers = _broadcastRemainingPlayers >= 0
-                ? _broadcastRemainingPlayers
-                : GetExpectedClosePlayerCount();
+            if (_pendingCloseClick)
+                SetCloseButtonText("Waiting for remaining players to close");
+            else
+                RestoreDefaultCloseButtonText();
 
-            SetCloseButtonText($"Waiting for ({setupRemainingPlayers} players to close)");
             closeButton.interactable = !_pendingCloseClick;
             return;
         }
@@ -310,9 +310,15 @@ public class ClueUI : MonoBehaviourPunCallbacks, IOnEventCallback
             return;
         }
 
-        SetCloseButtonText($"Waiting for ({remainingPlayers} players to close)");
+        if (localClicked)
+        {
+            SetCloseButtonText($"Waiting for ({remainingPlayers} players to close)");
+            closeButton.interactable = false;
+            return;
+        }
 
-        closeButton.interactable = !localClicked;
+        RestoreDefaultCloseButtonText();
+        closeButton.interactable = true;
     }
 
     private void SetCloseButtonText(string value)

@@ -1,0 +1,9 @@
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PunDemos.DemoHubEditor.dll
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PunDemos.DemoHubEditor.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonUnityNetworking.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonRealtime.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PunDemos.DemoHubEditor.csproj.AssemblyReference.cache
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PunDemos.DemoHubEditor.csproj.CoreCompileInputs.cache
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PunDemos.E3DD541D.Up2Date
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PunDemos.DemoHubEditor.dll
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PunDemos.DemoHubEditor.pdb

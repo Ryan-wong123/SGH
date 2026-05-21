@@ -1,0 +1,9 @@
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.dll
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonRealtime.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\Temp\bin\Debug\PhotonUnityNetworking.pdb
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUnityNetworking.Utilities.csproj.AssemblyReference.cache
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUnityNetworking.Utilities.csproj.CoreCompileInputs.cache
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUn.69A9EAC1.Up2Date
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUnityNetworking.Utilities.dll
+C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUnityNetworking.Utilities.pdb
