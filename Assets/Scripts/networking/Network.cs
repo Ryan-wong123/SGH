@@ -100,7 +100,7 @@ public class Network : MonoBehaviourPunCallbacks
         new GameObject("ChatManager").AddComponent<ChatManager>();
     }
 
-    protected static void CacheCurrentRoomForRejoin()
+    public static void CacheCurrentRoomForRejoin()
     {
         if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
         {
@@ -120,12 +120,12 @@ public class Network : MonoBehaviourPunCallbacks
         leavingRejectedStoredRoomRejoin = false;
     }
 
-    private static string GetCachedRoomName()
+    public static string GetCachedRoomName()
     {
         return PlayerPrefs.GetString(RejoinRoomPrefKey, string.Empty);
     }
 
-    private void EnsurePersistentUserId()
+    public static void EnsurePersistentUserId()
     {
         string userId = PlayerPrefs.GetString(PhotonUserIdPrefKey, string.Empty);
         if (string.IsNullOrWhiteSpace(userId))
@@ -155,7 +155,7 @@ public class Network : MonoBehaviourPunCallbacks
         }
     }
 
-    private void ApplyLocalPlayerTag()
+    public static void ApplyLocalPlayerTag()
     {
         if (PhotonNetwork.LocalPlayer == null || string.IsNullOrWhiteSpace(PhotonNetwork.NickName))
         {
@@ -182,24 +182,6 @@ public class Network : MonoBehaviourPunCallbacks
             : $"Failed to start rejoin for cached room '{cachedRoomName}'.");
 
         return isAttemptingStoredRoomRejoin;
-    }
-
-    private static bool HasOtherActivePlayersInRoom()
-    {
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            if (player == null || player == PhotonNetwork.LocalPlayer)
-            {
-                continue;
-            }
-
-            if (!player.IsInactive)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void EnsureLobbyJoined()
@@ -255,18 +237,9 @@ public class Network : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        bool rejoinedFromCache = isAttemptingStoredRoomRejoin;
         CacheCurrentRoomForRejoin();
         ApplyLocalPlayerTag();
         isAttemptingStoredRoomRejoin = false;
-
-        if (rejoinedFromCache && !HasOtherActivePlayersInRoom())
-        {
-            Debug.Log($"Rejoined cached room '{PhotonNetwork.CurrentRoom?.Name}', but no other active players remain. Leaving room.");
-            leavingRejectedStoredRoomRejoin = true;
-            ClearCachedRoomRejoin();
-            PhotonNetwork.LeaveRoom();
-        }
     }
 
     public override void OnLeftRoom()

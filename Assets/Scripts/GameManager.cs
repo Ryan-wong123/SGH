@@ -12,23 +12,73 @@ public class GameManager : MonoBehaviourPunCallbacks
     private bool hasSpawned;
     private string targetSceneName;
     private Coroutine spawnRoutine;
+    private bool isAttemptingGameplayRejoin;
+    private bool isReconnectingToGameplayRoom;
 
     private void Start()
     {
+        Network.EnsurePersistentUserId();
         PhotonNetwork.AutomaticallySyncScene = true;
+
+        if (PhotonNetwork.InRoom)
+        {
+            Network.CacheCurrentRoomForRejoin();
+            Network.ApplyLocalPlayerTag();
+        }
+        else if (!string.IsNullOrWhiteSpace(Network.GetCachedRoomName()))
+        {
+            TryReconnectToGameplayRoom();
+        }
+
         TrySpawnLocalPlayer();
     }
 
     public override void OnJoinedRoom()
     {
+        Network.CacheCurrentRoomForRejoin();
+        Network.ApplyLocalPlayerTag();
+        isAttemptingGameplayRejoin = false;
+        isReconnectingToGameplayRoom = false;
         hasSpawned = false;
         TrySpawnLocalPlayer();
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        Network.ApplyLocalPlayerTag();
+        isReconnectingToGameplayRoom = false;
+
+        if (TryRejoinCachedGameplayRoom())
+        {
+            return;
+        }
+
+        PhotonNetwork.JoinLobby();
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         hasSpawned = false;
         spawnRoutine = null;
+
+        if (string.IsNullOrWhiteSpace(targetSceneName))
+        {
+            TryReconnectToGameplayRoom();
+        }
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        if (!isAttemptingGameplayRejoin)
+        {
+            return;
+        }
+
+        Debug.LogWarning($"Gameplay rejoin failed ({returnCode}): {message}");
+        isAttemptingGameplayRejoin = false;
+        isReconnectingToGameplayRoom = false;
+        Network.ClearCachedRoomRejoin();
+        SceneManager.LoadScene("Lobby");
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -56,6 +106,46 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         spawnRoutine = StartCoroutine(SpawnWhenSceneReady());
+    }
+
+    private bool TryRejoinCachedGameplayRoom()
+    {
+        string cachedRoomName = Network.GetCachedRoomName();
+        if (string.IsNullOrWhiteSpace(cachedRoomName) || !PhotonNetwork.IsConnectedAndReady || PhotonNetwork.InRoom)
+        {
+            return false;
+        }
+
+        isAttemptingGameplayRejoin = PhotonNetwork.RejoinRoom(cachedRoomName);
+        Debug.Log(isAttemptingGameplayRejoin
+            ? $"Attempting to rejoin gameplay room '{cachedRoomName}'."
+            : $"Failed to start gameplay rejoin for room '{cachedRoomName}'.");
+
+        return isAttemptingGameplayRejoin;
+    }
+
+    private void TryReconnectToGameplayRoom()
+    {
+        string cachedRoomName = Network.GetCachedRoomName();
+        if (string.IsNullOrWhiteSpace(cachedRoomName) || isReconnectingToGameplayRoom || PhotonNetwork.InRoom)
+        {
+            return;
+        }
+
+        isReconnectingToGameplayRoom = true;
+        isAttemptingGameplayRejoin = true;
+
+        if (PhotonNetwork.ReconnectAndRejoin())
+        {
+            Debug.Log($"ReconnectAndRejoin started for gameplay room '{cachedRoomName}'.");
+            return;
+        }
+
+        Debug.Log($"ReconnectAndRejoin could not start for '{cachedRoomName}'. Reconnecting before rejoin.");
+        if (!PhotonNetwork.Reconnect())
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
 
     private IEnumerator SpawnWhenSceneReady()
