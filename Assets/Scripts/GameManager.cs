@@ -81,8 +81,15 @@ public class GameManager : MonoBehaviourPunCallbacks
         SceneManager.LoadScene("Lobby");
     }
 
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Network.CacheCurrentRoomForRejoin();
+    }
+
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
+        Network.CacheCurrentRoomForRejoin();
+
         if (!PhotonNetwork.IsMasterClient || otherPlayer == null || !otherPlayer.IsInactive)
         {
             return;

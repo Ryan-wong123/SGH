@@ -208,12 +208,14 @@ public class JoinRoomManager : Network
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        Network.CacheCurrentRoomForRejoin();
         PopulatePlayerList();
         UpdatePlayerCountUI();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
+        Network.CacheCurrentRoomForRejoin();
         PopulatePlayerList();
         UpdatePlayerCountUI();
     }

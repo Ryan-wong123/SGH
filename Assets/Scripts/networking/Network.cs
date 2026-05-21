@@ -107,6 +107,12 @@ public class Network : MonoBehaviourPunCallbacks
             return;
         }
 
+        if (!HasOtherActivePlayersInRoom())
+        {
+            ClearCachedRoomRejoin();
+            return;
+        }
+
         PlayerPrefs.SetString(RejoinRoomPrefKey, PhotonNetwork.CurrentRoom.Name);
         PlayerPrefs.Save();
     }
@@ -123,6 +129,21 @@ public class Network : MonoBehaviourPunCallbacks
     public static string GetCachedRoomName()
     {
         return PlayerPrefs.GetString(RejoinRoomPrefKey, string.Empty);
+    }
+
+    public static bool HasOtherActivePlayersInRoom()
+    {
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player == null || player == PhotonNetwork.LocalPlayer || player.IsInactive)
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     public static void EnsurePersistentUserId()
