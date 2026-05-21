@@ -240,7 +240,7 @@ public class JoinRoomManager : Network
         if (!PhotonNetwork.IsMasterClient) return;
 
         PhotonNetwork.CurrentRoom.IsVisible = false;
-        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsOpen = true;
 
         // Tell everyone to show loading UI + start tracking progress
         photonView.RPC(nameof(RPC_BeginLoading), RpcTarget.All, "GameScene");
