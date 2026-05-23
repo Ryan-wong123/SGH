@@ -2683,6 +2683,8 @@ MonoBehaviour:
   autoPlay: 0
   loop: 0
   defaultSlideDuration: 2
+  closeButtonTextPadding: {x: 48, y: 20}
+  closeButtonMaxWidth: 260
   portraitSize: {x: 700, y: 1000}
   landscapeSize: {x: 1500, y: 1500}
   preserveAspect: 1
@@ -5758,7 +5760,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -67}
-  m_SizeDelta: {x: 365.838, y: 62.7424}
+  m_SizeDelta: {x: 365.838, y: 110.8573}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &97623035
 MonoBehaviour:
@@ -17305,6 +17307,8 @@ MonoBehaviour:
   autoPlay: 0
   loop: 0
   defaultSlideDuration: 2
+  closeButtonTextPadding: {x: 48, y: 20}
+  closeButtonMaxWidth: 260
   portraitSize: {x: 700, y: 1000}
   landscapeSize: {x: 1600, y: 1000}
   preserveAspect: 1
@@ -23781,6 +23785,8 @@ MonoBehaviour:
   autoPlay: 0
   loop: 0
   defaultSlideDuration: 2
+  closeButtonTextPadding: {x: 48, y: 20}
+  closeButtonMaxWidth: 260
   portraitSize: {x: 700, y: 1000}
   landscapeSize: {x: 1600, y: 1000}
   preserveAspect: 1
@@ -39407,6 +39413,8 @@ MonoBehaviour:
   autoPlay: 0
   loop: 0
   defaultSlideDuration: 2
+  closeButtonTextPadding: {x: 48, y: 20}
+  closeButtonMaxWidth: 260
   portraitSize: {x: 700, y: 1000}
   landscapeSize: {x: 1600, y: 1000}
   preserveAspect: 1
@@ -40394,6 +40402,8 @@ MonoBehaviour:
   autoPlay: 0
   loop: 0
   defaultSlideDuration: 2
+  closeButtonTextPadding: {x: 48, y: 20}
+  closeButtonMaxWidth: 260
   portraitSize: {x: 700, y: 1000}
   landscapeSize: {x: 1600, y: 1500}
   preserveAspect: 1
@@ -42934,6 +42944,8 @@ MonoBehaviour:
   autoPlay: 1
   loop: 0
   defaultSlideDuration: 2
+  closeButtonTextPadding: {x: 48, y: 20}
+  closeButtonMaxWidth: 260
   portraitSize: {x: 600, y: 900}
   landscapeSize: {x: 900, y: 600}
   preserveAspect: 1
@@ -115155,6 +115167,8 @@ MonoBehaviour:
   autoPlay: 0
   loop: 0
   defaultSlideDuration: 2
+  closeButtonTextPadding: {x: 48, y: 20}
+  closeButtonMaxWidth: 260
   portraitSize: {x: 700, y: 1000}
   landscapeSize: {x: 1600, y: 1000}
   preserveAspect: 1
@@ -122321,6 +122335,8 @@ MonoBehaviour:
   autoPlay: 0
   loop: 0
   defaultSlideDuration: 2
+  closeButtonTextPadding: {x: 48, y: 20}
+  closeButtonMaxWidth: 260
   portraitSize: {x: 700, y: 1000}
   landscapeSize: {x: 1600, y: 1500}
   preserveAspect: 1
@@ -141649,6 +141665,10 @@ MonoBehaviour:
   - {fileID: 139126021}
   - {fileID: 820384499}
   - {fileID: 1591216744}
+  requireAllPlayersToClickClose: 1
+  clueCloseId: SharedClue
+  closeButtonTextPadding: {x: 48, y: 20}
+  closeButtonMaxWidth: 260
   portraitSize: {x: 800, y: 1000}
   landscapeSize: {x: 1500, y: 1000}
 --- !u!114 &2075314859
@@ -141965,7 +141985,7 @@ MonoBehaviour:
   panel: {fileID: 907834847}
   message: {fileID: 835020597}
   fadeInDuration: 0.15
-  holdDuration: 1
+  holdDuration: 5
   fadeOutDuration: 0.25
   slidePixels: 20
 --- !u!114 &2075314861
