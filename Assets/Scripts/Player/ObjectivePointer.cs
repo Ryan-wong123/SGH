@@ -65,9 +65,8 @@ public class ObjectivePointer : MonoBehaviour
 
         arrowObject.position = basePos;
 
-        // 2) Compute direction to target on horizontal plane
-        Vector3 toTarget = currentTarget.position - refTransform.position;
-        toTarget.y = 0f;
+        // 2) Compute direction to target in full 3D space so different floors are shown.
+        Vector3 toTarget = currentTarget.position - arrowObject.position;
 
         if (toTarget.sqrMagnitude < 0.001f)
         {
@@ -76,7 +75,7 @@ public class ObjectivePointer : MonoBehaviour
         }
 
         // 3) Rotate arrow to face target
-        Quaternion lookRot = Quaternion.LookRotation(toTarget.normalized, Vector3.up);
+        Quaternion lookRot = Quaternion.LookRotation(toTarget.normalized, refTransform.up);
         arrowObject.rotation = lookRot;
 
         if (!arrowObject.gameObject.activeSelf)
