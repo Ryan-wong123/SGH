@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 ObjectivePointer.Instance.SetPlayer(transform);
                 // Assign camera (get the child camera)
                 ObjectivePointer.Instance.SetCamera(GetComponentInChildren<Camera>() ?? throw new System.Exception("No camera found on local player!"));
+                PuzzleStateManager.Instance?.SyncObjectivePointerToCurrentStage();
             }
 
         }

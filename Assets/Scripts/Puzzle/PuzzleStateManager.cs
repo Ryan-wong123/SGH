@@ -381,8 +381,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         CurrentStage = PuzzleStage.Puzzle3;
         ResetTimer();
 
-        ObjectivePointer.Instance.StartPath("Canteen");
-
     }
 
     public void HandlePuzzle3Complete()
@@ -404,7 +402,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         CurrentStage = PuzzleStage.Puzzle5;
         ResetTimer();
 
-        ObjectivePointer.Instance.StartPath("Physician Room");
     }
 
     public void HandlePuzzle5Complete()
@@ -463,7 +460,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         CurrentStage = PuzzleStage.Puzzle7;
         ResetTimer();
-        ObjectivePointer.Instance.StartPath("Pharmacy");
     }
 
     public void HandlePuzzle7Complete()
@@ -485,7 +481,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         GetKeyUponCompletion(puzzle4Object, "Time Crystal4");
         ResetTimer();
-        ObjectivePointer.Instance.StartPath("Nurse Education Room");
     }
 
     public void HandlePuzzle9Complete()
@@ -506,7 +501,6 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         CurrentStage = PuzzleStage.Puzzle11;
         ResetTimer();
        
-        ObjectivePointer.Instance.StartPath("Morturary");
     }
 
     public void HandlePuzzle11Complete()
@@ -616,6 +610,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         }
 
         AwardClueReward(stage);
+        SyncObjectivePointerToCurrentStage();
     }
 
     private void AwardClueReward(PuzzleStage stage)
@@ -829,7 +824,44 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
             return;
 
         CurrentStage = stage;
+        SyncObjectivePointerToCurrentStage();
         RefreshSubmitButtonVisibility();
+    }
+
+    public void SyncObjectivePointerToCurrentStage()
+    {
+        if (ObjectivePointer.Instance == null)
+            return;
+
+        if (TryGetObjectivePathForStage(CurrentStage, out string pathId))
+            ObjectivePointer.Instance.StartPath(pathId);
+        else
+            ObjectivePointer.Instance.ClearTarget();
+    }
+
+    private bool TryGetObjectivePathForStage(PuzzleStage stage, out string pathId)
+    {
+        switch (stage)
+        {
+            case PuzzleStage.Puzzle3:
+                pathId = "Canteen";
+                return true;
+            case PuzzleStage.Puzzle5:
+                pathId = "Physician Room";
+                return true;
+            case PuzzleStage.Puzzle7:
+                pathId = "Pharmacy";
+                return true;
+            case PuzzleStage.Puzzle9:
+                pathId = "Nurse Education Room";
+                return true;
+            case PuzzleStage.Puzzle11:
+                pathId = "Morturary";
+                return true;
+            default:
+                pathId = null;
+                return false;
+        }
     }
 
     private GameObject GetPanelForStage(PuzzleStage stage) =>
