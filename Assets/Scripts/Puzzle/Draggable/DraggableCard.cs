@@ -180,10 +180,10 @@ public class DraggableCard : MonoBehaviour,
             return;
         }
 
-        BeginDragInternal();
+        BeginDragInternal(eventData);
     }
 
-    private void BeginDragInternal()
+    private void BeginDragInternal(PointerEventData eventData = null)
     {
         waitingForOwnership = false;
         isDraggingLocal = true;
@@ -193,6 +193,7 @@ public class DraggableCard : MonoBehaviour,
 
         // Move to top drag layer (canvas)
         SetParentLocal(canvas.transform, true);
+        MoveToPointer(eventData);
         SetDragTagVisible(true, GetLocalPlayerDisplayName());
     }
 
@@ -203,7 +204,7 @@ public class DraggableCard : MonoBehaviour,
         if (waitingForOwnership) return;
         if (SomeoneElseDragging()) return;
 
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+        MoveToPointer(eventData);
     }
 
     public virtual void OnEndDrag(PointerEventData eventData)
@@ -308,6 +309,27 @@ public class DraggableCard : MonoBehaviour,
     protected void SetParentLocal(Transform newParent, bool worldPositionStays = true)
     {
         transform.SetParent(newParent, worldPositionStays);
+    }
+
+    private void MoveToPointer(PointerEventData eventData)
+    {
+        Vector2 pointerPosition = eventData != null ? eventData.position : (Vector2)Input.mousePosition;
+        Camera eventCamera = eventData != null ? eventData.pressEventCamera : null;
+        if (eventCamera == null && canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            eventCamera = canvas.worldCamera;
+
+        RectTransform canvasRect = canvas != null ? canvas.transform as RectTransform : null;
+        if (canvasRect == null)
+            return;
+
+        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
+                canvasRect,
+                pointerPosition,
+                eventCamera,
+                out Vector3 worldPoint))
+        {
+            rectTransform.position = worldPoint;
+        }
     }
 
     protected Transform FindFirstEmptyChild(Transform gridParent)
