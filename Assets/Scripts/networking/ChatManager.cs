@@ -30,9 +30,12 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
     public string chatAppId = "41ecc5f0-2661-4f08-9c6b-3567bc7d495d";
     private bool isVisible = true;
     public GameObject chatPanel;
+    [SerializeField] private Color messageTextColor = new Color(0.12f, 0.12f, 0.12f, 1f);
 
     public GameObject unreadBadge; // Badge panel with TMP_Text inside
     public TMP_Text unreadText;
+    public Button collapseButton;
+    private GameObject collapsedChatButton;
     private int unreadCount = 0;
     private GameObject fallbackCanvas;
     private TMP_Text fallbackChannelText;
@@ -60,6 +63,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
         EnsureUi();
         SetupUiBindings();
         UpdateActiveChannel(true);
+        ApplyLobbyDefaultVisibility();
         TryConnect();
     }
 
@@ -83,8 +87,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
 
         EnsureUi();
 
-        isVisible = !isVisible;
-        chatPanel.SetActive(isVisible);
+        SetChatVisible(!isVisible);
 
         if (isVisible)
         {
@@ -130,7 +133,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
         foreach (string channel in channels)
         {
             subscribedChannels.Add(channel);
-            AddChatMessage($"<i><color=grey>Joined {channel} chat</color></i>");
+            AddChatMessage($"<i><color=#5A5A5A>Joined {channel} chat</color></i>");
         }
     }
 
@@ -151,7 +154,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
 
         for (int i = 0; i < senders.Length; i++)
         {
-            AddChatMessage($"<b><color=#00ffff>[{channelName}]</color> <color=#00ffcc>{senders[i]}</color></b>: {messages[i]}");
+            AddChatMessage($"<b><color=#006D9C>[{channelName}]</color> <color=#007C73>{senders[i]}</color></b>: {messages[i]}");
 
             if (!isVisible)
             {
@@ -162,6 +165,11 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
     }
     private void UpdateUnreadUI()
     {
+        if (unreadBadge == null || unreadText == null)
+        {
+            return;
+        }
+
         if (unreadCount > 0)
         {
             unreadBadge.SetActive(true);
@@ -214,7 +222,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
 
         if (chatClient == null || !chatClient.CanChat || string.IsNullOrEmpty(currentChannel))
         {
-            AddChatMessage("<i><color=grey>Chat is still connecting. Try again in a moment.</color></i>");
+            AddChatMessage("<i><color=#5A5A5A>Chat is still connecting. Try again in a moment.</color></i>");
             return;
         }
 
@@ -234,6 +242,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
         TMP_Text tmp = msgObj.GetComponent<TMP_Text>();
         if (tmp != null)
         {
+            tmp.color = messageTextColor;
             tmp.text = message;
         }
     }
@@ -267,7 +276,10 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
 
     private void OnActiveSceneChanged(Scene previousScene, Scene nextScene)
     {
+        EnsureUi();
+        SetupUiBindings();
         UpdateActiveChannel(false);
+        ApplyLobbyDefaultVisibility();
     }
 
     private void TryConnect()
@@ -343,6 +355,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
 
         if (inputField != null)
         {
+            EnsureInputFieldViewport();
             inputField.onSubmit.RemoveListener(SendSubmittedText);
             inputField.onSubmit.AddListener(SendSubmittedText);
         }
@@ -357,6 +370,15 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
         {
             unreadBadge.SetActive(unreadCount > 0);
         }
+
+        if (collapseButton != null)
+        {
+            collapseButton.onClick.RemoveListener(ToggleChatPanel);
+            collapseButton.onClick.AddListener(ToggleChatPanel);
+        }
+
+        EnsureCollapsedChatButton();
+        ApplyChatVisibility();
     }
 
     private void SendSubmittedText(string _)
@@ -410,13 +432,89 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
         chatPanel = sceneManager.chatPanel ?? chatPanel;
         unreadBadge = sceneManager.unreadBadge ?? unreadBadge;
         unreadText = sceneManager.unreadText ?? unreadText;
+        collapseButton = sceneManager.collapseButton ?? collapseButton;
 
         if (hasStarted)
         {
             EnsureUi();
             SetupUiBindings();
             SetupDropdown();
+            ApplyLobbyDefaultVisibility();
         }
+    }
+
+    private void ApplyLobbyDefaultVisibility()
+    {
+        if (SceneManager.GetActiveScene().name == "Lobby")
+        {
+            SetChatVisible(false);
+        }
+    }
+
+    private void SetChatVisible(bool visible)
+    {
+        if (!visible && inputField != null)
+        {
+            inputField.DeactivateInputField();
+
+            if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == inputField.gameObject)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
+        }
+
+        isVisible = visible;
+        ApplyChatVisibility();
+    }
+
+    private void EnsureInputFieldViewport()
+    {
+        if (inputField == null || inputField.textViewport != null)
+        {
+            return;
+        }
+
+        inputField.textViewport = inputField.GetComponent<RectTransform>();
+    }
+
+    private void ApplyChatVisibility()
+    {
+        if (chatPanel != null)
+        {
+            chatPanel.SetActive(isVisible);
+        }
+
+        if (collapsedChatButton != null)
+        {
+            collapsedChatButton.SetActive(!isVisible);
+        }
+    }
+
+    private void EnsureCollapsedChatButton()
+    {
+        if (collapsedChatButton != null || chatPanel == null)
+        {
+            return;
+        }
+
+        Transform parent = fallbackCanvas != null ? fallbackCanvas.transform : chatPanel.transform.parent;
+        if (parent == null)
+        {
+            return;
+        }
+
+        collapsedChatButton = CreateRect("Open Global Chat Button", parent, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(128f, 32f), new Vector2(74f, 18f));
+        Image buttonImage = collapsedChatButton.AddComponent<Image>();
+        buttonImage.color = new Color(0.1f, 0.55f, 0.7f, 0.95f);
+        Button button = collapsedChatButton.AddComponent<Button>();
+        button.onClick.AddListener(ToggleChatPanel);
+
+        TMP_Text buttonText = CreateText("Text", collapsedChatButton.transform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, 14).GetComponent<TMP_Text>();
+        buttonText.text = "Global Chat";
+        buttonText.alignment = TextAlignmentOptions.Center;
+        buttonText.color = Color.white;
+
+        collapsedChatButton.SetActive(!isVisible);
     }
 
     private void CreateFallbackUi()
@@ -434,11 +532,20 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
 
         chatPanel = CreateRect("Chat Panel", fallbackCanvas.transform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(260f, 180f), new Vector2(140f, 110f));
         Image panelImage = chatPanel.AddComponent<Image>();
-        panelImage.color = new Color(0f, 0f, 0f, 0.65f);
+        panelImage.color = new Color(1f, 1f, 1f, 0.92f);
 
         GameObject channelLabel = CreateText("Channel Label", chatPanel.transform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(-20f, 24f), new Vector2(0f, -14f), 16);
         fallbackChannelText = channelLabel.GetComponent<TMP_Text>();
         fallbackChannelText.alignment = TextAlignmentOptions.Center;
+        fallbackChannelText.color = messageTextColor;
+
+        GameObject collapse = CreateRect("Collapse Button", chatPanel.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(24f, 24f), new Vector2(-14f, -14f));
+        Image collapseImage = collapse.AddComponent<Image>();
+        collapseImage.color = new Color(0.1f, 0.55f, 0.7f, 0.95f);
+        collapseButton = collapse.AddComponent<Button>();
+        TMP_Text collapseText = CreateText("Text", collapse.transform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, 16).GetComponent<TMP_Text>();
+        collapseText.text = "-";
+        collapseText.alignment = TextAlignmentOptions.Center;
 
         GameObject viewport = CreateRect("Messages", chatPanel.transform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(-16f, -76f), new Vector2(0f, 18f));
         RectMask2D mask = viewport.AddComponent<RectMask2D>();
@@ -458,7 +565,9 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
         Image inputImage = input.AddComponent<Image>();
         inputImage.color = Color.white;
         inputField = input.AddComponent<TMP_InputField>();
+        inputField.textViewport = input.GetComponent<RectTransform>();
         TMP_Text inputText = CreateText("Text", input.transform, Vector2.zero, Vector2.one, new Vector2(-16f, -8f), Vector2.zero, 14).GetComponent<TMP_Text>();
+        inputText.color = messageTextColor;
         TMP_Text placeholder = CreateText("Placeholder", input.transform, Vector2.zero, Vector2.one, new Vector2(-16f, -8f), Vector2.zero, 14).GetComponent<TMP_Text>();
         placeholder.text = "Type message...";
         placeholder.color = new Color(0.45f, 0.45f, 0.45f, 1f);
@@ -478,6 +587,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
         badgeImage.color = new Color(0.85f, 0.1f, 0.1f, 1f);
         unreadText = CreateText("Text", unreadBadge.transform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, 14).GetComponent<TMP_Text>();
         unreadText.alignment = TextAlignmentOptions.Center;
+        unreadText.color = Color.white;
         unreadBadge.SetActive(false);
     }
 
@@ -487,7 +597,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
         messageObject.transform.SetParent(parent, false);
         TMP_Text text = messageObject.AddComponent<TextMeshProUGUI>();
         text.fontSize = 14;
-        text.color = Color.white;
+        text.color = new Color(0.12f, 0.12f, 0.12f, 1f);
         text.textWrappingMode = TextWrappingModes.Normal;
         return messageObject;
     }
