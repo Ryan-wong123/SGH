@@ -11,8 +11,8 @@ public class Network : MonoBehaviourPunCallbacks
 {
     private const string PlayerTagPropertyKey = "PlayerTag";
     private const string PhotonUserIdPrefKey = "PhotonUserId";
-    private const string PhotonNicknamePrefKey = "PhotonNickname";
     private const string RejoinRoomPrefKey = "PhotonRejoinRoom";
+    private const string LegacyPhotonNicknamePrefKey = "PhotonNickname";
 
     //game version
     [SerializeField] private string gameVersion = "1.0";
@@ -34,7 +34,7 @@ public class Network : MonoBehaviourPunCallbacks
     private void Start()
     {
         EnsurePersistentUserId();
-        RestoreSavedNickname();
+        ClearLegacySavedNickname();
         EnsureChatManagerExists();
 
         //connect to photon server with settings
@@ -75,8 +75,6 @@ public class Network : MonoBehaviourPunCallbacks
 
             //set username 
             PhotonNetwork.NickName = username;
-            PlayerPrefs.SetString(PhotonNicknamePrefKey, username);
-            PlayerPrefs.Save();
             PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
             {
                 { PlayerTagPropertyKey, username }
@@ -160,20 +158,20 @@ public class Network : MonoBehaviourPunCallbacks
         PhotonNetwork.AuthValues.UserId = userId;
     }
 
-    private void RestoreSavedNickname()
+    private void ClearLegacySavedNickname()
     {
-        string savedNickname = PlayerPrefs.GetString(PhotonNicknamePrefKey, string.Empty);
-        if (string.IsNullOrWhiteSpace(savedNickname))
+        if (PlayerPrefs.HasKey(LegacyPhotonNicknamePrefKey))
         {
-            return;
+            PlayerPrefs.DeleteKey(LegacyPhotonNicknamePrefKey);
+            PlayerPrefs.Save();
         }
 
-        PhotonNetwork.NickName = savedNickname;
-
-        if (usernameInput != null && string.IsNullOrWhiteSpace(usernameInput.text))
+        if (usernameInput != null)
         {
-            usernameInput.text = savedNickname;
+            usernameInput.text = string.Empty;
         }
+
+        PhotonNetwork.NickName = string.Empty;
     }
 
     public static void ApplyLocalPlayerTag()
