@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private Coroutine spawnRoutine;
     private bool isAttemptingGameplayRejoin;
     private bool isReconnectingToGameplayRoom;
+    private static string pendingSceneAfterLeavingRoom;
 
     private void Start()
     {
@@ -239,13 +240,40 @@ public class GameManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
+    public static void LeaveRoomAndLoadScene(string sceneName)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            Debug.LogWarning("Cannot leave room because no target scene was provided.");
+            return;
+        }
+
+        pendingSceneAfterLeavingRoom = sceneName;
+        Network.ClearCachedRoomRejoin();
+
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom();
+            return;
+        }
+
+        SceneManager.LoadScene(sceneName);
+    }
+
     public override void OnLeftRoom()
     {
         Network.ClearCachedRoomRejoin();
         hasSpawned = false;
         spawnRoutine = null;
+        string sceneToLoad = !string.IsNullOrWhiteSpace(targetSceneName)
+            ? targetSceneName
+            : pendingSceneAfterLeavingRoom;
+        pendingSceneAfterLeavingRoom = null;
+
         Destroy(gameObject);
-        SceneManager.LoadScene(targetSceneName);
+
+        if (!string.IsNullOrWhiteSpace(sceneToLoad))
+            SceneManager.LoadScene(sceneToLoad);
     }
 
     public void QuitGame()

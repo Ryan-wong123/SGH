@@ -22,6 +22,10 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
     [SerializeField] private bool advancePuzzleStageOnClose;
     [SerializeField] private PuzzleStateManager.PuzzleStage closeTargetStage = PuzzleStateManager.PuzzleStage.Puzzle1;
 
+    [Header("Room Transition")]
+    [SerializeField] private bool leaveRoomAndLoadLobbyOnClose;
+    [SerializeField] private string lobbySceneName = "Lobby";
+
     public enum SlideOrientationMode
     {
         Auto,
@@ -65,6 +69,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
     private string comicCloseRoundPropertyKey;
     private bool closeListenerRegistered;
     private bool pendingCloseClick;
+    private bool hasStartedRoomTransition;
     private static SlideshowUI activeInstance;
 
     [Header("Image Layout")]
@@ -84,6 +89,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
         currentIndex = 0;
         EnsureCloseButtonSetup();
         pendingCloseClick = false;
+        hasStartedRoomTransition = false;
         ResetLocalCloseState();
         BeginCloseGateRoundIfNeeded();
 
@@ -361,6 +367,12 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
 
         RefreshCloseGateUI();
 
+        if (GetExpectedClosePlayerCount() <= 1)
+        {
+            MarkComicClosedForEveryone();
+            return;
+        }
+
         TryCompleteSharedCloseGate();
     }
 
@@ -447,6 +459,7 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
 
         ClosePanelAndResetCamera.ResetCameraAndCursor();
         TryAdvancePuzzleStageOnClose();
+        TryLeaveRoomAndLoadLobbyOnClose();
     }
 
     private void TryAdvancePuzzleStageOnClose()
@@ -458,6 +471,15 @@ public class SlideshowUI : MonoBehaviourPunCallbacks
             return;
 
         PuzzleStateManager.Instance.BroadcastStageTransition(closeTargetStage);
+    }
+
+    private void TryLeaveRoomAndLoadLobbyOnClose()
+    {
+        if (!leaveRoomAndLoadLobbyOnClose || hasStartedRoomTransition)
+            return;
+
+        hasStartedRoomTransition = true;
+        GameManager.LeaveRoomAndLoadScene(lobbySceneName);
     }
 
     private void ResetLocalCloseState()
