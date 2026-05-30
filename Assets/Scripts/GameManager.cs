@@ -249,6 +249,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         pendingSceneAfterLeavingRoom = sceneName;
+        GameSessionCsvLogger.Instance?.WriteCsvIfNeeded();
         Network.ClearCachedRoomRejoin();
 
         if (PhotonNetwork.InRoom)
@@ -278,6 +279,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void QuitGame()
     {
+        GameSessionCsvLogger.Instance?.WriteCsvIfNeeded();
+
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

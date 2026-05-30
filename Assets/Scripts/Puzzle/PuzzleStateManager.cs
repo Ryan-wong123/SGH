@@ -511,6 +511,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         GetKeyUponCompletion(puzzle5Object, "Time Crystal5");
         ResetTimer();
         movementTargetPuzzle11?.GetComponent<MovementTargetForward>().Interact();
+        GameSessionCsvLogger.Instance?.WriteCsvIfNeeded();
       
 
         //if (PuzzleScoreTracker.Instance != null)
@@ -695,16 +696,19 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
                 if (PuzzleScoreTracker.Instance != null)
                     PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
 
+                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, false);
                 Debug.Log("Activity 2 stage incorrect.");
                 return;
             }
 
             if (result == Activity2PuzzleManager.Activity2SubmitResult.Advanced)
             {
+                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
                 photonView.RPC(nameof(RPC_Activity2GoToPart2), RpcTarget.All);
                 return;
             }
 
+            GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
             StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
             return;
         }
@@ -719,17 +723,20 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
                 if (PuzzleScoreTracker.Instance != null)
                     PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
 
+                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, false);
                 Debug.Log("Diary stage incorrect.");
                 return;
             }
 
             if (result == DiaryPuzzleManager.DiarySubmitResult.Advanced)
             {
+                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
                 photonView.RPC(nameof(RPC_DiaryAdvanceToNextStage), RpcTarget.All);
                 return; // IMPORTANT: do not advance puzzle stage yet
             }
 
             // Completed final diary page -> proceed with normal stage-advance flow
+            GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
             StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
             return;
         }
@@ -743,16 +750,19 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
                 if (PuzzleScoreTracker.Instance != null)
                     PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
 
+                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, false);
                 Debug.Log("Death Lapses stage incorrect.");
                 return;
             }
 
             if (result == DeathLapsesManager.DeathLapsesSubmitResult.Advanced)
             {
+                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
                 photonView.RPC(nameof(RPC_DeathLapsesGoToStage2), RpcTarget.All);
                 return;
             }
 
+            GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
             StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
             return;
         }
@@ -762,6 +772,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         {
             if (puzzle.IsSolved())
             {
+                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
                 StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
             }
             else
@@ -769,6 +780,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
                 if (PuzzleScoreTracker.Instance != null)
                     PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
 
+                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, false);
                 Debug.Log($"Puzzle {CurrentStage} incomplete or incorrect.");
             }
         }
@@ -1120,6 +1132,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         if (locked && owner == me.ActorNumber)
         {
             MarkLocalActivePuzzleLock(me.ActorNumber);
+            GameSessionCsvLogger.Instance?.RecordPuzzleEntered(CurrentStage, me.ActorNumber, me.NickName);
             return true; // don't change any props; I still hold the lock
         }
 
@@ -1138,12 +1151,14 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
                 photonView.RPC(nameof(RPC_RequestLockFromMaster), RpcTarget.MasterClient, me.ActorNumber);
             }
 
+            GameSessionCsvLogger.Instance?.RecordPuzzleEntered(CurrentStage, me.ActorNumber, me.NickName);
             return true;
         }
 
         if (locked && HasLocalPuzzleReentryAccess(CurrentStage, owner))
         {
             currentSubmitOwnerActorNumber = owner;
+            GameSessionCsvLogger.Instance?.RecordPuzzleEntered(CurrentStage, me.ActorNumber, me.NickName);
             return true;
         }
 
@@ -1179,6 +1194,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
 
         me.SetCustomProperties(new Hashtable { [PP_PLAYED_ROUND] = true });
         MarkLocalActivePuzzleLock(me.ActorNumber);
+        GameSessionCsvLogger.Instance?.RecordPuzzleEntered(CurrentStage, me.ActorNumber, me.NickName);
         return true;
     }
 
