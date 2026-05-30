@@ -13,6 +13,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
     private const byte GameplayLogEventCode = 41;
     private const int EventTypeEnter = 0;
     private const int EventTypeAnswer = 1;
+    private const int EventTypeTimeSpent = 2;
 
     public static GameSessionCsvLogger Instance { get; private set; }
 
@@ -80,9 +81,27 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
 
         string roomName = GetCurrentRoomName();
         double now = PhotonNetwork.InRoom ? PhotonNetwork.Time : Time.realtimeSinceStartupAsDouble;
-        localAttemptStartTimes[BuildAttemptKey(actorNumber, stage)] = now;
+        string attemptKey = BuildAttemptKey(actorNumber, stage);
+
+        if (!localAttemptStartTimes.ContainsKey(attemptKey))
+            localAttemptStartTimes[attemptKey] = now;
 
         SendOrApplyEvent(EventTypeEnter, roomName, actorNumber, playerName, (int)stage, 0, 0d);
+    }
+
+    public void RecordPuzzleReset(PuzzleStateManager.PuzzleStage stage)
+    {
+        if (stage == PuzzleStateManager.PuzzleStage.Puzzle0)
+            return;
+
+        int actorNumber = PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1;
+        string playerName = ResolvePlayerName(actorNumber);
+        double elapsedSeconds = CaptureElapsedSeconds(actorNumber, stage, keepRunning: true);
+
+        if (elapsedSeconds <= 0d)
+            return;
+
+        SendOrApplyEvent(EventTypeTimeSpent, GetCurrentRoomName(), actorNumber, playerName, (int)stage, 0, elapsedSeconds);
     }
 
     public void RecordPuzzleAnswer(PuzzleStateManager.PuzzleStage stage, bool isCorrect)
@@ -92,14 +111,19 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
 
         int actorNumber = PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1;
         string playerName = ResolvePlayerName(actorNumber);
-        double elapsedSeconds = GetElapsedSeconds(actorNumber, stage);
+        double elapsedSeconds = CaptureElapsedSeconds(actorNumber, stage, keepRunning: !isCorrect);
 
         SendOrApplyEvent(EventTypeAnswer, GetCurrentRoomName(), actorNumber, playerName, (int)stage, isCorrect ? 1 : 0, elapsedSeconds);
     }
 
     public void WriteCsvIfNeeded()
     {
-        if (hasWrittenCsv || statsByKey.Count == 0)
+        if (hasWrittenCsv)
+            return;
+
+        FlushLocalActiveAttempts();
+
+        if (statsByKey.Count == 0)
             return;
 
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
@@ -204,6 +228,12 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
             return;
         }
 
+        if (eventType == EventTypeTimeSpent)
+        {
+            stats.TimeTakenSeconds += Math.Max(0d, elapsedSeconds);
+            return;
+        }
+
         if (answerWasCorrect)
             stats.CorrectAnswers++;
         else
@@ -230,7 +260,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
         return stats;
     }
 
-    private double GetElapsedSeconds(int actorNumber, PuzzleStateManager.PuzzleStage stage)
+    private double CaptureElapsedSeconds(int actorNumber, PuzzleStateManager.PuzzleStage stage, bool keepRunning)
     {
         string key = BuildAttemptKey(actorNumber, stage);
         double now = PhotonNetwork.InRoom ? PhotonNetwork.Time : Time.realtimeSinceStartupAsDouble;
@@ -238,12 +268,72 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
         if (!localAttemptStartTimes.TryGetValue(key, out double startedAt))
             return 0d;
 
-        return Math.Max(0d, now - startedAt);
+        double elapsedSeconds = Math.Max(0d, now - startedAt);
+
+        if (keepRunning)
+            localAttemptStartTimes[key] = now;
+        else
+            localAttemptStartTimes.Remove(key);
+
+        return elapsedSeconds;
+    }
+
+    private void FlushLocalActiveAttempts()
+    {
+        if (localAttemptStartTimes.Count == 0)
+            return;
+
+        double now = PhotonNetwork.InRoom ? PhotonNetwork.Time : Time.realtimeSinceStartupAsDouble;
+        var activeAttempts = new List<KeyValuePair<string, double>>(localAttemptStartTimes);
+
+        foreach (var attempt in activeAttempts)
+        {
+            if (!TryParseAttemptKey(attempt.Key, out int actorNumber, out PuzzleStateManager.PuzzleStage stage))
+                continue;
+
+            double elapsedSeconds = Math.Max(0d, now - attempt.Value);
+            localAttemptStartTimes[attempt.Key] = now;
+
+            if (elapsedSeconds <= 0d)
+                continue;
+
+            SendOrApplyEvent(
+                EventTypeTimeSpent,
+                GetCurrentRoomName(),
+                actorNumber,
+                ResolvePlayerName(actorNumber),
+                (int)stage,
+                0,
+                elapsedSeconds
+            );
+        }
     }
 
     private static string BuildAttemptKey(int actorNumber, PuzzleStateManager.PuzzleStage stage)
     {
         return $"{actorNumber}|{(int)stage}";
+    }
+
+    private static bool TryParseAttemptKey(string key, out int actorNumber, out PuzzleStateManager.PuzzleStage stage)
+    {
+        actorNumber = -1;
+        stage = PuzzleStateManager.PuzzleStage.Puzzle0;
+
+        if (string.IsNullOrWhiteSpace(key))
+            return false;
+
+        string[] parts = key.Split('|');
+        if (parts.Length != 2)
+            return false;
+
+        if (!int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out actorNumber))
+            return false;
+
+        if (!int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int stageInt))
+            return false;
+
+        stage = (PuzzleStateManager.PuzzleStage)stageInt;
+        return true;
     }
 
     private static string GetCurrentRoomName()

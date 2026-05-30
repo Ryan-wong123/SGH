@@ -182,6 +182,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     public void OnTimerExpired()
     {
         Debug.Log("Timer expired — reloading current puzzle stage.");
+        GameSessionCsvLogger.Instance?.RecordPuzzleReset(CurrentStage);
+
         switch (CurrentStage)
         {
             case PuzzleStage.Puzzle0: break;
