@@ -4,6 +4,7 @@ using ExitGames.Client.Photon;                      // keep Photon namespace
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -698,19 +699,19 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
                 if (PuzzleScoreTracker.Instance != null)
                     PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
 
-                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, false);
+                RecordCurrentPuzzleAnswer(false);
                 Debug.Log("Activity 2 stage incorrect.");
                 return;
             }
 
             if (result == Activity2PuzzleManager.Activity2SubmitResult.Advanced)
             {
-                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
+                RecordCurrentPuzzleAnswer(true);
                 photonView.RPC(nameof(RPC_Activity2GoToPart2), RpcTarget.All);
                 return;
             }
 
-            GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
+            RecordCurrentPuzzleAnswer(true);
             StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
             return;
         }
@@ -725,20 +726,20 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
                 if (PuzzleScoreTracker.Instance != null)
                     PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
 
-                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, false);
+                RecordCurrentPuzzleAnswer(false);
                 Debug.Log("Diary stage incorrect.");
                 return;
             }
 
             if (result == DiaryPuzzleManager.DiarySubmitResult.Advanced)
             {
-                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
+                RecordCurrentPuzzleAnswer(true);
                 photonView.RPC(nameof(RPC_DiaryAdvanceToNextStage), RpcTarget.All);
                 return; // IMPORTANT: do not advance puzzle stage yet
             }
 
             // Completed final diary page -> proceed with normal stage-advance flow
-            GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
+            RecordCurrentPuzzleAnswer(true);
             StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
             return;
         }
@@ -752,19 +753,19 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
                 if (PuzzleScoreTracker.Instance != null)
                     PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
 
-                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, false);
+                RecordCurrentPuzzleAnswer(false);
                 Debug.Log("Death Lapses stage incorrect.");
                 return;
             }
 
             if (result == DeathLapsesManager.DeathLapsesSubmitResult.Advanced)
             {
-                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
+                RecordCurrentPuzzleAnswer(true);
                 photonView.RPC(nameof(RPC_DeathLapsesGoToStage2), RpcTarget.All);
                 return;
             }
 
-            GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
+            RecordCurrentPuzzleAnswer(true);
             StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
             return;
         }
@@ -774,7 +775,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
         {
             if (puzzle.IsSolved())
             {
-                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, true);
+                RecordCurrentPuzzleAnswer(true);
                 StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
             }
             else
@@ -782,7 +783,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
                 if (PuzzleScoreTracker.Instance != null)
                     PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
 
-                GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, false);
+                RecordCurrentPuzzleAnswer(false);
                 Debug.Log($"Puzzle {CurrentStage} incomplete or incorrect.");
             }
         }
@@ -793,6 +794,119 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks
     }
 
 
+
+    private void RecordCurrentPuzzleAnswer(bool isCorrect)
+    {
+        GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, isCorrect, BuildCurrentAnswerSnapshot());
+    }
+
+    private string BuildCurrentAnswerSnapshot()
+    {
+        GameObject panel = GetPanelForStage(CurrentStage);
+        if (panel == null)
+            panel = currentPuzzlePanel;
+
+        if (panel == null)
+            return "No active puzzle panel";
+
+        var snapshot = new StringBuilder();
+
+        foreach (DropSlot slot in panel.GetComponentsInChildren<DropSlot>(true))
+        {
+            if (slot == null)
+                continue;
+
+            List<DraggableCard> cards = slot.GetCardsInSlot();
+            if (cards.Count == 0)
+                continue;
+
+            var cardList = new StringBuilder();
+            foreach (DraggableCard card in cards)
+            {
+                AppendSeparated(cardList, GetCardAnswerLabel(card), ", ");
+            }
+
+            AppendSeparated(snapshot, $"{slot.name}=[{cardList}]", "; ");
+        }
+
+        foreach (TMP_Dropdown dropdown in panel.GetComponentsInChildren<TMP_Dropdown>(true))
+        {
+            if (dropdown == null)
+                continue;
+
+            string selectedOption = dropdown.value >= 0 && dropdown.value < dropdown.options.Count
+                ? dropdown.options[dropdown.value].text
+                : dropdown.value.ToString();
+
+            AppendSeparated(snapshot, $"{dropdown.name}={selectedOption}", "; ");
+        }
+
+        foreach (TMP_InputField input in panel.GetComponentsInChildren<TMP_InputField>(true))
+        {
+            if (input == null)
+                continue;
+
+            AppendSeparated(snapshot, $"{input.name}={input.text}", "; ");
+        }
+
+        foreach (PhotonSyncedUIButtonColor buttonState in panel.GetComponentsInChildren<PhotonSyncedUIButtonColor>(true))
+        {
+            if (buttonState == null || !buttonState.IsSelected || IsManagedSubmitButton(buttonState.gameObject))
+                continue;
+
+            AppendSeparated(snapshot, $"SelectedButton={GetObjectLabel(buttonState.gameObject)}", "; ");
+        }
+
+        foreach (LetterCell cell in panel.GetComponentsInChildren<LetterCell>(true))
+        {
+            if (cell == null || !cell.IsSelected)
+                continue;
+
+            AppendSeparated(snapshot, $"Cell({cell.gridPosition.x},{cell.gridPosition.y})={cell.GetLetter()}", "; ");
+        }
+
+        return snapshot.Length > 0 ? snapshot.ToString() : "No answer selected";
+    }
+
+    private static void AppendSeparated(StringBuilder builder, string value, string separator)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        if (builder.Length > 0)
+            builder.Append(separator);
+
+        builder.Append(value.Trim());
+    }
+
+    private static string GetCardAnswerLabel(DraggableCard card)
+    {
+        if (card == null)
+            return "Unknown card";
+
+        if (!string.IsNullOrWhiteSpace(card.symptomName))
+            return card.symptomName.Trim();
+
+        if (!string.IsNullOrWhiteSpace(card.stepName))
+            return card.stepName.Trim();
+
+        if (!string.IsNullOrWhiteSpace(card.lapsesAnswer))
+            return card.lapsesAnswer.Trim();
+
+        return GetObjectLabel(card.gameObject);
+    }
+
+    private static string GetObjectLabel(GameObject target)
+    {
+        if (target == null)
+            return "Unknown";
+
+        TMP_Text text = target.GetComponentInChildren<TMP_Text>(true);
+        if (text != null && !string.IsNullOrWhiteSpace(text.text))
+            return text.text.Trim();
+
+        return target.name;
+    }
 
     private IEnumerator DelayAndAdvance(PuzzleStage stage, float delay)
     {

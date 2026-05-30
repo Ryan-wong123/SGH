@@ -31,6 +31,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
         public int CorrectAnswers;
         public int WrongAnswers;
         public double TimeTakenSeconds;
+        public List<string> AnswerSelections = new();
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -104,7 +105,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
         SendOrApplyEvent(EventTypeTimeSpent, GetCurrentRoomName(), actorNumber, playerName, (int)stage, 0, elapsedSeconds);
     }
 
-    public void RecordPuzzleAnswer(PuzzleStateManager.PuzzleStage stage, bool isCorrect)
+    public void RecordPuzzleAnswer(PuzzleStateManager.PuzzleStage stage, bool isCorrect, string selectedAnswers = null)
     {
         if (stage == PuzzleStateManager.PuzzleStage.Puzzle0)
             return;
@@ -113,7 +114,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
         string playerName = ResolvePlayerName(actorNumber);
         double elapsedSeconds = CaptureElapsedSeconds(actorNumber, stage, keepRunning: !isCorrect);
 
-        SendOrApplyEvent(EventTypeAnswer, GetCurrentRoomName(), actorNumber, playerName, (int)stage, isCorrect ? 1 : 0, elapsedSeconds);
+        SendOrApplyEvent(EventTypeAnswer, GetCurrentRoomName(), actorNumber, playerName, (int)stage, isCorrect ? 1 : 0, elapsedSeconds, selectedAnswers);
     }
 
     public void WriteCsvIfNeeded()
@@ -148,8 +149,15 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
             return playerCompare != 0 ? playerCompare : a.ActorNumber.CompareTo(b.ActorNumber);
         });
 
+        int maxAnswerTries = 0;
+        foreach (var row in rows)
+            maxAnswerTries = Math.Max(maxAnswerTries, row.AnswerSelections.Count);
+
         var csv = new StringBuilder();
-        csv.AppendLine("room_name,player_name,puzzle_number,times_entered,correct_answers,wrong_answers,time_taken_minutes");
+        csv.Append("room_name,player_name,puzzle_number,times_entered,correct_answers,wrong_answers");
+        for (int i = 1; i <= maxAnswerTries; i++)
+            csv.Append($",answer_try_{i}");
+        csv.AppendLine(",time_taken");
 
         foreach (var row in rows)
         {
@@ -158,9 +166,17 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
             csv.Append(row.PuzzleNumber).Append(',');
             csv.Append(row.TimesEntered).Append(',');
             csv.Append(row.CorrectAnswers).Append(',');
-            csv.Append(row.WrongAnswers).Append(',');
-            double timeTakenMinutes = row.TimeTakenSeconds / 60d;
-            csv.AppendLine(timeTakenMinutes.ToString("0.00", CultureInfo.InvariantCulture));
+            csv.Append(row.WrongAnswers);
+
+            for (int i = 0; i < maxAnswerTries; i++)
+            {
+                csv.Append(',');
+                if (i < row.AnswerSelections.Count)
+                    csv.AppendCsv(row.AnswerSelections[i]);
+            }
+
+            csv.Append(',');
+            csv.AppendLine(FormatMinutesAndSeconds(row.TimeTakenSeconds));
         }
 
         File.WriteAllText(path, csv.ToString(), Encoding.UTF8);
@@ -177,6 +193,8 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
         if (photonEvent.Code != GameplayLogEventCode || photonEvent.CustomData is not object[] data || data.Length < 7)
             return;
 
+        string selectedAnswers = data.Length >= 8 ? data[7] as string : string.Empty;
+
         ApplyEvent(
             Convert.ToInt32(data[0], CultureInfo.InvariantCulture),
             data[1] as string,
@@ -184,11 +202,12 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
             data[3] as string,
             Convert.ToInt32(data[4], CultureInfo.InvariantCulture),
             Convert.ToInt32(data[5], CultureInfo.InvariantCulture) == 1,
-            Convert.ToDouble(data[6], CultureInfo.InvariantCulture)
+            Convert.ToDouble(data[6], CultureInfo.InvariantCulture),
+            selectedAnswers
         );
     }
 
-    private void SendOrApplyEvent(int eventType, string roomName, int actorNumber, string playerName, int puzzleNumber, int answerWasCorrect, double elapsedSeconds)
+    private void SendOrApplyEvent(int eventType, string roomName, int actorNumber, string playerName, int puzzleNumber, int answerWasCorrect, double elapsedSeconds, string selectedAnswers = null)
     {
         object[] payload =
         {
@@ -198,12 +217,13 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
             playerName,
             puzzleNumber,
             answerWasCorrect,
-            elapsedSeconds
+            elapsedSeconds,
+            selectedAnswers ?? string.Empty
         };
 
         if (!PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient)
         {
-            ApplyEvent(eventType, roomName, actorNumber, playerName, puzzleNumber, answerWasCorrect == 1, elapsedSeconds);
+            ApplyEvent(eventType, roomName, actorNumber, playerName, puzzleNumber, answerWasCorrect == 1, elapsedSeconds, selectedAnswers);
             return;
         }
 
@@ -215,7 +235,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
         );
     }
 
-    private void ApplyEvent(int eventType, string roomName, int actorNumber, string playerName, int puzzleNumber, bool answerWasCorrect, double elapsedSeconds)
+    private void ApplyEvent(int eventType, string roomName, int actorNumber, string playerName, int puzzleNumber, bool answerWasCorrect, double elapsedSeconds, string selectedAnswers)
     {
         if (!PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
             return;
@@ -239,7 +259,16 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
         else
             stats.WrongAnswers++;
 
+        AddAnswerSelection(stats, selectedAnswers);
         stats.TimeTakenSeconds += Math.Max(0d, elapsedSeconds);
+    }
+
+    private static void AddAnswerSelection(PuzzlePlayerStats stats, string selectedAnswers)
+    {
+        if (stats == null || string.IsNullOrWhiteSpace(selectedAnswers))
+            return;
+
+        stats.AnswerSelections.Add(selectedAnswers.Trim());
     }
 
     private PuzzlePlayerStats GetOrCreateStats(string roomName, int actorNumber, string playerName, int puzzleNumber)
@@ -366,6 +395,15 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback
             value = value.Replace(invalid, '_');
 
         return value.Trim();
+    }
+
+    private static string FormatMinutesAndSeconds(double totalSeconds)
+    {
+        int roundedSeconds = Mathf.Max(0, Mathf.RoundToInt((float)totalSeconds));
+        int minutes = roundedSeconds / 60;
+        int seconds = roundedSeconds % 60;
+
+        return $"{minutes:00}:{seconds:00}";
     }
 }
 
