@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
@@ -102,7 +101,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
         channelDropdown.ClearOptions();
         channelDropdown.AddOptions(new List<string> { currentChannel });
         channelDropdown.SetValueWithoutNotify(0);
-        channelDropdown.interactable = false;
+        channelDropdown.interactable = true;
     }
 
     void OnChannelChanged(int index)
@@ -507,16 +506,6 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
 
     private void SetChatVisible(bool visible)
     {
-        if (!visible && inputField != null)
-        {
-            inputField.DeactivateInputField();
-
-            if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == inputField.gameObject)
-            {
-                EventSystem.current.SetSelectedGameObject(null);
-            }
-        }
-
         isVisible = visible;
         ApplyChatVisibility();
     }
@@ -544,7 +533,7 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
                 for (int i = 0; i < chatPanel.transform.childCount; i++)
                 {
                     Transform child = chatPanel.transform.GetChild(i);
-                    if (child == collapseTransform || (unreadTransform != null && child == unreadTransform))
+                    if (IsAlwaysActiveChatControl(child, collapseTransform, unreadTransform))
                     {
                         continue;
                     }
@@ -557,6 +546,22 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener
                 chatPanel.SetActive(isVisible);
             }
         }
+    }
+
+    private bool IsAlwaysActiveChatControl(Transform child, Transform collapseTransform, Transform unreadTransform)
+    {
+        return IsControlOrAncestor(child, inputField != null ? inputField.transform : null)
+            || IsControlOrAncestor(child, sendButton != null ? sendButton.transform : null)
+            || IsControlOrAncestor(child, channelDropdown != null ? channelDropdown.transform : null)
+            || IsControlOrAncestor(child, collapseTransform)
+            || IsControlOrAncestor(child, unreadTransform);
+    }
+
+    private static bool IsControlOrAncestor(Transform possibleAncestor, Transform control)
+    {
+        return possibleAncestor != null
+            && control != null
+            && (possibleAncestor == control || control.IsChildOf(possibleAncestor));
     }
 
     private void EnsureCollapsedChatButton()
