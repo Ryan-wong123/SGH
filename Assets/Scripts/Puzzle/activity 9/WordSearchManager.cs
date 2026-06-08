@@ -1,444 +1,444 @@
-﻿using System.Collections.Generic;
-using System.Collections;
-using ExitGames.Client.Photon;
-using Photon.Pun;
-using Photon.Realtime;
-using UnityEngine;
-using TMPro;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
+using System.Collections.Generic; // Imports a namespace used by this script.
+using System.Collections; // Imports a namespace used by this script.
+using ExitGames.Client.Photon; // Imports a namespace used by this script.
+using Photon.Pun; // Imports a namespace used by this script.
+using Photon.Realtime; // Imports a namespace used by this script.
+using UnityEngine; // Imports a namespace used by this script.
+using TMPro; // Imports a namespace used by this script.
+using Hashtable = ExitGames.Client.Photon.Hashtable; // Imports a namespace used by this script.
 
-public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCallback
-{
-    private const byte WordSearchCellStateEventCode = 42;
-    private const string WordSearchCellStatePrefix = "P5WS_";
+public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCallback // Declares this type.
+{ // Starts this code block.
+    private const byte WordSearchCellStateEventCode = 42; // Declares a field, property, or member used by this script.
+    private const string WordSearchCellStatePrefix = "P5WS_"; // Declares a field, property, or member used by this script.
 
-    [Header("Grid Setup")]
-    public GameObject gridPanel;
-    public GameObject cellPrefab;
+    [Header("Grid Setup")] // Adds a labeled section in the Unity Inspector.
+    public GameObject gridPanel; // Declares a field, property, or member used by this script.
+    public GameObject cellPrefab; // Declares a field, property, or member used by this script.
     [Range(2, 40)] public int gridSize = 20; // includes header row/col
 
-    [Header("Letters")]
+    [Header("Letters")] // Adds a labeled section in the Unity Inspector.
     [SerializeField] private bool useFixedPlacement = false; // kept for compatibility; placement is always applied below
 
     // Selection state
-    private bool isDragging = false;
+    private bool isDragging = false; // Declares a field, property, or member used by this script.
     private bool dragAddMode = true; // true: selecting, false: unselecting
-    private readonly HashSet<LetterCell> selected = new();
-    private bool suppressNetworkStateApply;
+    private readonly HashSet<LetterCell> selected = new(); // Declares a field, property, or member used by this script.
+    private bool suppressNetworkStateApply; // Declares a field, property, or member used by this script.
 
     // Grid
-    private LetterCell[,] grid;
+    private LetterCell[,] grid; // Declares a field, property, or member used by this script.
 
-    [SerializeField] private Color rowColor;
-    [SerializeField] private Color ColumnColor;
+    [SerializeField] private Color rowColor; // Exposes this private field in the Unity Inspector.
+    [SerializeField] private Color ColumnColor; // Exposes this private field in the Unity Inspector.
 
-    private bool _built = false;
-    private static WordSearchManager _activeInstance;
+    private bool _built = false; // Declares a field, property, or member used by this script.
+    private static WordSearchManager _activeInstance; // Declares a field, property, or member used by this script.
 
     // Solution map: '\0' means "no specific correct letter for this cell"
-    private char[,] solution = new char[21, 21]
-    {
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L','I','N','E','Z','O','L','I','D' },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S'  },
-        { '\0','\0','\0','\0','\0','\0','R','E','D','U','C','T','I','O','N','F','\0','\0','\0','\0','U'  },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','L'  },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','U','\0','\0','\0','\0','F'  },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','O'  },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','N'  },
-        { '\0','A','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','Y'  },
-        { '\0','Z','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','Q','\0','\0','\0','\0','L'  },
-        { '\0','O','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','U','\0','\0','\0','\0','U'  },
-        { '\0','L','\0','\0','\0','\0','\0','E','\0','\0','\0','\0','\0','\0','\0','I','\0','\0','\0','\0','R'  },
-        { '\0','E','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','\0','\0','\0','N','\0','\0','\0','\0','E'  },
-        { '\0','S','\0','\0','\0','\0','\0','D','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','A'  },
-        { '\0','I','M','P','A','I','R','E','D','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','S'  },
-        { '\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','\0','\0','\0','N','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','Y','\0','\0','\0','\0','\0','\0','\0','E','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' },
-        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' }
-    };
+    private char[,] solution = new char[21, 21] // Declares a field, property, or member used by this script.
+    { // Starts this code block.
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L','I','N','E','Z','O','L','I','D' }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S'  }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','R','E','D','U','C','T','I','O','N','F','\0','\0','\0','\0','U'  }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','L'  }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','U','\0','\0','\0','\0','F'  }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','O'  }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','N'  }, // Runs this line of puzzle logic.
+        { '\0','A','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','Y'  }, // Runs this line of puzzle logic.
+        { '\0','Z','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','Q','\0','\0','\0','\0','L'  }, // Runs this line of puzzle logic.
+        { '\0','O','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','U','\0','\0','\0','\0','U'  }, // Runs this line of puzzle logic.
+        { '\0','L','\0','\0','\0','\0','\0','E','\0','\0','\0','\0','\0','\0','\0','I','\0','\0','\0','\0','R'  }, // Runs this line of puzzle logic.
+        { '\0','E','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','\0','\0','\0','N','\0','\0','\0','\0','E'  }, // Runs this line of puzzle logic.
+        { '\0','S','\0','\0','\0','\0','\0','D','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','A'  }, // Runs this line of puzzle logic.
+        { '\0','I','M','P','A','I','R','E','D','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','S'  }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','R','\0','\0','\0','\0','\0','\0','\0','O','\0','\0','\0','\0','\0' }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','L','\0','\0','\0','\0','\0','\0','\0','N','\0','\0','\0','\0','\0' }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','Y','\0','\0','\0','\0','\0','\0','\0','E','\0','\0','\0','\0','\0' }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','S','\0','\0','\0','\0','\0' }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' }, // Runs this line of puzzle logic.
+        { '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' } // Runs this line of puzzle logic.
+    }; // Runs this line of puzzle logic.
 
-    private void Awake()
-    {
+    private void Awake() // Declares a method used by this script.
+    { // Starts this code block.
         // HARD BLOCK: only 1 active WordSearchManager at runtime
-        if (_activeInstance != null && _activeInstance != this)
-        {
-            Debug.LogWarning($"[WordSearch] Duplicate WordSearchManager detected -> DISABLING this one on {gameObject.name}");
-            gameObject.SetActive(false);
-            return;
-        }
-        _activeInstance = this;
-    }
+        if (_activeInstance != null && _activeInstance != this) // Checks this condition before continuing.
+        { // Starts this code block.
+            Debug.LogWarning($"[WordSearch] Duplicate WordSearchManager detected -> DISABLING this one on {gameObject.name}"); // Writes a warning message to the Unity console.
+            gameObject.SetActive(false); // Runs this line of puzzle logic.
+            return; // Returns this result to the caller.
+        } // Ends this code block.
+        _activeInstance = this; // Updates this value.
+    } // Ends this code block.
 
-    private void OnEnable()
-    {
-        PhotonNetwork.AddCallbackTarget(this);
+    private void OnEnable() // Declares a method used by this script.
+    { // Starts this code block.
+        PhotonNetwork.AddCallbackTarget(this); // Runs this line of puzzle logic.
 
-        if (_built)
-            ApplyRoomSyncedCellStates();
-    }
+        if (_built) // Checks this condition before continuing.
+            ApplyRoomSyncedCellStates(); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void OnDisable()
-    {
-        PhotonNetwork.RemoveCallbackTarget(this);
+    private void OnDisable() // Declares a method used by this script.
+    { // Starts this code block.
+        PhotonNetwork.RemoveCallbackTarget(this); // Runs this line of puzzle logic.
 
-        if (_activeInstance == this && !gameObject.activeInHierarchy)
-            _activeInstance = null;
-    }
+        if (_activeInstance == this && !gameObject.activeInHierarchy) // Checks this condition before continuing.
+            _activeInstance = null; // Updates this value.
+    } // Ends this code block.
 
-    private void Start()
-    {
+    private void Start() // Declares a method used by this script.
+    { // Starts this code block.
         // If something calls Start twice / object re-enabled, don’t build again
-        if (_built) return;
+        if (_built) return; // Checks this condition before continuing.
 
         // Always start clean (prevents any leftover children if prefab already contains them)
-        ClearGridPanelImmediate();
+        ClearGridPanelImmediate(); // Runs this line of puzzle logic.
 
-        GenerateGrid();
-        PlaceFixedLettersFromSolution();
-        FillRandomLetters();
-        ApplyRoomSyncedCellStates();
+        GenerateGrid(); // Runs this line of puzzle logic.
+        PlaceFixedLettersFromSolution(); // Runs this line of puzzle logic.
+        FillRandomLetters(); // Runs this line of puzzle logic.
+        ApplyRoomSyncedCellStates(); // Runs this line of puzzle logic.
 
-        _built = true;
+        _built = true; // Updates this value.
 
-        Debug.Log($"[WordSearch] BUILT on '{gridPanel.name}' path='{GetTransformPath(gridPanel.transform)}' " +
-                  $"children={gridPanel.transform.childCount} expected={gridSize * gridSize}");
+        Debug.Log($"[WordSearch] BUILT on '{gridPanel.name}' path='{GetTransformPath(gridPanel.transform)}' " + // Writes a diagnostic message to the Unity console.
+                  $"children={gridPanel.transform.childCount} expected={gridSize * gridSize}"); // Runs this line of puzzle logic.
 
         // GLOBAL proof: if you see a 2nd grid, this number will be > expected overall
-        int totalCells = FindObjectsOfType<LetterCell>(true).Length;
-        Debug.Log($"[WordSearch] TOTAL LetterCell in scene (all parents) = {totalCells}");
-    }
-    private void ClearGridPanelImmediate()
-    {
-        if (gridPanel == null) return;
+        int totalCells = FindObjectsOfType<LetterCell>(true).Length; // Creates a local value used by the following logic.
+        Debug.Log($"[WordSearch] TOTAL LetterCell in scene (all parents) = {totalCells}"); // Writes a diagnostic message to the Unity console.
+    } // Ends this code block.
+    private void ClearGridPanelImmediate() // Declares a method used by this script.
+    { // Starts this code block.
+        if (gridPanel == null) return; // Checks this condition before continuing.
 
         // runtime-safe: Destroy existing children (if any)
-        for (int i = gridPanel.transform.childCount - 1; i >= 0; i--)
-        {
-            Destroy(gridPanel.transform.GetChild(i).gameObject);
-        }
-    }
-    private static string GetTransformPath(Transform t)
-    {
-        var stack = new Stack<string>();
-        while (t != null)
-        {
-            stack.Push(t.name);
-            t = t.parent;
-        }
-        return string.Join("/", stack);
-    }
-    private void GenerateGrid()
-    {
-        grid = new LetterCell[gridSize, gridSize];
+        for (int i = gridPanel.transform.childCount - 1; i >= 0; i--) // Repeats this block for a counted loop.
+        { // Starts this code block.
+            Destroy(gridPanel.transform.GetChild(i).gameObject); // Runs this line of puzzle logic.
+        } // Ends this code block.
+    } // Ends this code block.
+    private static string GetTransformPath(Transform t) // Declares a method used by this script.
+    { // Starts this code block.
+        var stack = new Stack<string>(); // Creates a local value used by the following logic.
+        while (t != null) // Repeats this block while the condition stays true.
+        { // Starts this code block.
+            stack.Push(t.name); // Runs this line of puzzle logic.
+            t = t.parent; // Updates this value.
+        } // Ends this code block.
+        return string.Join("/", stack); // Returns this result to the caller.
+    } // Ends this code block.
+    private void GenerateGrid() // Declares a method used by this script.
+    { // Starts this code block.
+        grid = new LetterCell[gridSize, gridSize]; // Updates this value.
 
-        for (int y = 0; y < gridSize; y++)
-        {
-            for (int x = 0; x < gridSize; x++)
-            {
-                var obj = Instantiate(cellPrefab, gridPanel.transform);
-                var cell = obj.GetComponent<LetterCell>();
-                cell.Init(this, new Vector2Int(x, y));
+        for (int y = 0; y < gridSize; y++) // Repeats this block for a counted loop.
+        { // Starts this code block.
+            for (int x = 0; x < gridSize; x++) // Repeats this block for a counted loop.
+            { // Starts this code block.
+                var obj = Instantiate(cellPrefab, gridPanel.transform); // Creates a local value used by the following logic.
+                var cell = obj.GetComponent<LetterCell>(); // Creates a local value used by the following logic.
+                cell.Init(this, new Vector2Int(x, y)); // Runs this line of puzzle logic.
 
                 // Top-left corner
-                if (x == 0 && y == 0)
-                {
-                    cell.SetLetter(' ');
-                    cell.DisableCellUI();
-                    cell.SetTextColor(Color.clear);
-                    cell.SetPlayable(false);
-                }
+                if (x == 0 && y == 0) // Checks this condition before continuing.
+                { // Starts this code block.
+                    cell.SetLetter(' '); // Runs this line of puzzle logic.
+                    cell.DisableCellUI(); // Runs this line of puzzle logic.
+                    cell.SetTextColor(Color.clear); // Runs this line of puzzle logic.
+                    cell.SetPlayable(false); // Runs this line of puzzle logic.
+                } // Ends this code block.
                 // Column labels (A..)
-                else if (y == 0)
-                {
-                    char letter = (char)('A' + x - 1);
-                    cell.SetLetter(letter);
-                    cell.SetTextColor(rowColor);
-                    cell.DisableCellUI();
-                    cell.SetPlayable(false);
-                }
+                else if (y == 0) // Runs when the previous condition was false.
+                { // Starts this code block.
+                    char letter = (char)('A' + x - 1); // Runs this line of puzzle logic.
+                    cell.SetLetter(letter); // Runs this line of puzzle logic.
+                    cell.SetTextColor(rowColor); // Runs this line of puzzle logic.
+                    cell.DisableCellUI(); // Runs this line of puzzle logic.
+                    cell.SetPlayable(false); // Runs this line of puzzle logic.
+                } // Ends this code block.
                 // Row labels (1..)
-                else if (x == 0)
-                {
-                    cell.SetLetterString(y.ToString());
-                    cell.SetTextColor(ColumnColor);
-                    cell.DisableCellUI();
-                    cell.SetPlayable(false);
-                }
-                else
-                {
-                    cell.SetLetter(' ');
-                    cell.SetTextColor(Color.black);
-                    cell.SetPlayable(true);
-                }
+                else if (x == 0) // Runs when the previous condition was false.
+                { // Starts this code block.
+                    cell.SetLetterString(y.ToString()); // Runs this line of puzzle logic.
+                    cell.SetTextColor(ColumnColor); // Runs this line of puzzle logic.
+                    cell.DisableCellUI(); // Runs this line of puzzle logic.
+                    cell.SetPlayable(false); // Runs this line of puzzle logic.
+                } // Ends this code block.
+                else // Runs when the previous condition was false.
+                { // Starts this code block.
+                    cell.SetLetter(' '); // Runs this line of puzzle logic.
+                    cell.SetTextColor(Color.black); // Runs this line of puzzle logic.
+                    cell.SetPlayable(true); // Runs this line of puzzle logic.
+                } // Ends this code block.
 
-                grid[x, y] = cell;
-            }
-        }
-    }
+                grid[x, y] = cell; // Runs this line of puzzle logic.
+            } // Ends this code block.
+        } // Ends this code block.
+    } // Ends this code block.
 
-    private void PlaceFixedLettersFromSolution()
-    {
-        int sizeY = Mathf.Min(gridSize, solution.GetLength(0));
-        int sizeX = Mathf.Min(gridSize, solution.GetLength(1));
+    private void PlaceFixedLettersFromSolution() // Declares a method used by this script.
+    { // Starts this code block.
+        int sizeY = Mathf.Min(gridSize, solution.GetLength(0)); // Creates a local value used by the following logic.
+        int sizeX = Mathf.Min(gridSize, solution.GetLength(1)); // Creates a local value used by the following logic.
 
         for (int y = 1; y < sizeY; y++)       // skip header row
-        {
+        { // Starts this code block.
             for (int x = 1; x < sizeX; x++)   // skip header col
-            {
-                char c = solution[y, x];
-                if (c != '\0')
-                {
-                    grid[x, y].SetLetter(c);
-                }
-            }
-        }
-    }
+            { // Starts this code block.
+                char c = solution[y, x]; // Runs this line of puzzle logic.
+                if (c != '\0') // Checks this condition before continuing.
+                { // Starts this code block.
+                    grid[x, y].SetLetter(c); // Runs this line of puzzle logic.
+                } // Ends this code block.
+            } // Ends this code block.
+        } // Ends this code block.
+    } // Ends this code block.
 
-    private void FillRandomLetters()
-    {
-        System.Random rand = new System.Random(BuildBoardSeed());
-        for (int y = 1; y < gridSize; y++)
-        {
-            for (int x = 1; x < gridSize; x++)
-            {
-                if (grid[x, y].GetLetter() == ' ')
-                    grid[x, y].SetLetter((char)('A' + rand.Next(26)));
-            }
-        }
-    }
+    private void FillRandomLetters() // Declares a method used by this script.
+    { // Starts this code block.
+        System.Random rand = new System.Random(BuildBoardSeed()); // Runs this line of puzzle logic.
+        for (int y = 1; y < gridSize; y++) // Repeats this block for a counted loop.
+        { // Starts this code block.
+            for (int x = 1; x < gridSize; x++) // Repeats this block for a counted loop.
+            { // Starts this code block.
+                if (grid[x, y].GetLetter() == ' ') // Checks this condition before continuing.
+                    grid[x, y].SetLetter((char)('A' + rand.Next(26))); // Runs this line of puzzle logic.
+            } // Ends this code block.
+        } // Ends this code block.
+    } // Ends this code block.
 
-    private int BuildBoardSeed()
-    {
-        int seed = 17;
-        string seedSource = PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom != null
-            ? PhotonNetwork.CurrentRoom.Name
-            : gameObject.scene.name;
+    private int BuildBoardSeed() // Declares a method used by this script.
+    { // Starts this code block.
+        int seed = 17; // Creates a local value used by the following logic.
+        string seedSource = PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom != null // Creates a local value used by the following logic.
+            ? PhotonNetwork.CurrentRoom.Name // Runs this line of puzzle logic.
+            : gameObject.scene.name; // Runs this line of puzzle logic.
 
-        foreach (char c in seedSource)
-            seed = (seed * 31) + c;
+        foreach (char c in seedSource) // Repeats this block for each item in a collection.
+            seed = (seed * 31) + c; // Updates this value.
 
-        seed = (seed * 31) + gridSize;
-        return seed;
-    }
+        seed = (seed * 31) + gridSize; // Updates this value.
+        return seed; // Returns this result to the caller.
+    } // Ends this code block.
 
-    private void SyncCellState(LetterCell cell)
-    {
-        if (cell == null || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
-            return;
+    private void SyncCellState(LetterCell cell) // Declares a method used by this script.
+    { // Starts this code block.
+        if (cell == null || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        Vector2Int pos = cell.gridPosition;
-        int state = EncodeCellState(cell.IsSelected, cell.CurrentResultState);
+        Vector2Int pos = cell.gridPosition; // Runs this line of puzzle logic.
+        int state = EncodeCellState(cell.IsSelected, cell.CurrentResultState); // Creates a local value used by the following logic.
 
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
-        {
-            [BuildCellStateKey(pos.x, pos.y)] = state
-        });
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable // Runs this line of puzzle logic.
+        { // Starts this code block.
+            [BuildCellStateKey(pos.x, pos.y)] = state // Adds an attribute that changes how Unity or C# treats the next declaration.
+        }); // Runs this line of puzzle logic.
 
-        object[] eventData =
-        {
-            pos.x,
-            pos.y,
-            state
-        };
+        object[] eventData = // Runs this line of puzzle logic.
+        { // Starts this code block.
+            pos.x, // Runs this line of puzzle logic.
+            pos.y, // Runs this line of puzzle logic.
+            state // Runs this line of puzzle logic.
+        }; // Runs this line of puzzle logic.
 
-        PhotonNetwork.RaiseEvent(
-            WordSearchCellStateEventCode,
-            eventData,
-            new RaiseEventOptions { Receivers = ReceiverGroup.Others },
-            SendOptions.SendReliable);
-    }
+        PhotonNetwork.RaiseEvent( // Runs this line of puzzle logic.
+            WordSearchCellStateEventCode, // Runs this line of puzzle logic.
+            eventData, // Runs this line of puzzle logic.
+            new RaiseEventOptions { Receivers = ReceiverGroup.Others }, // Runs this line of puzzle logic.
+            SendOptions.SendReliable); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void ApplyRoomSyncedCellStates()
-    {
-        if (grid == null || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
-            return;
+    private void ApplyRoomSyncedCellStates() // Declares a method used by this script.
+    { // Starts this code block.
+        if (grid == null || !PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        suppressNetworkStateApply = true;
+        suppressNetworkStateApply = true; // Updates this value.
 
-        for (int y = 1; y < gridSize; y++)
-        {
-            for (int x = 1; x < gridSize; x++)
-            {
-                string key = BuildCellStateKey(x, y);
-                if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(key))
-                    continue;
+        for (int y = 1; y < gridSize; y++) // Repeats this block for a counted loop.
+        { // Starts this code block.
+            for (int x = 1; x < gridSize; x++) // Repeats this block for a counted loop.
+            { // Starts this code block.
+                string key = BuildCellStateKey(x, y); // Creates a local value used by the following logic.
+                if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(key)) // Checks this condition before continuing.
+                    continue; // Skips to the next loop iteration.
 
-                ApplyEncodedStateToCell(x, y, (int)PhotonNetwork.CurrentRoom.CustomProperties[key]);
-            }
-        }
+                ApplyEncodedStateToCell(x, y, (int)PhotonNetwork.CurrentRoom.CustomProperties[key]); // Runs this line of puzzle logic.
+            } // Ends this code block.
+        } // Ends this code block.
 
-        suppressNetworkStateApply = false;
-    }
+        suppressNetworkStateApply = false; // Updates this value.
+    } // Ends this code block.
 
-    private void ApplyEncodedStateToCell(int x, int y, int encodedState)
-    {
-        if (grid == null || x <= 0 || y <= 0 || x >= gridSize || y >= gridSize)
-            return;
+    private void ApplyEncodedStateToCell(int x, int y, int encodedState) // Declares a method used by this script.
+    { // Starts this code block.
+        if (grid == null || x <= 0 || y <= 0 || x >= gridSize || y >= gridSize) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        LetterCell cell = grid[x, y];
-        if (cell == null || !cell.IsPlayable)
-            return;
+        LetterCell cell = grid[x, y]; // Runs this line of puzzle logic.
+        if (cell == null || !cell.IsPlayable) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        DecodeCellState(encodedState, out bool shouldSelect, out LetterCell.ResultVisualState resultState);
-        ApplyCellState(cell, shouldSelect, resultState, false);
-    }
+        DecodeCellState(encodedState, out bool shouldSelect, out LetterCell.ResultVisualState resultState); // Runs this line of puzzle logic.
+        ApplyCellState(cell, shouldSelect, resultState, false); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void ApplyCellState(LetterCell cell, bool shouldSelect, LetterCell.ResultVisualState resultState, bool sync)
-    {
-        if (cell == null)
-            return;
+    private void ApplyCellState(LetterCell cell, bool shouldSelect, LetterCell.ResultVisualState resultState, bool sync) // Declares a method used by this script.
+    { // Starts this code block.
+        if (cell == null) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        if (shouldSelect) selected.Add(cell);
-        else selected.Remove(cell);
+        if (shouldSelect) selected.Add(cell); // Checks this condition before continuing.
+        else selected.Remove(cell); // Runs when the previous condition was false.
 
-        cell.ApplySharedState(shouldSelect, resultState);
+        cell.ApplySharedState(shouldSelect, resultState); // Runs this line of puzzle logic.
 
-        if (sync && !suppressNetworkStateApply)
-            SyncCellState(cell);
-    }
+        if (sync && !suppressNetworkStateApply) // Checks this condition before continuing.
+            SyncCellState(cell); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private static int EncodeCellState(bool isSelected, LetterCell.ResultVisualState resultState)
-    {
-        return ((int)resultState << 1) | (isSelected ? 1 : 0);
-    }
+    private static int EncodeCellState(bool isSelected, LetterCell.ResultVisualState resultState) // Declares a method used by this script.
+    { // Starts this code block.
+        return ((int)resultState << 1) | (isSelected ? 1 : 0); // Returns this result to the caller.
+    } // Ends this code block.
 
-    private static void DecodeCellState(int encodedState, out bool isSelected, out LetterCell.ResultVisualState resultState)
-    {
-        isSelected = (encodedState & 1) == 1;
-        resultState = (LetterCell.ResultVisualState)(encodedState >> 1);
-    }
+    private static void DecodeCellState(int encodedState, out bool isSelected, out LetterCell.ResultVisualState resultState) // Declares a method used by this script.
+    { // Starts this code block.
+        isSelected = (encodedState & 1) == 1; // Updates this value.
+        resultState = (LetterCell.ResultVisualState)(encodedState >> 1); // Updates this value.
+    } // Ends this code block.
 
-    private static string BuildCellStateKey(int x, int y)
-    {
-        return $"{WordSearchCellStatePrefix}{x}_{y}";
-    }
+    private static string BuildCellStateKey(int x, int y) // Declares a method used by this script.
+    { // Starts this code block.
+        return $"{WordSearchCellStatePrefix}{x}_{y}"; // Returns this result to the caller.
+    } // Ends this code block.
 
-    private void ClearSyncedCellStates()
-    {
-        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
-            return;
+    private void ClearSyncedCellStates() // Declares a method used by this script.
+    { // Starts this code block.
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        Hashtable clearedStates = new Hashtable();
+        Hashtable clearedStates = new Hashtable(); // Creates a local value used by the following logic.
 
-        for (int y = 1; y < gridSize; y++)
-        {
-            for (int x = 1; x < gridSize; x++)
-            {
-                clearedStates[BuildCellStateKey(x, y)] = 0;
-            }
-        }
+        for (int y = 1; y < gridSize; y++) // Repeats this block for a counted loop.
+        { // Starts this code block.
+            for (int x = 1; x < gridSize; x++) // Repeats this block for a counted loop.
+            { // Starts this code block.
+                clearedStates[BuildCellStateKey(x, y)] = 0; // Runs this line of puzzle logic.
+            } // Ends this code block.
+        } // Ends this code block.
 
-        PhotonNetwork.CurrentRoom.SetCustomProperties(clearedStates);
-    }
+        PhotonNetwork.CurrentRoom.SetCustomProperties(clearedStates); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    public void OnEvent(EventData photonEvent)
-    {
-        if (photonEvent.Code != WordSearchCellStateEventCode)
-            return;
+    public void OnEvent(EventData photonEvent) // Declares a method used by this script.
+    { // Starts this code block.
+        if (photonEvent.Code != WordSearchCellStateEventCode) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        if (!(photonEvent.CustomData is object[] data) || data.Length < 3)
-            return;
+        if (!(photonEvent.CustomData is object[] data) || data.Length < 3) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        suppressNetworkStateApply = true;
-        ApplyEncodedStateToCell((int)data[0], (int)data[1], (int)data[2]);
-        suppressNetworkStateApply = false;
-    }
+        suppressNetworkStateApply = true; // Updates this value.
+        ApplyEncodedStateToCell((int)data[0], (int)data[1], (int)data[2]); // Runs this line of puzzle logic.
+        suppressNetworkStateApply = false; // Updates this value.
+    } // Ends this code block.
 
-    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
-    {
-        if (grid == null)
-            return;
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged) // Overrides a Unity or Photon callback method.
+    { // Starts this code block.
+        if (grid == null) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        suppressNetworkStateApply = true;
+        suppressNetworkStateApply = true; // Updates this value.
 
-        foreach (DictionaryEntry entry in propertiesThatChanged)
-        {
-            if (entry.Key is not string key || !key.StartsWith(WordSearchCellStatePrefix))
-                continue;
+        foreach (DictionaryEntry entry in propertiesThatChanged) // Repeats this block for each item in a collection.
+        { // Starts this code block.
+            if (entry.Key is not string key || !key.StartsWith(WordSearchCellStatePrefix)) // Checks this condition before continuing.
+                continue; // Skips to the next loop iteration.
 
-            string[] parts = key.Substring(WordSearchCellStatePrefix.Length).Split('_');
-            if (parts.Length != 2 ||
-                !int.TryParse(parts[0], out int x) ||
-                !int.TryParse(parts[1], out int y))
-                continue;
+            string[] parts = key.Substring(WordSearchCellStatePrefix.Length).Split('_'); // Runs this line of puzzle logic.
+            if (parts.Length != 2 || // Checks this condition before continuing.
+                !int.TryParse(parts[0], out int x) || // Runs this line of puzzle logic.
+                !int.TryParse(parts[1], out int y)) // Runs this line of puzzle logic.
+                continue; // Skips to the next loop iteration.
 
-            ApplyEncodedStateToCell(x, y, (int)entry.Value);
-        }
+            ApplyEncodedStateToCell(x, y, (int)entry.Value); // Runs this line of puzzle logic.
+        } // Ends this code block.
 
-        suppressNetworkStateApply = false;
-    }
+        suppressNetworkStateApply = false; // Updates this value.
+    } // Ends this code block.
 
     // ---------- Results clearing ----------
-    private void ClearAllResults(bool sync = true)
-    {
-        if (grid == null) return;
-        int sizeY = grid.GetLength(1);
-        int sizeX = grid.GetLength(0);
+    private void ClearAllResults(bool sync = true) // Declares a method used by this script.
+    { // Starts this code block.
+        if (grid == null) return; // Checks this condition before continuing.
+        int sizeY = grid.GetLength(1); // Creates a local value used by the following logic.
+        int sizeX = grid.GetLength(0); // Creates a local value used by the following logic.
 
-        for (int y = 1; y < sizeY; y++)
-        {
-            for (int x = 1; x < sizeX; x++)
-            {
-                var cell = grid[x, y];
-                if (cell != null && cell.IsPlayable)
-                    ApplyCellState(cell, selected.Contains(cell), LetterCell.ResultVisualState.None, sync);
-            }
-        }
-    }
+        for (int y = 1; y < sizeY; y++) // Repeats this block for a counted loop.
+        { // Starts this code block.
+            for (int x = 1; x < sizeX; x++) // Repeats this block for a counted loop.
+            { // Starts this code block.
+                var cell = grid[x, y]; // Creates a local value used by the following logic.
+                if (cell != null && cell.IsPlayable) // Checks this condition before continuing.
+                    ApplyCellState(cell, selected.Contains(cell), LetterCell.ResultVisualState.None, sync); // Runs this line of puzzle logic.
+            } // Ends this code block.
+        } // Ends this code block.
+    } // Ends this code block.
 
     // =========================
     //  Selection API for cells
     // =========================
-    public void BeginDrag(LetterCell start)
-    {
-        if (!start.IsPlayable) return;
+    public void BeginDrag(LetterCell start) // Declares a method used by this script.
+    { // Starts this code block.
+        if (!start.IsPlayable) return; // Checks this condition before continuing.
 
-        isDragging = true;
+        isDragging = true; // Updates this value.
         dragAddMode = !selected.Contains(start); // start on selected => unselect mode
 
-        if (dragAddMode) SelectCell(start);
-        else UnselectCell(start);
-    }
+        if (dragAddMode) SelectCell(start); // Checks this condition before continuing.
+        else UnselectCell(start); // Runs when the previous condition was false.
+    } // Ends this code block.
 
-    public void DragOver(LetterCell cell)
-    {
-        if (!isDragging || !cell.IsPlayable) return;
+    public void DragOver(LetterCell cell) // Declares a method used by this script.
+    { // Starts this code block.
+        if (!isDragging || !cell.IsPlayable) return; // Checks this condition before continuing.
 
-        if (dragAddMode) SelectCell(cell);
-        else UnselectCell(cell);
-    }
+        if (dragAddMode) SelectCell(cell); // Checks this condition before continuing.
+        else UnselectCell(cell); // Runs when the previous condition was false.
+    } // Ends this code block.
 
-    public void EndDrag()
-    {
-        isDragging = false;
-    }
+    public void EndDrag() // Declares a method used by this script.
+    { // Starts this code block.
+        isDragging = false; // Updates this value.
+    } // Ends this code block.
 
-    private void SelectCell(LetterCell cell)
-    {
-        if (!selected.Contains(cell) || cell.CurrentResultState != LetterCell.ResultVisualState.None)
-            ApplyCellState(cell, true, LetterCell.ResultVisualState.None, true);
-    }
+    private void SelectCell(LetterCell cell) // Declares a method used by this script.
+    { // Starts this code block.
+        if (!selected.Contains(cell) || cell.CurrentResultState != LetterCell.ResultVisualState.None) // Checks this condition before continuing.
+            ApplyCellState(cell, true, LetterCell.ResultVisualState.None, true); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void UnselectCell(LetterCell cell)
-    {
-        if (selected.Contains(cell) || cell.CurrentResultState != LetterCell.ResultVisualState.None)
-            ApplyCellState(cell, false, LetterCell.ResultVisualState.None, true);
-    }
+    private void UnselectCell(LetterCell cell) // Declares a method used by this script.
+    { // Starts this code block.
+        if (selected.Contains(cell) || cell.CurrentResultState != LetterCell.ResultVisualState.None) // Checks this condition before continuing.
+            ApplyCellState(cell, false, LetterCell.ResultVisualState.None, true); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
     // Optional public single-click toggle (BeginDrag already handles it)
-    public void ToggleCell(LetterCell cell)
-    {
-        if (!cell.IsPlayable) return;
-        if (selected.Contains(cell)) UnselectCell(cell);
-        else SelectCell(cell);
-    }
+    public void ToggleCell(LetterCell cell) // Declares a method used by this script.
+    { // Starts this code block.
+        if (!cell.IsPlayable) return; // Checks this condition before continuing.
+        if (selected.Contains(cell)) UnselectCell(cell); // Checks this condition before continuing.
+        else SelectCell(cell); // Runs when the previous condition was false.
+    } // Ends this code block.
 
     // Keep button wiring simple
-    public void Submit() => IsSolved();
+    public void Submit() => IsSolved(); // Declares a method used by this script.
 
     // =========================
     // Final check + painter
@@ -447,95 +447,95 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
     //   1) every solution cell is selected AND matches its letter, and
     //   2) no extra cells are selected outside the solution map.
     // Also: clears previous results, then paints current selection green/red.
-    public bool IsSolved()
-    {
+    public bool IsSolved() // Declares a method used by this script.
+    { // Starts this code block.
         ClearAllResults(); // fresh attempt paint
 
-        int sizeY = Mathf.Min(gridSize, solution.GetLength(0));
-        int sizeX = Mathf.Min(gridSize, solution.GetLength(1));
+        int sizeY = Mathf.Min(gridSize, solution.GetLength(0)); // Creates a local value used by the following logic.
+        int sizeX = Mathf.Min(gridSize, solution.GetLength(1)); // Creates a local value used by the following logic.
 
-        bool allMatch = true;
+        bool allMatch = true; // Creates a local value used by the following logic.
 
         // 1) Paint every selected cell and track correctness
-        foreach (var cell in selected)
-        {
-            Vector2Int p = cell.gridPosition;
+        foreach (var cell in selected) // Repeats this block for each item in a collection.
+        { // Starts this code block.
+            Vector2Int p = cell.gridPosition; // Runs this line of puzzle logic.
             if (p.x <= 0 || p.y <= 0 || p.x >= sizeX || p.y >= sizeY) // ignore headers/out-of-range
-                continue;
+                continue; // Skips to the next loop iteration.
 
-            char expected = solution[p.y, p.x];
-            char actual = cell.GetLetter();
+            char expected = solution[p.y, p.x]; // Runs this line of puzzle logic.
+            char actual = cell.GetLetter(); // Runs this line of puzzle logic.
 
-            bool isCorrect = (expected != '\0') &&
-                             (char.ToUpperInvariant(expected) == char.ToUpperInvariant(actual));
+            bool isCorrect = (expected != '\0') && // Creates a local value used by the following logic.
+                             (char.ToUpperInvariant(expected) == char.ToUpperInvariant(actual)); // Runs this line of puzzle logic.
 
             if (isCorrect) ApplyCellState(cell, true, LetterCell.ResultVisualState.Correct, true); // green
             else ApplyCellState(cell, true, LetterCell.ResultVisualState.Wrong, true);   // red
 
-            if (!isCorrect) allMatch = false;
-        }
+            if (!isCorrect) allMatch = false; // Checks this condition before continuing.
+        } // Ends this code block.
 
         // 2) Ensure no required cell is missing, and that selected ones match
-        for (int y = 1; y < sizeY; y++)
-        {
-            for (int x = 1; x < sizeX; x++)
-            {
-                if (solution[y, x] == '\0') continue;
+        for (int y = 1; y < sizeY; y++) // Repeats this block for a counted loop.
+        { // Starts this code block.
+            for (int x = 1; x < sizeX; x++) // Repeats this block for a counted loop.
+            { // Starts this code block.
+                if (solution[y, x] == '\0') continue; // Checks this condition before continuing.
 
-                var neededCell = grid[x, y];
+                var neededCell = grid[x, y]; // Creates a local value used by the following logic.
 
                 // must be selected
-                if (!selected.Contains(neededCell))
-                {
-                    allMatch = false;
-                }
-                else
-                {
+                if (!selected.Contains(neededCell)) // Checks this condition before continuing.
+                { // Starts this code block.
+                    allMatch = false; // Updates this value.
+                } // Ends this code block.
+                else // Runs when the previous condition was false.
+                { // Starts this code block.
                     // and must match expected letter
-                    if (char.ToUpperInvariant(neededCell.GetLetter()) !=
-                        char.ToUpperInvariant(solution[y, x]))
-                    {
-                        allMatch = false;
-                    }
-                }
-            }
-        }
+                    if (char.ToUpperInvariant(neededCell.GetLetter()) != // Checks this condition before continuing.
+                        char.ToUpperInvariant(solution[y, x])) // Runs this line of puzzle logic.
+                    { // Starts this code block.
+                        allMatch = false; // Updates this value.
+                    } // Ends this code block.
+                } // Ends this code block.
+            } // Ends this code block.
+        } // Ends this code block.
 
-        return allMatch;
-    }
+        return allMatch; // Returns this result to the caller.
+    } // Ends this code block.
 
-    public void ResetPuzzle()
-    {
+    public void ResetPuzzle() // Declares a method used by this script.
+    { // Starts this code block.
         // --- 1) Destroy all existing grid children ---
-        if (gridPanel == null)
-        {
-            Debug.LogError("[WordSearch] gridPanel is NULL");
-            return;
-        }
+        if (gridPanel == null) // Checks this condition before continuing.
+        { // Starts this code block.
+            Debug.LogError("[WordSearch] gridPanel is NULL"); // Writes an error message to the Unity console.
+            return; // Returns this result to the caller.
+        } // Ends this code block.
 
-        Debug.Log($"[WordSearch] ResetPuzzle - children BEFORE = {gridPanel.transform.childCount}");
+        Debug.Log($"[WordSearch] ResetPuzzle - children BEFORE = {gridPanel.transform.childCount}"); // Writes a diagnostic message to the Unity console.
 
-        for (int i = gridPanel.transform.childCount - 1; i >= 0; i--)
-        {
-            Transform child = gridPanel.transform.GetChild(i);
-            Destroy(child.gameObject);
-        }
+        for (int i = gridPanel.transform.childCount - 1; i >= 0; i--) // Repeats this block for a counted loop.
+        { // Starts this code block.
+            Transform child = gridPanel.transform.GetChild(i); // Creates a local value used by the following logic.
+            Destroy(child.gameObject); // Runs this line of puzzle logic.
+        } // Ends this code block.
 
         // --- 2) Reset selection state ---
-        selected.Clear();
-        isDragging = false;
-        suppressNetworkStateApply = false;
-        ClearSyncedCellStates();
+        selected.Clear(); // Runs this line of puzzle logic.
+        isDragging = false; // Updates this value.
+        suppressNetworkStateApply = false; // Updates this value.
+        ClearSyncedCellStates(); // Runs this line of puzzle logic.
 
-        grid = null;
+        grid = null; // Updates this value.
 
         // --- 3) Regenerate everything ---
-        GenerateGrid();
-        PlaceFixedLettersFromSolution();
-        FillRandomLetters();
-        ApplyRoomSyncedCellStates();
+        GenerateGrid(); // Runs this line of puzzle logic.
+        PlaceFixedLettersFromSolution(); // Runs this line of puzzle logic.
+        FillRandomLetters(); // Runs this line of puzzle logic.
+        ApplyRoomSyncedCellStates(); // Runs this line of puzzle logic.
 
-        Debug.Log($"[WordSearch] ResetPuzzle - DONE, children AFTER = {gridPanel.transform.childCount}");
-    }
+        Debug.Log($"[WordSearch] ResetPuzzle - DONE, children AFTER = {gridPanel.transform.childCount}"); // Writes a diagnostic message to the Unity console.
+    } // Ends this code block.
 
-}
+} // Ends this code block.

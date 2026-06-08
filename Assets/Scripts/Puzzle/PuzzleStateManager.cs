@@ -182,7 +182,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
     // ===== Timer-driven reloads =====
     public void OnTimerExpired() // Reloads the current puzzle when the shared timer expires.
     { // Starts this block.
-        Debug.Log("Timer expired — reloading current puzzle stage."); // Writes puzzle-state diagnostic information to the Unity console.
+        Debug.Log("Timer expired ï¿½ reloading current puzzle stage."); // Writes puzzle-state diagnostic information to the Unity console.
         GameSessionCsvLogger.Instance?.RecordPuzzleReset(CurrentStage); // Records puzzle-session information to the CSV logger when available.
 
         switch (CurrentStage) // Selects behavior based on the current puzzle stage or state.
@@ -1288,7 +1288,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         // 3) If it's not locked and I've already taken my turn this round, block starting a (new) attempt.
         if (iPlayed) // Checks whether this puzzle-state condition requires action.
         { // Starts this block.
-            reason = "You’ve already taken your turn this round."; // Handles this part of the puzzle state flow.
+            reason = "Youï¿½ve already taken your turn this round."; // Handles this part of the puzzle state flow.
             MaybeAdvanceRoundIfEveryonePlayed(); // Handles this part of the puzzle state flow.
             return false; // Reports failure to the caller.
         } // Ends this block.
