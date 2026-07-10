@@ -4,3 +4,7 @@
 [Tt]emp/
 UserSettings/
 .vs/SGH
+
+# Generated gameplay/data analytics exports
+outputs/
+obj/Debug/

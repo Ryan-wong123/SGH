@@ -19,6 +19,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
     private readonly Dictionary<string, PuzzlePlayerStats> statsByKey = new(); // Declares a field, property, or member used by this script.
     private readonly Dictionary<string, double> localAttemptStartTimes = new(); // Declares a field, property, or member used by this script.
+    private DateTime sessionPlayedAt; // Stores when this game session started for CSV export.
     private bool hasWrittenCsv; // Declares a field, property, or member used by this script.
 
     private sealed class PuzzlePlayerStats // Declares a field, property, or member used by this script.
@@ -60,6 +61,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         } // Ends this code block.
 
         Instance = this; // Updates this value.
+        sessionPlayedAt = DateTime.Now; // Captures the date and time the game session began.
         DontDestroyOnLoad(gameObject); // Runs this line of puzzle logic.
     } // Ends this code block.
 
@@ -154,17 +156,20 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             maxAnswerTries = Math.Max(maxAnswerTries, row.AnswerSelections.Count); // Updates this value.
 
         var csv = new StringBuilder(); // Creates a local value used by the following logic.
-        csv.Append("room_name,player_name,puzzle_number,times_entered,correct_answers,wrong_answers"); // Runs this line of puzzle logic.
+        string playedAt = sessionPlayedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture); // Formats the session date and time for analytics.
+        csv.Append("date_time_played,room_name,player_name,puzzle_number,puzzle_name,total_tries,number_of_times_answer_is_correct,number_of_times_answer_is_wrong"); // Writes the analytics-friendly CSV header.
         for (int i = 1; i <= maxAnswerTries; i++) // Repeats this block for a counted loop.
             csv.Append($",answer_try_{i}"); // Runs this line of puzzle logic.
         csv.AppendLine(",time_taken"); // Runs this line of puzzle logic.
 
         foreach (var row in rows) // Repeats this block for each item in a collection.
         { // Starts this code block.
+            csv.AppendCsv(playedAt).Append(','); // Writes the session date and time at the start of every row.
             csv.AppendCsv(row.RoomName).Append(','); // Runs this line of puzzle logic.
             csv.AppendCsv(row.PlayerName).Append(','); // Runs this line of puzzle logic.
             csv.Append(row.PuzzleNumber).Append(','); // Runs this line of puzzle logic.
-            csv.Append(row.TimesEntered).Append(','); // Runs this line of puzzle logic.
+            csv.AppendCsv(GetPuzzleName(row.PuzzleNumber)).Append(','); // Writes the descriptive puzzle name beside the puzzle number.
+            csv.Append(row.CorrectAnswers + row.WrongAnswers).Append(','); // Total tries are all correct and wrong answer attempts.
             csv.Append(row.CorrectAnswers).Append(','); // Runs this line of puzzle logic.
             csv.Append(row.WrongAnswers); // Runs this line of puzzle logic.
 
@@ -372,6 +377,25 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         string cachedRoomName = Network.GetCachedRoomName(); // Creates a local value used by the following logic.
         return string.IsNullOrWhiteSpace(cachedRoomName) ? "Offline" : cachedRoomName; // Returns this result to the caller.
+    } // Ends this code block.
+
+    private static string GetPuzzleName(int puzzleNumber) // Maps the exported puzzle number to its game puzzle name.
+    { // Starts this code block.
+        switch (puzzleNumber) // Selects the configured name for the puzzle stage.
+        { // Starts this code block.
+            case 1: return "Decode the hypoglycemia symptoms"; // Names puzzle 1.
+            case 2: return "Align the palette"; // Names puzzle 2.
+            case 3: return "Fuel up to break free from the low-sugar trap"; // Names puzzle 3.
+            case 4: return "Crack the survival code against hypoglycemia"; // Names puzzle 4.
+            case 5: return "Find the hidden drug-drug and drug-disease interactions that trigger hypoglycemia"; // Names puzzle 5.
+            case 6: return "Glucose Diary"; // Names puzzle 6.
+            case 7: return "With insulin as the highest risk, decode the risk level of other agents."; // Names puzzle 7.
+            case 8: return "Crack the code to the Insulatard dose"; // Names puzzle 8.
+            case 9: return "Decode the insulin"; // Names puzzle 9.
+            case 10: return "Insulatard vial: align the right cards in order"; // Names puzzle 10.
+            case 11: return "Uncover the hidden lapses that sealed the patient’s destiny"; // Names puzzle 11.
+            default: return $"Puzzle {puzzleNumber}"; // Keeps unexpected stages readable in the export.
+        } // Ends this code block.
     } // Ends this code block.
 
     private static string ResolvePlayerName(int actorNumber) // Declares a method used by this script.
