@@ -1,154 +1,154 @@
-using Photon.Pun;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
+using Photon.Pun; // Imports a namespace used by this script.
+using TMPro; // Imports a namespace used by this script.
+using UnityEngine; // Imports a namespace used by this script.
+using UnityEngine.UI; // Imports a namespace used by this script.
+using Hashtable = ExitGames.Client.Photon.Hashtable; // Imports a namespace used by this script.
 
-[RequireComponent(typeof(PhotonView))]
-[RequireComponent(typeof(TMP_InputField))]
-public class PhotonSyncedTMPInputField : MonoBehaviourPun
-{
-    private const string TextPropertyPrefix = "TMPInputText_";
-    private const string ColorPropertyPrefix = "TMPInputColor_";
+[RequireComponent(typeof(PhotonView))] // Adds an attribute that changes how Unity or C# treats the next declaration.
+[RequireComponent(typeof(TMP_InputField))] // Adds an attribute that changes how Unity or C# treats the next declaration.
+public class PhotonSyncedTMPInputField : MonoBehaviourPun // Declares this type.
+{ // Starts this code block.
+    private const string TextPropertyPrefix = "TMPInputText_"; // Declares a field, property, or member used by this script.
+    private const string ColorPropertyPrefix = "TMPInputColor_"; // Declares a field, property, or member used by this script.
 
-    [SerializeField] private TMP_InputField input;
+    [SerializeField] private TMP_InputField input; // Exposes this private field in the Unity Inspector.
 
-    private bool suppressCallbacks;
-    private Graphic backgroundGraphic;
+    private bool suppressCallbacks; // Declares a field, property, or member used by this script.
+    private Graphic backgroundGraphic; // Declares a field, property, or member used by this script.
 
     // LWW ordering per-sender
-    private int localSeq = 0;
-    private readonly System.Collections.Generic.Dictionary<int, int> lastSeqByActor =
-        new System.Collections.Generic.Dictionary<int, int>();
+    private int localSeq = 0; // Declares a field, property, or member used by this script.
+    private readonly System.Collections.Generic.Dictionary<int, int> lastSeqByActor = // Declares a field, property, or member used by this script.
+        new System.Collections.Generic.Dictionary<int, int>(); // Runs this line of puzzle logic.
 
-    private void Awake()
-    {
-        if (input == null)
-            input = GetComponent<TMP_InputField>();
+    private void Awake() // Declares a method used by this script.
+    { // Starts this code block.
+        if (input == null) // Checks this condition before continuing.
+            input = GetComponent<TMP_InputField>(); // Updates this value.
 
-        backgroundGraphic = input != null && input.image != null
-            ? input.image
-            : GetComponent<Graphic>();
+        backgroundGraphic = input != null && input.image != null // Updates this value.
+            ? input.image // Runs this line of puzzle logic.
+            : GetComponent<Graphic>(); // Runs this line of puzzle logic.
 
-        input.onValueChanged.AddListener(OnLocalValueChanged);
-    }
+        input.onValueChanged.AddListener(OnLocalValueChanged); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void OnEnable()
-    {
-        ApplyPersistedRoomState();
-    }
+    private void OnEnable() // Declares a method used by this script.
+    { // Starts this code block.
+        ApplyPersistedRoomState(); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void OnDestroy()
-    {
-        input.onValueChanged.RemoveListener(OnLocalValueChanged);
-    }
+    private void OnDestroy() // Declares a method used by this script.
+    { // Starts this code block.
+        input.onValueChanged.RemoveListener(OnLocalValueChanged); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void OnLocalValueChanged(string value)
-    {
-        if (suppressCallbacks)
-            return;
+    private void OnLocalValueChanged(string value) // Declares a method used by this script.
+    { // Starts this code block.
+        if (suppressCallbacks) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        if (!PhotonNetwork.InRoom)
-            return;
+        if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        localSeq++;
-        int actor = PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1;
+        localSeq++; // Runs this line of puzzle logic.
+        int actor = PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1; // Creates a local value used by the following logic.
 
-        PhotonNetwork.CurrentRoom?.SetCustomProperties(new Hashtable
-        {
-            [BuildTextKey()] = value ?? string.Empty
-        });
+        PhotonNetwork.CurrentRoom?.SetCustomProperties(new Hashtable // Runs this line of puzzle logic.
+        { // Starts this code block.
+            [BuildTextKey()] = value ?? string.Empty // Adds an attribute that changes how Unity or C# treats the next declaration.
+        }); // Runs this line of puzzle logic.
 
         // Everyone can type; broadcast changes to others.
-        photonView.RPC(nameof(RPC_SetTextLWW), RpcTarget.Others, value, actor, localSeq);
-    }
+        photonView.RPC(nameof(RPC_SetTextLWW), RpcTarget.Others, value, actor, localSeq); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    [PunRPC]
-    private void RPC_SetTextLWW(string text, int actor, int seq)
-    {
+    [PunRPC] // Adds an attribute that changes how Unity or C# treats the next declaration.
+    private void RPC_SetTextLWW(string text, int actor, int seq) // Declares a method used by this script.
+    { // Starts this code block.
         // Ignore out-of-order updates from the same actor
-        if (lastSeqByActor.TryGetValue(actor, out int last) && seq <= last)
-            return;
+        if (lastSeqByActor.TryGetValue(actor, out int last) && seq <= last) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        lastSeqByActor[actor] = seq;
+        lastSeqByActor[actor] = seq; // Updates this value.
 
-        suppressCallbacks = true;
-        input.text = text;
-        suppressCallbacks = false;
-    }
+        suppressCallbacks = true; // Updates this value.
+        input.text = text; // Updates this value.
+        suppressCallbacks = false; // Updates this value.
+    } // Ends this code block.
 
-    public void SetBackgroundColorAndSync(Color color)
-    {
-        ApplyBackgroundColor(color);
+    public void SetBackgroundColorAndSync(Color color) // Declares a method used by this script.
+    { // Starts this code block.
+        ApplyBackgroundColor(color); // Runs this line of puzzle logic.
 
-        if (!PhotonNetwork.InRoom)
-            return;
+        if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        PhotonNetwork.CurrentRoom?.SetCustomProperties(new Hashtable
-        {
-            [BuildColorKey()] = EncodeColor(color)
-        });
+        PhotonNetwork.CurrentRoom?.SetCustomProperties(new Hashtable // Runs this line of puzzle logic.
+        { // Starts this code block.
+            [BuildColorKey()] = EncodeColor(color) // Adds an attribute that changes how Unity or C# treats the next declaration.
+        }); // Runs this line of puzzle logic.
 
-        photonView.RPC(nameof(RPC_SetBackgroundColor), RpcTarget.Others, color.r, color.g, color.b, color.a);
-    }
+        photonView.RPC(nameof(RPC_SetBackgroundColor), RpcTarget.Others, color.r, color.g, color.b, color.a); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    public void ResetBackgroundColorAndSync()
-    {
-        SetBackgroundColorAndSync(Color.white);
-    }
+    public void ResetBackgroundColorAndSync() // Declares a method used by this script.
+    { // Starts this code block.
+        SetBackgroundColorAndSync(Color.white); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    [PunRPC]
-    private void RPC_SetBackgroundColor(float r, float g, float b, float a)
-    {
-        ApplyBackgroundColor(new Color(r, g, b, a));
-    }
+    [PunRPC] // Adds an attribute that changes how Unity or C# treats the next declaration.
+    private void RPC_SetBackgroundColor(float r, float g, float b, float a) // Declares a method used by this script.
+    { // Starts this code block.
+        ApplyBackgroundColor(new Color(r, g, b, a)); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void ApplyBackgroundColor(Color color)
-    {
-        if (backgroundGraphic != null)
-            backgroundGraphic.color = color;
-    }
+    private void ApplyBackgroundColor(Color color) // Declares a method used by this script.
+    { // Starts this code block.
+        if (backgroundGraphic != null) // Checks this condition before continuing.
+            backgroundGraphic.color = color; // Updates this value.
+    } // Ends this code block.
 
-    private void ApplyPersistedRoomState()
-    {
-        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null || input == null)
-            return;
+    private void ApplyPersistedRoomState() // Declares a method used by this script.
+    { // Starts this code block.
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null || input == null) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
+        Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties; // Creates a local value used by the following logic.
 
-        string textKey = BuildTextKey();
-        if (properties.ContainsKey(textKey))
-        {
-            suppressCallbacks = true;
-            input.text = properties[textKey] as string ?? string.Empty;
-            suppressCallbacks = false;
-        }
+        string textKey = BuildTextKey(); // Creates a local value used by the following logic.
+        if (properties.ContainsKey(textKey)) // Checks this condition before continuing.
+        { // Starts this code block.
+            suppressCallbacks = true; // Updates this value.
+            input.text = properties[textKey] as string ?? string.Empty; // Updates this value.
+            suppressCallbacks = false; // Updates this value.
+        } // Ends this code block.
 
-        string colorKey = BuildColorKey();
-        if (properties.ContainsKey(colorKey) && TryDecodeColor(properties[colorKey], out Color color))
-            ApplyBackgroundColor(color);
-    }
+        string colorKey = BuildColorKey(); // Creates a local value used by the following logic.
+        if (properties.ContainsKey(colorKey) && TryDecodeColor(properties[colorKey], out Color color)) // Checks this condition before continuing.
+            ApplyBackgroundColor(color); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private string BuildTextKey() => $"{TextPropertyPrefix}{photonView.ViewID}";
-    private string BuildColorKey() => $"{ColorPropertyPrefix}{photonView.ViewID}";
+    private string BuildTextKey() => $"{TextPropertyPrefix}{photonView.ViewID}"; // Declares a method used by this script.
+    private string BuildColorKey() => $"{ColorPropertyPrefix}{photonView.ViewID}"; // Declares a method used by this script.
 
-    private static float[] EncodeColor(Color color) => new[] { color.r, color.g, color.b, color.a };
+    private static float[] EncodeColor(Color color) => new[] { color.r, color.g, color.b, color.a }; // Declares a method used by this script.
 
-    private static bool TryDecodeColor(object value, out Color color)
-    {
-        if (value is float[] rgba && rgba.Length >= 4)
-        {
-            color = new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
-            return true;
-        }
+    private static bool TryDecodeColor(object value, out Color color) // Declares a method used by this script.
+    { // Starts this code block.
+        if (value is float[] rgba && rgba.Length >= 4) // Checks this condition before continuing.
+        { // Starts this code block.
+            color = new Color(rgba[0], rgba[1], rgba[2], rgba[3]); // Creates a local value used by the following logic.
+            return true; // Returns this result to the caller.
+        } // Ends this code block.
 
-        if (value is Color storedColor)
-        {
-            color = storedColor;
-            return true;
-        }
+        if (value is Color storedColor) // Checks this condition before continuing.
+        { // Starts this code block.
+            color = storedColor; // Creates a local value used by the following logic.
+            return true; // Returns this result to the caller.
+        } // Ends this code block.
 
-        color = Color.white;
-        return false;
-    }
-}
+        color = Color.white; // Creates a local value used by the following logic.
+        return false; // Returns this result to the caller.
+    } // Ends this code block.
+} // Ends this code block.

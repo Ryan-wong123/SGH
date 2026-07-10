@@ -1,1301 +1,1433 @@
-﻿using Photon.Pun;
-using Photon.Realtime;
-using ExitGames.Client.Photon;                      // keep Photon namespace
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.UI;
-using Hashtable = ExitGames.Client.Photon.Hashtable; // alias Photon Hashtable
+using Photon.Pun; // Imports a namespace used by this puzzle state manager.
+using Photon.Realtime; // Imports a namespace used by this puzzle state manager.
+using ExitGames.Client.Photon;                      // keep Photon namespace // Imports a namespace used by this puzzle state manager.
+using System; // Imports a namespace used by this puzzle state manager.
+using System.Collections; // Imports a namespace used by this puzzle state manager.
+using System.Collections.Generic; // Imports a namespace used by this puzzle state manager.
+using System.Text; // Imports a namespace used by this puzzle state manager.
+using TMPro; // Imports a namespace used by this puzzle state manager.
+using Unity.VisualScripting; // Imports a namespace used by this puzzle state manager.
+using UnityEngine; // Imports a namespace used by this puzzle state manager.
+using UnityEngine.UI; // Imports a namespace used by this puzzle state manager.
+using Hashtable = ExitGames.Client.Photon.Hashtable; // alias Photon Hashtable // Creates a shorter alias for Photon room/player property tables.
 
-public class PuzzleStateManager : MonoBehaviourPunCallbacks
-{
-    [Serializable]
-    private class PuzzleClueReward
-    {
-        public PuzzleStage stage;
-        public string clueId;
-        [Tooltip("Optional popup override. Leave empty to use 'Clue picked up: <clue name>'.")]
-        public string popupMessage;
-    }
+public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the networked manager that tracks puzzle stage, locks, resets, and rewards.
+{ // Starts this block.
+    [Serializable] // Allows Unity to serialize this nested data type.
+    private class PuzzleClueReward // Defines the clue reward data for a completed puzzle stage.
+    { // Starts this block.
+        public PuzzleStage stage; // Handles this part of the puzzle state flow.
+        public string clueId; // Handles this part of the puzzle state flow.
+        [Tooltip("Optional popup override. Leave empty to use 'Clue picked up: <clue name>'.")] // Shows guidance for this field in the Unity inspector.
+        public string popupMessage; // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    [Header("puzzle trigger object")]
-    [SerializeField] private GameObject puzzle1Object;
-    [SerializeField] private GameObject puzzle2Object;
-    [SerializeField] private GameObject puzzle3Object;
-    [SerializeField] private GameObject puzzle4Object;
-    [SerializeField] private GameObject puzzle5Object;
+    [Header("puzzle trigger object")] // Groups related fields in the Unity inspector.
+    [SerializeField] private GameObject puzzle1Object; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject puzzle2Object; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject puzzle3Object; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject puzzle4Object; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject puzzle5Object; // Exposes this private field in the Unity inspector.
 
-    [SerializeField] private float delayTransition;
+    [SerializeField] private float delayTransition; // Exposes this private field in the Unity inspector.
 
-    public static PuzzleStateManager Instance;
+    public static PuzzleStateManager Instance; // Stores the shared PuzzleStateManager singleton instance.
 
-    [Header("Puzzle State")]
-    public PuzzleStage CurrentStage = PuzzleStage.Puzzle0;
+    [Header("Puzzle State")] // Groups related fields in the Unity inspector.
+    public PuzzleStage CurrentStage = PuzzleStage.Puzzle0; // Stores the puzzle stage currently active for the room.
 
-    [Header("Puzzle 1 Correct Symptoms")]
-    public HashSet<string> correctSymptomsFromPuzzle1 = new();
+    [Header("Puzzle 1 Correct Symptoms")] // Groups related fields in the Unity inspector.
+    public HashSet<string> correctSymptomsFromPuzzle1 = new(); // Stores symptom IDs accepted from the first puzzle.
 
-    [Header("puzzle 1 ")]
-    [SerializeField] private GameObject Puzzle1Panel; 
-    [SerializeField] private SymptomsCardManager symptomsCardManager;
+    [Header("puzzle 1 ")] // Groups related fields in the Unity inspector.
+    [SerializeField] private GameObject Puzzle1Panel;  // Exposes this private field in the Unity inspector.
+    [SerializeField] private SymptomsCardManager symptomsCardManager; // Exposes this private field in the Unity inspector.
 
-    [Header("puzzle 2")]
-    [SerializeField] private GameObject Puzzle2Panel;
-    [SerializeField] private BearCardManager bearCardManager;
+    [Header("puzzle 2")] // Groups related fields in the Unity inspector.
+    [SerializeField] private GameObject Puzzle2Panel; // Exposes this private field in the Unity inspector.
+    [SerializeField] private BearCardManager bearCardManager; // Exposes this private field in the Unity inspector.
 
-    [Header("puzzle 3")]
-    [SerializeField] private GameObject Puzzle3Panel;
-    [SerializeField] private PictureGridManager pictureGridManager;
+    [Header("puzzle 3")] // Groups related fields in the Unity inspector.
+    [SerializeField] private GameObject Puzzle3Panel; // Exposes this private field in the Unity inspector.
+    [SerializeField] private PictureGridManager pictureGridManager; // Exposes this private field in the Unity inspector.
 
-    [Header("puzzle 4")]
-    [SerializeField] private Activity2PuzzleManager activity2PuzzleManager;
-    [SerializeField] private GameObject Puzzle4Panel;
-    [SerializeField] private GameObject Puzzle4Panel1;
-    [SerializeField] private GameObject Puzzle4Panel2;
+    [Header("puzzle 4")] // Groups related fields in the Unity inspector.
+    [SerializeField] private Activity2PuzzleManager activity2PuzzleManager; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle4Panel; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle4Panel1; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle4Panel2; // Exposes this private field in the Unity inspector.
 
-    [Header("puzzle 5")]
-    [SerializeField] private WordSearchManager wordSearchManager;
-    [SerializeField] private GameObject Puzzle5Panel;
+    [Header("puzzle 5")] // Groups related fields in the Unity inspector.
+    [SerializeField] private WordSearchManager wordSearchManager; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle5Panel; // Exposes this private field in the Unity inspector.
 
-    [Header("puzzle 6")]
-    [SerializeField] private DiaryPuzzleManager diaryPuzzleManager;
-    [SerializeField] private GameObject Puzzle6Panel;
+    [Header("puzzle 6")] // Groups related fields in the Unity inspector.
+    [SerializeField] private DiaryPuzzleManager diaryPuzzleManager; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle6Panel; // Exposes this private field in the Unity inspector.
 
-    [Header("puzzle 7")]
-    [SerializeField] private RiskTable risktableManager;
+    [Header("puzzle 7")] // Groups related fields in the Unity inspector.
+    [SerializeField] private RiskTable risktableManager; // Exposes this private field in the Unity inspector.
   
-    [SerializeField] private GameObject Puzzle7Panel;
+    [SerializeField] private GameObject Puzzle7Panel; // Exposes this private field in the Unity inspector.
 
-    [Header("puzzle 8")]
-    [SerializeField] private PrescriptionManager prescriptionManager;
-    [SerializeField] private GameObject Puzzle8Panel;
+    [Header("puzzle 8")] // Groups related fields in the Unity inspector.
+    [SerializeField] private PrescriptionManager prescriptionManager; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle8Panel; // Exposes this private field in the Unity inspector.
 
-    [Header("puzzle 9")]
-    [SerializeField] private CrosswordManager crosswordManager;
-    [SerializeField] private GameObject Puzzle9Panel;
-    [SerializeField] private GameObject Puzzle9ImageHint;
-    [SerializeField] private GameObject Puzzle9AcrossHint;
+    [Header("puzzle 9")] // Groups related fields in the Unity inspector.
+    [SerializeField] private CrosswordManager crosswordManager; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle9Panel; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle9ImageHint; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle9AcrossHint; // Exposes this private field in the Unity inspector.
 
-    [Header("puzzle 10")]
-    [SerializeField] private InsulinPuzzleManager insulinPuzzleManager;
-    [SerializeField] private GameObject Puzzle10Panel;
+    [Header("puzzle 10")] // Groups related fields in the Unity inspector.
+    [SerializeField] private InsulinPuzzleManager insulinPuzzleManager; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle10Panel; // Exposes this private field in the Unity inspector.
 
-    [Header("puzzle 11")]
-    [SerializeField] private DeathLapsesManager deathLapsesManager;
-    [SerializeField] private GameObject Puzzle11Panel;
-    [SerializeField] private GameObject movementTargetPuzzle11;
+    [Header("puzzle 11")] // Groups related fields in the Unity inspector.
+    [SerializeField] private DeathLapsesManager deathLapsesManager; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject Puzzle11Panel; // Exposes this private field in the Unity inspector.
+    [SerializeField] private GameObject movementTargetPuzzle11; // Exposes this private field in the Unity inspector.
 
-    [Header("Puzzle Clue Rewards")]
-    [SerializeField] private List<PuzzleClueReward> puzzleClueRewards = new();
+    [Header("Puzzle Clue Rewards")] // Groups related fields in the Unity inspector.
+    [SerializeField] private List<PuzzleClueReward> puzzleClueRewards = new(); // Exposes this private field in the Unity inspector.
 
-    private Dictionary<PuzzleStage, IPuzzle> puzzleHandlers;
+    private Dictionary<PuzzleStage, IPuzzle> puzzleHandlers; // Maps puzzle stages to their runtime puzzle handler components.
 
 
 
     // Tracks which panel belongs to which stage
-    private readonly Dictionary<PuzzleStage, GameObject> stagePanels = new();
-    private GameObject currentPuzzlePanel;
-    private int currentSubmitOwnerActorNumber = -1;
-    private bool localPlayerHasActivePuzzleLock;
-    private int localActivePuzzleLockOwnerActorNumber = -1;
-    private bool localPlayerHasPuzzleReentryAccess;
-    private PuzzleStage localPuzzleReentryStage = PuzzleStage.Puzzle0;
-    private int localPuzzleReentryOwnerActorNumber = -1;
+    private readonly Dictionary<PuzzleStage, GameObject> stagePanels = new(); // Maps puzzle stages to their main UI panels.
+    private GameObject currentPuzzlePanel; // Tracks the currently open puzzle panel.
+    private int currentSubmitOwnerActorNumber = -1; // Tracks which Photon actor currently owns submit-button visibility.
+    private bool localPlayerHasActivePuzzleLock; // Tracks whether this client owns the active puzzle lock.
+    private int localActivePuzzleLockOwnerActorNumber = -1; // Stores the actor number that owns this client-side puzzle lock.
+    private bool localPlayerHasPuzzleReentryAccess; // Tracks whether this client may re-enter a puzzle after closing it.
+    private PuzzleStage localPuzzleReentryStage = PuzzleStage.Puzzle0; // Stores which stage this client can re-enter.
+    private int localPuzzleReentryOwnerActorNumber = -1; // Stores the actor number tied to local puzzle re-entry access.
 
     // ===== Room / Player property keys =====
-    private const string RP_PUZZLE_LOCKED = "PuzzleLocked";   // bool
-    private const string RP_LOCK_OWNER = "LockOwner";       // int ActorNumber
-    private const string RP_ROUND = "Round";           // int; increments to signal a reset
-    private const string PP_PLAYED_ROUND = "PlayedRound";     // bool on each player
+    private const string RP_PUZZLE_LOCKED = "PuzzleLocked";   // bool // Defines a Photon room-property key used for shared puzzle state.
+    private const string RP_LOCK_OWNER = "LockOwner";       // int ActorNumber // Defines a Photon room-property key used for shared puzzle state.
+    private const string RP_ROUND = "Round";           // int; increments to signal a reset // Defines a Photon room-property key used for shared puzzle state.
+    private const string PP_PLAYED_ROUND = "PlayedRound";     // bool on each player // Defines a Photon player-property key used for per-player puzzle state.
 
-    public enum PuzzleStage
-    {
-        Puzzle0 = 0,
-        Puzzle1 = 1,
-        Puzzle2 = 2,
-        Puzzle3 = 3,
-        Puzzle4 = 4,
-        Puzzle5 = 5,
-        Puzzle6 = 6,
-        Puzzle7 = 7,
-        Puzzle8 = 8,
-        Puzzle9 = 9,
-        Puzzle10 = 10,
-        Puzzle11 = 11
-    }
+    public enum PuzzleStage // Defines the ordered puzzle stages used by the game flow.
+    { // Starts this block.
+        Puzzle0 = 0, // Assigns a numeric value to this puzzle stage.
+        Puzzle1 = 1, // Assigns a numeric value to this puzzle stage.
+        Puzzle2 = 2, // Assigns a numeric value to this puzzle stage.
+        Puzzle3 = 3, // Assigns a numeric value to this puzzle stage.
+        Puzzle4 = 4, // Assigns a numeric value to this puzzle stage.
+        Puzzle5 = 5, // Assigns a numeric value to this puzzle stage.
+        Puzzle6 = 6, // Assigns a numeric value to this puzzle stage.
+        Puzzle7 = 7, // Assigns a numeric value to this puzzle stage.
+        Puzzle8 = 8, // Assigns a numeric value to this puzzle stage.
+        Puzzle9 = 9, // Assigns a numeric value to this puzzle stage.
+        Puzzle10 = 10, // Assigns a numeric value to this puzzle stage.
+        Puzzle11 = 11 // Assigns a numeric value to this puzzle stage.
+    } // Ends this block.
 
-    private void Awake()
-    {
-        if (Instance == null) Instance = this;
-        else { Destroy(gameObject); return; }
+    private void Awake() // Initializes the singleton and persistent puzzle mappings.
+    { // Starts this block.
+        if (Instance == null) Instance = this; // Checks whether this puzzle-state condition requires action.
+        else { Destroy(gameObject); return; } // Handles this part of the puzzle state flow.
 
-        InitStagePanels();
-        DontDestroyOnLoad(gameObject); // optional if changing scenes
-    }
+        InitStagePanels(); // Initializes the stage panel lookup.
+        DontDestroyOnLoad(gameObject); // optional if changing scenes // Keeps this manager alive across scene loads.
+    } // Ends this block.
 
-    private void Start()
-    {
-        puzzleHandlers = new Dictionary<PuzzleStage, IPuzzle>
-        {
-            { PuzzleStage.Puzzle1, symptomsCardManager },
-            { PuzzleStage.Puzzle2, bearCardManager },
-            { PuzzleStage.Puzzle3, pictureGridManager },
-            { PuzzleStage.Puzzle4, activity2PuzzleManager },
-            { PuzzleStage.Puzzle5, wordSearchManager  },
-            { PuzzleStage.Puzzle6, diaryPuzzleManager },
-            { PuzzleStage.Puzzle7, risktableManager  },
-            { PuzzleStage.Puzzle8, prescriptionManager  },
-            { PuzzleStage.Puzzle9, crosswordManager },
-            { PuzzleStage.Puzzle10, insulinPuzzleManager },
-            { PuzzleStage.Puzzle11, deathLapsesManager }
-        };
-
-
+    private void Start() // Initializes puzzle handlers and room state after Unity startup.
+    { // Starts this block.
+        puzzleHandlers = new Dictionary<PuzzleStage, IPuzzle> // Creates the stage-to-handler lookup table.
+        { // Starts this block.
+            { PuzzleStage.Puzzle1, symptomsCardManager }, // Maps this stage to its puzzle handler.
+            { PuzzleStage.Puzzle2, bearCardManager }, // Maps this stage to its puzzle handler.
+            { PuzzleStage.Puzzle3, pictureGridManager }, // Maps this stage to its puzzle handler.
+            { PuzzleStage.Puzzle4, activity2PuzzleManager }, // Maps this stage to its puzzle handler.
+            { PuzzleStage.Puzzle5, wordSearchManager  }, // Maps this stage to its puzzle handler.
+            { PuzzleStage.Puzzle6, diaryPuzzleManager }, // Maps this stage to its puzzle handler.
+            { PuzzleStage.Puzzle7, risktableManager  }, // Maps this stage to its puzzle handler.
+            { PuzzleStage.Puzzle8, prescriptionManager  }, // Maps this stage to its puzzle handler.
+            { PuzzleStage.Puzzle9, crosswordManager }, // Maps this stage to its puzzle handler.
+            { PuzzleStage.Puzzle10, insulinPuzzleManager }, // Maps this stage to its puzzle handler.
+            { PuzzleStage.Puzzle11, deathLapsesManager } // Maps this stage to its puzzle handler.
+        }; // Ends this initializer block.
 
 
-        EnsureRoomProps(); // initialize fair-turn props in room
-        RefreshSubmitButtonVisibility();
-    }
 
-    private void InitStagePanels()
-    {
-        stagePanels.Clear();
-        stagePanels[PuzzleStage.Puzzle1] = Puzzle1Panel;
-        stagePanels[PuzzleStage.Puzzle2] = Puzzle2Panel;
-        stagePanels[PuzzleStage.Puzzle3] = Puzzle3Panel;
-        stagePanels[PuzzleStage.Puzzle4] = Puzzle4Panel;
-        stagePanels[PuzzleStage.Puzzle5] = Puzzle5Panel;
-        stagePanels[PuzzleStage.Puzzle6] = Puzzle6Panel;
-        stagePanels[PuzzleStage.Puzzle7] = Puzzle7Panel;
-        stagePanels[PuzzleStage.Puzzle8] = Puzzle8Panel;
-        stagePanels[PuzzleStage.Puzzle9] = Puzzle9Panel;
-        stagePanels[PuzzleStage.Puzzle10] = Puzzle10Panel;
-        stagePanels[PuzzleStage.Puzzle11] = Puzzle11Panel;
-    }
+
+        EnsureRoomProps(); // initialize fair-turn props in room // Initializes shared Photon room puzzle properties.
+        RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
+    } // Ends this block.
+
+    private void InitStagePanels() // Builds the stage-to-panel lookup table.
+    { // Starts this block.
+        stagePanels.Clear(); // Clears this puzzle-state collection.
+        stagePanels[PuzzleStage.Puzzle1] = Puzzle1Panel; // Registers a puzzle panel for this stage.
+        stagePanels[PuzzleStage.Puzzle2] = Puzzle2Panel; // Registers a puzzle panel for this stage.
+        stagePanels[PuzzleStage.Puzzle3] = Puzzle3Panel; // Registers a puzzle panel for this stage.
+        stagePanels[PuzzleStage.Puzzle4] = Puzzle4Panel; // Registers a puzzle panel for this stage.
+        stagePanels[PuzzleStage.Puzzle5] = Puzzle5Panel; // Registers a puzzle panel for this stage.
+        stagePanels[PuzzleStage.Puzzle6] = Puzzle6Panel; // Registers a puzzle panel for this stage.
+        stagePanels[PuzzleStage.Puzzle7] = Puzzle7Panel; // Registers a puzzle panel for this stage.
+        stagePanels[PuzzleStage.Puzzle8] = Puzzle8Panel; // Registers a puzzle panel for this stage.
+        stagePanels[PuzzleStage.Puzzle9] = Puzzle9Panel; // Registers a puzzle panel for this stage.
+        stagePanels[PuzzleStage.Puzzle10] = Puzzle10Panel; // Registers a puzzle panel for this stage.
+        stagePanels[PuzzleStage.Puzzle11] = Puzzle11Panel; // Registers a puzzle panel for this stage.
+    } // Ends this block.
 
 
 
     // ===== Timer-driven reloads =====
-    public void OnTimerExpired()
-    {
-        Debug.Log("Timer expired — reloading current puzzle stage.");
-        switch (CurrentStage)
-        {
-            case PuzzleStage.Puzzle0: break;
-            case PuzzleStage.Puzzle1: ReloadPuzzle1(); break;
-            case PuzzleStage.Puzzle2: ReloadPuzzle2(); break;
-            case PuzzleStage.Puzzle3: ReloadPuzzle3(); break;
-            case PuzzleStage.Puzzle4: ReloadPuzzle4(); break;
-            case PuzzleStage.Puzzle5: ReloadPuzzle5(); break;
-            case PuzzleStage.Puzzle6: ReloadPuzzle6(); break;
-            case PuzzleStage.Puzzle7: ReloadPuzzle7(); break;
-            case PuzzleStage.Puzzle8: ReloadPuzzle8(); break; 
-            case PuzzleStage.Puzzle9: ReloadPuzzle9(); break; 
-            case PuzzleStage.Puzzle10: ReloadPuzzle10(); break; 
-            case PuzzleStage.Puzzle11: ReloadPuzzle11(); break; 
-        }
-    }
+    public void OnTimerExpired() // Reloads the current puzzle when the shared timer expires.
+    { // Starts this block.
+        Debug.Log("Timer expired � reloading current puzzle stage."); // Writes puzzle-state diagnostic information to the Unity console.
+        GameSessionCsvLogger.Instance?.RecordPuzzleReset(CurrentStage); // Records puzzle-session information to the CSV logger when available.
 
-    public void ReloadPuzzle1()
-    {
-        Debug.Log("Reloading Puzzle 1 and 2");
+        switch (CurrentStage) // Selects behavior based on the current puzzle stage or state.
+        { // Starts this block.
+            case PuzzleStage.Puzzle0: break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle1: ReloadPuzzle1(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle2: ReloadPuzzle2(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle3: ReloadPuzzle3(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle4: ReloadPuzzle4(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle5: ReloadPuzzle5(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle6: ReloadPuzzle6(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle7: ReloadPuzzle7(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle8: ReloadPuzzle8(); break;  // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle9: ReloadPuzzle9(); break;  // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle10: ReloadPuzzle10(); break;  // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle11: ReloadPuzzle11(); break;  // Handles this specific puzzle stage or switch value.
+        } // Ends this block.
+    } // Ends this block.
 
-        DropSlot.ResetAllSlots();
+    public void ReloadPuzzle1() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 1 and 2"); // Writes puzzle-state diagnostic information to the Unity console.
 
-        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1))
-        {
-            card.ResetSyncedFeedbackColor();
-            card.ResetCard();
-            card.ShowFront();
-        }
+        DropSlot.ResetAllSlots(); // Clears all drag-and-drop slot state for the puzzle reset.
 
-        CurrentStage = PuzzleStage.Puzzle1;
+        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1)) // Loops through each matching puzzle object.
+        { // Starts this block.
+            card.ResetSyncedFeedbackColor(); // Clears synced feedback color on this card.
+            card.ResetCard(); // Returns this draggable card to its starting state.
+            card.ShowFront(); // Shows the front side of this card.
+        } // Ends this block.
 
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
+        CurrentStage = PuzzleStage.Puzzle1; // Updates the current puzzle stage.
 
-    public void ReloadPuzzle2()
-    {
-        Debug.Log("Reloading Puzzle 1 and 2");
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
 
-        DropSlot.ResetAllSlots();
+    public void ReloadPuzzle2() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 1 and 2"); // Writes puzzle-state diagnostic information to the Unity console.
 
-        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1_2))
-        {
-            card.ResetSyncedFeedbackColor();
-            card.ResetCard();
-            card.ShowFront();
-        }
+        DropSlot.ResetAllSlots(); // Clears all drag-and-drop slot state for the puzzle reset.
 
-        CurrentStage = PuzzleStage.Puzzle2;
+        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity1_2)) // Loops through each matching puzzle object.
+        { // Starts this block.
+            card.ResetSyncedFeedbackColor(); // Clears synced feedback color on this card.
+            card.ResetCard(); // Returns this draggable card to its starting state.
+            card.ShowFront(); // Shows the front side of this card.
+        } // Ends this block.
 
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
+        CurrentStage = PuzzleStage.Puzzle2; // Updates the current puzzle stage.
 
-
-    public void ReloadPuzzle3()
-    {
-        Debug.Log("Reloading Puzzle 3");
-        pictureGridManager?.ResetPuzzle();
-        CurrentStage = PuzzleStage.Puzzle3;
-
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
-
-    public void ReloadPuzzle4()
-    {
-        Debug.Log("Reloading Puzzle 4");
-        DropSlot.ResetAllSlots();
-        PuzzleTileManager.Instance?.ResetPuzzle();
-
-        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity2))
-        {
-            card.ResetSyncedFeedbackColor();
-            card.ResetCard();
-        }
-        activity2PuzzleManager.ResetActivity2Part2();
-        Puzzle4Panel1?.SetActive(true);
-        Puzzle4Panel2?.SetActive(false);
-        CurrentStage = PuzzleStage.Puzzle4; 
-
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
-
-    public void ReloadPuzzle5()
-    {
-        Debug.Log("Reloading Puzzle 5");
-        wordSearchManager?.ResetPuzzle();
-        CurrentStage = PuzzleStage.Puzzle5;
-
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
-
-    public void ReloadPuzzle6()
-    {
-        Debug.Log("Reloading Puzzle 6");
-        diaryPuzzleManager?.ResetPuzzle();
-        CurrentStage = PuzzleStage.Puzzle6; // fix
-
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
-
-    public void ReloadPuzzle7()
-    {
-        Debug.Log("Reloading Puzzle 7");
-        risktableManager?.ResetPuzzle();
-        CurrentStage = PuzzleStage.Puzzle7;
-
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
-
-    public void ReloadPuzzle8()
-    {
-        Debug.Log("Reloading Puzzle 8");
-        prescriptionManager?.ResetPuzzle();
-        CurrentStage = PuzzleStage.Puzzle8;
-
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
-
-    public void ReloadPuzzle9()
-    {
-        Debug.Log("Reloading Puzzle 9");
-        crosswordManager?.ResetPuzzle();
-
-        CurrentStage = PuzzleStage.Puzzle9;
-
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
 
 
-    public void ReloadPuzzle10()
-    {
-        Debug.Log("Reloading Puzzle 10");
-        DropSlot.ResetAllSlots();
-        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity6))
-        {
-            card.ResetSyncedFeedbackColor();
-            card.ResetCard();
-        }
-        insulinPuzzleManager?.ResetPuzzle();
+    public void ReloadPuzzle3() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 3"); // Writes puzzle-state diagnostic information to the Unity console.
+        pictureGridManager?.ResetPuzzle(); // Resets that puzzle handler to its starting state.
+        CurrentStage = PuzzleStage.Puzzle3; // Updates the current puzzle stage.
 
-        CurrentStage = PuzzleStage.Puzzle10;
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
 
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
+    public void ReloadPuzzle4() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 4"); // Writes puzzle-state diagnostic information to the Unity console.
+        DropSlot.ResetAllSlots(); // Clears all drag-and-drop slot state for the puzzle reset.
+        PuzzleTileManager.Instance?.ResetPuzzle(); // Resets or updates the rotating puzzle tile manager when present.
+
+        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity2)) // Loops through each matching puzzle object.
+        { // Starts this block.
+            card.ResetSyncedFeedbackColor(); // Clears synced feedback color on this card.
+            card.ResetCard(); // Returns this draggable card to its starting state.
+        } // Ends this block.
+        activity2PuzzleManager.ResetActivity2Part2(); // Updates or calls this puzzle-state object.
+        Puzzle4Panel1?.SetActive(true); // Shows or hides this puzzle-related UI object.
+        Puzzle4Panel2?.SetActive(false); // Shows or hides this puzzle-related UI object.
+        CurrentStage = PuzzleStage.Puzzle4;  // Updates the current puzzle stage.
+
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
+
+    public void ReloadPuzzle5() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 5"); // Writes puzzle-state diagnostic information to the Unity console.
+        wordSearchManager?.ResetPuzzle(); // Resets that puzzle handler to its starting state.
+        CurrentStage = PuzzleStage.Puzzle5; // Updates the current puzzle stage.
+
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
+
+    public void ReloadPuzzle6() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 6"); // Writes puzzle-state diagnostic information to the Unity console.
+        diaryPuzzleManager?.ResetPuzzle(); // Resets that puzzle handler to its starting state.
+        CurrentStage = PuzzleStage.Puzzle6; // fix // Updates the current puzzle stage.
+
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
+
+    public void ReloadPuzzle7() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 7"); // Writes puzzle-state diagnostic information to the Unity console.
+        risktableManager?.ResetPuzzle(); // Resets that puzzle handler to its starting state.
+        CurrentStage = PuzzleStage.Puzzle7; // Updates the current puzzle stage.
+
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
+
+    public void ReloadPuzzle8() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 8"); // Writes puzzle-state diagnostic information to the Unity console.
+        prescriptionManager?.ResetPuzzle(); // Resets that puzzle handler to its starting state.
+        CurrentStage = PuzzleStage.Puzzle8; // Updates the current puzzle stage.
+
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
+
+    public void ReloadPuzzle9() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 9"); // Writes puzzle-state diagnostic information to the Unity console.
+        crosswordManager?.ResetPuzzle(); // Resets that puzzle handler to its starting state.
+
+        CurrentStage = PuzzleStage.Puzzle9; // Updates the current puzzle stage.
+
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
 
 
-    public void ReloadPuzzle11()
-    {
-        Debug.Log("Reloading Puzzle 11");
-        DropSlot.ResetAllSlots();
-        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity9))
-        {
-            card.ResetSyncedFeedbackColor();
-            card.ResetCard();
-        }
-        deathLapsesManager?.ResetPuzzle();
+    public void ReloadPuzzle10() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 10"); // Writes puzzle-state diagnostic information to the Unity console.
+        DropSlot.ResetAllSlots(); // Clears all drag-and-drop slot state for the puzzle reset.
+        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity6)) // Loops through each matching puzzle object.
+        { // Starts this block.
+            card.ResetSyncedFeedbackColor(); // Clears synced feedback color on this card.
+            card.ResetCard(); // Returns this draggable card to its starting state.
+        } // Ends this block.
+        insulinPuzzleManager?.ResetPuzzle(); // Resets that puzzle handler to its starting state.
 
-        CurrentStage = PuzzleStage.Puzzle11;
+        CurrentStage = PuzzleStage.Puzzle10; // Updates the current puzzle stage.
 
-        if (PhotonNetwork.IsMasterClient)
-            FindObjectOfType<GameTimerManager>()?.StartTimer();
-    }
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
+
+
+    public void ReloadPuzzle11() // Resets this puzzle stage after timeout or retry.
+    { // Starts this block.
+        Debug.Log("Reloading Puzzle 11"); // Writes puzzle-state diagnostic information to the Unity console.
+        DropSlot.ResetAllSlots(); // Clears all drag-and-drop slot state for the puzzle reset.
+        foreach (var card in FindCardsByBehavior(DraggableCard.DraggableCardBehavior.Activity9)) // Loops through each matching puzzle object.
+        { // Starts this block.
+            card.ResetSyncedFeedbackColor(); // Clears synced feedback color on this card.
+            card.ResetCard(); // Returns this draggable card to its starting state.
+        } // Ends this block.
+        deathLapsesManager?.ResetPuzzle(); // Resets that puzzle handler to its starting state.
+
+        CurrentStage = PuzzleStage.Puzzle11; // Updates the current puzzle stage.
+
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            FindObjectOfType<GameTimerManager>()?.StartTimer(); // Restarts the shared puzzle timer from the master client.
+    } // Ends this block.
 
 
     // ===== Stage completion handlers =====
-    public void MarkCorrect(string symptom) => correctSymptomsFromPuzzle1.Add(symptom);
-    public bool IsSymptomCorrect(string symptom) => correctSymptomsFromPuzzle1.Contains(symptom);
+    public void MarkCorrect(string symptom) => correctSymptomsFromPuzzle1.Add(symptom); // Adds this value to the puzzle-state collection.
+    public bool IsSymptomCorrect(string symptom) => correctSymptomsFromPuzzle1.Contains(symptom); // Handles this part of the puzzle state flow.
 
-    private void HandlePuzzle1Complete()
-    {
-        Debug.Log("Puzzle 1 complete! Now starting Puzzle 2...");
+    private void HandlePuzzle1Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 1 complete! Now starting Puzzle 2..."); // Writes puzzle-state diagnostic information to the Unity console.
 
-        Puzzle1Panel?.SetActive(false);
-        Puzzle2Panel?.SetActive(true);
+        Puzzle1Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
+        Puzzle2Panel?.SetActive(true); // Shows or hides this puzzle-related UI object.
 
-        CurrentStage = PuzzleStage.Puzzle2;
-    }
+        CurrentStage = PuzzleStage.Puzzle2; // Updates the current puzzle stage.
+    } // Ends this block.
 
-    private void HandlePuzzle2Complete()
-    {
-        Debug.Log("Puzzle 2 complete! You win!");
+    private void HandlePuzzle2Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 2 complete! You win!"); // Writes puzzle-state diagnostic information to the Unity console.
 
-        Puzzle2Panel?.SetActive(false);
+        Puzzle2Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
 
-        GetKeyUponCompletion(puzzle1Object, "Time Crystal1");
+        GetKeyUponCompletion(puzzle1Object, "Time Crystal1"); // Handles this part of the puzzle state flow.
 
-        CurrentStage = PuzzleStage.Puzzle3;
-        ResetTimer();
+        CurrentStage = PuzzleStage.Puzzle3; // Updates the current puzzle stage.
+        ResetTimer(); // Handles this part of the puzzle state flow.
 
-    }
+    } // Ends this block.
 
-    public void HandlePuzzle3Complete()
-    {
-        Debug.Log("Puzzle 3 completed correctly!");
-        Puzzle3Panel?.SetActive(false);
-        Puzzle4Panel?.SetActive(true);
-        CurrentStage = PuzzleStage.Puzzle4;
-    }
+    public void HandlePuzzle3Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 3 completed correctly!"); // Writes puzzle-state diagnostic information to the Unity console.
+        Puzzle3Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
+        Puzzle4Panel?.SetActive(true); // Shows or hides this puzzle-related UI object.
+        CurrentStage = PuzzleStage.Puzzle4; // Updates the current puzzle stage.
+    } // Ends this block.
 
-    public void HandlePuzzle4Complete()
-    {
-        Debug.Log("Puzzle 4 completed correctly!");
-        Puzzle4Panel?.SetActive(false);
+    public void HandlePuzzle4Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 4 completed correctly!"); // Writes puzzle-state diagnostic information to the Unity console.
+        Puzzle4Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
 
 
-        GetKeyUponCompletion(puzzle2Object, "Time Crystal2");
+        GetKeyUponCompletion(puzzle2Object, "Time Crystal2"); // Handles this part of the puzzle state flow.
 
-        CurrentStage = PuzzleStage.Puzzle5;
-        ResetTimer();
+        CurrentStage = PuzzleStage.Puzzle5; // Updates the current puzzle stage.
+        ResetTimer(); // Handles this part of the puzzle state flow.
 
-    }
+    } // Ends this block.
 
-    public void HandlePuzzle5Complete()
-    {
-        Debug.Log("Puzzle 5 completed correctly!");
-        Puzzle5Panel?.SetActive(false);
+    public void HandlePuzzle5Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 5 completed correctly!"); // Writes puzzle-state diagnostic information to the Unity console.
+        Puzzle5Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
         //Puzzle6Panel?.SetActive(true);
-        CurrentStage = PuzzleStage.Puzzle6;
-        ResetTimer();
-    }
-    [PunRPC]
-    private void RPC_DiaryGoToStage(int newStage)
-    {
-        if (diaryPuzzleManager != null)
-            diaryPuzzleManager.GoToStage(newStage);
-    }
+        CurrentStage = PuzzleStage.Puzzle6; // Updates the current puzzle stage.
+        ResetTimer(); // Handles this part of the puzzle state flow.
+    } // Ends this block.
+    [PunRPC] // Marks the next method as callable through Photon RPC.
+    private void RPC_DiaryGoToStage(int newStage) // Runs a synchronized Photon RPC action.
+    { // Starts this block.
+        if (diaryPuzzleManager != null) // Checks whether this puzzle-state condition requires action.
+            diaryPuzzleManager.GoToStage(newStage); // Updates or calls this puzzle-state object.
+    } // Ends this block.
 
-    [PunRPC]
-    private void RPC_DiaryAdvanceToNextStage()
-    {
-        diaryPuzzleManager?.GoToNextStage();
-    }
+    [PunRPC] // Marks the next method as callable through Photon RPC.
+    private void RPC_DiaryAdvanceToNextStage() // Runs a synchronized Photon RPC action.
+    { // Starts this block.
+        diaryPuzzleManager?.GoToNextStage(); // Calls this puzzle component only when it exists.
+    } // Ends this block.
 
-    [PunRPC]
-    private void RPC_Activity2GoToPart2()
-    {
-        activity2PuzzleManager?.GoToPart2();
-    }
+    [PunRPC] // Marks the next method as callable through Photon RPC.
+    private void RPC_Activity2GoToPart2() // Runs a synchronized Photon RPC action.
+    { // Starts this block.
+        activity2PuzzleManager?.GoToPart2(); // Calls this puzzle component only when it exists.
+    } // Ends this block.
 
-    [PunRPC]
-    private void RPC_InsulinGoToPart2()
-    {
-        insulinPuzzleManager?.GoToPart2();
-    }
+    [PunRPC] // Marks the next method as callable through Photon RPC.
+    private void RPC_InsulinGoToPart2() // Runs a synchronized Photon RPC action.
+    { // Starts this block.
+        insulinPuzzleManager?.GoToPart2(); // Calls this puzzle component only when it exists.
+    } // Ends this block.
 
-    [PunRPC]
-    private void RPC_DeathLapsesGoToStage2()
-    {
-        deathLapsesManager?.GoToStage2();
-    }
+    [PunRPC] // Marks the next method as callable through Photon RPC.
+    private void RPC_DeathLapsesGoToStage2() // Runs a synchronized Photon RPC action.
+    { // Starts this block.
+        deathLapsesManager?.GoToStage2(); // Calls this puzzle component only when it exists.
+    } // Ends this block.
 
-    public void BroadcastInsulinPart2Transition()
-    {
-        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
-            photonView.RPC(nameof(RPC_InsulinGoToPart2), RpcTarget.All);
-        else
-            insulinPuzzleManager?.GoToPart2();
-    }
+    public void BroadcastInsulinPart2Transition() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom) // Checks whether this puzzle-state condition requires action.
+            photonView.RPC(nameof(RPC_InsulinGoToPart2), RpcTarget.All); // Sends a synchronized RPC to Photon clients.
+        else // Runs when the previous condition is false.
+            insulinPuzzleManager?.GoToPart2(); // Calls this puzzle component only when it exists.
+    } // Ends this block.
 
-    public void HandlePuzzle6Complete()
-    {
-        Debug.Log("Puzzle 6 completed correctly!");
-        Puzzle6Panel?.SetActive(false);
+    public void HandlePuzzle6Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 6 completed correctly!"); // Writes puzzle-state diagnostic information to the Unity console.
+        Puzzle6Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
 
-        GetKeyUponCompletion(puzzle3Object, "Time Crystal3");
+        GetKeyUponCompletion(puzzle3Object, "Time Crystal3"); // Handles this part of the puzzle state flow.
 
-        CurrentStage = PuzzleStage.Puzzle7;
-        ResetTimer();
-    }
+        CurrentStage = PuzzleStage.Puzzle7; // Updates the current puzzle stage.
+        ResetTimer(); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    public void HandlePuzzle7Complete()
-    {
-        Debug.Log("Puzzle 7 completed correctly!");
-        Puzzle7Panel?.SetActive(false);
-        Puzzle8Panel?.SetActive(true);
+    public void HandlePuzzle7Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 7 completed correctly!"); // Writes puzzle-state diagnostic information to the Unity console.
+        Puzzle7Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
+        Puzzle8Panel?.SetActive(true); // Shows or hides this puzzle-related UI object.
 
-        CurrentStage = PuzzleStage.Puzzle8;
-        ResetTimer();
-    }
+        CurrentStage = PuzzleStage.Puzzle8; // Updates the current puzzle stage.
+        ResetTimer(); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    public void HandlePuzzle8Complete()
-    {
-        Debug.Log("Puzzle 8 completed correctly!");
-        Puzzle8Panel?.SetActive(false);
+    public void HandlePuzzle8Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 8 completed correctly!"); // Writes puzzle-state diagnostic information to the Unity console.
+        Puzzle8Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
 
-        CurrentStage = PuzzleStage.Puzzle9;
+        CurrentStage = PuzzleStage.Puzzle9; // Updates the current puzzle stage.
 
-        GetKeyUponCompletion(puzzle4Object, "Time Crystal4");
-        ResetTimer();
-    }
+        GetKeyUponCompletion(puzzle4Object, "Time Crystal4"); // Handles this part of the puzzle state flow.
+        ResetTimer(); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    public void HandlePuzzle9Complete()
-    {
-        Debug.Log("Puzzle 9 completed correctly!");
-        Puzzle9AcrossHint?.SetActive(false);
-        Puzzle9ImageHint?.SetActive(true);
+    public void HandlePuzzle9Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 9 completed correctly!"); // Writes puzzle-state diagnostic information to the Unity console.
+        Puzzle9AcrossHint?.SetActive(false); // Shows or hides this puzzle-related UI object.
+        Puzzle9ImageHint?.SetActive(true); // Shows or hides this puzzle-related UI object.
 
-        CurrentStage = PuzzleStage.Puzzle10;
-        ResetTimer();
-    }
+        CurrentStage = PuzzleStage.Puzzle10; // Updates the current puzzle stage.
+        ResetTimer(); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    public void HandlePuzzle10Complete()
-    {
-        Debug.Log("Puzzle 10 completed correctly!");
-        Puzzle10Panel?.SetActive(false);
+    public void HandlePuzzle10Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 10 completed correctly!"); // Writes puzzle-state diagnostic information to the Unity console.
+        Puzzle10Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
 
-        CurrentStage = PuzzleStage.Puzzle11;
-        ResetTimer();
+        CurrentStage = PuzzleStage.Puzzle11; // Updates the current puzzle stage.
+        ResetTimer(); // Handles this part of the puzzle state flow.
        
-    }
+    } // Ends this block.
 
-    public void HandlePuzzle11Complete()
-    {
-        Debug.Log("Puzzle 11 completed correctly!");
-        Puzzle11Panel?.SetActive(false);
+    public void HandlePuzzle11Complete() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        Debug.Log("Puzzle 11 completed correctly!"); // Writes puzzle-state diagnostic information to the Unity console.
+        Puzzle11Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
 
-        GetKeyUponCompletion(puzzle5Object, "Time Crystal5");
-        ResetTimer();
-        movementTargetPuzzle11?.GetComponent<MovementTargetForward>().Interact();
+        GetKeyUponCompletion(puzzle5Object, "Time Crystal5"); // Handles this part of the puzzle state flow.
+        ResetTimer(); // Handles this part of the puzzle state flow.
+        movementTargetPuzzle11?.GetComponent<MovementTargetForward>().Interact(); // Calls this puzzle component only when it exists.
+        GameSessionCsvLogger.Instance?.WriteCsvIfNeeded(); // Records puzzle-session information to the CSV logger when available.
       
 
         //if (PuzzleScoreTracker.Instance != null)
         //    PuzzleScoreTracker.Instance.ShowEndScreen();
-    }
+    } // Ends this block.
 
-    public void ResetTimer()
-    {
-        if (!PhotonNetwork.IsMasterClient) return;
+    public void ResetTimer() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (!PhotonNetwork.IsMasterClient) return; // Checks whether this puzzle-state condition requires action.
 
-        var timerManager = FindObjectOfType<GameTimerManager>();
-        if (timerManager == null) return;
+        var timerManager = FindObjectOfType<GameTimerManager>(); // Handles this part of the puzzle state flow.
+        if (timerManager == null) return; // Checks whether this puzzle-state condition requires action.
 
-        Debug.Log("Reset timer");
-        timerManager.StartTimer();
+        Debug.Log("Reset timer"); // Writes puzzle-state diagnostic information to the Unity console.
+        timerManager.StartTimer(); // Updates or calls this puzzle-state object.
 
-        PhotonView timerView = timerManager.GetComponent<PhotonView>();
-        if (timerView != null) timerView.RPC("HideTimeWarning", RpcTarget.All);
-        else Debug.LogError("GameTimerManager has no PhotonView attached!");
-    }
+        PhotonView timerView = timerManager.GetComponent<PhotonView>(); // Handles this part of the puzzle state flow.
+        if (timerView != null) timerView.RPC("HideTimeWarning", RpcTarget.All); // Checks whether this puzzle-state condition requires action.
+        else Debug.LogError("GameTimerManager has no PhotonView attached!"); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    private void GetKeyUponCompletion(GameObject puzzleTriggerObject, string keyName)
-    {
-        if (puzzleTriggerObject != null)
-        {
-            var trigger = puzzleTriggerObject.GetComponent<PuzzleTrigger>();
+    private void GetKeyUponCompletion(GameObject puzzleTriggerObject, string keyName) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (puzzleTriggerObject != null) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            var trigger = puzzleTriggerObject.GetComponent<PuzzleTrigger>(); // Handles this part of the puzzle state flow.
 
-            // ✅ Only destroy if trigger is NOT flagged as persistent
-            if (trigger == null || !trigger.dontDestroyOnCompletion)
-            {
-                PhotonView puzzlePV = puzzleTriggerObject.GetComponent<PhotonView>();
-                if (puzzlePV != null)
-                    photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID);
-                else
-                    Debug.LogError("Puzzle object does not have a PhotonView component!");
-            }
-        }
+            // ? Only destroy if trigger is NOT flagged as persistent
+            if (trigger == null || !trigger.dontDestroyOnCompletion) // Checks whether this puzzle-state condition requires action.
+            { // Starts this block.
+                PhotonView puzzlePV = puzzleTriggerObject.GetComponent<PhotonView>(); // Handles this part of the puzzle state flow.
+                if (puzzlePV != null) // Checks whether this puzzle-state condition requires action.
+                    photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, puzzlePV.ViewID); // Sends a synchronized RPC to Photon clients.
+                else // Runs when the previous condition is false.
+                    Debug.LogError("Puzzle object does not have a PhotonView component!"); // Writes a puzzle-state error to the Unity console.
+            } // Ends this block.
+        } // Ends this block.
 
-        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, keyName);
-    }
+        photonView.RPC(nameof(RPC_AddSharedInventoryItem), RpcTarget.AllBuffered, keyName); // Sends a synchronized RPC to Photon clients.
+    } // Ends this block.
 
 
-    [PunRPC]
-    private void RPC_DestroyPuzzleObjectByID(int photonViewID)
-    {
-        PhotonView targetView = PhotonView.Find(photonViewID);
-        if (targetView != null)
-        {
-            targetView.gameObject.SetActive(false);
-            Debug.Log($"Destroyed object {targetView.gameObject.name} across all players.");
-        }
-        else
-        {
-            Debug.LogWarning($"No PhotonView found with ID {photonViewID}.");
-        }
-    }
+    [PunRPC] // Marks the next method as callable through Photon RPC.
+    private void RPC_DestroyPuzzleObjectByID(int photonViewID) // Runs a synchronized Photon RPC action.
+    { // Starts this block.
+        PhotonView targetView = PhotonView.Find(photonViewID); // Handles this part of the puzzle state flow.
+        if (targetView != null) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            targetView.gameObject.SetActive(false); // Shows or hides this puzzle-related UI object.
+            Debug.Log($"Destroyed object {targetView.gameObject.name} across all players."); // Writes puzzle-state diagnostic information to the Unity console.
+        } // Ends this block.
+        else // Runs when the previous condition is false.
+        { // Starts this block.
+            Debug.LogWarning($"No PhotonView found with ID {photonViewID}."); // Writes a puzzle-state warning to the Unity console.
+        } // Ends this block.
+    } // Ends this block.
 
-    [PunRPC] private void RPC_AddSharedInventoryItem(string itemName) => StartCoroutine(DelayedAddItem(itemName));
-    [PunRPC] private void RPC_AddSharedClue(string clueId) => StartCoroutine(DelayedAddClue(clueId));
-    [PunRPC] private void RPC_ShowSharedCluePopup(string popupText) => CluePopupUI.Instance?.Show(popupText);
+    [PunRPC] private void RPC_AddSharedInventoryItem(string itemName) => StartCoroutine(DelayedAddItem(itemName)); // Marks the next method as callable through Photon RPC.
+    [PunRPC] private void RPC_AddSharedClue(string clueId) => StartCoroutine(DelayedAddClue(clueId)); // Marks the next method as callable through Photon RPC.
+    [PunRPC] private void RPC_ShowSharedCluePopup(string popupText) => CluePopupUI.Instance?.Show(popupText); // Marks the next method as callable through Photon RPC.
 
-    private IEnumerator DelayedAddItem(string itemName)
-    {
-        while (InventorySystem.Instance == null || InventoryUIManager.Instance == null) yield return null;
-        InventorySystem.Instance.AddItem(itemName);
-        InventoryUIManager.Instance.UpdateInventoryUI();
-    }
+    private IEnumerator DelayedAddItem(string itemName) // Runs a delayed puzzle-state coroutine.
+    { // Starts this block.
+        while (InventorySystem.Instance == null || InventoryUIManager.Instance == null) yield return null; // Handles this part of the puzzle state flow.
+        InventorySystem.Instance.AddItem(itemName); // Updates or calls this puzzle-state object.
+        InventoryUIManager.Instance.UpdateInventoryUI(); // Updates or calls this puzzle-state object.
+    } // Ends this block.
 
-    private IEnumerator DelayedAddClue(string clueId)
-    {
-        while (ClueSystem.Instance == null)
-            yield return null;
+    private IEnumerator DelayedAddClue(string clueId) // Runs a delayed puzzle-state coroutine.
+    { // Starts this block.
+        while (ClueSystem.Instance == null) // Handles this part of the puzzle state flow.
+            yield return null; // Waits before continuing this coroutine.
 
-        ClueSystem.Instance.AddClue(clueId);
-    }
+        ClueSystem.Instance.AddClue(clueId); // Updates or calls this puzzle-state object.
+    } // Ends this block.
 
-    public void DelayThen(Action callback, float delay = 10f) => StartCoroutine(DelayedCallback(callback, delay));
-    private IEnumerator DelayedCallback(Action callback, float delay) { yield return new WaitForSeconds(delay); callback?.Invoke(); }
+    public void DelayThen(Action callback, float delay = 10f) => StartCoroutine(DelayedCallback(callback, delay)); // Handles this part of the puzzle state flow.
+    private IEnumerator DelayedCallback(Action callback, float delay) { yield return new WaitForSeconds(delay); callback?.Invoke(); } // Runs a delayed puzzle-state coroutine.
 
-    private void HandlePuzzleCompletion(PuzzleStage stage)
-    {
-        switch (stage)
-        {
-            case PuzzleStage.Puzzle0: Debug.Log("Opening comic closed. Waiting for Puzzle 1."); break;
-            case PuzzleStage.Puzzle1: HandlePuzzle1Complete(); break;
-            case PuzzleStage.Puzzle2: HandlePuzzle2Complete(); break;
-            case PuzzleStage.Puzzle3: HandlePuzzle3Complete(); break;
-            case PuzzleStage.Puzzle4: HandlePuzzle4Complete(); break;
-            case PuzzleStage.Puzzle5: HandlePuzzle5Complete(); break;
-            case PuzzleStage.Puzzle6: HandlePuzzle6Complete(); break;
-            case PuzzleStage.Puzzle7: HandlePuzzle7Complete(); break;
-            case PuzzleStage.Puzzle8: HandlePuzzle8Complete(); break;
-            case PuzzleStage.Puzzle9: HandlePuzzle9Complete(); break;
-            case PuzzleStage.Puzzle10: HandlePuzzle10Complete(); break;
-            case PuzzleStage.Puzzle11: HandlePuzzle11Complete(); break;
-            default: Debug.LogWarning("Unhandled puzzle completion"); break;
-        }
+    private void HandlePuzzleCompletion(PuzzleStage stage) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        switch (stage) // Selects behavior based on the current puzzle stage or state.
+        { // Starts this block.
+            case PuzzleStage.Puzzle0: Debug.Log("Opening comic closed. Waiting for Puzzle 1."); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle1: HandlePuzzle1Complete(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle2: HandlePuzzle2Complete(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle3: HandlePuzzle3Complete(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle4: HandlePuzzle4Complete(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle5: HandlePuzzle5Complete(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle6: HandlePuzzle6Complete(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle7: HandlePuzzle7Complete(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle8: HandlePuzzle8Complete(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle9: HandlePuzzle9Complete(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle10: HandlePuzzle10Complete(); break; // Handles this specific puzzle stage or switch value.
+            case PuzzleStage.Puzzle11: HandlePuzzle11Complete(); break; // Handles this specific puzzle stage or switch value.
+            default: Debug.LogWarning("Unhandled puzzle completion"); break; // Handles any switch value not matched above.
+        } // Ends this block.
 
-        AwardClueReward(stage);
-        SyncObjectivePointerToCurrentStage();
-    }
+        AwardClueReward(stage); // Handles this part of the puzzle state flow.
+        SyncObjectivePointerToCurrentStage(); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    private void AwardClueReward(PuzzleStage stage)
-    {
-        if (!TryGetClueReward(stage, out var reward))
-            return;
+    private void AwardClueReward(PuzzleStage stage) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (!TryGetClueReward(stage, out var reward)) // Checks whether this puzzle-state condition requires action.
+            return; // Leaves the current method early.
 
-        string clueId = reward.clueId?.Trim();
-        if (string.IsNullOrWhiteSpace(clueId))
-            return;
+        string clueId = reward.clueId?.Trim(); // Stores a puzzle-state text value.
+        if (string.IsNullOrWhiteSpace(clueId)) // Checks whether this puzzle-state condition requires action.
+            return; // Leaves the current method early.
 
-        string popupText = BuildCluePopupText(reward);
+        string popupText = BuildCluePopupText(reward); // Stores a puzzle-state text value.
 
-        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
-        {
-            CluePopupUI.Instance?.Show(popupText);
-            photonView.RPC(nameof(RPC_AddSharedClue), RpcTarget.AllBuffered, clueId);
-            photonView.RPC(nameof(RPC_ShowSharedCluePopup), RpcTarget.Others, popupText);
-            return;
-        }
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            CluePopupUI.Instance?.Show(popupText); // Updates or calls this puzzle-state object.
+            photonView.RPC(nameof(RPC_AddSharedClue), RpcTarget.AllBuffered, clueId); // Sends a synchronized RPC to Photon clients.
+            photonView.RPC(nameof(RPC_ShowSharedCluePopup), RpcTarget.Others, popupText); // Sends a synchronized RPC to Photon clients.
+            return; // Leaves the current method early.
+        } // Ends this block.
 
-        CluePopupUI.Instance?.Show(popupText);
-        StartCoroutine(DelayedAddClue(clueId));
-    }
+        CluePopupUI.Instance?.Show(popupText); // Updates or calls this puzzle-state object.
+        StartCoroutine(DelayedAddClue(clueId)); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    private bool TryGetClueReward(PuzzleStage stage, out PuzzleClueReward reward)
-    {
-        if (puzzleClueRewards != null)
-        {
-            foreach (var entry in puzzleClueRewards)
-            {
-                if (entry == null || entry.stage != stage)
-                    continue;
+    private bool TryGetClueReward(PuzzleStage stage, out PuzzleClueReward reward) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (puzzleClueRewards != null) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            foreach (var entry in puzzleClueRewards) // Loops through each matching puzzle object.
+            { // Starts this block.
+                if (entry == null || entry.stage != stage) // Checks whether this puzzle-state condition requires action.
+                    continue; // Handles this part of the puzzle state flow.
 
-                reward = entry;
-                return true;
-            }
-        }
+                reward = entry; // Handles this part of the puzzle state flow.
+                return true; // Reports success to the caller.
+            } // Ends this block.
+        } // Ends this block.
 
-        reward = null;
-        return false;
-    }
+        reward = null; // Handles this part of the puzzle state flow.
+        return false; // Reports failure to the caller.
+    } // Ends this block.
 
-    private string BuildCluePopupText(PuzzleClueReward reward)
-    {
-        if (reward != null && !string.IsNullOrWhiteSpace(reward.popupMessage))
-            return reward.popupMessage.Trim();
+    private string BuildCluePopupText(PuzzleClueReward reward) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (reward != null && !string.IsNullOrWhiteSpace(reward.popupMessage)) // Checks whether this puzzle-state condition requires action.
+            return reward.popupMessage.Trim(); // Returns the computed puzzle-state value to the caller.
 
-        return $"Clue picked up: {FormatClueName(reward?.clueId)}";
-    }
+        return $"Clue picked up: {FormatClueName(reward?.clueId)}"; // Returns the computed puzzle-state value to the caller.
+    } // Ends this block.
 
-    private static string FormatClueName(string clueId)
-    {
-        if (string.IsNullOrWhiteSpace(clueId))
-            return "New clue";
+    private static string FormatClueName(string clueId) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (string.IsNullOrWhiteSpace(clueId)) // Checks whether this puzzle-state condition requires action.
+            return "New clue"; // Returns the computed puzzle-state value to the caller.
 
-        return clueId.Replace('_', ' ').Trim();
-    }
+        return clueId.Replace('_', ' ').Trim(); // Returns the computed puzzle-state value to the caller.
+    } // Ends this block.
 
-    public void BroadcastStageTransition(PuzzleStage stage)
-    {
-        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
-        {
-            if (PhotonNetwork.IsMasterClient)
-                photonView.RPC(nameof(RPC_SetStageForAll), RpcTarget.AllBuffered, (int)stage);
+    public void BroadcastStageTransition(PuzzleStage stage) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+                photonView.RPC(nameof(RPC_SetStageForAll), RpcTarget.AllBuffered, (int)stage); // Sends a synchronized RPC to Photon clients.
 
-            return;
-        }
+            return; // Leaves the current method early.
+        } // Ends this block.
 
-        SetCurrentStage(stage);
-    }
+        SetCurrentStage(stage); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
     // Use RPC to advance for everyone after delay (fair-turn compatible)
-    public void Submit()
-    {
-        if (CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null)
-        {
-            var result = activity2PuzzleManager.SubmitActivity2Stage();
+    public void Submit() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            var result = activity2PuzzleManager.SubmitActivity2Stage(); // Handles this part of the puzzle state flow.
 
-            if (result == Activity2PuzzleManager.Activity2SubmitResult.Incorrect)
-            {
-                if (PuzzleScoreTracker.Instance != null)
-                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
+            if (result == Activity2PuzzleManager.Activity2SubmitResult.Incorrect) // Checks whether this puzzle-state condition requires action.
+            { // Starts this block.
+                if (PuzzleScoreTracker.Instance != null) // Checks whether this puzzle-state condition requires action.
+                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage); // Updates or calls this puzzle-state object.
 
-                Debug.Log("Activity 2 stage incorrect.");
-                return;
-            }
+                RecordCurrentPuzzleAnswer(false); // Handles this part of the puzzle state flow.
+                Debug.Log("Activity 2 stage incorrect."); // Writes puzzle-state diagnostic information to the Unity console.
+                return; // Leaves the current method early.
+            } // Ends this block.
 
-            if (result == Activity2PuzzleManager.Activity2SubmitResult.Advanced)
-            {
-                photonView.RPC(nameof(RPC_Activity2GoToPart2), RpcTarget.All);
-                return;
-            }
+            if (result == Activity2PuzzleManager.Activity2SubmitResult.Advanced) // Checks whether this puzzle-state condition requires action.
+            { // Starts this block.
+                RecordCurrentPuzzleAnswer(true); // Handles this part of the puzzle state flow.
+                photonView.RPC(nameof(RPC_Activity2GoToPart2), RpcTarget.All); // Sends a synchronized RPC to Photon clients.
+                return; // Leaves the current method early.
+            } // Ends this block.
 
-            StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
-            return;
-        }
+            RecordCurrentPuzzleAnswer(true); // Handles this part of the puzzle state flow.
+            StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition)); // Handles this part of the puzzle state flow.
+            return; // Leaves the current method early.
+        } // Ends this block.
 
-        // ✅ Special handling for Puzzle 6 multi-page diary
-        if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null)
-        {
-            var result = diaryPuzzleManager.SubmitDiaryStage();
+        // ? Special handling for Puzzle 6 multi-page diary
+        if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            var result = diaryPuzzleManager.SubmitDiaryStage(); // Handles this part of the puzzle state flow.
 
-            if (result == DiaryPuzzleManager.DiarySubmitResult.Incorrect)
-            {
-                if (PuzzleScoreTracker.Instance != null)
-                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
+            if (result == DiaryPuzzleManager.DiarySubmitResult.Incorrect) // Checks whether this puzzle-state condition requires action.
+            { // Starts this block.
+                if (PuzzleScoreTracker.Instance != null) // Checks whether this puzzle-state condition requires action.
+                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage); // Updates or calls this puzzle-state object.
 
-                Debug.Log("Diary stage incorrect.");
-                return;
-            }
+                RecordCurrentPuzzleAnswer(false); // Handles this part of the puzzle state flow.
+                Debug.Log("Diary stage incorrect."); // Writes puzzle-state diagnostic information to the Unity console.
+                return; // Leaves the current method early.
+            } // Ends this block.
 
-            if (result == DiaryPuzzleManager.DiarySubmitResult.Advanced)
-            {
-                photonView.RPC(nameof(RPC_DiaryAdvanceToNextStage), RpcTarget.All);
-                return; // IMPORTANT: do not advance puzzle stage yet
-            }
+            if (result == DiaryPuzzleManager.DiarySubmitResult.Advanced) // Checks whether this puzzle-state condition requires action.
+            { // Starts this block.
+                RecordCurrentPuzzleAnswer(true); // Handles this part of the puzzle state flow.
+                photonView.RPC(nameof(RPC_DiaryAdvanceToNextStage), RpcTarget.All); // Sends a synchronized RPC to Photon clients.
+                return; // IMPORTANT: do not advance puzzle stage yet // Handles this part of the puzzle state flow.
+            } // Ends this block.
 
             // Completed final diary page -> proceed with normal stage-advance flow
-            StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
-            return;
-        }
+            RecordCurrentPuzzleAnswer(true); // Handles this part of the puzzle state flow.
+            StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition)); // Handles this part of the puzzle state flow.
+            return; // Leaves the current method early.
+        } // Ends this block.
 
-        if (CurrentStage == PuzzleStage.Puzzle11 && deathLapsesManager != null)
-        {
-            var result = deathLapsesManager.SubmitDeathLapsesStage();
+        if (CurrentStage == PuzzleStage.Puzzle11 && deathLapsesManager != null) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            var result = deathLapsesManager.SubmitDeathLapsesStage(); // Handles this part of the puzzle state flow.
 
-            if (result == DeathLapsesManager.DeathLapsesSubmitResult.Incorrect)
-            {
-                if (PuzzleScoreTracker.Instance != null)
-                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
+            if (result == DeathLapsesManager.DeathLapsesSubmitResult.Incorrect) // Checks whether this puzzle-state condition requires action.
+            { // Starts this block.
+                if (PuzzleScoreTracker.Instance != null) // Checks whether this puzzle-state condition requires action.
+                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage); // Updates or calls this puzzle-state object.
 
-                Debug.Log("Death Lapses stage incorrect.");
-                return;
-            }
+                RecordCurrentPuzzleAnswer(false); // Handles this part of the puzzle state flow.
+                Debug.Log("Death Lapses stage incorrect."); // Writes puzzle-state diagnostic information to the Unity console.
+                return; // Leaves the current method early.
+            } // Ends this block.
 
-            if (result == DeathLapsesManager.DeathLapsesSubmitResult.Advanced)
-            {
-                photonView.RPC(nameof(RPC_DeathLapsesGoToStage2), RpcTarget.All);
-                return;
-            }
+            if (result == DeathLapsesManager.DeathLapsesSubmitResult.Advanced) // Checks whether this puzzle-state condition requires action.
+            { // Starts this block.
+                RecordCurrentPuzzleAnswer(true); // Handles this part of the puzzle state flow.
+                photonView.RPC(nameof(RPC_DeathLapsesGoToStage2), RpcTarget.All); // Sends a synchronized RPC to Photon clients.
+                return; // Leaves the current method early.
+            } // Ends this block.
 
-            StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
-            return;
-        }
+            RecordCurrentPuzzleAnswer(true); // Handles this part of the puzzle state flow.
+            StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition)); // Handles this part of the puzzle state flow.
+            return; // Leaves the current method early.
+        } // Ends this block.
 
-        // ✅ Default flow for all other puzzles
-        if (puzzleHandlers.TryGetValue(CurrentStage, out IPuzzle puzzle))
-        {
-            if (puzzle.IsSolved())
-            {
-                StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition));
-            }
-            else
-            {
-                if (PuzzleScoreTracker.Instance != null)
-                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage);
+        // ? Default flow for all other puzzles
+        if (puzzleHandlers.TryGetValue(CurrentStage, out IPuzzle puzzle)) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            if (puzzle.IsSolved()) // Checks whether this puzzle-state condition requires action.
+            { // Starts this block.
+                RecordCurrentPuzzleAnswer(true); // Handles this part of the puzzle state flow.
+                StartCoroutine(DelayAndAdvance(CurrentStage, delayTransition)); // Handles this part of the puzzle state flow.
+            } // Ends this block.
+            else // Runs when the previous condition is false.
+            { // Starts this block.
+                if (PuzzleScoreTracker.Instance != null) // Checks whether this puzzle-state condition requires action.
+                    PuzzleScoreTracker.Instance.MarkWrong(CurrentStage); // Updates or calls this puzzle-state object.
 
-                Debug.Log($"Puzzle {CurrentStage} incomplete or incorrect.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"No handler found for puzzle stage {CurrentStage}");
-        }
-    }
+                RecordCurrentPuzzleAnswer(false); // Handles this part of the puzzle state flow.
+                Debug.Log($"Puzzle {CurrentStage} incomplete or incorrect."); // Writes puzzle-state diagnostic information to the Unity console.
+            } // Ends this block.
+        } // Ends this block.
+        else // Runs when the previous condition is false.
+        { // Starts this block.
+            Debug.LogWarning($"No handler found for puzzle stage {CurrentStage}"); // Writes a puzzle-state warning to the Unity console.
+        } // Ends this block.
+    } // Ends this block.
 
 
 
-    private IEnumerator DelayAndAdvance(PuzzleStage stage, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        photonView.RPC(nameof(RPC_AdvanceStageForAll), RpcTarget.AllBuffered, (int)stage);
-    }
+    private void RecordCurrentPuzzleAnswer(bool isCorrect) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, isCorrect, BuildCurrentAnswerSnapshot()); // Records puzzle-session information to the CSV logger when available.
+    } // Ends this block.
 
-    [PunRPC]
-    private void RPC_SetStageForAll(int stageInt)
-    {
-        SetCurrentStage((PuzzleStage)stageInt);
-    }
+    private string BuildCurrentAnswerSnapshot() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        GameObject panel = GetPanelForStage(CurrentStage); // Stores or creates a Unity GameObject reference.
+        if (panel == null) // Checks whether this puzzle-state condition requires action.
+            panel = currentPuzzlePanel; // Handles this part of the puzzle state flow.
 
-    [PunRPC]
-    private void RPC_AdvanceStageForAll(int stageInt)
-    {
-        var stage = (PuzzleStage)stageInt;
-        HandlePuzzleCompletion(stage);
-        RefreshSubmitButtonVisibility();
+        if (panel == null) // Checks whether this puzzle-state condition requires action.
+            return "No active puzzle panel"; // Returns the computed puzzle-state value to the caller.
+
+        var snapshot = new StringBuilder(); // Handles this part of the puzzle state flow.
+
+        foreach (DropSlot slot in panel.GetComponentsInChildren<DropSlot>(true)) // Loops through each matching puzzle object.
+        { // Starts this block.
+            if (slot == null) // Checks whether this puzzle-state condition requires action.
+                continue; // Handles this part of the puzzle state flow.
+
+            List<DraggableCard> cards = slot.GetCardsInSlot(); // Stores a list of puzzle-related values.
+            if (cards.Count == 0) // Checks whether this puzzle-state condition requires action.
+                continue; // Handles this part of the puzzle state flow.
+
+            var cardList = new StringBuilder(); // Handles this part of the puzzle state flow.
+            foreach (DraggableCard card in cards) // Loops through each matching puzzle object.
+            { // Starts this block.
+                AppendSeparated(cardList, GetCardAnswerLabel(card), ", "); // Handles this part of the puzzle state flow.
+            } // Ends this block.
+
+            AppendSeparated(snapshot, $"{slot.name}=[{cardList}]", "; "); // Handles this part of the puzzle state flow.
+        } // Ends this block.
+
+        foreach (TMP_Dropdown dropdown in panel.GetComponentsInChildren<TMP_Dropdown>(true)) // Loops through each matching puzzle object.
+        { // Starts this block.
+            if (dropdown == null) // Checks whether this puzzle-state condition requires action.
+                continue; // Handles this part of the puzzle state flow.
+
+            string selectedOption = dropdown.value >= 0 && dropdown.value < dropdown.options.Count // Stores a puzzle-state text value.
+                ? dropdown.options[dropdown.value].text // Handles this part of the puzzle state flow.
+                : dropdown.value.ToString(); // Handles this part of the puzzle state flow.
+
+            AppendSeparated(snapshot, $"{dropdown.name}={selectedOption}", "; "); // Handles this part of the puzzle state flow.
+        } // Ends this block.
+
+        foreach (TMP_InputField input in panel.GetComponentsInChildren<TMP_InputField>(true)) // Loops through each matching puzzle object.
+        { // Starts this block.
+            if (input == null) // Checks whether this puzzle-state condition requires action.
+                continue; // Handles this part of the puzzle state flow.
+
+            AppendSeparated(snapshot, $"{input.name}={input.text}", "; "); // Handles this part of the puzzle state flow.
+        } // Ends this block.
+
+        foreach (PhotonSyncedUIButtonColor buttonState in panel.GetComponentsInChildren<PhotonSyncedUIButtonColor>(true)) // Loops through each matching puzzle object.
+        { // Starts this block.
+            if (buttonState == null || !buttonState.IsSelected || IsManagedSubmitButton(buttonState.gameObject)) // Checks whether this puzzle-state condition requires action.
+                continue; // Handles this part of the puzzle state flow.
+
+            AppendSeparated(snapshot, $"SelectedButton={GetObjectLabel(buttonState.gameObject)}", "; "); // Handles this part of the puzzle state flow.
+        } // Ends this block.
+
+        foreach (LetterCell cell in panel.GetComponentsInChildren<LetterCell>(true)) // Loops through each matching puzzle object.
+        { // Starts this block.
+            if (cell == null || !cell.IsSelected) // Checks whether this puzzle-state condition requires action.
+                continue; // Handles this part of the puzzle state flow.
+
+            AppendSeparated(snapshot, $"Cell({cell.gridPosition.x},{cell.gridPosition.y})={cell.GetLetter()}", "; "); // Handles this part of the puzzle state flow.
+        } // Ends this block.
+
+        return snapshot.Length > 0 ? snapshot.ToString() : "No answer selected"; // Returns the computed puzzle-state value to the caller.
+    } // Ends this block.
+
+    private static void AppendSeparated(StringBuilder builder, string value, string separator) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (string.IsNullOrWhiteSpace(value)) // Checks whether this puzzle-state condition requires action.
+            return; // Leaves the current method early.
+
+        if (builder.Length > 0) // Checks whether this puzzle-state condition requires action.
+            builder.Append(separator); // Updates or calls this puzzle-state object.
+
+        builder.Append(value.Trim()); // Updates or calls this puzzle-state object.
+    } // Ends this block.
+
+    private static string GetCardAnswerLabel(DraggableCard card) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (card == null) // Checks whether this puzzle-state condition requires action.
+            return "Unknown card"; // Returns the computed puzzle-state value to the caller.
+
+        if (!string.IsNullOrWhiteSpace(card.symptomName)) // Checks whether this puzzle-state condition requires action.
+            return card.symptomName.Trim(); // Returns the computed puzzle-state value to the caller.
+
+        if (!string.IsNullOrWhiteSpace(card.stepName)) // Checks whether this puzzle-state condition requires action.
+            return card.stepName.Trim(); // Returns the computed puzzle-state value to the caller.
+
+        if (!string.IsNullOrWhiteSpace(card.lapsesAnswer)) // Checks whether this puzzle-state condition requires action.
+            return card.lapsesAnswer.Trim(); // Returns the computed puzzle-state value to the caller.
+
+        return GetObjectLabel(card.gameObject); // Returns the computed puzzle-state value to the caller.
+    } // Ends this block.
+
+    private static string GetObjectLabel(GameObject target) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (target == null) // Checks whether this puzzle-state condition requires action.
+            return "Unknown"; // Returns the computed puzzle-state value to the caller.
+
+        TMP_Text text = target.GetComponentInChildren<TMP_Text>(true); // Stores a TextMeshPro text reference.
+        if (text != null && !string.IsNullOrWhiteSpace(text.text)) // Checks whether this puzzle-state condition requires action.
+            return text.text.Trim(); // Returns the computed puzzle-state value to the caller.
+
+        return target.name; // Returns the computed puzzle-state value to the caller.
+    } // Ends this block.
+
+    private IEnumerator DelayAndAdvance(PuzzleStage stage, float delay) // Runs a delayed puzzle-state coroutine.
+    { // Starts this block.
+        yield return new WaitForSeconds(delay); // Waits before continuing this coroutine.
+        photonView.RPC(nameof(RPC_AdvanceStageForAll), RpcTarget.AllBuffered, (int)stage); // Sends a synchronized RPC to Photon clients.
+    } // Ends this block.
+
+    [PunRPC] // Marks the next method as callable through Photon RPC.
+    private void RPC_SetStageForAll(int stageInt) // Runs a synchronized Photon RPC action.
+    { // Starts this block.
+        SetCurrentStage((PuzzleStage)stageInt); // Handles this part of the puzzle state flow.
+    } // Ends this block.
+
+    [PunRPC] // Marks the next method as callable through Photon RPC.
+    private void RPC_AdvanceStageForAll(int stageInt) // Runs a synchronized Photon RPC action.
+    { // Starts this block.
+        var stage = (PuzzleStage)stageInt; // Handles this part of the puzzle state flow.
+        HandlePuzzleCompletion(stage); // Handles this part of the puzzle state flow.
+        RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
 
         // === CHANGE: Do NOT bump the round here ===
         // Master only unlocks and checks if everyone has played. Round will bump inside MaybeAdvanceRoundIfEveryonePlayed().
-        if (PhotonNetwork.IsMasterClient)
-        {
-            var room = PhotonNetwork.CurrentRoom;
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.
 
             // release lock for next player
-            var unlock = new Hashtable
-            {
-                [RP_PUZZLE_LOCKED] = false,
-                [RP_LOCK_OWNER] = -1
-            };
-            room.SetCustomProperties(unlock);
+            var unlock = new Hashtable // Handles this part of the puzzle state flow.
+            { // Starts this block.
+                [RP_PUZZLE_LOCKED] = false, // Handles this part of the puzzle state flow.
+                [RP_LOCK_OWNER] = -1 // Handles this part of the puzzle state flow.
+            }; // Ends this initializer block.
+            room.SetCustomProperties(unlock); // Writes updated custom properties to Photon.
 
             // If everyone has taken a turn, bump the round (which resets PP_PLAYED_ROUND on all via OnRoomPropertiesUpdate).
-            MaybeAdvanceRoundIfEveryonePlayed();
-        }
-    }
+            MaybeAdvanceRoundIfEveryonePlayed(); // Handles this part of the puzzle state flow.
+        } // Ends this block.
+    } // Ends this block.
 
-    private void SetCurrentStage(PuzzleStage stage)
-    {
-        if (CurrentStage == stage)
-            return;
+    private void SetCurrentStage(PuzzleStage stage) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (CurrentStage == stage) // Checks whether this puzzle-state condition requires action.
+            return; // Leaves the current method early.
 
-        CurrentStage = stage;
-        SyncObjectivePointerToCurrentStage();
-        RefreshSubmitButtonVisibility();
-    }
+        CurrentStage = stage; // Updates the current puzzle stage.
+        SyncObjectivePointerToCurrentStage(); // Handles this part of the puzzle state flow.
+        RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
+    } // Ends this block.
 
-    public void SyncObjectivePointerToCurrentStage()
-    {
-        if (ObjectivePointer.Instance == null)
-            return;
+    public void SyncObjectivePointerToCurrentStage() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (ObjectivePointer.Instance == null) // Checks whether this puzzle-state condition requires action.
+            return; // Leaves the current method early.
 
-        if (TryGetObjectivePathForStage(CurrentStage, out string pathId))
-            ObjectivePointer.Instance.StartPath(pathId);
-        else
-            ObjectivePointer.Instance.ClearTarget();
-    }
+        if (TryGetObjectivePathForStage(CurrentStage, out string pathId)) // Checks whether this puzzle-state condition requires action.
+            ObjectivePointer.Instance.StartPath(pathId); // Updates or calls this puzzle-state object.
+        else // Runs when the previous condition is false.
+            ObjectivePointer.Instance.ClearTarget(); // Updates or calls this puzzle-state object.
+    } // Ends this block.
 
-    private bool TryGetObjectivePathForStage(PuzzleStage stage, out string pathId)
-    {
-        switch (stage)
-        {
-            case PuzzleStage.Puzzle3:
-                pathId = "Canteen";
-                return true;
-            case PuzzleStage.Puzzle5:
-                pathId = "Physician Room";
-                return true;
-            case PuzzleStage.Puzzle7:
-                pathId = "Pharmacy";
-                return true;
-            case PuzzleStage.Puzzle9:
-                pathId = "Nurse Education Room";
-                return true;
-            case PuzzleStage.Puzzle11:
-                pathId = "Morturary";
-                return true;
-            default:
-                pathId = null;
-                return false;
-        }
-    }
+    private bool TryGetObjectivePathForStage(PuzzleStage stage, out string pathId) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        switch (stage) // Selects behavior based on the current puzzle stage or state.
+        { // Starts this block.
+            case PuzzleStage.Puzzle3: // Handles this specific puzzle stage or switch value.
+                pathId = "Canteen"; // Handles this part of the puzzle state flow.
+                return true; // Reports success to the caller.
+            case PuzzleStage.Puzzle5: // Handles this specific puzzle stage or switch value.
+                pathId = "Physician Room"; // Handles this part of the puzzle state flow.
+                return true; // Reports success to the caller.
+            case PuzzleStage.Puzzle7: // Handles this specific puzzle stage or switch value.
+                pathId = "Pharmacy"; // Handles this part of the puzzle state flow.
+                return true; // Reports success to the caller.
+            case PuzzleStage.Puzzle9: // Handles this specific puzzle stage or switch value.
+                pathId = "Nurse Education Room"; // Handles this part of the puzzle state flow.
+                return true; // Reports success to the caller.
+            case PuzzleStage.Puzzle11: // Handles this specific puzzle stage or switch value.
+                pathId = "Morturary"; // Handles this part of the puzzle state flow.
+                return true; // Reports success to the caller.
+            default: // Handles any switch value not matched above.
+                pathId = null; // Handles this part of the puzzle state flow.
+                return false; // Reports failure to the caller.
+        } // Ends this block.
+    } // Ends this block.
 
-    private GameObject GetPanelForStage(PuzzleStage stage) =>
-        (stagePanels != null && stagePanels.TryGetValue(stage, out var panel)) ? panel : null;
+    private GameObject GetPanelForStage(PuzzleStage stage) => // Handles this part of the puzzle state flow.
+        (stagePanels != null && stagePanels.TryGetValue(stage, out var panel)) ? panel : null; // Attempts to read a stored puzzle-state value.
 
-    public void OpenCurrentStagePanel(int submitOwnerActorNumber = -1)
-    {
-        int resolvedSubmitOwnerActorNumber = ResolveSubmitOwnerActorNumber(submitOwnerActorNumber);
-        currentSubmitOwnerActorNumber = resolvedSubmitOwnerActorNumber;
-        MarkLocalPuzzleReentryAccess(CurrentStage, resolvedSubmitOwnerActorNumber);
+    public void OpenCurrentStagePanel(int submitOwnerActorNumber = -1) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        int resolvedSubmitOwnerActorNumber = ResolveSubmitOwnerActorNumber(submitOwnerActorNumber); // Stores an integer puzzle-state value.
+        currentSubmitOwnerActorNumber = resolvedSubmitOwnerActorNumber; // Updates which actor owns submit controls.
+        MarkLocalPuzzleReentryAccess(CurrentStage, resolvedSubmitOwnerActorNumber); // Handles this part of the puzzle state flow.
 
-        var panel = GetPanelForStage(CurrentStage);
-        if (panel != null)
-        {
-            panel.SetActive(true);
-            currentPuzzlePanel = panel;
-            RefreshSubmitButtonVisibility();
-        }
-    }
+        var panel = GetPanelForStage(CurrentStage); // Handles this part of the puzzle state flow.
+        if (panel != null) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            panel.SetActive(true); // Shows or hides this puzzle-related UI object.
+            currentPuzzlePanel = panel; // Updates the currently tracked puzzle panel.
+            RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
+        } // Ends this block.
+    } // Ends this block.
    
-    public void CloseCurrentPuzzle()
-    {
-        var panel = GetPanelForStage(CurrentStage);
-        if (panel != null && panel.activeSelf) { panel.SetActive(false); Debug.Log($"Closed {panel.name}"); }
-        else Debug.Log("No current puzzle panel to close.");
-    }
+    public void CloseCurrentPuzzle() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        var panel = GetPanelForStage(CurrentStage); // Handles this part of the puzzle state flow.
+        if (panel != null && panel.activeSelf) { panel.SetActive(false); Debug.Log($"Closed {panel.name}"); } // Checks whether this puzzle-state condition requires action.
+        else Debug.Log("No current puzzle panel to close."); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
     // Close a specific puzzle panel from a UI button (Inspector selects stage as int)
-    public void ClosePuzzle(int stageInt)
-    {
-        PuzzleStage stage = (PuzzleStage)stageInt;
-        var panel = GetPanelForStage(stage);
+    public void ClosePuzzle(int stageInt) // Closes the current puzzle panel and releases local UI state.
+    { // Starts this block.
+        PuzzleStage stage = (PuzzleStage)stageInt; // Stores a puzzle stage value.
+        var panel = GetPanelForStage(stage); // Handles this part of the puzzle state flow.
 
-        if (panel != null && panel.activeSelf)
-        {
-            panel.SetActive(false);
-            Debug.Log($"Closed {stage} ({panel.name})");
-        }
-        else
-        {
-            Debug.Log($"No active panel to close for stage: {stage}");
-        }
-    }
+        if (panel != null && panel.activeSelf) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            panel.SetActive(false); // Shows or hides this puzzle-related UI object.
+            Debug.Log($"Closed {stage} ({panel.name})"); // Writes puzzle-state diagnostic information to the Unity console.
+        } // Ends this block.
+        else // Runs when the previous condition is false.
+        { // Starts this block.
+            Debug.Log($"No active panel to close for stage: {stage}"); // Writes puzzle-state diagnostic information to the Unity console.
+        } // Ends this block.
+    } // Ends this block.
 
     // ==== Fair-turn system additions ====
 
-    private void EnsureRoomProps()
-    {
-        if (!PhotonNetwork.IsMasterClient) return;
+    private void EnsureRoomProps() // Ensures required Photon room properties exist.
+    { // Starts this block.
+        if (!PhotonNetwork.IsMasterClient) return; // Checks whether this puzzle-state condition requires action.
 
-        var room = PhotonNetwork.CurrentRoom;
-        var changed = new Hashtable();
+        var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.
+        var changed = new Hashtable(); // Handles this part of the puzzle state flow.
 
-        if (!room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED)) changed[RP_PUZZLE_LOCKED] = false;
-        if (!room.CustomProperties.ContainsKey(RP_LOCK_OWNER)) changed[RP_LOCK_OWNER] = -1;
-        if (!room.CustomProperties.ContainsKey(RP_ROUND)) changed[RP_ROUND] = 1;
+        if (!room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED)) changed[RP_PUZZLE_LOCKED] = false; // Checks whether this puzzle-state condition requires action.
+        if (!room.CustomProperties.ContainsKey(RP_LOCK_OWNER)) changed[RP_LOCK_OWNER] = -1; // Checks whether this puzzle-state condition requires action.
+        if (!room.CustomProperties.ContainsKey(RP_ROUND)) changed[RP_ROUND] = 1; // Checks whether this puzzle-state condition requires action.
 
-        if (changed.Count > 0) room.SetCustomProperties(changed);
-    }
+        if (changed.Count > 0) room.SetCustomProperties(changed); // Checks whether this puzzle-state condition requires action.
+    } // Ends this block.
 
-    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
-    {
-        if (propertiesThatChanged.ContainsKey(RP_ROUND))
-        {
-            var me = PhotonNetwork.LocalPlayer;
-            var meProps = new Hashtable { [PP_PLAYED_ROUND] = false };
-            me.SetCustomProperties(meProps);
-        }
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged) // Responds to Photon room-property changes.
+    { // Starts this block.
+        if (propertiesThatChanged.ContainsKey(RP_ROUND)) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            var me = PhotonNetwork.LocalPlayer; // Handles this part of the puzzle state flow.
+            var meProps = new Hashtable { [PP_PLAYED_ROUND] = false }; // Handles this part of the puzzle state flow.
+            me.SetCustomProperties(meProps); // Writes updated custom properties to Photon.
+        } // Ends this block.
 
-        if (propertiesThatChanged.ContainsKey(RP_LOCK_OWNER))
-        {
-            int lockOwner = propertiesThatChanged[RP_LOCK_OWNER] is int owner ? owner : -1;
-            currentSubmitOwnerActorNumber = IsActorInRoom(lockOwner) ? lockOwner : -1;
+        if (propertiesThatChanged.ContainsKey(RP_LOCK_OWNER)) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            int lockOwner = propertiesThatChanged[RP_LOCK_OWNER] is int owner ? owner : -1; // Stores an integer puzzle-state value.
+            currentSubmitOwnerActorNumber = IsActorInRoom(lockOwner) ? lockOwner : -1; // Updates which actor owns submit controls.
 
-            if (lockOwner < 0)
-                ClearLocalPuzzleAccess();
-        }
+            if (lockOwner < 0) // Checks whether this puzzle-state condition requires action.
+                ClearLocalPuzzleAccess(); // Handles this part of the puzzle state flow.
+        } // Ends this block.
 
-        if (propertiesThatChanged.ContainsKey(RP_PUZZLE_LOCKED) &&
-            propertiesThatChanged[RP_PUZZLE_LOCKED] is bool locked &&
-            !locked)
-        {
-            ClearLocalPuzzleAccess();
-        }
+        if (propertiesThatChanged.ContainsKey(RP_PUZZLE_LOCKED) && // Checks whether this puzzle-state condition requires action.
+            propertiesThatChanged[RP_PUZZLE_LOCKED] is bool locked && // Handles this part of the puzzle state flow.
+            !locked) // Handles this part of the puzzle state flow.
+        { // Starts this block.
+            ClearLocalPuzzleAccess(); // Handles this part of the puzzle state flow.
+        } // Ends this block.
 
-        RefreshSubmitButtonVisibility();
-    }
+        RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
+    } // Ends this block.
 
-    public override void OnPlayerLeftRoom(Player otherPlayer)
-    {
-        if (!PhotonNetwork.IsMasterClient) return;
+    public override void OnPlayerLeftRoom(Player otherPlayer) // Handles cleanup when another player leaves the room.
+    { // Starts this block.
+        if (!PhotonNetwork.IsMasterClient) return; // Checks whether this puzzle-state condition requires action.
 
-        var room = PhotonNetwork.CurrentRoom;
+        var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.
 
-        int owner = -1;
-        if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER))
-            owner = (int)room.CustomProperties[RP_LOCK_OWNER];
+        int owner = -1; // Stores an integer puzzle-state value.
+        if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER)) // Checks whether this puzzle-state condition requires action.
+            owner = (int)room.CustomProperties[RP_LOCK_OWNER]; // Handles this part of the puzzle state flow.
 
-        bool disconnectedPlayerOwnsSubmit =
-            owner == otherPlayer.ActorNumber ||
-            currentSubmitOwnerActorNumber == otherPlayer.ActorNumber;
+        bool disconnectedPlayerOwnsSubmit = // Stores a boolean puzzle-state result.
+            owner == otherPlayer.ActorNumber || // Handles this part of the puzzle state flow.
+            currentSubmitOwnerActorNumber == otherPlayer.ActorNumber; // Updates which actor owns submit controls.
 
-        if (disconnectedPlayerOwnsSubmit)
-        {
-            int replacementOwner = GetRandomActiveActorNumber(otherPlayer.ActorNumber);
-            bool hasReplacementOwner = replacementOwner > 0;
+        if (disconnectedPlayerOwnsSubmit) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            int replacementOwner = GetRandomActiveActorNumber(otherPlayer.ActorNumber); // Stores an integer puzzle-state value.
+            bool hasReplacementOwner = replacementOwner > 0; // Stores a boolean puzzle-state result.
 
-            var ht = new Hashtable
-            {
-                [RP_PUZZLE_LOCKED] = hasReplacementOwner,
-                [RP_LOCK_OWNER] = replacementOwner
-            };
-            room.SetCustomProperties(ht);
-            photonView.RPC(nameof(RPC_SetSubmitOwnerForAll), RpcTarget.All, replacementOwner);
-        }
+            var ht = new Hashtable // Handles this part of the puzzle state flow.
+            { // Starts this block.
+                [RP_PUZZLE_LOCKED] = hasReplacementOwner, // Handles this part of the puzzle state flow.
+                [RP_LOCK_OWNER] = replacementOwner // Handles this part of the puzzle state flow.
+            }; // Ends this initializer block.
+            room.SetCustomProperties(ht); // Writes updated custom properties to Photon.
+            photonView.RPC(nameof(RPC_SetSubmitOwnerForAll), RpcTarget.All, replacementOwner); // Sends a synchronized RPC to Photon clients.
+        } // Ends this block.
 
-        MaybeAdvanceRoundIfEveryonePlayed();
-    }
+        MaybeAdvanceRoundIfEveryonePlayed(); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    [PunRPC]
-    private void RPC_SetSubmitOwnerForAll(int actorNumber)
-    {
-        currentSubmitOwnerActorNumber = IsActorInRoom(actorNumber) ? actorNumber : -1;
-        RefreshSubmitButtonVisibility();
-    }
+    [PunRPC] // Marks the next method as callable through Photon RPC.
+    private void RPC_SetSubmitOwnerForAll(int actorNumber) // Runs a synchronized Photon RPC action.
+    { // Starts this block.
+        currentSubmitOwnerActorNumber = IsActorInRoom(actorNumber) ? actorNumber : -1; // Updates which actor owns submit controls.
+        RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
+    } // Ends this block.
 
-    public bool CanLocalPlayerSubmitCurrentAttempt()
-    {
-        if (!PhotonNetwork.IsConnected || PhotonNetwork.LocalPlayer == null)
-            return true;
+    public bool CanLocalPlayerSubmitCurrentAttempt() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (!PhotonNetwork.IsConnected || PhotonNetwork.LocalPlayer == null) // Checks whether this puzzle-state condition requires action.
+            return true; // Reports success to the caller.
 
-        currentSubmitOwnerActorNumber = ResolveSubmitOwnerActorNumber(currentSubmitOwnerActorNumber);
+        currentSubmitOwnerActorNumber = ResolveSubmitOwnerActorNumber(currentSubmitOwnerActorNumber); // Updates which actor owns submit controls.
 
-        if (currentSubmitOwnerActorNumber > 0)
-            return PhotonNetwork.LocalPlayer.ActorNumber == currentSubmitOwnerActorNumber;
+        if (currentSubmitOwnerActorNumber > 0) // Checks whether this puzzle-state condition requires action.
+            return PhotonNetwork.LocalPlayer.ActorNumber == currentSubmitOwnerActorNumber; // Returns the computed puzzle-state value to the caller.
 
-        var room = PhotonNetwork.CurrentRoom;
-        if (room == null)
-            return true;
+        var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.
+        if (room == null) // Checks whether this puzzle-state condition requires action.
+            return true; // Reports success to the caller.
 
-        bool locked = room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED) &&
-                      (bool)room.CustomProperties[RP_PUZZLE_LOCKED];
+        bool locked = room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED) && // Stores a boolean puzzle-state result.
+                      (bool)room.CustomProperties[RP_PUZZLE_LOCKED]; // Handles this part of the puzzle state flow.
 
-        if (!locked)
-            return true;
+        if (!locked) // Checks whether this puzzle-state condition requires action.
+            return true; // Reports success to the caller.
 
-        int owner = room.CustomProperties.ContainsKey(RP_LOCK_OWNER)
-            ? (int)room.CustomProperties[RP_LOCK_OWNER]
-            : -1;
+        int owner = room.CustomProperties.ContainsKey(RP_LOCK_OWNER) // Stores an integer puzzle-state value.
+            ? (int)room.CustomProperties[RP_LOCK_OWNER] // Handles this part of the puzzle state flow.
+            : -1; // Handles this part of the puzzle state flow.
 
-        return owner < 0 || owner == PhotonNetwork.LocalPlayer.ActorNumber;
-    }
+        return owner < 0 || owner == PhotonNetwork.LocalPlayer.ActorNumber; // Returns the computed puzzle-state value to the caller.
+    } // Ends this block.
 
-    private int ResolveSubmitOwnerActorNumber(int requestedOwnerActorNumber)
-    {
-        if (!PhotonNetwork.IsConnected)
-            return requestedOwnerActorNumber;
+    private int ResolveSubmitOwnerActorNumber(int requestedOwnerActorNumber) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (!PhotonNetwork.IsConnected) // Checks whether this puzzle-state condition requires action.
+            return requestedOwnerActorNumber; // Returns the computed puzzle-state value to the caller.
 
-        if (IsActorInRoom(requestedOwnerActorNumber))
-            return requestedOwnerActorNumber;
+        if (IsActorInRoom(requestedOwnerActorNumber)) // Checks whether this puzzle-state condition requires action.
+            return requestedOwnerActorNumber; // Returns the computed puzzle-state value to the caller.
 
-        var room = PhotonNetwork.CurrentRoom;
-        if (room != null &&
-            room.CustomProperties.ContainsKey(RP_LOCK_OWNER) &&
-            room.CustomProperties[RP_LOCK_OWNER] is int lockOwner &&
-            IsActorInRoom(lockOwner))
-        {
-            return lockOwner;
-        }
+        var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.
+        if (room != null && // Checks whether this puzzle-state condition requires action.
+            room.CustomProperties.ContainsKey(RP_LOCK_OWNER) && // Checks whether this puzzle-state key exists.
+            room.CustomProperties[RP_LOCK_OWNER] is int lockOwner && // Updates or calls this puzzle-state object.
+            IsActorInRoom(lockOwner)) // Handles this part of the puzzle state flow.
+        { // Starts this block.
+            return lockOwner; // Returns the computed puzzle-state value to the caller.
+        } // Ends this block.
 
-        return -1;
-    }
+        return -1; // Returns the computed puzzle-state value to the caller.
+    } // Ends this block.
 
-    private bool IsActorInRoom(int actorNumber)
-    {
-        if (actorNumber <= 0 || !PhotonNetwork.IsConnected)
-            return false;
+    private bool IsActorInRoom(int actorNumber) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (actorNumber <= 0 || !PhotonNetwork.IsConnected) // Checks whether this puzzle-state condition requires action.
+            return false; // Reports failure to the caller.
 
-        foreach (var player in PhotonNetwork.PlayerList)
-        {
-            if (player != null && !player.IsInactive && player.ActorNumber == actorNumber)
-                return true;
-        }
+        foreach (var player in PhotonNetwork.PlayerList) // Loops through each matching puzzle object.
+        { // Starts this block.
+            if (player != null && !player.IsInactive && player.ActorNumber == actorNumber) // Checks whether this puzzle-state condition requires action.
+                return true; // Reports success to the caller.
+        } // Ends this block.
 
-        return false;
-    }
+        return false; // Reports failure to the caller.
+    } // Ends this block.
 
-    private int GetRandomActiveActorNumber(int excludedActorNumber)
-    {
-        var activePlayers = new List<Player>();
-        foreach (var player in PhotonNetwork.PlayerList)
-        {
-            if (player != null && !player.IsInactive && player.ActorNumber != excludedActorNumber)
-                activePlayers.Add(player);
-        }
+    private int GetRandomActiveActorNumber(int excludedActorNumber) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        var activePlayers = new List<Player>(); // Handles this part of the puzzle state flow.
+        foreach (var player in PhotonNetwork.PlayerList) // Loops through each matching puzzle object.
+        { // Starts this block.
+            if (player != null && !player.IsInactive && player.ActorNumber != excludedActorNumber) // Checks whether this puzzle-state condition requires action.
+                activePlayers.Add(player); // Adds this value to the puzzle-state collection.
+        } // Ends this block.
 
-        if (activePlayers.Count == 0)
-            return -1;
+        if (activePlayers.Count == 0) // Checks whether this puzzle-state condition requires action.
+            return -1; // Returns the computed puzzle-state value to the caller.
 
-        int randomIndex = UnityEngine.Random.Range(0, activePlayers.Count);
-        return activePlayers[randomIndex].ActorNumber;
-    }
+        int randomIndex = UnityEngine.Random.Range(0, activePlayers.Count); // Stores an integer puzzle-state value.
+        return activePlayers[randomIndex].ActorNumber; // Returns the computed puzzle-state value to the caller.
+    } // Ends this block.
 
-    private void RefreshSubmitButtonVisibility()
-    {
-        bool shouldShowSubmitButtons = CanLocalPlayerSubmitCurrentAttempt();
+    private void RefreshSubmitButtonVisibility() // Updates submit-button visibility based on puzzle lock ownership.
+    { // Starts this block.
+        bool shouldShowSubmitButtons = CanLocalPlayerSubmitCurrentAttempt(); // Stores a boolean puzzle-state result.
 
-        foreach (var panel in stagePanels.Values)
-        {
-            if (panel == null) continue;
+        foreach (var panel in stagePanels.Values) // Loops through each matching puzzle object.
+        { // Starts this block.
+            if (panel == null) continue; // Checks whether this puzzle-state condition requires action.
 
-            foreach (var button in panel.GetComponentsInChildren<Button>(true))
-            {
-                if (button == null || !IsManagedSubmitButton(button.gameObject))
-                    continue;
+            foreach (var button in panel.GetComponentsInChildren<Button>(true)) // Loops through each matching puzzle object.
+            { // Starts this block.
+                if (button == null || !IsManagedSubmitButton(button.gameObject)) // Checks whether this puzzle-state condition requires action.
+                    continue; // Handles this part of the puzzle state flow.
 
-                button.gameObject.SetActive(shouldShowSubmitButtons);
-            }
-        }
+                button.gameObject.SetActive(shouldShowSubmitButtons); // Shows or hides this puzzle-related UI object.
+            } // Ends this block.
+        } // Ends this block.
 
-        pictureGridManager?.RefreshSubmitButtonVisibility();
-    }
+        pictureGridManager?.RefreshSubmitButtonVisibility(); // Calls this puzzle component only when it exists.
+    } // Ends this block.
 
-    private bool IsManagedSubmitButton(GameObject buttonObject)
-    {
-        if (buttonObject == null)
-            return false;
+    private bool IsManagedSubmitButton(GameObject buttonObject) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (buttonObject == null) // Checks whether this puzzle-state condition requires action.
+            return false; // Reports failure to the caller.
 
-        if (pictureGridManager != null && pictureGridManager.SubmitButton == buttonObject)
-            return false;
+        if (pictureGridManager != null && pictureGridManager.SubmitButton == buttonObject) // Checks whether this puzzle-state condition requires action.
+            return false; // Reports failure to the caller.
 
-        return buttonObject.name.IndexOf("submit", StringComparison.OrdinalIgnoreCase) >= 0;
-    }
+        return buttonObject.name.IndexOf("submit", StringComparison.OrdinalIgnoreCase) >= 0; // Returns the computed puzzle-state value to the caller.
+    } // Ends this block.
 
     // Gate attempt; called by triggers
     // Gate attempt; called by triggers
-    public bool TryBeginAttempt(out string reason)
-    {
-        reason = null;
+    public bool TryBeginAttempt(out string reason) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        reason = null; // Handles this part of the puzzle state flow.
 
-        var me = PhotonNetwork.LocalPlayer;
-        var room = PhotonNetwork.CurrentRoom;
+        var me = PhotonNetwork.LocalPlayer; // Handles this part of the puzzle state flow.
+        var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.
 
-        bool locked = room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED) &&
-                      (bool)room.CustomProperties[RP_PUZZLE_LOCKED];
+        bool locked = room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED) && // Stores a boolean puzzle-state result.
+                      (bool)room.CustomProperties[RP_PUZZLE_LOCKED]; // Handles this part of the puzzle state flow.
 
-        int owner = -1;
-        if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER))
-            owner = (int)room.CustomProperties[RP_LOCK_OWNER];
+        int owner = -1; // Stores an integer puzzle-state value.
+        if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER)) // Checks whether this puzzle-state condition requires action.
+            owner = (int)room.CustomProperties[RP_LOCK_OWNER]; // Handles this part of the puzzle state flow.
 
-        bool iPlayed = me.CustomProperties != null &&
-                       me.CustomProperties.ContainsKey(PP_PLAYED_ROUND) &&
-                       (bool)me.CustomProperties[PP_PLAYED_ROUND];
+        bool iPlayed = me.CustomProperties != null && // Stores a boolean puzzle-state result.
+                       me.CustomProperties.ContainsKey(PP_PLAYED_ROUND) && // Checks whether this puzzle-state key exists.
+                       (bool)me.CustomProperties[PP_PLAYED_ROUND]; // Handles this part of the puzzle state flow.
 
-        // ✅ 1) If the puzzle is locked by ME, always allow me to reopen/close/reopen.
-        if (locked && owner == me.ActorNumber)
-        {
-            MarkLocalActivePuzzleLock(me.ActorNumber);
-            return true; // don't change any props; I still hold the lock
-        }
+        // ? 1) If the puzzle is locked by ME, always allow me to reopen/close/reopen.
+        if (locked && owner == me.ActorNumber) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            MarkLocalActivePuzzleLock(me.ActorNumber); // Handles this part of the puzzle state flow.
+            GameSessionCsvLogger.Instance?.RecordPuzzleEntered(CurrentStage, me.ActorNumber, me.NickName); // Records puzzle-session information to the CSV logger when available.
+            return true; // don't change any props; I still hold the lock // Returns the computed puzzle-state value to the caller.
+        } // Ends this block.
 
-        if (localPlayerHasActivePuzzleLock && localActivePuzzleLockOwnerActorNumber == me.ActorNumber)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                room.SetCustomProperties(new Hashtable
-                {
-                    [RP_PUZZLE_LOCKED] = true,
-                    [RP_LOCK_OWNER] = me.ActorNumber
-                });
-            }
-            else
-            {
-                photonView.RPC(nameof(RPC_RequestLockFromMaster), RpcTarget.MasterClient, me.ActorNumber);
-            }
+        if (localPlayerHasActivePuzzleLock && localActivePuzzleLockOwnerActorNumber == me.ActorNumber) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+            { // Starts this block.
+                room.SetCustomProperties(new Hashtable // Writes updated custom properties to Photon.
+                { // Starts this block.
+                    [RP_PUZZLE_LOCKED] = true, // Handles this part of the puzzle state flow.
+                    [RP_LOCK_OWNER] = me.ActorNumber // Handles this part of the puzzle state flow.
+                }); // Handles this part of the puzzle state flow.
+            } // Ends this block.
+            else // Runs when the previous condition is false.
+            { // Starts this block.
+                photonView.RPC(nameof(RPC_RequestLockFromMaster), RpcTarget.MasterClient, me.ActorNumber); // Sends a synchronized RPC to Photon clients.
+            } // Ends this block.
 
-            return true;
-        }
+            GameSessionCsvLogger.Instance?.RecordPuzzleEntered(CurrentStage, me.ActorNumber, me.NickName); // Records puzzle-session information to the CSV logger when available.
+            return true; // Reports success to the caller.
+        } // Ends this block.
 
-        if (locked && HasLocalPuzzleReentryAccess(CurrentStage, owner))
-        {
-            currentSubmitOwnerActorNumber = owner;
-            return true;
-        }
+        if (locked && HasLocalPuzzleReentryAccess(CurrentStage, owner)) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            currentSubmitOwnerActorNumber = owner; // Updates which actor owns submit controls.
+            GameSessionCsvLogger.Instance?.RecordPuzzleEntered(CurrentStage, me.ActorNumber, me.NickName); // Records puzzle-session information to the CSV logger when available.
+            return true; // Reports success to the caller.
+        } // Ends this block.
 
         // 2) If someone else holds it, block.
-        if (locked && owner != me.ActorNumber)
-        {
-            reason = "Another player is currently holding this puzzle.";
-            return false;
-        }
+        if (locked && owner != me.ActorNumber) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            reason = "Another player is currently holding this puzzle."; // Handles this part of the puzzle state flow.
+            return false; // Reports failure to the caller.
+        } // Ends this block.
 
         // 3) If it's not locked and I've already taken my turn this round, block starting a (new) attempt.
-        if (iPlayed)
-        {
-            reason = "You’ve already taken your turn this round.";
-            MaybeAdvanceRoundIfEveryonePlayed();
-            return false;
-        }
+        if (iPlayed) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            reason = "You�ve already taken your turn this round."; // Handles this part of the puzzle state flow.
+            MaybeAdvanceRoundIfEveryonePlayed(); // Handles this part of the puzzle state flow.
+            return false; // Reports failure to the caller.
+        } // Ends this block.
 
         // 4) Otherwise acquire the lock and mark my turn as spent.
-        if (PhotonNetwork.IsMasterClient)
-        {
-            var ht = new Hashtable
-            {
-                [RP_PUZZLE_LOCKED] = true,
-                [RP_LOCK_OWNER] = me.ActorNumber
-            };
-            room.SetCustomProperties(ht);
-        }
-        else
-        {
-            photonView.RPC(nameof(RPC_RequestLockFromMaster), RpcTarget.MasterClient, me.ActorNumber);
-        }
+        if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            var ht = new Hashtable // Handles this part of the puzzle state flow.
+            { // Starts this block.
+                [RP_PUZZLE_LOCKED] = true, // Handles this part of the puzzle state flow.
+                [RP_LOCK_OWNER] = me.ActorNumber // Handles this part of the puzzle state flow.
+            }; // Ends this initializer block.
+            room.SetCustomProperties(ht); // Writes updated custom properties to Photon.
+        } // Ends this block.
+        else // Runs when the previous condition is false.
+        { // Starts this block.
+            photonView.RPC(nameof(RPC_RequestLockFromMaster), RpcTarget.MasterClient, me.ActorNumber); // Sends a synchronized RPC to Photon clients.
+        } // Ends this block.
 
-        me.SetCustomProperties(new Hashtable { [PP_PLAYED_ROUND] = true });
-        MarkLocalActivePuzzleLock(me.ActorNumber);
-        return true;
-    }
+        me.SetCustomProperties(new Hashtable { [PP_PLAYED_ROUND] = true }); // Writes updated custom properties to Photon.
+        MarkLocalActivePuzzleLock(me.ActorNumber); // Handles this part of the puzzle state flow.
+        GameSessionCsvLogger.Instance?.RecordPuzzleEntered(CurrentStage, me.ActorNumber, me.NickName); // Records puzzle-session information to the CSV logger when available.
+        return true; // Reports success to the caller.
+    } // Ends this block.
 
 
-    [PunRPC]
-    private void RPC_RequestLockFromMaster(int actorNumber)
-    {
-        if (!PhotonNetwork.IsMasterClient) return;
+    [PunRPC] // Marks the next method as callable through Photon RPC.
+    private void RPC_RequestLockFromMaster(int actorNumber) // Runs a synchronized Photon RPC action.
+    { // Starts this block.
+        if (!PhotonNetwork.IsMasterClient) return; // Checks whether this puzzle-state condition requires action.
 
-        var room = PhotonNetwork.CurrentRoom;
+        var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.
 
-        bool locked = room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED) &&
-                      (bool)room.CustomProperties[RP_PUZZLE_LOCKED];
+        bool locked = room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED) && // Stores a boolean puzzle-state result.
+                      (bool)room.CustomProperties[RP_PUZZLE_LOCKED]; // Handles this part of the puzzle state flow.
 
-        int owner = -1;
-        if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER))
-            owner = (int)room.CustomProperties[RP_LOCK_OWNER];
+        int owner = -1; // Stores an integer puzzle-state value.
+        if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER)) // Checks whether this puzzle-state condition requires action.
+            owner = (int)room.CustomProperties[RP_LOCK_OWNER]; // Handles this part of the puzzle state flow.
 
-        if (!locked || owner == actorNumber)
-        {
-            var ht = new Hashtable { [RP_PUZZLE_LOCKED] = true, [RP_LOCK_OWNER] = actorNumber };
-            room.SetCustomProperties(ht);
-        }
-    }
+        if (!locked || owner == actorNumber) // Checks whether this puzzle-state condition requires action.
+        { // Starts this block.
+            var ht = new Hashtable { [RP_PUZZLE_LOCKED] = true, [RP_LOCK_OWNER] = actorNumber }; // Handles this part of the puzzle state flow.
+            room.SetCustomProperties(ht); // Writes updated custom properties to Photon.
+        } // Ends this block.
+    } // Ends this block.
 
-    private void MaybeAdvanceRoundIfEveryonePlayed()
-    {
-        if (!PhotonNetwork.IsMasterClient) return;
+    private void MaybeAdvanceRoundIfEveryonePlayed() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (!PhotonNetwork.IsMasterClient) return; // Checks whether this puzzle-state condition requires action.
 
-        foreach (var p in PhotonNetwork.PlayerList)
-        {
-            if (!ShouldExpectPlayerTurn(p))
-                continue;
+        foreach (var p in PhotonNetwork.PlayerList) // Loops through each matching puzzle object.
+        { // Starts this block.
+            if (!ShouldExpectPlayerTurn(p)) // Checks whether this puzzle-state condition requires action.
+                continue; // Handles this part of the puzzle state flow.
 
-            bool played = p.CustomProperties != null &&
-                          p.CustomProperties.ContainsKey(PP_PLAYED_ROUND) &&
-                          (bool)p.CustomProperties[PP_PLAYED_ROUND];
-            if (!played) return; // someone still hasn't had a turn
-        }
+            bool played = p.CustomProperties != null && // Stores a boolean puzzle-state result.
+                          p.CustomProperties.ContainsKey(PP_PLAYED_ROUND) && // Checks whether this puzzle-state key exists.
+                          (bool)p.CustomProperties[PP_PLAYED_ROUND]; // Handles this part of the puzzle state flow.
+            if (!played) return; // someone still hasn't had a turn // Checks whether this puzzle-state condition requires action.
+        } // Ends this block.
 
-        var room = PhotonNetwork.CurrentRoom;
-        int round = room.CustomProperties.ContainsKey(RP_ROUND)
-                    ? (int)room.CustomProperties[RP_ROUND] : 1;
+        var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.
+        int round = room.CustomProperties.ContainsKey(RP_ROUND) // Stores an integer puzzle-state value.
+                    ? (int)room.CustomProperties[RP_ROUND] : 1; // Handles this part of the puzzle state flow.
 
-        var ht = new Hashtable
-        {
-            [RP_ROUND] = round + 1,
-            [RP_PUZZLE_LOCKED] = false,
-            [RP_LOCK_OWNER] = -1
-        };
-        room.SetCustomProperties(ht);
-    }
+        var ht = new Hashtable // Handles this part of the puzzle state flow.
+        { // Starts this block.
+            [RP_ROUND] = round + 1, // Handles this part of the puzzle state flow.
+            [RP_PUZZLE_LOCKED] = false, // Handles this part of the puzzle state flow.
+            [RP_LOCK_OWNER] = -1 // Handles this part of the puzzle state flow.
+        }; // Ends this initializer block.
+        room.SetCustomProperties(ht); // Writes updated custom properties to Photon.
+    } // Ends this block.
 
-    private bool ShouldExpectPlayerTurn(Player player)
-    {
-        return player != null && !player.IsInactive;
-    }
+    private bool ShouldExpectPlayerTurn(Player player) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        return player != null && !player.IsInactive; // Returns the computed puzzle-state value to the caller.
+    } // Ends this block.
 
-    private void MarkLocalActivePuzzleLock(int actorNumber)
-    {
-        if (!IsLocalPlayerActor(actorNumber))
-            return;
+    private void MarkLocalActivePuzzleLock(int actorNumber) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (!IsLocalPlayerActor(actorNumber)) // Checks whether this puzzle-state condition requires action.
+            return; // Leaves the current method early.
 
-        localPlayerHasActivePuzzleLock = true;
-        localActivePuzzleLockOwnerActorNumber = actorNumber;
-        currentSubmitOwnerActorNumber = actorNumber;
-    }
+        localPlayerHasActivePuzzleLock = true; // Updates local puzzle-lock ownership state.
+        localActivePuzzleLockOwnerActorNumber = actorNumber; // Updates the local lock owner actor number.
+        currentSubmitOwnerActorNumber = actorNumber; // Updates which actor owns submit controls.
+    } // Ends this block.
 
-    private void ClearLocalActivePuzzleLock()
-    {
-        localPlayerHasActivePuzzleLock = false;
-        localActivePuzzleLockOwnerActorNumber = -1;
-    }
+    private void ClearLocalActivePuzzleLock() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        localPlayerHasActivePuzzleLock = false; // Updates local puzzle-lock ownership state.
+        localActivePuzzleLockOwnerActorNumber = -1; // Updates the local lock owner actor number.
+    } // Ends this block.
 
-    private void MarkLocalPuzzleReentryAccess(PuzzleStage stage, int ownerActorNumber)
-    {
-        if (ownerActorNumber <= 0)
-            return;
+    private void MarkLocalPuzzleReentryAccess(PuzzleStage stage, int ownerActorNumber) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        if (ownerActorNumber <= 0) // Checks whether this puzzle-state condition requires action.
+            return; // Leaves the current method early.
 
-        localPlayerHasPuzzleReentryAccess = true;
-        localPuzzleReentryStage = stage;
-        localPuzzleReentryOwnerActorNumber = ownerActorNumber;
-    }
+        localPlayerHasPuzzleReentryAccess = true; // Updates local puzzle re-entry access state.
+        localPuzzleReentryStage = stage; // Updates which stage can be re-entered locally.
+        localPuzzleReentryOwnerActorNumber = ownerActorNumber; // Updates the actor number tied to local re-entry.
+    } // Ends this block.
 
-    private bool HasLocalPuzzleReentryAccess(PuzzleStage stage, int ownerActorNumber)
-    {
-        return localPlayerHasPuzzleReentryAccess &&
-               localPuzzleReentryStage == stage &&
-               localPuzzleReentryOwnerActorNumber == ownerActorNumber &&
-               ownerActorNumber > 0;
-    }
+    private bool HasLocalPuzzleReentryAccess(PuzzleStage stage, int ownerActorNumber) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        return localPlayerHasPuzzleReentryAccess && // Returns the computed puzzle-state value to the caller.
+               localPuzzleReentryStage == stage && // Updates which stage can be re-entered locally.
+               localPuzzleReentryOwnerActorNumber == ownerActorNumber && // Updates the actor number tied to local re-entry.
+               ownerActorNumber > 0; // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    private void ClearLocalPuzzleReentryAccess()
-    {
-        localPlayerHasPuzzleReentryAccess = false;
-        localPuzzleReentryStage = PuzzleStage.Puzzle0;
-        localPuzzleReentryOwnerActorNumber = -1;
-    }
+    private void ClearLocalPuzzleReentryAccess() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        localPlayerHasPuzzleReentryAccess = false; // Updates local puzzle re-entry access state.
+        localPuzzleReentryStage = PuzzleStage.Puzzle0; // Updates which stage can be re-entered locally.
+        localPuzzleReentryOwnerActorNumber = -1; // Updates the actor number tied to local re-entry.
+    } // Ends this block.
 
-    private void ClearLocalPuzzleAccess()
-    {
-        ClearLocalActivePuzzleLock();
-        ClearLocalPuzzleReentryAccess();
-    }
+    private void ClearLocalPuzzleAccess() // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        ClearLocalActivePuzzleLock(); // Handles this part of the puzzle state flow.
+        ClearLocalPuzzleReentryAccess(); // Handles this part of the puzzle state flow.
+    } // Ends this block.
 
-    private bool IsLocalPlayerActor(int actorNumber)
-    {
-        return PhotonNetwork.LocalPlayer != null &&
-               PhotonNetwork.LocalPlayer.ActorNumber == actorNumber;
-    }
+    private bool IsLocalPlayerActor(int actorNumber) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        return PhotonNetwork.LocalPlayer != null && // Returns the computed puzzle-state value to the caller.
+               PhotonNetwork.LocalPlayer.ActorNumber == actorNumber; // Uses Photon networking state or operations.
+    } // Ends this block.
 
-    private IEnumerable<DraggableCard> FindCardsByBehavior(DraggableCard.DraggableCardBehavior behavior)
-    {
-        foreach (var card in FindObjectsOfType<DraggableCard>())
-        {
-            if (card.Behavior == behavior)
-                yield return card;
-        }
-    }
-}
+    private IEnumerable<DraggableCard> FindCardsByBehavior(DraggableCard.DraggableCardBehavior behavior) // Handles this part of the puzzle state flow.
+    { // Starts this block.
+        foreach (var card in FindObjectsOfType<DraggableCard>()) // Loops through each matching puzzle object.
+        { // Starts this block.
+            if (card.Behavior == behavior) // Checks whether this puzzle-state condition requires action.
+                yield return card; // Waits before continuing this coroutine.
+        } // Ends this block.
+    } // Ends this block.
+} // Ends this block.

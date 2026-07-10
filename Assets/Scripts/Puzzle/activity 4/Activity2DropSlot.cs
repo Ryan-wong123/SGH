@@ -1,61 +1,61 @@
-using UnityEngine;
-using UnityEngine.EventSystems;
-using Photon.Pun;
+using UnityEngine; // Imports a namespace used by this script.
+using UnityEngine.EventSystems; // Imports a namespace used by this script.
+using Photon.Pun; // Imports a namespace used by this script.
 
-public class Activity2DropSlot : DropSlot
-{
-    [Header("Puzzle 6 answers")]
+public class Activity2DropSlot : DropSlot // Declares this type.
+{ // Starts this code block.
+    [Header("Puzzle 6 answers")] // Adds a labeled section in the Unity Inspector.
     [SerializeField] private string stepName = ""; // set in Inspector
     [SerializeField] private int requiredCorrect = 20; // set this in Inspector
 
     // FIX: If this slot is occupied, reject the drop and revert card back to its own slot
-    public override void OnDrop(PointerEventData eventData)
-    {
-        GameObject droppedObj = eventData.pointerDrag;
-        if (droppedObj == null) return;
+    public override void OnDrop(PointerEventData eventData) // Overrides a Unity or Photon callback method.
+    { // Starts this code block.
+        GameObject droppedObj = eventData.pointerDrag; // Creates a local value used by the following logic.
+        if (droppedObj == null) return; // Checks this condition before continuing.
 
         // NETWORK: only owner can perform the drop action (matches your base DropSlot behavior)
-        var pv = droppedObj.GetComponent<PhotonView>();
-        if (pv != null && !pv.IsMine)
-            return;
+        var pv = droppedObj.GetComponent<PhotonView>(); // Creates a local value used by the following logic.
+        if (pv != null && !pv.IsMine) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
         // If already occupied -> revert to origin slot (NOT outside)
-        if (transform.childCount > 0)
-        {
-            var card = droppedObj.GetComponent<DraggableCard>();
-            if (card != null)
-            {
-                Debug.Log("[Activity2DropSlot] Occupied -> revert to drag origin slot");
-                card.RevertToDragOrigin();
-            }
-            else
-            {
+        if (transform.childCount > 0) // Checks this condition before continuing.
+        { // Starts this code block.
+            var card = droppedObj.GetComponent<DraggableCard>(); // Creates a local value used by the following logic.
+            if (card != null) // Checks this condition before continuing.
+            { // Starts this code block.
+                Debug.Log("[Activity2DropSlot] Occupied -> revert to drag origin slot"); // Writes a diagnostic message to the Unity console.
+                card.RevertToDragOrigin(); // Runs this line of puzzle logic.
+            } // Ends this code block.
+            else // Runs when the previous condition was false.
+            { // Starts this code block.
                 // fallback to base behavior if some other card type
-                var baseCard = droppedObj.GetComponent<DraggableCard>();
-                baseCard?.SnapBack();
-            }
-            return;
-        }
+                var baseCard = droppedObj.GetComponent<DraggableCard>(); // Creates a local value used by the following logic.
+                baseCard?.SnapBack(); // Runs this line of puzzle logic.
+            } // Ends this code block.
+            return; // Returns this result to the caller.
+        } // Ends this code block.
 
         // Otherwise, let base accept logic handle parenting + snap
-        base.OnDrop(eventData);
-    }
+        base.OnDrop(eventData); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    public override bool IsCardCorrect(DraggableCard card)
-    {
-        if (card != null)
-        {
-            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle4)
-            {
-                string cardStep = card.stepName?.Trim().ToLower() ?? "";
-                string slotStep = stepName.Trim().ToLower();
+    public override bool IsCardCorrect(DraggableCard card) // Declares a field, property, or member used by this script.
+    { // Starts this code block.
+        if (card != null) // Checks this condition before continuing.
+        { // Starts this code block.
+            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle4) // Checks this condition before continuing.
+            { // Starts this code block.
+                string cardStep = card.stepName?.Trim().ToLower() ?? ""; // Creates a local value used by the following logic.
+                string slotStep = stepName.Trim().ToLower(); // Creates a local value used by the following logic.
 
-                Debug.Log($"[IsCardCorrect - Puzzle4] Card Step: {cardStep}, Slot Expects: {slotStep}");
+                Debug.Log($"[IsCardCorrect - Puzzle4] Card Step: {cardStep}, Slot Expects: {slotStep}"); // Writes a diagnostic message to the Unity console.
 
-                return cardStep == slotStep;
-            }
-        }
+                return cardStep == slotStep; // Returns this result to the caller.
+            } // Ends this code block.
+        } // Ends this code block.
 
-        return false;
-    }
-}
+        return false; // Returns this result to the caller.
+    } // Ends this code block.
+} // Ends this code block.

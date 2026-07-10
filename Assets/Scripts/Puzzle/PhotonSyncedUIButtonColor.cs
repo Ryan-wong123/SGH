@@ -1,346 +1,346 @@
-﻿using System.Collections.Generic;
-using System;
-using UnityEngine;
-using UnityEngine.UI;
-using Photon.Pun;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
+using System.Collections.Generic; // Imports a namespace used by this script.
+using System; // Imports a namespace used by this script.
+using UnityEngine; // Imports a namespace used by this script.
+using UnityEngine.UI; // Imports a namespace used by this script.
+using Photon.Pun; // Imports a namespace used by this script.
+using Hashtable = ExitGames.Client.Photon.Hashtable; // Imports a namespace used by this script.
 
-[RequireComponent(typeof(PhotonView))]
-[RequireComponent(typeof(Button))]
-[RequireComponent(typeof(Image))]
-public class PhotonSyncedUIButtonColor : MonoBehaviourPun
-{
-    private const string SelectedPropertyPrefix = "UIButtonSelected_";
-    private const string ResultStatePropertyPrefix = "UIButtonResultState_";
+[RequireComponent(typeof(PhotonView))] // Adds an attribute that changes how Unity or C# treats the next declaration.
+[RequireComponent(typeof(Button))] // Adds an attribute that changes how Unity or C# treats the next declaration.
+[RequireComponent(typeof(Image))] // Adds an attribute that changes how Unity or C# treats the next declaration.
+public class PhotonSyncedUIButtonColor : MonoBehaviourPun // Declares this type.
+{ // Starts this code block.
+    private const string SelectedPropertyPrefix = "UIButtonSelected_"; // Declares a field, property, or member used by this script.
+    private const string ResultStatePropertyPrefix = "UIButtonResultState_"; // Declares a field, property, or member used by this script.
 
-    public event Action<PhotonSyncedUIButtonColor> StateChanged;
+    public event Action<PhotonSyncedUIButtonColor> StateChanged; // Declares a field, property, or member used by this script.
 
-    public enum VisualState
-    {
-        Normal = 0,
-        Selected = 1,
-        Correct = 2,
-        Wrong = 3
-    }
+    public enum VisualState // Declares this type.
+    { // Starts this code block.
+        Normal = 0, // Updates this value.
+        Selected = 1, // Updates this value.
+        Correct = 2, // Updates this value.
+        Wrong = 3 // Updates this value.
+    } // Ends this code block.
 
-    [Header("Group (kept for compatibility, NOT used in multi-select)")]
-    [SerializeField] private bool autoGroupByParent = true;
-    [SerializeField] private string groupId = "";
+    [Header("Group (kept for compatibility, NOT used in multi-select)")] // Adds a labeled section in the Unity Inspector.
+    [SerializeField] private bool autoGroupByParent = true; // Exposes this private field in the Unity Inspector.
+    [SerializeField] private string groupId = ""; // Exposes this private field in the Unity Inspector.
 
-    [Header("Colors")]
-    [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color selectedColor = Color.green;
-    [SerializeField] private Color correctColor = new Color(0.2f, 0.9f, 0.2f, 1f);
-    [SerializeField] private Color wrongColor = new Color(0.95f, 0.2f, 0.2f, 1f);
+    [Header("Colors")] // Adds a labeled section in the Unity Inspector.
+    [SerializeField] private Color normalColor = Color.white; // Exposes this private field in the Unity Inspector.
+    [SerializeField] private Color selectedColor = Color.green; // Exposes this private field in the Unity Inspector.
+    [SerializeField] private Color correctColor = new Color(0.2f, 0.9f, 0.2f, 1f); // Exposes this private field in the Unity Inspector.
+    [SerializeField] private Color wrongColor = new Color(0.95f, 0.2f, 0.2f, 1f); // Exposes this private field in the Unity Inspector.
 
-    [Header("Behavior")]
-    [Tooltip("Clicking selected button again will deselect (multi-select toggle)")]
-    [SerializeField] private bool allowToggleOff = true;
+    [Header("Behavior")] // Adds a labeled section in the Unity Inspector.
+    [Tooltip("Clicking selected button again will deselect (multi-select toggle)")] // Shows helper text for this field in the Unity Inspector.
+    [SerializeField] private bool allowToggleOff = true; // Exposes this private field in the Unity Inspector.
 
-    private Button button;
-    private Image image;
+    private Button button; // Declares a field, property, or member used by this script.
+    private Image image; // Declares a field, property, or member used by this script.
 
     // RESULT state lives per-button (synced)
-    [SerializeField] private VisualState resultState = VisualState.Normal;
+    [SerializeField] private VisualState resultState = VisualState.Normal; // Exposes this private field in the Unity Inspector.
 
     // MULTI-SELECT state lives per-button (synced)
-    [SerializeField] private bool isSelected = false;
+    [SerializeField] private bool isSelected = false; // Exposes this private field in the Unity Inspector.
 
-    public bool IsSelected => isSelected;
-    public VisualState CurrentResultState => resultState;
+    public bool IsSelected => isSelected; // Declares a field, property, or member used by this script.
+    public VisualState CurrentResultState => resultState; // Declares a field, property, or member used by this script.
 
     // GROUP selection state (kept for compatibility, not used for multi-select)
-    private static readonly Dictionary<string, List<PhotonSyncedUIButtonColor>> Groups = new();
+    private static readonly Dictionary<string, List<PhotonSyncedUIButtonColor>> Groups = new(); // Declares a field, property, or member used by this script.
     private static readonly Dictionary<string, int> SelectedViewId = new(); // -1 = none
 
-    private void Awake()
-    {
-        button = GetComponent<Button>();
-        image = GetComponent<Image>();
+    private void Awake() // Declares a method used by this script.
+    { // Starts this code block.
+        button = GetComponent<Button>(); // Updates this value.
+        image = GetComponent<Image>(); // Updates this value.
 
         // kept (doesn't harm) – but groupId won't control selection anymore
-        if (autoGroupByParent && string.IsNullOrEmpty(groupId))
-            groupId = BuildStableGroupId();
+        if (autoGroupByParent && string.IsNullOrEmpty(groupId)) // Checks this condition before continuing.
+            groupId = BuildStableGroupId(); // Updates this value.
 
-        button.onClick.AddListener(OnLocalClick);
+        button.onClick.AddListener(OnLocalClick); // Runs this line of puzzle logic.
 
         // kept to not break any existing expectations, but NOT used for selection enforcement
-        Register();
+        Register(); // Runs this line of puzzle logic.
 
-        ApplyVisual();
-    }
+        ApplyVisual(); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void OnEnable()
-    {
-        ApplyPersistedRoomState();
-    }
+    private void OnEnable() // Declares a method used by this script.
+    { // Starts this code block.
+        ApplyPersistedRoomState(); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void OnDestroy()
-    {
-        button.onClick.RemoveListener(OnLocalClick);
-        Unregister();
-    }
+    private void OnDestroy() // Declares a method used by this script.
+    { // Starts this code block.
+        button.onClick.RemoveListener(OnLocalClick); // Runs this line of puzzle logic.
+        Unregister(); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
     // ─────────────────────────────
     // CLICK (MULTI-SELECT TOGGLE)
     // ─────────────────────────────
-    private void OnLocalClick()
-    {
+    private void OnLocalClick() // Declares a method used by this script.
+    { // Starts this code block.
         // Multi-select behavior: toggle THIS button only.
         // Correct/Wrong overrides visuals but selection can still be toggled underneath (kept).
-        bool nextSelected = isSelected;
+        bool nextSelected = isSelected; // Creates a local value used by the following logic.
 
-        if (allowToggleOff && isSelected)
-            nextSelected = false;
-        else
-            nextSelected = true;
+        if (allowToggleOff && isSelected) // Checks this condition before continuing.
+            nextSelected = false; // Updates this value.
+        else // Runs when the previous condition was false.
+            nextSelected = true; // Updates this value.
 
-        if (!PhotonNetwork.InRoom)
-        {
-            isSelected = nextSelected;
-            PersistState();
-            NotifyStateChanged();
-            return;
-        }
+        if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
+        { // Starts this code block.
+            isSelected = nextSelected; // Updates this value.
+            PersistState(); // Runs this line of puzzle logic.
+            NotifyStateChanged(); // Runs this line of puzzle logic.
+            return; // Returns this result to the caller.
+        } // Ends this code block.
 
         // Sync only THIS button selection state
-        photonView.RPC(nameof(RPC_SetSelected), RpcTarget.AllViaServer, nextSelected);
-    }
+        photonView.RPC(nameof(RPC_SetSelected), RpcTarget.AllViaServer, nextSelected); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    [PunRPC]
-    private void RPC_SetSelected(bool selected)
-    {
-        isSelected = selected;
+    [PunRPC] // Adds an attribute that changes how Unity or C# treats the next declaration.
+    private void RPC_SetSelected(bool selected) // Declares a method used by this script.
+    { // Starts this code block.
+        isSelected = selected; // Updates this value.
 
         // If you are using resultState.Selected to represent selection,
         // keep it consistent (so older code that checks resultState still works).
-        if (!isSelected && (resultState == VisualState.Selected || resultState == VisualState.Wrong))
-            resultState = VisualState.Normal;
+        if (!isSelected && (resultState == VisualState.Selected || resultState == VisualState.Wrong)) // Checks this condition before continuing.
+            resultState = VisualState.Normal; // Updates this value.
 
-        PersistState();
-        NotifyStateChanged();
-    }
+        PersistState(); // Runs this line of puzzle logic.
+        NotifyStateChanged(); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
     // ─────────────────────────────
     // RESULT STATE (Correct/Wrong/Normal)
     // ─────────────────────────────
-    public void MarkCorrectAndSync()
-    {
-        SetResultAndSync(VisualState.Correct);
-    }
+    public void MarkCorrectAndSync() // Declares a method used by this script.
+    { // Starts this code block.
+        SetResultAndSync(VisualState.Correct); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    public void MarkWrongAndSync()
-    {
-        SetResultAndSync(VisualState.Wrong);
-    }
+    public void MarkWrongAndSync() // Declares a method used by this script.
+    { // Starts this code block.
+        SetResultAndSync(VisualState.Wrong); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    public void ClearResultAndSync()
-    {
-        SetResultAndSync(VisualState.Normal);
-    }
+    public void ClearResultAndSync() // Declares a method used by this script.
+    { // Starts this code block.
+        SetResultAndSync(VisualState.Normal); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    public void ResetStateAndSync()
-    {
-        if (!PhotonNetwork.InRoom)
-        {
-            isSelected = false;
-            resultState = VisualState.Normal;
-            PersistState();
-            NotifyStateChanged();
-            return;
-        }
+    public void ResetStateAndSync() // Declares a method used by this script.
+    { // Starts this code block.
+        if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
+        { // Starts this code block.
+            isSelected = false; // Updates this value.
+            resultState = VisualState.Normal; // Updates this value.
+            PersistState(); // Runs this line of puzzle logic.
+            NotifyStateChanged(); // Runs this line of puzzle logic.
+            return; // Returns this result to the caller.
+        } // Ends this code block.
 
-        photonView.RPC(nameof(RPC_SetState), RpcTarget.AllViaServer, false, (int)VisualState.Normal);
-    }
+        photonView.RPC(nameof(RPC_SetState), RpcTarget.AllViaServer, false, (int)VisualState.Normal); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    public void MarkSelectedAndSync()
-    {
+    public void MarkSelectedAndSync() // Declares a method used by this script.
+    { // Starts this code block.
         // In multi-select, "selected" is a separate flag.
         // Keep resultState as Normal (or Selected if you prefer), but selection visual is driven by isSelected.
-        if (!PhotonNetwork.InRoom)
-        {
-            isSelected = true;
-            PersistState();
-            NotifyStateChanged();
-            return;
-        }
+        if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
+        { // Starts this code block.
+            isSelected = true; // Updates this value.
+            PersistState(); // Runs this line of puzzle logic.
+            NotifyStateChanged(); // Runs this line of puzzle logic.
+            return; // Returns this result to the caller.
+        } // Ends this code block.
 
-        photonView.RPC(nameof(RPC_SetSelected), RpcTarget.AllViaServer, true);
-    }
+        photonView.RPC(nameof(RPC_SetSelected), RpcTarget.AllViaServer, true); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    public void ClearSelectedAndSync()
-    {
-        if (!PhotonNetwork.InRoom)
-        {
-            isSelected = false;
-            PersistState();
-            NotifyStateChanged();
-            return;
-        }
+    public void ClearSelectedAndSync() // Declares a method used by this script.
+    { // Starts this code block.
+        if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
+        { // Starts this code block.
+            isSelected = false; // Updates this value.
+            PersistState(); // Runs this line of puzzle logic.
+            NotifyStateChanged(); // Runs this line of puzzle logic.
+            return; // Returns this result to the caller.
+        } // Ends this code block.
 
-        photonView.RPC(nameof(RPC_SetSelected), RpcTarget.AllViaServer, false);
-    }
+        photonView.RPC(nameof(RPC_SetSelected), RpcTarget.AllViaServer, false); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void SetResultAndSync(VisualState newState)
-    {
-        if (!PhotonNetwork.InRoom)
-        {
-            resultState = newState;
+    private void SetResultAndSync(VisualState newState) // Declares a method used by this script.
+    { // Starts this code block.
+        if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
+        { // Starts this code block.
+            resultState = newState; // Updates this value.
 
             // if setting to Normal, keep selection highlight if selected
-            PersistState();
-            NotifyStateChanged();
-            return;
-        }
+            PersistState(); // Runs this line of puzzle logic.
+            NotifyStateChanged(); // Runs this line of puzzle logic.
+            return; // Returns this result to the caller.
+        } // Ends this code block.
 
-        photonView.RPC(nameof(RPC_SetResultState), RpcTarget.AllViaServer, (int)newState);
-    }
+        photonView.RPC(nameof(RPC_SetResultState), RpcTarget.AllViaServer, (int)newState); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    [PunRPC]
-    private void RPC_SetResultState(int state)
-    {
-        resultState = (VisualState)state;
+    [PunRPC] // Adds an attribute that changes how Unity or C# treats the next declaration.
+    private void RPC_SetResultState(int state) // Declares a method used by this script.
+    { // Starts this code block.
+        resultState = (VisualState)state; // Updates this value.
 
         // If external scripts used "Selected" resultState previously, map it to isSelected
-        if (resultState == VisualState.Selected)
-            isSelected = true;
+        if (resultState == VisualState.Selected) // Checks this condition before continuing.
+            isSelected = true; // Updates this value.
 
-        PersistState();
-        NotifyStateChanged();
-    }
+        PersistState(); // Runs this line of puzzle logic.
+        NotifyStateChanged(); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    [PunRPC]
-    private void RPC_SetState(bool selected, int state)
-    {
-        isSelected = selected;
-        resultState = (VisualState)state;
-        PersistState();
-        NotifyStateChanged();
-    }
+    [PunRPC] // Adds an attribute that changes how Unity or C# treats the next declaration.
+    private void RPC_SetState(bool selected, int state) // Declares a method used by this script.
+    { // Starts this code block.
+        isSelected = selected; // Updates this value.
+        resultState = (VisualState)state; // Updates this value.
+        PersistState(); // Runs this line of puzzle logic.
+        NotifyStateChanged(); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
     // ─────────────────────────────
     // VISUAL RESOLUTION
     // Priority: Correct/Wrong overrides Selected/Normal
     // In multi-select: selection comes from `isSelected` (per-button)
     // ─────────────────────────────
-    private void ApplyVisual()
-    {
-        VisualState finalState;
+    private void ApplyVisual() // Declares a method used by this script.
+    { // Starts this code block.
+        VisualState finalState; // Runs this line of puzzle logic.
 
-        if (resultState == VisualState.Correct || resultState == VisualState.Wrong)
-        {
-            finalState = resultState;
-        }
-        else
-        {
-            finalState = isSelected ? VisualState.Selected : VisualState.Normal;
-        }
+        if (resultState == VisualState.Correct || resultState == VisualState.Wrong) // Checks this condition before continuing.
+        { // Starts this code block.
+            finalState = resultState; // Updates this value.
+        } // Ends this code block.
+        else // Runs when the previous condition was false.
+        { // Starts this code block.
+            finalState = isSelected ? VisualState.Selected : VisualState.Normal; // Updates this value.
+        } // Ends this code block.
 
-        SetVisual(finalState);
-    }
+        SetVisual(finalState); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void SetVisual(VisualState state)
-    {
-        switch (state)
-        {
-            case VisualState.Selected: image.color = selectedColor; break;
-            case VisualState.Correct: image.color = correctColor; break;
-            case VisualState.Wrong: image.color = wrongColor; break;
-            default: image.color = normalColor; break;
-        }
-    }
+    private void SetVisual(VisualState state) // Declares a method used by this script.
+    { // Starts this code block.
+        switch (state) // Chooses behavior based on this value.
+        { // Starts this code block.
+            case VisualState.Selected: image.color = selectedColor; break; // Handles this switch case.
+            case VisualState.Correct: image.color = correctColor; break; // Handles this switch case.
+            case VisualState.Wrong: image.color = wrongColor; break; // Handles this switch case.
+            default: image.color = normalColor; break; // Handles any unmatched switch case.
+        } // Ends this code block.
+    } // Ends this code block.
 
-    private void NotifyStateChanged()
-    {
-        ApplyVisual();
-        StateChanged?.Invoke(this);
-    }
+    private void NotifyStateChanged() // Declares a method used by this script.
+    { // Starts this code block.
+        ApplyVisual(); // Runs this line of puzzle logic.
+        StateChanged?.Invoke(this); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
     // ─────────────────────────────
     // GROUP REGISTRATION (kept; harmless)
     // ─────────────────────────────
-    private void Register()
-    {
-        if (!Groups.TryGetValue(groupId, out var list))
-        {
-            list = new List<PhotonSyncedUIButtonColor>();
-            Groups[groupId] = list;
-        }
+    private void Register() // Declares a method used by this script.
+    { // Starts this code block.
+        if (!Groups.TryGetValue(groupId, out var list)) // Checks this condition before continuing.
+        { // Starts this code block.
+            list = new List<PhotonSyncedUIButtonColor>(); // Updates this value.
+            Groups[groupId] = list; // Updates this value.
+        } // Ends this code block.
 
-        if (!list.Contains(this))
-            list.Add(this);
+        if (!list.Contains(this)) // Checks this condition before continuing.
+            list.Add(this); // Runs this line of puzzle logic.
 
-        if (!SelectedViewId.ContainsKey(groupId))
-            SelectedViewId[groupId] = -1;
-    }
+        if (!SelectedViewId.ContainsKey(groupId)) // Checks this condition before continuing.
+            SelectedViewId[groupId] = -1; // Updates this value.
+    } // Ends this code block.
 
-    private void Unregister()
-    {
-        if (Groups.TryGetValue(groupId, out var list))
-            list.Remove(this);
-    }
+    private void Unregister() // Declares a method used by this script.
+    { // Starts this code block.
+        if (Groups.TryGetValue(groupId, out var list)) // Checks this condition before continuing.
+            list.Remove(this); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
     // Optional: kept for compatibility. In multi-select, this simply clears THIS button.
-    public void ClearSelectionAndSync()
-    {
-        ClearSelectedAndSync();
-    }
+    public void ClearSelectionAndSync() // Declares a method used by this script.
+    { // Starts this code block.
+        ClearSelectedAndSync(); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
     // ─────────────────────────────
     // STABLE AUTO GROUP ID (kept)
     // ─────────────────────────────
-    private string BuildStableGroupId()
-    {
-        var parts = new Stack<string>();
+    private string BuildStableGroupId() // Declares a method used by this script.
+    { // Starts this code block.
+        var parts = new Stack<string>(); // Creates a local value used by the following logic.
         Transform t = transform.parent; // group by parent container
-        while (t != null)
-        {
-            parts.Push(t.name);
-            t = t.parent;
-        }
+        while (t != null) // Repeats this block while the condition stays true.
+        { // Starts this code block.
+            parts.Push(t.name); // Runs this line of puzzle logic.
+            t = t.parent; // Updates this value.
+        } // Ends this code block.
 
-        string path = string.Join("/", parts.ToArray());
-        return $"Scene:{gameObject.scene.name}|{path}";
-    }
+        string path = string.Join("/", parts.ToArray()); // Creates a local value used by the following logic.
+        return $"Scene:{gameObject.scene.name}|{path}"; // Returns this result to the caller.
+    } // Ends this code block.
 
-    private void PersistState()
-    {
-        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
-            return;
+    private void PersistState() // Declares a method used by this script.
+    { // Starts this code block.
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable
-        {
-            [BuildSelectedKey()] = isSelected,
-            [BuildResultStateKey()] = (int)resultState
-        });
-    }
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable // Runs this line of puzzle logic.
+        { // Starts this code block.
+            [BuildSelectedKey()] = isSelected, // Adds an attribute that changes how Unity or C# treats the next declaration.
+            [BuildResultStateKey()] = (int)resultState // Adds an attribute that changes how Unity or C# treats the next declaration.
+        }); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private void ApplyPersistedRoomState()
-    {
-        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null)
-            return;
+    private void ApplyPersistedRoomState() // Declares a method used by this script.
+    { // Starts this code block.
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null) // Checks this condition before continuing.
+            return; // Returns this result to the caller.
 
-        Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties;
-        bool changed = false;
+        Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties; // Creates a local value used by the following logic.
+        bool changed = false; // Creates a local value used by the following logic.
 
-        string selectedKey = BuildSelectedKey();
-        if (properties.ContainsKey(selectedKey) && properties[selectedKey] is bool selected)
-        {
-            isSelected = selected;
-            changed = true;
-        }
+        string selectedKey = BuildSelectedKey(); // Creates a local value used by the following logic.
+        if (properties.ContainsKey(selectedKey) && properties[selectedKey] is bool selected) // Checks this condition before continuing.
+        { // Starts this code block.
+            isSelected = selected; // Updates this value.
+            changed = true; // Updates this value.
+        } // Ends this code block.
 
-        string resultStateKey = BuildResultStateKey();
-        if (properties.ContainsKey(resultStateKey) && properties[resultStateKey] is int state)
-        {
-            resultState = (VisualState)state;
-            changed = true;
-        }
+        string resultStateKey = BuildResultStateKey(); // Creates a local value used by the following logic.
+        if (properties.ContainsKey(resultStateKey) && properties[resultStateKey] is int state) // Checks this condition before continuing.
+        { // Starts this code block.
+            resultState = (VisualState)state; // Updates this value.
+            changed = true; // Updates this value.
+        } // Ends this code block.
 
-        if (changed)
-            NotifyStateChanged();
-    }
+        if (changed) // Checks this condition before continuing.
+            NotifyStateChanged(); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    private string BuildSelectedKey() => $"{SelectedPropertyPrefix}{photonView.ViewID}";
-    private string BuildResultStateKey() => $"{ResultStatePropertyPrefix}{photonView.ViewID}";
-}
+    private string BuildSelectedKey() => $"{SelectedPropertyPrefix}{photonView.ViewID}"; // Declares a method used by this script.
+    private string BuildResultStateKey() => $"{ResultStatePropertyPrefix}{photonView.ViewID}"; // Declares a method used by this script.
+} // Ends this code block.

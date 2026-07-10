@@ -1,47 +1,47 @@
-using UnityEngine;
-using UnityEngine.EventSystems;
-using System.Collections.Generic;
-using static PuzzleStateManager;
-using UnityEngine.UI;
+using UnityEngine; // Imports a namespace used by this script.
+using UnityEngine.EventSystems; // Imports a namespace used by this script.
+using System.Collections.Generic; // Imports a namespace used by this script.
+using static PuzzleStateManager; // Imports a namespace used by this script.
+using UnityEngine.UI; // Imports a namespace used by this script.
 
-public class Activity1DropSlot : DropSlot
-{
-    [Header("Puzzle 1 Settings")]
-    [SerializeField] public List<string> correctAnswers = new();
+public class Activity1DropSlot : DropSlot // Declares this type.
+{ // Starts this code block.
+    [Header("Puzzle 1 Settings")] // Adds a labeled section in the Unity Inspector.
+    [SerializeField] public List<string> correctAnswers = new(); // Exposes this private field in the Unity Inspector.
 
     // -----------------------------
     // FIX: mark acceptance + revert-to-origin on occupied slot
     // -----------------------------
-    protected override void AcceptCard(DraggableCard card)
-    {
+    protected override void AcceptCard(DraggableCard card) // Overrides a Unity or Photon callback method.
+    { // Starts this code block.
         // FIX: tell Activity1 card that this drag was accepted by a real slot
-        card.MarkAcceptedThisDrag();
+        card.MarkAcceptedThisDrag(); // Runs this line of puzzle logic.
 
         // Keep base behavior (parenting + snap pos/scale + trueHome assignment)
-        base.AcceptCard(card);
-    }
+        base.AcceptCard(card); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    protected override void TrySnapBack(GameObject droppedObj)
-    {
+    protected override void TrySnapBack(GameObject droppedObj) // Overrides a Unity or Photon callback method.
+    { // Starts this code block.
         // If slot occupied, revert to the drag origin (not SnapBack's special panel logic)
-        var card = droppedObj != null ? droppedObj.GetComponent<DraggableCard>() : null;
-        if (card != null)
-        {
-            card.RevertToDragOrigin();
-            return;
-        }
+        var card = droppedObj != null ? droppedObj.GetComponent<DraggableCard>() : null; // Creates a local value used by the following logic.
+        if (card != null) // Checks this condition before continuing.
+        { // Starts this code block.
+            card.RevertToDragOrigin(); // Runs this line of puzzle logic.
+            return; // Returns this result to the caller.
+        } // Ends this code block.
 
         // Fallback
-        base.TrySnapBack(droppedObj);
-    }
+        base.TrySnapBack(droppedObj); // Runs this line of puzzle logic.
+    } // Ends this code block.
 
-    public override bool IsCardCorrect(DraggableCard card)
-    {
-        if (card != null)
-        {
-            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle1)
-                return correctAnswers.Contains(card.symptomName);
-        }
-        return false;
-    }
-}
+    public override bool IsCardCorrect(DraggableCard card) // Declares a field, property, or member used by this script.
+    { // Starts this code block.
+        if (card != null) // Checks this condition before continuing.
+        { // Starts this code block.
+            if (PuzzleStateManager.Instance.CurrentStage == PuzzleStateManager.PuzzleStage.Puzzle1) // Checks this condition before continuing.
+                return correctAnswers.Contains(card.symptomName); // Returns this result to the caller.
+        } // Ends this code block.
+        return false; // Returns this result to the caller.
+    } // Ends this code block.
+} // Ends this code block.
