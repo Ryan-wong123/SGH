@@ -316,7 +316,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         else // Runs when the previous condition was false.
             stats.WrongAnswers++; // Runs this line of puzzle logic.
 
-        if (!answerWasCorrect) // Only wrong submissions create answer-detail columns.
+        if (!answerWasCorrect || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle11) // Puzzle 11 keeps each part's submitted cards in its own row.
             AddAnswerSelection(stats, puzzleNumber, selectedAnswers); // Stores what was answered incorrectly.
         stats.TimeTakenSeconds += Math.Max(0d, elapsedSeconds); // Runs this line of puzzle logic.
     } // Ends this code block.

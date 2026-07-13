@@ -504,7 +504,78 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
         return allMatch; // Returns this result to the caller.
     } // Ends this code block.
 
-    public string GetWrongAnswerSnapshot() // Returns selected and expected letters for incorrect word-search cells.
+    public string GetWrongAnswerSnapshot() // Returns each incorrect word with its expected word.
+    {
+        var entries = new List<string>();
+        int sizeY = Mathf.Min(gridSize, solution.GetLength(0));
+        int sizeX = Mathf.Min(gridSize, solution.GetLength(1));
+        Vector2Int[] directions = { new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(1, 1), new Vector2Int(1, -1) };
+
+        foreach (Vector2Int direction in directions)
+        {
+            for (int y = 1; y < sizeY; y++)
+            {
+                for (int x = 1; x < sizeX; x++)
+                {
+                    if (solution[y, x] == '\0') continue;
+                    int previousX = x - direction.x;
+                    int previousY = y - direction.y;
+                    if (previousX > 0 && previousY > 0 && previousX < sizeX && previousY < sizeY && solution[previousY, previousX] != '\0') continue;
+
+                    var positions = new List<Vector2Int>();
+                    int currentX = x;
+                    int currentY = y;
+                    while (currentX > 0 && currentY > 0 && currentX < sizeX && currentY < sizeY && solution[currentY, currentX] != '\0')
+                    {
+                        positions.Add(new Vector2Int(currentX, currentY));
+                        currentX += direction.x;
+                        currentY += direction.y;
+                    }
+
+                    if (positions.Count < 2) continue;
+                    var actualWord = new System.Text.StringBuilder();
+                    var expectedWord = new System.Text.StringBuilder();
+                    bool incorrect = false;
+                    foreach (Vector2Int position in positions)
+                    {
+                        LetterCell cell = grid[position.x, position.y];
+                        char expected = solution[position.y, position.x];
+                        expectedWord.Append(expected);
+                        if (cell == null || !selected.Contains(cell))
+                        {
+                            actualWord.Append('_');
+                            incorrect = true;
+                        }
+                        else
+                        {
+                            char actual = cell.GetLetter();
+                            actualWord.Append(actual);
+                            if (char.ToUpperInvariant(actual) != char.ToUpperInvariant(expected)) incorrect = true;
+                        }
+                    }
+
+                    if (incorrect)
+                        entries.Add($"Wrong word={actualWord} [expected {expectedWord}]");
+                }
+            }
+        }
+
+        if (entries.Count == 0)
+        {
+            foreach (var cell in selected)
+            {
+                if (cell == null) continue;
+                Vector2Int position = cell.gridPosition;
+                if (position.x <= 0 || position.y <= 0 || position.x >= sizeX || position.y >= sizeY) continue;
+                if (solution[position.y, position.x] == '\0')
+                    entries.Add($"Wrong word={cell.GetLetter()} [expected no solution]");
+            }
+        }
+
+        return entries.Count > 0 ? string.Join(", ", entries) : "No wrong word search answer";
+    }
+
+    private string GetCellWrongAnswerSnapshot() // Retains the cell-level fallback implementation.
     {
         var entries = new List<string>();
         var seen = new HashSet<string>();

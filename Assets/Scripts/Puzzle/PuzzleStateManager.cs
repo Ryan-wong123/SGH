@@ -858,21 +858,13 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
                 string cardLabel = useImageName
                     ? card.FrontImageName.Trim()
                     : GetCardAnswerLabel(card); // Puzzle 3 uses the card's source image name.
-                if (CurrentStage == PuzzleStage.Puzzle11
-                    && deathLapsesManager != null
-                    && deathLapsesManager.CurrentStage == 2
-                    && slot is Activity9DropSlot mappedSlot
-                    && mappedSlot.linkedStage1Slot != null
-                    && card != null)
-                {
-                    string expectedMapping = mappedSlot.linkedStage1Slot.stage1Answer;
-                    if (!string.IsNullOrWhiteSpace(expectedMapping))
-                        cardLabel = $"{card.lapsesAnswer} [expected {expectedMapping}]";
-                }
                 AppendSeparated(cardList, cardLabel, ", "); // Handles this part of the puzzle state flow.
             } // Ends this block.
 
-            AppendSeparated(snapshot, $"{slot.name}=[{cardList}]", "; "); // Handles this part of the puzzle state flow.
+            bool puzzle11Part2 = CurrentStage == PuzzleStage.Puzzle11
+                && deathLapsesManager != null
+                && deathLapsesManager.CurrentStage == 2;
+            AppendSeparated(snapshot, puzzle11Part2 ? cardList.ToString() : $"{slot.name}=[{cardList}]", puzzle11Part2 ? ", " : "; "); // Puzzle 11 part 2 exports comma-separated direct answer pairings.
         } // Ends this block.
 
         foreach (TMP_Dropdown dropdown in panel.GetComponentsInChildren<TMP_Dropdown>(true)) // Loops through each matching puzzle object.
