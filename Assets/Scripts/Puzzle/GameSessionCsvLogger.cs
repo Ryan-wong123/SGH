@@ -79,7 +79,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
     public void RecordPuzzleEntered(PuzzleStateManager.PuzzleStage stage, int actorNumber, string playerName) // Declares a method used by this script.
     { // Starts this code block.
-        if (stage == PuzzleStateManager.PuzzleStage.Puzzle0) // Checks this condition before continuing.
+        if (stage == PuzzleStateManager.PuzzleStage.Puzzle0 || stage == PuzzleStateManager.PuzzleStage.Puzzle2) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
         string roomName = GetCurrentRoomName(); // Creates a local value used by the following logic.
@@ -94,7 +94,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
     public void RecordPuzzleReset(PuzzleStateManager.PuzzleStage stage) // Declares a method used by this script.
     { // Starts this code block.
-        if (stage == PuzzleStateManager.PuzzleStage.Puzzle0) // Checks this condition before continuing.
+        if (stage == PuzzleStateManager.PuzzleStage.Puzzle0 || stage == PuzzleStateManager.PuzzleStage.Puzzle2) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
         int actorNumber = PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1; // Creates a local value used by the following logic.
@@ -109,7 +109,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
     public void RecordPuzzleAnswer(PuzzleStateManager.PuzzleStage stage, bool isCorrect, string selectedAnswers = null) // Declares a method used by this script.
     { // Starts this code block.
-        if (stage == PuzzleStateManager.PuzzleStage.Puzzle0) // Checks this condition before continuing.
+        if (stage == PuzzleStateManager.PuzzleStage.Puzzle0 || stage == PuzzleStateManager.PuzzleStage.Puzzle2) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
         int actorNumber = PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1; // Creates a local value used by the following logic.
@@ -242,6 +242,9 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
     private void ApplyEvent(int eventType, string roomName, int actorNumber, string playerName, int puzzleNumber, bool answerWasCorrect, double elapsedSeconds, string selectedAnswers) // Declares a method used by this script.
     { // Starts this code block.
+        if (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle2) // Puzzle 2 is intentionally excluded from analytics exports.
+            return; // Skips all Puzzle 2 logging events.
+
         if (!PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
