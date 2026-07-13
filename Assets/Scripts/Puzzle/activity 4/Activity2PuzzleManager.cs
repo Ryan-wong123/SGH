@@ -20,6 +20,7 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle // Declares this typ
     } // Ends this code block.
 
     public bool IsOnPart2 => panel2 != null && panel2.activeSelf; // Declares a field, property, or member used by this script.
+    public int CurrentPart => IsOnPart2 ? 2 : 1; // Identifies the active Puzzle 4 part for analytics.
 
 
     public bool AreAllPuzzle4CardsCorrect() // Declares a method used by this script.

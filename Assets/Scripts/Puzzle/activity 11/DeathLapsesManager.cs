@@ -12,6 +12,8 @@ public class DeathLapsesManager : MonoBehaviour, IPuzzle // Declares this type.
 
     private bool stage1Completed = false; // Declares a field, property, or member used by this script.
 
+    public int CurrentStage => stage1Completed ? 2 : 1; // Identifies which Death Lapses part is active for analytics.
+
     public enum DeathLapsesSubmitResult // Declares this type.
     { // Starts this code block.
         Incorrect, // Runs this line of puzzle logic.

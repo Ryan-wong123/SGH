@@ -1,4 +1,6 @@
+using System; // Imports a namespace used by this script.
 using System.Collections.Generic; // Imports a namespace used by this script.
+using System.Text; // Imports a namespace used by this script.
 using ExitGames.Client.Photon; // Imports a namespace used by this script.
 using Photon.Pun; // Imports a namespace used by this script.
 using Photon.Realtime; // Imports a namespace used by this script.
@@ -358,6 +360,63 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback // Decl
     } // Ends this code block.
 
 
+
+    public string GetWrongAnswerSnapshot()
+    {
+        var entries = new List<string>();
+        var seen = new HashSet<string>();
+
+        for (int y = 0; y < gridSize; y++)
+        {
+            for (int x = 0; x < gridSize; x++)
+            {
+                if (solution[y, x] == '\0' || char.ToUpper(grid[y, x].GetLetter()) == char.ToUpper(solution[y, x]))
+                    continue;
+
+                AddWrongWord(entries, seen, x, y, 1, 0, "Across");
+                AddWrongWord(entries, seen, x, y, 0, 1, "Down");
+            }
+        }
+
+        return entries.Count > 0 ? string.Join("; ", entries) : "No wrong crossword word";
+    }
+
+    private void AddWrongWord(List<string> entries, HashSet<string> seen, int x, int y, int dx, int dy, string direction)
+    {
+        int startX = x;
+        int startY = y;
+        while (IsActiveCell(startX - dx, startY - dy))
+        {
+            startX -= dx;
+            startY -= dy;
+        }
+
+        string key = $"{direction}:{startX}:{startY}";
+        if (!seen.Add(key))
+            return;
+
+        var typed = new StringBuilder();
+        var expected = new StringBuilder();
+        bool hasWrong = false;
+        int wordLength = 0;
+        for (int cx = startX, cy = startY; IsActiveCell(cx, cy); cx += dx, cy += dy)
+        {
+            char actual = grid[cy, cx].GetLetter();
+            char answer = solution[cy, cx];
+            typed.Append(actual == ' ' ? '_' : char.ToUpper(actual));
+            expected.Append(char.ToUpper(answer));
+            hasWrong |= char.ToUpper(actual) != char.ToUpper(answer);
+            wordLength++;
+        }
+
+        if (wordLength > 1 && hasWrong)
+            entries.Add($"{direction} clue ({startX},{startY})={typed} [expected {expected}]");
+    }
+
+    private bool IsActiveCell(int x, int y)
+    {
+        return x >= 0 && x < gridSize && y >= 0 && y < gridSize && solution[y, x] != '\0';
+    }
 
     public bool CheckPuzzle() // Declares a method used by this script.
     { // Starts this code block.

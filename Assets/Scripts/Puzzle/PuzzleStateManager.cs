@@ -797,11 +797,21 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
     private void RecordCurrentPuzzleAnswer(bool isCorrect) // Handles this part of the puzzle state flow.
     { // Starts this block.
-        GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, isCorrect, BuildCurrentAnswerSnapshot()); // Records puzzle-session information to the CSV logger when available.
+        string answerSnapshot = BuildCurrentAnswerSnapshot(); // Captures the current player input for this submission.
+        if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null) // Diary pages are separate analytics rows.
+            answerSnapshot = $"__PUZZLE_PART={diaryPuzzleManager.CurrentStage}__|{answerSnapshot}";
+        else if (CurrentStage == PuzzleStage.Puzzle11 && deathLapsesManager != null) // Death Lapses parts are separate analytics rows.
+            answerSnapshot = $"__PUZZLE_PART={deathLapsesManager.CurrentStage}__|{answerSnapshot}";
+        else if (CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null) // Puzzle 4 parts are separate analytics rows.
+            answerSnapshot = $"__PUZZLE_PART={activity2PuzzleManager.CurrentPart}__|{answerSnapshot}";
+
+        GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, isCorrect, answerSnapshot, currentSubmitOwnerActorNumber); // Records puzzle-session information to the CSV logger when available.
     } // Ends this block.
 
     private string BuildCurrentAnswerSnapshot() // Handles this part of the puzzle state flow.
     { // Starts this block.
+        if (CurrentStage == PuzzleStage.Puzzle9 && crosswordManager != null) // Crossword exports wrong words with clue coordinates.
+            return crosswordManager.GetWrongAnswerSnapshot();
         GameObject panel = GetPanelForStage(CurrentStage); // Stores or creates a Unity GameObject reference.
         if (panel == null) // Checks whether this puzzle-state condition requires action.
             panel = currentPuzzlePanel; // Handles this part of the puzzle state flow.

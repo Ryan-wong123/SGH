@@ -28,11 +28,12 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         public int ActorNumber; // Declares a field, property, or member used by this script.
         public string PlayerName; // Declares a field, property, or member used by this script.
         public int PuzzleNumber; // Declares a field, property, or member used by this script.
+        public int PuzzlePart; // Identifies a diary page or multi-part section.
         public int TimesEntered; // Declares a field, property, or member used by this script.
         public int CorrectAnswers; // Declares a field, property, or member used by this script.
         public int WrongAnswers; // Declares a field, property, or member used by this script.
         public double TimeTakenSeconds; // Declares a field, property, or member used by this script.
-        public List<string> AnswerSelections = new(); // Declares a field, property, or member used by this script.
+        public List<string> WrongAnswerSelections = new(); // Declares a field, property, or member used by this script.
     } // Ends this code block.
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)] // Adds an attribute that changes how Unity or C# treats the next declaration.
@@ -107,13 +108,13 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         SendOrApplyEvent(EventTypeTimeSpent, GetCurrentRoomName(), actorNumber, playerName, (int)stage, 0, elapsedSeconds); // Runs this line of puzzle logic.
     } // Ends this code block.
 
-    public void RecordPuzzleAnswer(PuzzleStateManager.PuzzleStage stage, bool isCorrect, string selectedAnswers = null) // Declares a method used by this script.
+    public void RecordPuzzleAnswer(PuzzleStateManager.PuzzleStage stage, bool isCorrect, string selectedAnswers = null, int answerActorNumber = -1, string answerPlayerName = null) // Declares a method used by this script.
     { // Starts this code block.
         if (stage == PuzzleStateManager.PuzzleStage.Puzzle0 || stage == PuzzleStateManager.PuzzleStage.Puzzle2) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
-        int actorNumber = PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1; // Creates a local value used by the following logic.
-        string playerName = ResolvePlayerName(actorNumber); // Creates a local value used by the following logic.
+        int actorNumber = answerActorNumber > 0 ? answerActorNumber : (PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1); // Records the player whose input is being evaluated.
+        string playerName = string.IsNullOrWhiteSpace(answerPlayerName) ? ResolvePlayerName(actorNumber) : answerPlayerName; // Keeps the answer associated with its author.
         double elapsedSeconds = CaptureElapsedSeconds(actorNumber, stage, keepRunning: !isCorrect); // Runs this line of puzzle logic.
 
         SendOrApplyEvent(EventTypeAnswer, GetCurrentRoomName(), actorNumber, playerName, (int)stage, isCorrect ? 1 : 0, elapsedSeconds, selectedAnswers); // Runs this line of puzzle logic.
@@ -147,19 +148,22 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             int puzzleCompare = a.PuzzleNumber.CompareTo(b.PuzzleNumber); // Creates a local value used by the following logic.
             if (puzzleCompare != 0) return puzzleCompare; // Checks this condition before continuing.
 
+            int partCompare = a.PuzzlePart.CompareTo(b.PuzzlePart);
+            if (partCompare != 0) return partCompare;
+
             int playerCompare = string.Compare(a.PlayerName, b.PlayerName, StringComparison.OrdinalIgnoreCase); // Creates a local value used by the following logic.
             return playerCompare != 0 ? playerCompare : a.ActorNumber.CompareTo(b.ActorNumber); // Returns this result to the caller.
         }); // Runs this line of puzzle logic.
 
-        int maxAnswerTries = 0; // Creates a local value used by the following logic.
+        int maxWrongAnswers = 0; // Creates a local value used by the following logic.
         foreach (var row in rows) // Repeats this block for each item in a collection.
-            maxAnswerTries = Math.Max(maxAnswerTries, row.AnswerSelections.Count); // Updates this value.
+            maxWrongAnswers = Math.Max(maxWrongAnswers, row.WrongAnswerSelections.Count); // Updates this value.
 
         var csv = new StringBuilder(); // Creates a local value used by the following logic.
         string playedAt = sessionPlayedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture); // Formats the session date and time for analytics.
-        csv.Append("date_time_played,room_name,player_name,puzzle_number,puzzle_name,total_tries,number_of_times_answer_is_correct,number_of_times_answer_is_wrong"); // Writes the analytics-friendly CSV header.
-        for (int i = 1; i <= maxAnswerTries; i++) // Repeats this block for a counted loop.
-            csv.Append($",answer_try_{i}"); // Runs this line of puzzle logic.
+        csv.Append("date_time_played,room_name,player_name,puzzle_number,puzzle_name,puzzle_part,total_tries,number_of_times_answer_is_correct,number_of_times_answer_is_wrong"); // Writes the analytics-friendly CSV header.
+        for (int i = 1; i <= maxWrongAnswers; i++) // Repeats this block for a counted loop.
+            csv.Append($",wrong_answer_{i}"); // Runs this line of puzzle logic.
         csv.AppendLine(",time_taken"); // Runs this line of puzzle logic.
 
         foreach (var row in rows) // Repeats this block for each item in a collection.
@@ -169,15 +173,16 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             csv.AppendCsv(row.PlayerName).Append(','); // Runs this line of puzzle logic.
             csv.Append(row.PuzzleNumber).Append(','); // Runs this line of puzzle logic.
             csv.AppendCsv(GetPuzzleName(row.PuzzleNumber)).Append(','); // Writes the descriptive puzzle name beside the puzzle number.
+            csv.Append(row.PuzzlePart > 0 ? row.PuzzlePart.ToString(CultureInfo.InvariantCulture) : string.Empty).Append(','); // Writes the diary page when applicable.
             csv.Append(row.CorrectAnswers + row.WrongAnswers).Append(','); // Total tries are all correct and wrong answer attempts.
             csv.Append(row.CorrectAnswers).Append(','); // Runs this line of puzzle logic.
             csv.Append(row.WrongAnswers); // Runs this line of puzzle logic.
 
-            for (int i = 0; i < maxAnswerTries; i++) // Repeats this block for a counted loop.
+            for (int i = 0; i < maxWrongAnswers; i++) // Repeats this block for a counted loop.
             { // Starts this code block.
                 csv.Append(','); // Runs this line of puzzle logic.
-                if (i < row.AnswerSelections.Count) // Checks this condition before continuing.
-                    csv.AppendCsv(row.AnswerSelections[i]); // Runs this line of puzzle logic.
+                if (i < row.WrongAnswerSelections.Count) // Checks this condition before continuing.
+                    csv.AppendCsv(row.WrongAnswerSelections[i]); // Runs this line of puzzle logic.
             } // Ends this code block.
 
             csv.Append(','); // Runs this line of puzzle logic.
@@ -248,10 +253,32 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         if (!PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
-        var stats = GetOrCreateStats(roomName, actorNumber, playerName, puzzleNumber); // Creates a local value used by the following logic.
+        int puzzlePart = 0;
+        const string partPrefix = "__PUZZLE_PART=";
+        if (!string.IsNullOrWhiteSpace(selectedAnswers) && selectedAnswers.StartsWith(partPrefix, StringComparison.Ordinal))
+        {
+            int separator = selectedAnswers.IndexOf("__|", partPrefix.Length, StringComparison.Ordinal);
+            if (separator > partPrefix.Length && int.TryParse(selectedAnswers.Substring(partPrefix.Length, separator - partPrefix.Length), NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedPart))
+            {
+                puzzlePart = parsedPart;
+                selectedAnswers = selectedAnswers.Substring(separator + 3);
+            }
+        }
+
+        if (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle9) // Puzzle 9 is a single-part puzzle.
+            puzzlePart = 0;
+
+        if (eventType == EventTypeEnter && (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle4 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle6 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle11) && puzzlePart == 0)
+            return; // Diary rows are created only for actual pages.
+
+        var stats = GetOrCreateStats(roomName, actorNumber, playerName, puzzleNumber, puzzlePart); // Creates a local value used by the following logic.
+
+        if (eventType == EventTypeAnswer && puzzlePart > 0)
+            EnsureParticipantRowsForPuzzle(roomName, puzzleNumber, puzzlePart); // Creates rows for all players on this diary page.
 
         if (eventType == EventTypeEnter) // Checks this condition before continuing.
         { // Starts this code block.
+            EnsureParticipantRowsForPuzzle(roomName, puzzleNumber, puzzlePart); // Creates blank rows for players who do not submit an answer.
             stats.TimesEntered++; // Runs this line of puzzle logic.
             return; // Returns this result to the caller.
         } // Ends this code block.
@@ -262,14 +289,32 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             return; // Returns this result to the caller.
         } // Ends this code block.
 
+        if (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle9 && stats.CorrectAnswers > 0) // Puzzle 9 records only the first successful answer; later hint-panel actions are ignored.
+            return;
+
         if (answerWasCorrect) // Checks this condition before continuing.
             stats.CorrectAnswers++; // Runs this line of puzzle logic.
         else // Runs when the previous condition was false.
             stats.WrongAnswers++; // Runs this line of puzzle logic.
 
-        AddAnswerSelection(stats, puzzleNumber, selectedAnswers); // Runs this line of puzzle logic.
+        if (!answerWasCorrect) // Only wrong submissions create answer-detail columns.
+            AddAnswerSelection(stats, puzzleNumber, selectedAnswers); // Stores what was answered incorrectly.
         stats.TimeTakenSeconds += Math.Max(0d, elapsedSeconds); // Runs this line of puzzle logic.
     } // Ends this code block.
+
+    private void EnsureParticipantRowsForPuzzle(string roomName, int puzzleNumber, int puzzlePart = 0)
+    {
+        if (PhotonNetwork.CurrentRoom == null)
+            return;
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player == null)
+                continue;
+
+            GetOrCreateStats(roomName, player.ActorNumber, player.NickName, puzzleNumber, puzzlePart);
+        }
+    }
 
     private static void AddAnswerSelection(PuzzlePlayerStats stats, int puzzleNumber, string selectedAnswers)
     {
@@ -281,7 +326,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             : selectedAnswers.Trim();
 
         if (!string.IsNullOrWhiteSpace(normalized))
-            stats.AnswerSelections.Add(normalized);
+            stats.WrongAnswerSelections.Add(normalized);
     }
 
     private static string NormalizePuzzleOneAnswerSnapshot(string selectedAnswers)
@@ -303,9 +348,9 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         return answers.Count > 0 ? string.Join(", ", answers) : selectedAnswers.Trim();
     }
 
-    private PuzzlePlayerStats GetOrCreateStats(string roomName, int actorNumber, string playerName, int puzzleNumber) // Declares a method used by this script.
+    private PuzzlePlayerStats GetOrCreateStats(string roomName, int actorNumber, string playerName, int puzzleNumber, int puzzlePart = 0) // Declares a method used by this script.
     { // Starts this code block.
-        string key = $"{roomName}|{actorNumber}|{puzzleNumber}"; // Creates a local value used by the following logic.
+        string key = $"{roomName}|{actorNumber}|{puzzleNumber}|{puzzlePart}"; // Creates a local value used by the following logic.
         if (statsByKey.TryGetValue(key, out var stats)) // Checks this condition before continuing.
             return stats; // Returns this result to the caller.
 
@@ -314,7 +359,8 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             RoomName = string.IsNullOrWhiteSpace(roomName) ? "Offline" : roomName, // Updates this value.
             ActorNumber = actorNumber, // Updates this value.
             PlayerName = string.IsNullOrWhiteSpace(playerName) ? $"Player {actorNumber}" : playerName, // Updates this value.
-            PuzzleNumber = puzzleNumber // Updates this value.
+            PuzzleNumber = puzzleNumber, // Updates this value.
+            PuzzlePart = puzzlePart // Stores the multi-part section.
         }; // Runs this line of puzzle logic.
 
         statsByKey[key] = stats; // Updates this value.
