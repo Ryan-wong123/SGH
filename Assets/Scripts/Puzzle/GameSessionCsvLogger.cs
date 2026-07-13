@@ -267,17 +267,41 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         else // Runs when the previous condition was false.
             stats.WrongAnswers++; // Runs this line of puzzle logic.
 
-        AddAnswerSelection(stats, selectedAnswers); // Runs this line of puzzle logic.
+        AddAnswerSelection(stats, puzzleNumber, selectedAnswers); // Runs this line of puzzle logic.
         stats.TimeTakenSeconds += Math.Max(0d, elapsedSeconds); // Runs this line of puzzle logic.
     } // Ends this code block.
 
-    private static void AddAnswerSelection(PuzzlePlayerStats stats, string selectedAnswers) // Declares a method used by this script.
-    { // Starts this code block.
-        if (stats == null || string.IsNullOrWhiteSpace(selectedAnswers)) // Checks this condition before continuing.
-            return; // Returns this result to the caller.
+    private static void AddAnswerSelection(PuzzlePlayerStats stats, int puzzleNumber, string selectedAnswers)
+    {
+        if (stats == null || string.IsNullOrWhiteSpace(selectedAnswers))
+            return;
 
-        stats.AnswerSelections.Add(selectedAnswers.Trim()); // Runs this line of puzzle logic.
-    } // Ends this code block.
+        string normalized = puzzleNumber == 1
+            ? NormalizePuzzleOneAnswerSnapshot(selectedAnswers)
+            : selectedAnswers.Trim();
+
+        if (!string.IsNullOrWhiteSpace(normalized))
+            stats.AnswerSelections.Add(normalized);
+    }
+
+    private static string NormalizePuzzleOneAnswerSnapshot(string selectedAnswers)
+    {
+        var answers = new List<string>();
+        string[] entries = selectedAnswers.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (string entry in entries)
+        {
+            int valueStart = entry.IndexOf("=[", StringComparison.Ordinal);
+            if (valueStart < 0 || !entry.TrimEnd().EndsWith("]", StringComparison.Ordinal))
+                continue;
+
+            string answer = entry.Substring(valueStart + 2).Trim();
+            answer = answer.TrimEnd(']').Trim();
+            if (!string.IsNullOrWhiteSpace(answer))
+                answers.Add(answer);
+        }
+
+        return answers.Count > 0 ? string.Join(", ", answers) : selectedAnswers.Trim();
+    }
 
     private PuzzlePlayerStats GetOrCreateStats(string roomName, int actorNumber, string playerName, int puzzleNumber) // Declares a method used by this script.
     { // Starts this code block.
