@@ -268,10 +268,10 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         if (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle9) // Puzzle 9 is a single-part puzzle.
             puzzlePart = 0;
 
-        if ((puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle4 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle6 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle11) && puzzlePart == 0) // Ignore unassigned events for multi-part puzzles.
+        if ((puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle4 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle6 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle10 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle11) && puzzlePart == 0) // Ignore unassigned events for multi-part puzzles.
             return;
 
-        if (eventType == EventTypeEnter && (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle4 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle6 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle11) && puzzlePart == 0)
+        if (eventType == EventTypeEnter && (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle4 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle6 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle10 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle11) && puzzlePart == 0)
             return; // Diary rows are created only for actual pages.
 
         var stats = GetOrCreateStats(roomName, actorNumber, playerName, puzzleNumber, puzzlePart); // Creates a local value used by the following logic.
@@ -326,10 +326,67 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         string normalized = puzzleNumber == 1
             ? NormalizePuzzleOneAnswerSnapshot(selectedAnswers)
-            : selectedAnswers.Trim();
+            : puzzleNumber == 10
+                ? (stats.PuzzlePart == 1 ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers) : NormalizePuzzleTenCardSnapshot(selectedAnswers))
+                : IsValueOnlyPuzzle(puzzleNumber)
+                    ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers)
+                    : selectedAnswers.Trim();
 
         if (!string.IsNullOrWhiteSpace(normalized))
             stats.WrongAnswerSelections.Add(normalized);
+    }
+
+    private static bool IsValueOnlyPuzzle(int puzzleNumber)
+    {
+        return puzzleNumber == 3 || puzzleNumber == 4 || puzzleNumber == 6 || puzzleNumber == 7 || puzzleNumber == 8;
+    }
+
+    private static string NormalizePuzzleTenCardSnapshot(string selectedAnswers)
+    {
+        var slots = new List<string>();
+        string[] entries = selectedAnswers.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (string entry in entries)
+        {
+            string slot = entry.Trim();
+            int equalsIndex = slot.IndexOf('=');
+            if (equalsIndex < 0)
+            {
+                if (!string.IsNullOrWhiteSpace(slot))
+                    slots.Add(slot);
+                continue;
+            }
+
+            string value = slot.Substring(equalsIndex + 1).Trim();
+            if (value.StartsWith("[", StringComparison.Ordinal) && value.EndsWith("]", StringComparison.Ordinal))
+                value = value.Substring(1, value.Length - 2).Trim();
+
+            string slotName = slot.Substring(0, equalsIndex).Trim();
+            if (!string.IsNullOrWhiteSpace(slotName) && !string.IsNullOrWhiteSpace(value))
+                slots.Add($"{slotName}={value}");
+        }
+
+        return slots.Count > 0 ? string.Join(", ", slots) : selectedAnswers.Trim();
+    }
+
+    private static string NormalizeValueOnlyAnswerSnapshot(string selectedAnswers)
+    {
+        var values = new List<string>();
+        string[] entries = selectedAnswers.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (string entry in entries)
+        {
+            string value = entry.Trim();
+            int equalsIndex = value.IndexOf('=');
+            if (equalsIndex >= 0)
+                value = value.Substring(equalsIndex + 1).Trim();
+
+            if (value.StartsWith("[", StringComparison.Ordinal) && value.EndsWith("]", StringComparison.Ordinal))
+                value = value.Substring(1, value.Length - 2).Trim();
+
+            if (!string.IsNullOrWhiteSpace(value))
+                values.Add(value);
+        }
+
+        return values.Count > 0 ? string.Join(", ", values) : selectedAnswers.Trim();
     }
 
     private static string NormalizePuzzleOneAnswerSnapshot(string selectedAnswers)

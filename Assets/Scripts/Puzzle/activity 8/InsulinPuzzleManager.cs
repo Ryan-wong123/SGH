@@ -13,6 +13,8 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle // Declares this type
 
     public TMP_Dropdown syringeDropdown; // Declares a field, property, or member used by this script.
     public int correctSyringeIndex = 1;       // The correct option index in dropdown
+    public int CurrentPart => panel2 != null && panel2.activeSelf ? 2 : 1; // Identifies the active Puzzle 10 section for analytics.
+    public GameObject ActivePanel => CurrentPart == 2 ? panel2 : panel1; // Provides the active Puzzle 10 panel for answer snapshots.
 
     public Color correctColor = Color.green; // Declares a field, property, or member used by this script.
     public Color wrongColor = Color.red; // Declares a field, property, or member used by this script.
@@ -35,6 +37,7 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle // Declares this type
         // Check correctness
         if (selected == correctSyringeIndex) // Checks this condition before continuing.
         { // Starts this code block.
+            PuzzleStateManager.Instance?.RecordPuzzle10PartAnswer(true); // Records the dropdown answer as Puzzle 10 part 1.
             syringeDropdown.SetSyncedFeedbackColor(correctColor); // Runs this line of puzzle logic.
             // Optional delay before showing result (remove if not needed)
             yield return new WaitForSeconds(2f); // Pauses this coroutine until the yielded condition finishes.
@@ -46,7 +49,10 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle // Declares this type
         } // Ends this code block.
            
         else // Runs when the previous condition was false.
+        {
+            PuzzleStateManager.Instance?.RecordPuzzle10PartAnswer(false); // Records the incorrect dropdown answer as Puzzle 10 part 1.
             syringeDropdown.SetSyncedFeedbackColor(wrongColor); // Runs this line of puzzle logic.
+        }
 
         part1AdvanceRoutine = null; // Updates this value.
     } // Ends this code block.

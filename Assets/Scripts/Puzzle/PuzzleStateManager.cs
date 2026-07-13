@@ -804,15 +804,25 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             answerSnapshot = $"__PUZZLE_PART={deathLapsesManager.CurrentStage}__|{answerSnapshot}";
         else if (CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null) // Puzzle 4 parts are separate analytics rows.
             answerSnapshot = $"__PUZZLE_PART={activity2PuzzleManager.CurrentPart}__|{answerSnapshot}";
+        else if (CurrentStage == PuzzleStage.Puzzle10 && insulinPuzzleManager != null) // Puzzle 10 parts are separate analytics rows.
+            answerSnapshot = $"__PUZZLE_PART={insulinPuzzleManager.CurrentPart}__|{answerSnapshot}";
 
         GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, isCorrect, answerSnapshot, currentSubmitOwnerActorNumber); // Records puzzle-session information to the CSV logger when available.
     } // Ends this block.
+
+    public void RecordPuzzle10PartAnswer(bool isCorrect) // Records the Puzzle 10 dropdown result before moving to the card section.
+    {
+        if (CurrentStage == PuzzleStage.Puzzle10)
+            RecordCurrentPuzzleAnswer(isCorrect);
+    }
 
     private string BuildCurrentAnswerSnapshot() // Handles this part of the puzzle state flow.
     { // Starts this block.
         if (CurrentStage == PuzzleStage.Puzzle9 && crosswordManager != null) // Crossword exports wrong words with clue coordinates.
             return crosswordManager.GetWrongAnswerSnapshot();
         GameObject panel = GetPanelForStage(CurrentStage); // Stores or creates a Unity GameObject reference.
+        if (CurrentStage == PuzzleStage.Puzzle10 && insulinPuzzleManager != null && insulinPuzzleManager.ActivePanel != null) // Puzzle 10 exports only the active section.
+            panel = insulinPuzzleManager.ActivePanel;
         if (panel == null) // Checks whether this puzzle-state condition requires action.
             panel = currentPuzzlePanel; // Handles this part of the puzzle state flow.
 
