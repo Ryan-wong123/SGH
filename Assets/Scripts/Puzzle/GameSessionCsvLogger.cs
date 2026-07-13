@@ -328,6 +328,8 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             ? NormalizePuzzleOneAnswerSnapshot(selectedAnswers)
             : puzzleNumber == 10
                 ? (stats.PuzzlePart == 1 ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers) : NormalizePuzzleTenCardSnapshot(selectedAnswers))
+                : puzzleNumber == 4 && stats.PuzzlePart == 1
+                    ? NormalizePuzzleTenCardSnapshot(selectedAnswers)
                 : IsValueOnlyPuzzle(puzzleNumber)
                     ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers)
                     : selectedAnswers.Trim();

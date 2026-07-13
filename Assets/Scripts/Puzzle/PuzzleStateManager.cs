@@ -821,6 +821,10 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         if (CurrentStage == PuzzleStage.Puzzle9 && crosswordManager != null) // Crossword exports wrong words with clue coordinates.
             return crosswordManager.GetWrongAnswerSnapshot();
         GameObject panel = GetPanelForStage(CurrentStage); // Stores or creates a Unity GameObject reference.
+        if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null && diaryPuzzleManager.ActivePanel != null) // Diary exports only the active page.
+            panel = diaryPuzzleManager.ActivePanel;
+        if (CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null && activity2PuzzleManager.ActivePanel != null) // Puzzle 4 exports only the active section.
+            panel = activity2PuzzleManager.ActivePanel;
         if (CurrentStage == PuzzleStage.Puzzle10 && insulinPuzzleManager != null && insulinPuzzleManager.ActivePanel != null) // Puzzle 10 exports only the active section.
             panel = insulinPuzzleManager.ActivePanel;
         if (panel == null) // Checks whether this puzzle-state condition requires action.
@@ -830,7 +834,9 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             return "No active puzzle panel"; // Returns the computed puzzle-state value to the caller.
 
         var snapshot = new StringBuilder(); // Handles this part of the puzzle state flow.
+        bool puzzle4Part2 = CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null && activity2PuzzleManager.CurrentPart == 2;
 
+        if (!puzzle4Part2)
         foreach (DropSlot slot in panel.GetComponentsInChildren<DropSlot>(true)) // Loops through each matching puzzle object.
         { // Starts this block.
             if (slot == null) // Checks whether this puzzle-state condition requires action.
@@ -843,7 +849,11 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             var cardList = new StringBuilder(); // Handles this part of the puzzle state flow.
             foreach (DraggableCard card in cards) // Loops through each matching puzzle object.
             { // Starts this block.
-                string cardLabel = CurrentStage == PuzzleStage.Puzzle3 && card != null && !string.IsNullOrWhiteSpace(card.FrontImageName)
+                bool useImageName = (CurrentStage == PuzzleStage.Puzzle3
+                    || (CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null && activity2PuzzleManager.CurrentPart == 1)
+                    || (CurrentStage == PuzzleStage.Puzzle10 && insulinPuzzleManager != null && insulinPuzzleManager.CurrentPart == 2))
+                    && card != null && !string.IsNullOrWhiteSpace(card.FrontImageName);
+                string cardLabel = useImageName
                     ? card.FrontImageName.Trim()
                     : GetCardAnswerLabel(card); // Puzzle 3 uses the card's source image name.
                 AppendSeparated(cardList, cardLabel, ", "); // Handles this part of the puzzle state flow.
@@ -864,6 +874,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             AppendSeparated(snapshot, $"{dropdown.name}={selectedOption}", "; "); // Handles this part of the puzzle state flow.
         } // Ends this block.
 
+        if (puzzle4Part2 || CurrentStage != PuzzleStage.Puzzle4)
         foreach (TMP_InputField input in panel.GetComponentsInChildren<TMP_InputField>(true)) // Loops through each matching puzzle object.
         { // Starts this block.
             if (input == null) // Checks whether this puzzle-state condition requires action.

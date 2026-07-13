@@ -39,6 +39,7 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle // Declares this type.
 
     public int CurrentStage => currentStage; // Declares a field, property, or member used by this script.
     public int MaxStage => stagePanels != null ? stagePanels.Length : 0; // Declares a field, property, or member used by this script.
+    public GameObject ActivePanel => currentStage >= 1 && stagePanels != null && currentStage <= stagePanels.Length ? stagePanels[currentStage - 1] : null; // Provides the active diary page for answer snapshots.
 
     private void OnEnable() // Declares a method used by this script.
     { // Starts this code block.
