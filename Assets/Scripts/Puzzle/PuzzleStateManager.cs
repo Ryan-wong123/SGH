@@ -820,6 +820,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
     { // Starts this block.
         if (CurrentStage == PuzzleStage.Puzzle9 && crosswordManager != null) // Crossword exports wrong words with clue coordinates.
             return crosswordManager.GetWrongAnswerSnapshot();
+        if (CurrentStage == PuzzleStage.Puzzle5 && wordSearchManager != null) // Word search exports wrong and expected letters.
+            return wordSearchManager.GetWrongAnswerSnapshot();
         GameObject panel = GetPanelForStage(CurrentStage); // Stores or creates a Unity GameObject reference.
         if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null && diaryPuzzleManager.ActivePanel != null) // Diary exports only the active page.
             panel = diaryPuzzleManager.ActivePanel;
@@ -856,6 +858,17 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
                 string cardLabel = useImageName
                     ? card.FrontImageName.Trim()
                     : GetCardAnswerLabel(card); // Puzzle 3 uses the card's source image name.
+                if (CurrentStage == PuzzleStage.Puzzle11
+                    && deathLapsesManager != null
+                    && deathLapsesManager.CurrentStage == 2
+                    && slot is Activity9DropSlot mappedSlot
+                    && mappedSlot.linkedStage1Slot != null
+                    && card != null)
+                {
+                    string expectedMapping = mappedSlot.linkedStage1Slot.stage1Answer;
+                    if (!string.IsNullOrWhiteSpace(expectedMapping))
+                        cardLabel = $"{card.lapsesAnswer} [expected {expectedMapping}]";
+                }
                 AppendSeparated(cardList, cardLabel, ", "); // Handles this part of the puzzle state flow.
             } // Ends this block.
 

@@ -504,6 +504,77 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
         return allMatch; // Returns this result to the caller.
     } // Ends this code block.
 
+    public string GetWrongAnswerSnapshot() // Returns selected and expected letters for incorrect word-search cells.
+    {
+        var entries = new List<string>();
+        var seen = new HashSet<string>();
+        int sizeY = Mathf.Min(gridSize, solution.GetLength(0));
+        int sizeX = Mathf.Min(gridSize, solution.GetLength(1));
+
+        var selectedPositions = new List<Vector2Int>();
+        foreach (var selectedCell in selected)
+        {
+            if (selectedCell == null) continue;
+            Vector2Int position = selectedCell.gridPosition;
+            if (position.x > 0 && position.y > 0 && position.x < sizeX && position.y < sizeY)
+                selectedPositions.Add(position);
+        }
+
+        if (selectedPositions.Count > 0)
+        {
+            selectedPositions.Sort((a, b) => a.y != b.y ? a.y.CompareTo(b.y) : a.x.CompareTo(b.x));
+            var actualWord = new System.Text.StringBuilder();
+            var expectedWord = new System.Text.StringBuilder();
+            foreach (Vector2Int position in selectedPositions)
+            {
+                actualWord.Append(grid[position.x, position.y].GetLetter());
+                char expected = solution[position.y, position.x];
+                expectedWord.Append(expected == '\0' ? '?' : expected);
+            }
+
+            return $"Wrong word={actualWord} [expected {expectedWord}]";
+        }
+
+        foreach (var cell in selected)
+        {
+            if (cell == null) continue;
+            Vector2Int position = cell.gridPosition;
+            if (position.x <= 0 || position.y <= 0 || position.x >= sizeX || position.y >= sizeY) continue;
+
+            char expected = solution[position.y, position.x];
+            char actual = cell.GetLetter();
+            if (expected == '\0')
+            {
+                string extraKey = $"{position.x},{position.y}";
+                if (seen.Add(extraKey))
+                    entries.Add($"Cell({position.x},{position.y})={actual} [expected no solution]");
+                continue;
+            }
+            if (char.ToUpperInvariant(actual) == char.ToUpperInvariant(expected)) continue;
+
+            string key = $"{position.x},{position.y}";
+            if (seen.Add(key))
+                entries.Add($"Cell({position.x},{position.y})={actual} [expected {expected}]");
+        }
+
+        for (int y = 1; y < sizeY; y++)
+        {
+            for (int x = 1; x < sizeX; x++)
+            {
+                char expected = solution[y, x];
+                if (expected == '\0') continue;
+
+                LetterCell cell = grid[x, y];
+                if (cell != null && selected.Contains(cell)) continue;
+                string key = $"{x},{y}";
+                if (seen.Add(key))
+                    entries.Add($"Cell({x},{y})=not selected [expected {expected}]");
+            }
+        }
+
+        return entries.Count > 0 ? string.Join("; ", entries) : "No wrong word search answer";
+    }
+
     public void ResetPuzzle() // Declares a method used by this script.
     { // Starts this code block.
         // --- 1) Destroy all existing grid children ---

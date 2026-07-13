@@ -157,7 +157,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         int maxWrongAnswers = 0; // Creates a local value used by the following logic.
         foreach (var row in rows) // Repeats this block for each item in a collection.
-            maxWrongAnswers = Math.Max(maxWrongAnswers, row.WrongAnswerSelections.Count); // Updates this value.
+            maxWrongAnswers = Math.Max(maxWrongAnswers, GetCompactedWrongAnswers(row).Count); // Updates this value.
 
         var csv = new StringBuilder(); // Creates a local value used by the following logic.
         string playedAt = sessionPlayedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture); // Formats the session date and time for analytics.
@@ -168,6 +168,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         foreach (var row in rows) // Repeats this block for each item in a collection.
         { // Starts this code block.
+            List<string> compactedWrongAnswers = GetCompactedWrongAnswers(row);
             csv.AppendCsv(playedAt).Append(','); // Writes the session date and time at the start of every row.
             csv.AppendCsv(row.RoomName).Append(','); // Runs this line of puzzle logic.
             csv.AppendCsv(row.PlayerName).Append(','); // Runs this line of puzzle logic.
@@ -181,8 +182,8 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             for (int i = 0; i < maxWrongAnswers; i++) // Repeats this block for a counted loop.
             { // Starts this code block.
                 csv.Append(','); // Runs this line of puzzle logic.
-                if (i < row.WrongAnswerSelections.Count) // Checks this condition before continuing.
-                    csv.AppendCsv(row.WrongAnswerSelections[i]); // Runs this line of puzzle logic.
+                if (i < compactedWrongAnswers.Count) // Checks this condition before continuing.
+                    csv.AppendCsv(compactedWrongAnswers[i]); // Runs this line of puzzle logic.
             } // Ends this code block.
 
             csv.Append(','); // Runs this line of puzzle logic.
@@ -192,6 +193,21 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         File.WriteAllText(path, csv.ToString(), Encoding.UTF8); // Runs this line of puzzle logic.
         Debug.Log($"Gameplay CSV saved to: {path}"); // Writes a diagnostic message to the Unity console.
     } // Ends this code block.
+
+    private static List<string> GetCompactedWrongAnswers(PuzzlePlayerStats row)
+    {
+        var compacted = new List<string>();
+        if (row == null || row.WrongAnswerSelections == null)
+            return compacted;
+
+        foreach (string answer in row.WrongAnswerSelections)
+        {
+            if (!string.IsNullOrWhiteSpace(answer))
+                compacted.Add(answer.Trim());
+        }
+
+        return compacted;
+    }
 
     public override void OnLeftRoom() // Overrides a Unity or Photon callback method.
     { // Starts this code block.
