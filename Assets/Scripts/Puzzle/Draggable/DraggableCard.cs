@@ -59,6 +59,7 @@ public class DraggableCard : MonoBehaviour, // Declares this type.
 
     protected Image cardImage; // Declares a field, property, or member used by this script.
     [SerializeField] protected Sprite frontSprite; // Exposes this private field in the Unity Inspector.
+    public string FrontImageName => frontSprite != null ? frontSprite.name : string.Empty; // Provides the source image name for analytics.
 
     protected RectTransform rectTransform; // Declares a field, property, or member used by this script.
     protected CanvasGroup canvasGroup; // Declares a field, property, or member used by this script.

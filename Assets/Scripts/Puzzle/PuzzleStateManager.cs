@@ -843,7 +843,10 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             var cardList = new StringBuilder(); // Handles this part of the puzzle state flow.
             foreach (DraggableCard card in cards) // Loops through each matching puzzle object.
             { // Starts this block.
-                AppendSeparated(cardList, GetCardAnswerLabel(card), ", "); // Handles this part of the puzzle state flow.
+                string cardLabel = CurrentStage == PuzzleStage.Puzzle3 && card != null && !string.IsNullOrWhiteSpace(card.FrontImageName)
+                    ? card.FrontImageName.Trim()
+                    : GetCardAnswerLabel(card); // Puzzle 3 uses the card's source image name.
+                AppendSeparated(cardList, cardLabel, ", "); // Handles this part of the puzzle state flow.
             } // Ends this block.
 
             AppendSeparated(snapshot, $"{slot.name}=[{cardList}]", "; "); // Handles this part of the puzzle state flow.
@@ -874,7 +877,10 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             if (buttonState == null || !buttonState.IsSelected || IsManagedSubmitButton(buttonState.gameObject)) // Checks whether this puzzle-state condition requires action.
                 continue; // Handles this part of the puzzle state flow.
 
-            AppendSeparated(snapshot, $"SelectedButton={GetObjectLabel(buttonState.gameObject)}", "; "); // Handles this part of the puzzle state flow.
+            string buttonLabel = CurrentStage == PuzzleStage.Puzzle3
+                ? GetImageName(buttonState.gameObject)
+                : GetObjectLabel(buttonState.gameObject); // Puzzle 3 uses the selected card's image name.
+            AppendSeparated(snapshot, $"SelectedButton={buttonLabel}", "; "); // Handles this part of the puzzle state flow.
         } // Ends this block.
 
         foreach (LetterCell cell in panel.GetComponentsInChildren<LetterCell>(true)) // Loops through each matching puzzle object.
@@ -927,6 +933,15 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
         return target.name; // Returns the computed puzzle-state value to the caller.
     } // Ends this block.
+
+    private static string GetImageName(GameObject target) // Gets the image asset name used by a Puzzle 3 card.
+    {
+        if (target == null)
+            return "Unknown";
+
+        Image image = target.GetComponentInChildren<Image>(true);
+        return image != null && image.sprite != null ? image.sprite.name : GetObjectLabel(target);
+    }
 
     private IEnumerator DelayAndAdvance(PuzzleStage stage, float delay) // Runs a delayed puzzle-state coroutine.
     { // Starts this block.
