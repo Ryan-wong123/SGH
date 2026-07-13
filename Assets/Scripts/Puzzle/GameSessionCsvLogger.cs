@@ -268,6 +268,9 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         if (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle9) // Puzzle 9 is a single-part puzzle.
             puzzlePart = 0;
 
+        if ((puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle4 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle6 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle11) && puzzlePart == 0) // Ignore unassigned events for multi-part puzzles.
+            return;
+
         if (eventType == EventTypeEnter && (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle4 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle6 || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle11) && puzzlePart == 0)
             return; // Diary rows are created only for actual pages.
 
