@@ -504,7 +504,106 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
         return allMatch; // Returns this result to the caller.
     } // Ends this code block.
 
-    public string GetWrongAnswerSnapshot() // Returns each incorrect word with its expected word.
+    private static readonly string[] ExpectedWordReferences =
+    {
+        "FLUOROQUINOLONES", "SULFONYLUREAS", "LINEZOLID", "AZOLES", "ELDERLY", "IMPAIRED", "REDUCTION"
+    };
+
+    public string GetWrongAnswerSnapshot() // Returns each incorrect word with its clue-reference answer.
+    {
+        var entries = new List<string>();
+        foreach (string expectedWord in ExpectedWordReferences)
+        {
+            if (!TryFindWordPositions(expectedWord, out List<Vector2Int> positions))
+                continue;
+
+            var actualWord = new System.Text.StringBuilder();
+            var missingPositions = new List<int>();
+            var extraLetters = new List<string>();
+            bool incorrect = false;
+            for (int index = 0; index < positions.Count; index++)
+            {
+                Vector2Int position = positions[index];
+                LetterCell cell = grid[position.x, position.y];
+                if (cell == null || !selected.Contains(cell))
+                {
+                    actualWord.Append('_');
+                    missingPositions.Add(index + 1);
+                    incorrect = true;
+                    continue;
+                }
+
+                char actual = cell.GetLetter();
+                actualWord.Append(actual);
+                if (char.ToUpperInvariant(actual) != char.ToUpperInvariant(expectedWord[index]))
+                {
+                    extraLetters.Add(actual.ToString());
+                    incorrect = true;
+                }
+            }
+
+            if (incorrect)
+            {
+                if (missingPositions.Count > 0)
+                    entries.Add($"Missing letter(s) for {expectedWord}: position(s) {string.Join(", ", missingPositions)} [expected {expectedWord}]");
+                if (extraLetters.Count > 0)
+                    entries.Add($"Extra letter(s) for {expectedWord}: {string.Join(", ", extraLetters)} [expected {expectedWord}]");
+            }
+        }
+
+        if (entries.Count == 0)
+        {
+            var selectedLetters = new System.Text.StringBuilder();
+            foreach (var cell in selected)
+            {
+                if (cell != null)
+                    selectedLetters.Append(cell.GetLetter());
+            }
+
+            string actual = selectedLetters.Length > 0 ? selectedLetters.ToString() : "not selected";
+            entries.Add($"Extra letter(s): {actual} [expected one of {string.Join(" | ", ExpectedWordReferences)}]");
+        }
+
+        return string.Join(", ", entries);
+    }
+
+    private bool TryFindWordPositions(string word, out List<Vector2Int> positions)
+    {
+        positions = new List<Vector2Int>();
+        Vector2Int[] directions = { new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(1, 1), new Vector2Int(1, -1) };
+        for (int y = 1; y < gridSize; y++)
+        {
+            for (int x = 1; x < gridSize; x++)
+            {
+                foreach (Vector2Int direction in directions)
+                {
+                    var candidate = new List<Vector2Int>();
+                    bool matches = true;
+                    for (int i = 0; i < word.Length; i++)
+                    {
+                        int currentX = x + direction.x * i;
+                        int currentY = y + direction.y * i;
+                        if (currentX <= 0 || currentY <= 0 || currentX >= gridSize || currentY >= gridSize || char.ToUpperInvariant(solution[currentY, currentX]) != word[i])
+                        {
+                            matches = false;
+                            break;
+                        }
+                        candidate.Add(new Vector2Int(currentX, currentY));
+                    }
+
+                    if (matches)
+                    {
+                        positions = candidate;
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private string GetLegacyWrongAnswerSnapshot() // Retains the previous cell-level implementation.
     {
         var entries = new List<string>();
         int sizeY = Mathf.Min(gridSize, solution.GetLength(0));
