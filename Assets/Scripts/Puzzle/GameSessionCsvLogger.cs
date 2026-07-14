@@ -115,7 +115,8 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         int actorNumber = answerActorNumber > 0 ? answerActorNumber : (PhotonNetwork.LocalPlayer != null ? PhotonNetwork.LocalPlayer.ActorNumber : -1); // Records the player whose input is being evaluated.
         string playerName = string.IsNullOrWhiteSpace(answerPlayerName) ? ResolvePlayerName(actorNumber) : answerPlayerName; // Keeps the answer associated with its author.
-        double elapsedSeconds = CaptureElapsedSeconds(actorNumber, stage, keepRunning: !isCorrect); // Runs this line of puzzle logic.
+        bool keepPuzzleTimerRunning = !isCorrect || IsMultiPartPuzzle((int)stage); // Multipart puzzles continue timing between their parts.
+        double elapsedSeconds = CaptureElapsedSeconds(actorNumber, stage, keepRunning: keepPuzzleTimerRunning); // Runs this line of puzzle logic.
 
         SendOrApplyEvent(EventTypeAnswer, GetCurrentRoomName(), actorNumber, playerName, (int)stage, isCorrect ? 1 : 0, elapsedSeconds, selectedAnswers); // Runs this line of puzzle logic.
     } // Ends this code block.
@@ -590,7 +591,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         int minutes = roundedSeconds / 60; // Creates a local value used by the following logic.
         int seconds = roundedSeconds % 60; // Creates a local value used by the following logic.
 
-        return $"{minutes:00}:{seconds:00}"; // Returns this result to the caller.
+        return $"'{minutes:00}:{seconds:00}"; // Prefixes the duration as text so spreadsheet apps preserve MM:SS.
     } // Ends this code block.
 } // Ends this code block.
 

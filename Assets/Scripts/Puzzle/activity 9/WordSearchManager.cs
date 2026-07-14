@@ -512,57 +512,57 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
     public string GetWrongAnswerSnapshot() // Returns each incorrect word with its clue-reference answer.
     {
         var entries = new List<string>();
+        var expectedCells = new HashSet<LetterCell>();
+        int matchedWordCount = 0;
+
         foreach (string expectedWord in ExpectedWordReferences)
         {
             if (!TryFindWordPositions(expectedWord, out List<Vector2Int> positions))
                 continue;
 
+            matchedWordCount++;
             var actualWord = new System.Text.StringBuilder();
             var missingPositions = new List<int>();
             var extraLetters = new List<string>();
-            bool incorrect = false;
             for (int index = 0; index < positions.Count; index++)
             {
                 Vector2Int position = positions[index];
                 LetterCell cell = grid[position.x, position.y];
+                if (cell != null)
+                    expectedCells.Add(cell);
+
                 if (cell == null || !selected.Contains(cell))
                 {
-                    actualWord.Append('_');
+                    actualWord.Append('_' );
                     missingPositions.Add(index + 1);
-                    incorrect = true;
                     continue;
                 }
 
                 char actual = cell.GetLetter();
                 actualWord.Append(actual);
                 if (char.ToUpperInvariant(actual) != char.ToUpperInvariant(expectedWord[index]))
-                {
                     extraLetters.Add(actual.ToString());
-                    incorrect = true;
-                }
             }
 
-            if (incorrect)
-            {
-                if (missingPositions.Count > 0)
-                    entries.Add($"Missing letter(s) for {expectedWord}: position(s) {string.Join(", ", missingPositions)} [expected {expectedWord}]");
-                if (extraLetters.Count > 0)
-                    entries.Add($"Extra letter(s) for {expectedWord}: {string.Join(", ", extraLetters)} [expected {expectedWord}]");
-            }
+            if (missingPositions.Count > 0)
+                entries.Add($"Missing letter(s) for {expectedWord}: position(s) {string.Join(", ", missingPositions)} [expected {expectedWord}]");
+            if (extraLetters.Count > 0)
+                entries.Add($"Extra letter(s) for {expectedWord}: {string.Join(", ", extraLetters)} [expected {expectedWord}]");
         }
 
-        if (entries.Count == 0)
+        var unrelatedSelectedLetters = new List<string>();
+        foreach (var cell in selected)
         {
-            var selectedLetters = new System.Text.StringBuilder();
-            foreach (var cell in selected)
-            {
-                if (cell != null)
-                    selectedLetters.Append(cell.GetLetter());
-            }
-
-            string actual = selectedLetters.Length > 0 ? selectedLetters.ToString() : "not selected";
-            entries.Add($"Extra letter(s): {actual} [expected one of {string.Join(" | ", ExpectedWordReferences)}]");
+            if (cell != null && !expectedCells.Contains(cell))
+                unrelatedSelectedLetters.Add(cell.GetLetter().ToString());
         }
+        if (unrelatedSelectedLetters.Count > 0)
+            entries.Add($"Extra letter(s): {string.Join(", ", unrelatedSelectedLetters)}");
+
+        if (entries.Count == 0 && matchedWordCount == 0)
+            entries.Add($"Missing word(s): {string.Join(", ", ExpectedWordReferences)}");
+        if (entries.Count == 0)
+            entries.Add("No wrong word search answer");
 
         return string.Join(", ", entries);
     }
@@ -570,7 +570,7 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
     private bool TryFindWordPositions(string word, out List<Vector2Int> positions)
     {
         positions = new List<Vector2Int>();
-        Vector2Int[] directions = { new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(1, 1), new Vector2Int(1, -1) };
+        Vector2Int[] directions = { new Vector2Int(1, 0), new Vector2Int(-1, 0), new Vector2Int(0, 1), new Vector2Int(0, -1), new Vector2Int(1, 1), new Vector2Int(-1, -1), new Vector2Int(1, -1), new Vector2Int(-1, 1) };
         for (int y = 1; y < gridSize; y++)
         {
             for (int x = 1; x < gridSize; x++)
@@ -608,7 +608,7 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
         var entries = new List<string>();
         int sizeY = Mathf.Min(gridSize, solution.GetLength(0));
         int sizeX = Mathf.Min(gridSize, solution.GetLength(1));
-        Vector2Int[] directions = { new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(1, 1), new Vector2Int(1, -1) };
+        Vector2Int[] directions = { new Vector2Int(1, 0), new Vector2Int(-1, 0), new Vector2Int(0, 1), new Vector2Int(0, -1), new Vector2Int(1, 1), new Vector2Int(-1, -1), new Vector2Int(1, -1), new Vector2Int(-1, 1) };
 
         foreach (Vector2Int direction in directions)
         {
