@@ -844,6 +844,15 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             if (slot == null) // Checks whether this puzzle-state condition requires action.
                 continue; // Handles this part of the puzzle state flow.
 
+            if (CurrentStage == PuzzleStage.Puzzle11 && deathLapsesManager != null)
+            {
+                bool includeSlot = deathLapsesManager.CurrentStage == 2
+                    ? slot.CompareTag("Stage2Slot")
+                    : slot.CompareTag("Stage1Slot");
+                if (!includeSlot)
+                    continue;
+            }
+
             List<DraggableCard> cards = slot.GetCardsInSlot(); // Stores a list of puzzle-related values.
             if (cards.Count == 0) // Checks whether this puzzle-state condition requires action.
                 continue; // Handles this part of the puzzle state flow.
@@ -853,11 +862,31 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             { // Starts this block.
                 bool useImageName = (CurrentStage == PuzzleStage.Puzzle3
                     || (CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null && activity2PuzzleManager.CurrentPart == 1)
-                    || (CurrentStage == PuzzleStage.Puzzle10 && insulinPuzzleManager != null && insulinPuzzleManager.CurrentPart == 2))
+                    || (CurrentStage == PuzzleStage.Puzzle10 && insulinPuzzleManager != null && insulinPuzzleManager.CurrentPart == 2)
+                    || CurrentStage == PuzzleStage.Puzzle11)
                     && card != null && !string.IsNullOrWhiteSpace(card.FrontImageName);
                 string cardLabel = useImageName
                     ? card.FrontImageName.Trim()
                     : GetCardAnswerLabel(card); // Puzzle 3 uses the card's source image name.
+                if (CurrentStage == PuzzleStage.Puzzle11
+                    && deathLapsesManager != null
+                    && deathLapsesManager.CurrentStage == 2
+                    && slot is Activity9DropSlot mappedSlot
+                    && mappedSlot.linkedStage1Slot != null
+                    && card != null
+                    && !string.IsNullOrWhiteSpace(mappedSlot.linkedStage1Slot.stage1Answer))
+                {
+                    DraggableCard linkedCard = mappedSlot.linkedStage1Slot.GetCardsInSlot().Count > 0
+                        ? mappedSlot.linkedStage1Slot.GetCardsInSlot()[0]
+                        : null;
+                    string linkedImageName = linkedCard != null && !string.IsNullOrWhiteSpace(linkedCard.FrontImageName)
+                        ? linkedCard.FrontImageName.Trim()
+                        : mappedSlot.linkedStage1Slot.stage1Answer;
+                    string selectedImageName = !string.IsNullOrWhiteSpace(card.FrontImageName)
+                        ? card.FrontImageName.Trim()
+                        : card.lapsesAnswer;
+                    cardLabel = $"{linkedImageName} = {selectedImageName}";
+                }
                 AppendSeparated(cardList, cardLabel, ", "); // Handles this part of the puzzle state flow.
             } // Ends this block.
 

@@ -342,6 +342,8 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         string normalized = puzzleNumber == 1
             ? NormalizePuzzleOneAnswerSnapshot(selectedAnswers)
+            : puzzleNumber == 11 && stats.PuzzlePart == 1
+                ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers)
             : puzzleNumber == 10
                 ? (stats.PuzzlePart == 1 ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers) : NormalizePuzzleTenCardSnapshot(selectedAnswers))
                 : puzzleNumber == 4 && stats.PuzzlePart == 1
