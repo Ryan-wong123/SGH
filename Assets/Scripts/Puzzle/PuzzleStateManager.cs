@@ -864,7 +864,12 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             bool puzzle11Part2 = CurrentStage == PuzzleStage.Puzzle11
                 && deathLapsesManager != null
                 && deathLapsesManager.CurrentStage == 2;
-            AppendSeparated(snapshot, puzzle11Part2 ? cardList.ToString() : $"{slot.name}=[{cardList}]", puzzle11Part2 ? ", " : "; "); // Puzzle 11 part 2 exports comma-separated direct answer pairings.
+            string slotLabel = CurrentStage == PuzzleStage.Puzzle4
+                && activity2PuzzleManager != null
+                && activity2PuzzleManager.CurrentPart == 1
+                ? GetPuzzle4SlotLabel(slot.name)
+                : slot.name;
+            AppendSeparated(snapshot, puzzle11Part2 ? cardList.ToString() : $"{slotLabel}=[{cardList}]", puzzle11Part2 ? ", " : "; "); // Puzzle 11 part 2 exports comma-separated direct answer pairings.
         } // Ends this block.
 
         foreach (TMP_Dropdown dropdown in panel.GetComponentsInChildren<TMP_Dropdown>(true)) // Loops through each matching puzzle object.
@@ -937,6 +942,13 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
         return GetObjectLabel(card.gameObject); // Returns the computed puzzle-state value to the caller.
     } // Ends this block.
+
+    private static string GetPuzzle4SlotLabel(string slotName)
+    {
+        if (!string.IsNullOrWhiteSpace(slotName) && slotName.StartsWith("Card ", StringComparison.OrdinalIgnoreCase))
+            return "Slot_" + slotName.Substring(5).Trim();
+        return slotName;
+    }
 
     private static string GetObjectLabel(GameObject target) // Handles this part of the puzzle state flow.
     { // Starts this block.
