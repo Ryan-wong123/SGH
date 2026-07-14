@@ -410,7 +410,31 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback // Decl
         }
 
         if (wordLength > 1 && hasWrong)
-            entries.Add($"{direction} clue ({startX},{startY})={typed} [expected {expected}]");
+        {
+            int clueNumber = GetClueNumber(startX, startY, direction);
+            string clueLabel = clueNumber > 0 ? $"{direction} clue {clueNumber}" : $"{direction} clue ({startX},{startY})";
+            entries.Add($"{clueLabel}={typed} [expected {expected}]");
+        }
+    }
+
+    private static int GetClueNumber(int startX, int startY, string direction)
+    {
+        if (direction == "Across")
+        {
+            if (startX == 2 && startY == 2) return 2;
+            if (startX == 4 && startY == 5) return 4;
+            if (startX == 6 && startY == 7) return 5;
+            if (startX == 0 && startY == 8) return 6;
+            if (startX == 9 && startY == 2) return 8;
+        }
+        else if (direction == "Down")
+        {
+            if (startX == 9 && startY == 0) return 1;
+            if (startX == 6 && startY == 2) return 3;
+            if (startX == 11 && startY == 7) return 7;
+        }
+
+        return 0;
     }
 
     private bool IsActiveCell(int x, int y)
