@@ -161,7 +161,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         var csv = new StringBuilder(); // Creates a local value used by the following logic.
         string playedAt = sessionPlayedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture); // Formats the session date and time for analytics.
-        csv.Append("date_time_played,room_name,player_name,puzzle_number,puzzle_name,puzzle_part,total_tries,number_of_times_answer_is_correct,number_of_times_answer_is_wrong"); // Writes the analytics-friendly CSV header.
+        csv.Append("date_time_played,room_name,player_name,puzzle_number,puzzle_name,total_tries,number_of_times_answer_is_correct,number_of_times_answer_is_wrong"); // Writes the analytics-friendly CSV header.
         for (int i = 1; i <= maxWrongAnswers; i++) // Repeats this block for a counted loop.
             csv.Append($",wrong_answer_{i}"); // Runs this line of puzzle logic.
         csv.AppendLine(",time_taken"); // Runs this line of puzzle logic.
@@ -173,8 +173,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             csv.AppendCsv(row.RoomName).Append(','); // Runs this line of puzzle logic.
             csv.AppendCsv(row.PlayerName).Append(','); // Runs this line of puzzle logic.
             csv.Append(row.PuzzleNumber).Append(','); // Runs this line of puzzle logic.
-            csv.AppendCsv(GetPuzzleName(row.PuzzleNumber)).Append(','); // Writes the descriptive puzzle name beside the puzzle number.
-            csv.Append(row.PuzzlePart > 0 ? row.PuzzlePart.ToString(CultureInfo.InvariantCulture) : string.Empty).Append(','); // Writes the diary page when applicable.
+            csv.AppendCsv(GetPuzzleName(row.PuzzleNumber, row.PuzzlePart)).Append(','); // Writes the descriptive puzzle name, including the part suffix when applicable.
             csv.Append(row.CorrectAnswers + row.WrongAnswers).Append(','); // Total tries are all correct and wrong answer attempts.
             csv.Append(row.CorrectAnswers).Append(','); // Runs this line of puzzle logic.
             csv.Append(row.WrongAnswers); // Runs this line of puzzle logic.
@@ -532,7 +531,18 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         return string.IsNullOrWhiteSpace(cachedRoomName) ? "Offline" : cachedRoomName; // Returns this result to the caller.
     } // Ends this code block.
 
-    private static string GetPuzzleName(int puzzleNumber) // Maps the exported puzzle number to its game puzzle name.
+    private static string GetPuzzleName(int puzzleNumber, int puzzlePart)
+    {
+        string name = GetPuzzleBaseName(puzzleNumber);
+        return puzzlePart > 0 && IsMultiPartPuzzle(puzzleNumber) ? $"{name}_{puzzlePart}" : name;
+    }
+
+    private static bool IsMultiPartPuzzle(int puzzleNumber)
+    {
+        return puzzleNumber == 4 || puzzleNumber == 6 || puzzleNumber == 10 || puzzleNumber == 11;
+    }
+
+    private static string GetPuzzleBaseName(int puzzleNumber) // Maps the exported puzzle number to its game puzzle name.
     { // Starts this code block.
         switch (puzzleNumber) // Selects the configured name for the puzzle stage.
         { // Starts this code block.
