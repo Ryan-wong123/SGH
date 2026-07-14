@@ -158,6 +158,21 @@ public class PictureGridManager : MonoBehaviour, IPuzzle // Declares this type.
         } // Ends this code block.
     } // Ends this code block.
 
+    public bool IsWrongPictureButton(GameObject pictureButtonObject)
+    {
+        if (pictureButtonObject == null)
+            return false;
+
+        for (int index = 0; index < pictureButtons.Count; index++)
+        {
+            Button pictureButton = pictureButtons[index];
+            if (pictureButton != null && pictureButton.gameObject == pictureButtonObject)
+                return correctIndexes == null || !correctIndexes.Contains(index);
+        }
+
+        return false;
+    }
+
     public bool CheckAnswers() // Declares a method used by this script.
     { // Starts this code block.
         RebuildSelectedIndexesFromButtons(); // Runs this line of puzzle logic.

@@ -557,7 +557,7 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
                 unrelatedSelectedLetters.Add(cell.GetLetter().ToString());
         }
         if (unrelatedSelectedLetters.Count > 0)
-            entries.Add($"Extra letter(s): {string.Join(", ", unrelatedSelectedLetters)}");
+            entries.Add(string.Join(", ", unrelatedSelectedLetters));
 
         if (entries.Count == 0 && matchedWordCount == 0)
             entries.Add($"Missing word(s): {string.Join(", ", ExpectedWordReferences)}");

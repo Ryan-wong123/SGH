@@ -82,6 +82,38 @@ public class DiaryPuzzleManager : MonoBehaviour, IPuzzle // Declares this type.
         return false; // Returns this result to the caller.
     } // Ends this code block.
 
+    public string GetWrongAnswerSnapshot()
+    {
+        var wrongAnswers = new List<string>();
+        int questionNumber = 0;
+
+        foreach (var answer in answers)
+        {
+            if (answer.stage != currentStage || answer.field == null)
+                continue;
+
+            questionNumber++;
+            string value = answer.field.text ?? string.Empty;
+            bool isCorrect = false;
+            if (answer.accepted != null)
+            {
+                foreach (string acceptedAnswer in answer.accepted)
+                {
+                    if (ValuesMatch(value, acceptedAnswer, answer.caseSensitive))
+                    {
+                        isCorrect = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isCorrect && !string.IsNullOrWhiteSpace(value))
+                wrongAnswers.Add($"Question {questionNumber} = {value.Trim()}");
+        }
+
+        return wrongAnswers.Count > 0 ? string.Join("; ", wrongAnswers) : "No wrong answer selected";
+    }
+
     private bool CheckStage(int stage) // Declares a method used by this script.
     { // Starts this code block.
         bool allCorrect = true; // Creates a local value used by the following logic.

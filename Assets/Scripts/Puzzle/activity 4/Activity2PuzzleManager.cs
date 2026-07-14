@@ -1,5 +1,6 @@
 using UnityEngine; // Imports a namespace used by this script.
 using System.Collections; // Imports a namespace used by this script.
+using System.Collections.Generic; // Imports generic collection types used for CSV answer snapshots.
 using UnityEngine.UI; // Imports a namespace used by this script.
 using TMPro; // Imports a namespace used by this script.
 using WebSocketSharp; // Imports a namespace used by this script.
@@ -83,6 +84,27 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle // Declares this typ
     { // Starts this code block.
         return SubmitActivity2Stage() == Activity2SubmitResult.Completed; // Returns this result to the caller.
     } // Ends this code block.
+
+    public string GetWrongPart2AnswerSnapshot()
+    {
+        var wrongAnswers = new List<string>();
+        AddWrongPart2Answer(wrongAnswers, input1, "15");
+        AddWrongPart2Answer(wrongAnswers, input2, "4");
+        return wrongAnswers.Count > 0 ? string.Join("; ", wrongAnswers) : "No wrong answer selected";
+    }
+
+    private static void AddWrongPart2Answer(List<string> wrongAnswers, TMP_InputField input, string expectedAnswer)
+    {
+        if (input == null || string.IsNullOrWhiteSpace(input.text) || input.text.Trim() == expectedAnswer)
+            return;
+
+        string label = input.gameObject.name;
+        const string inputPrefix = "Input ";
+        if (label.StartsWith(inputPrefix))
+            label = label.Substring(inputPrefix.Length);
+
+        wrongAnswers.Add($"{label} = {input.text.Trim()}");
+    }
 
     public bool CheckActivity2Part2Correct() // Declares a method used by this script.
     { // Starts this code block.

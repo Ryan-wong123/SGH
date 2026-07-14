@@ -316,7 +316,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         else // Runs when the previous condition was false.
             stats.WrongAnswers++; // Runs this line of puzzle logic.
 
-        if (!answerWasCorrect || puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle11) // Puzzle 11 keeps each part's submitted cards in its own row.
+        if (!answerWasCorrect)
             AddAnswerSelection(stats, puzzleNumber, selectedAnswers); // Stores what was answered incorrectly.
         stats.TimeTakenSeconds += Math.Max(0d, elapsedSeconds); // Runs this line of puzzle logic.
     } // Ends this code block.
@@ -348,6 +348,12 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
                 ? (stats.PuzzlePart == 1 ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers) : NormalizePuzzleTenCardSnapshot(selectedAnswers))
                 : puzzleNumber == 4 && stats.PuzzlePart == 1
                     ? NormalizePuzzleTenCardSnapshot(selectedAnswers)
+                : puzzleNumber == 4
+                    ? selectedAnswers.Trim()
+                : puzzleNumber == 6 && (stats.PuzzlePart == 2 || stats.PuzzlePart == 3)
+                    ? selectedAnswers.Trim()
+                : puzzleNumber == 7
+                    ? selectedAnswers.Trim()
                 : IsValueOnlyPuzzle(puzzleNumber)
                     ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers)
                     : selectedAnswers.Trim();

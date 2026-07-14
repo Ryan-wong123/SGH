@@ -53,6 +53,29 @@ public class RiskTable : MonoBehaviour, IPuzzle // Declares this type.
         return allCorrect; // Returns this result to the caller.
     } // Ends this code block.
 
+    public string GetWrongAnswerSnapshot()
+    {
+        var wrongAnswers = new List<string>();
+        int questionNumber = 0;
+
+        foreach (var entry in dropdowns)
+        {
+            if (entry.dropdown == null)
+                continue;
+
+            questionNumber++;
+            if (entry.dropdown.value == entry.correctIndex)
+                continue;
+
+            string selectedAnswer = entry.dropdown.value >= 0 && entry.dropdown.value < entry.dropdown.options.Count
+                ? entry.dropdown.options[entry.dropdown.value].text
+                : entry.dropdown.value.ToString();
+            wrongAnswers.Add($"Question {questionNumber} = {selectedAnswer}");
+        }
+
+        return wrongAnswers.Count > 0 ? string.Join("; ", wrongAnswers) : "No wrong answer selected";
+    }
+
     public bool IsSolved() // Declares a method used by this script.
     { // Starts this code block.
         return CheckAnswers(); // Returns this result to the caller.
