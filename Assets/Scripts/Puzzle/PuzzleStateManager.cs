@@ -862,7 +862,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
             List<DraggableCard> cards = slot.GetCardsInSlot(); // Stores a list of puzzle-related values.
             if ((CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null && activity2PuzzleManager.CurrentPart == 1)
-                || (CurrentStage == PuzzleStage.Puzzle10 && insulinPuzzleManager != null && insulinPuzzleManager.CurrentPart == 2))
+                || (CurrentStage == PuzzleStage.Puzzle10 && insulinPuzzleManager != null && insulinPuzzleManager.CurrentPart == 2)
+                || (CurrentStage == PuzzleStage.Puzzle11 && deathLapsesManager != null && deathLapsesManager.CurrentStage == 2))
                 cards.RemoveAll(slot.IsCardCorrect); // Keep only wrong cards, so correct Puzzle 4 part 1 slots are omitted from the CSV.
             if (cards.Count == 0) // Checks whether this puzzle-state condition requires action.
                 continue; // Handles this part of the puzzle state flow.
