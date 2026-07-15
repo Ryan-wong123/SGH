@@ -95,6 +95,8 @@ public class PhotonSyncedUIButtonColor : MonoBehaviourPun // Declares this type.
         else // Runs when the previous condition was false.
             nextSelected = true; // Updates this value.
 
+        GameSessionCsvLogger.Instance?.RecordLocalPlayerInput(gameObject.name, nextSelected ? "selected" : "deselected");
+
         if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
         { // Starts this code block.
             isSelected = nextSelected; // Updates this value.

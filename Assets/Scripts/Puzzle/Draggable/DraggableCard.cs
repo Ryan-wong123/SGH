@@ -237,6 +237,9 @@ public class DraggableCard : MonoBehaviour, // Declares this type.
                 HandleDefaultEndDrag(); // Runs this line of puzzle logic.
                 break; // Exits the current loop or switch.
         } // Ends this code block.
+
+        string destination = transform.parent != null ? transform.parent.name : "unassigned";
+        GameSessionCsvLogger.Instance?.RecordLocalPlayerInput(destination, gameObject.name);
     } // Ends this code block.
 
     protected bool TryCompleteDrag() // Declares a method used by this script.

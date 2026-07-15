@@ -48,6 +48,8 @@ public class PhotonSyncedTMPInputField : MonoBehaviourPun // Declares this type.
         if (suppressCallbacks) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
+        GameSessionCsvLogger.Instance?.RecordLocalPlayerInput(gameObject.name, value);
+
         if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 

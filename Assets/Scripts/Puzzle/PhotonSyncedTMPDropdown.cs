@@ -45,6 +45,11 @@ public class PhotonSyncedTMPDropdown : MonoBehaviourPun // Declares this type.
         if (suppressCallbacks) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
+        string selectedText = dropdown != null && value >= 0 && value < dropdown.options.Count
+            ? dropdown.options[value].text
+            : value.ToString();
+        GameSessionCsvLogger.Instance?.RecordLocalPlayerInput(gameObject.name, selectedText);
+
         PhotonNetwork.CurrentRoom?.SetCustomProperties(new Hashtable // Runs this line of puzzle logic.
         { // Starts this code block.
             [BuildValueKey()] = value // Adds an attribute that changes how Unity or C# treats the next declaration.

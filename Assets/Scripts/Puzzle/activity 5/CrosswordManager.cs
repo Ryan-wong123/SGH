@@ -142,6 +142,8 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback // Decl
         if (suppressInputSync || !PhotonNetwork.InRoom) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
+        GameSessionCsvLogger.Instance?.RecordLocalPlayerInput($"CrosswordCell:{x},{y}", value);
+
         localSeq++; // Runs this line of puzzle logic.
         SyncCellTextProperty(x, y, value); // Runs this line of puzzle logic.
 

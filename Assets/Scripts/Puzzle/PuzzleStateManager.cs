@@ -810,6 +810,20 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         GameSessionCsvLogger.Instance?.RecordPuzzleAnswer(CurrentStage, isCorrect, answerSnapshot, currentSubmitOwnerActorNumber); // Records puzzle-session information to the CSV logger when available.
     } // Ends this block.
 
+    // Used by the input logger so individual interactions are stored under the same multi-part row as the team submission.
+    public int GetCurrentPuzzleAnalyticsPart()
+    {
+        if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null)
+            return diaryPuzzleManager.CurrentStage;
+        if (CurrentStage == PuzzleStage.Puzzle11 && deathLapsesManager != null)
+            return deathLapsesManager.CurrentStage;
+        if (CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null)
+            return activity2PuzzleManager.CurrentPart;
+        if (CurrentStage == PuzzleStage.Puzzle10 && insulinPuzzleManager != null)
+            return insulinPuzzleManager.CurrentPart;
+        return 0;
+    }
+
     public void RecordPuzzle10PartAnswer(bool isCorrect) // Records the Puzzle 10 dropdown result before moving to the card section.
     {
         if (CurrentStage == PuzzleStage.Puzzle10)
