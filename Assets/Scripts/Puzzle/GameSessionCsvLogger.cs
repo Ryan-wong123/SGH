@@ -35,6 +35,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         public int CorrectAnswers; // Declares a field, property, or member used by this script.
         public int WrongAnswers; // Declares a field, property, or member used by this script.
         public double TimeTakenSeconds; // Declares a field, property, or member used by this script.
+        public string ExpectedCorrectAnswers; // Normalized snapshot captured from the first correct team submission.
         public List<string> WrongAnswerSelections = new(); // Declares a field, property, or member used by this script.
         public Dictionary<string, string> LatestInputsByControl = new(); // The latest value entered or selected by this player for each control.
         public List<string> SubmittedInputAttempts = new(); // One combined input snapshot for each team submission attempt.
@@ -228,7 +229,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         csv.Append("date_time_played,room_name,submitted_by,puzzle_number,puzzle_name,total_tries,number_of_times_answer_is_correct,number_of_times_answer_is_wrong");
         for (int i = 1; i <= maxWrongAnswers; i++) // Repeats this block for a counted loop.
             csv.Append($",wrong_answer_{i}"); // Runs this line of puzzle logic.
-        csv.AppendLine(",time_taken,total_time_taken_across_all_puzzles"); // Runs this line of puzzle logic.
+        csv.AppendLine(",expected_correct_answers,time_taken,total_time_taken_across_all_puzzles"); // Runs this line of puzzle logic.
 
         for (int teamRowIndex = 0; teamRowIndex < teamRows.Count; teamRowIndex++)
         { // Starts this code block.
@@ -251,6 +252,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             } // Ends this code block.
 
             csv.Append(','); // Runs this line of puzzle logic.
+            csv.AppendCsv(row.ExpectedCorrectAnswers).Append(',');
             csv.Append(FormatMinutesAndSeconds(row.TimeTakenSeconds)).Append(',');
             if (teamRowIndex == 0)
                 csv.Append(FormatMinutesAndSeconds(totalTeamTimeTakenSeconds));
@@ -390,7 +392,11 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             return;
 
         if (answerWasCorrect) // Checks this condition before continuing.
+        {
             stats.CorrectAnswers++; // Runs this line of puzzle logic.
+            if (string.IsNullOrWhiteSpace(stats.ExpectedCorrectAnswers))
+                stats.ExpectedCorrectAnswers = NormalizeWrongAnswerSnapshot(puzzleNumber, puzzlePart, selectedAnswers);
+        }
         else // Runs when the previous condition was false.
             stats.WrongAnswers++; // Runs this line of puzzle logic.
 

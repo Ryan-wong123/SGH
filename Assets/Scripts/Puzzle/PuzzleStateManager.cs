@@ -797,7 +797,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
     private void RecordCurrentPuzzleAnswer(bool isCorrect) // Handles this part of the puzzle state flow.
     { // Starts this block.
-        string answerSnapshot = BuildCurrentAnswerSnapshot(); // Captures the current player input for this submission.
+        string answerSnapshot = BuildCurrentAnswerSnapshot(isCorrect); // Captures the full correct state when a puzzle is solved.
         if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null) // Diary pages are separate analytics rows.
             answerSnapshot = $"__PUZZLE_PART={diaryPuzzleManager.CurrentStage}__|{answerSnapshot}";
         else if (CurrentStage == PuzzleStage.Puzzle11 && deathLapsesManager != null) // Death Lapses parts are separate analytics rows.
@@ -830,18 +830,18 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             RecordCurrentPuzzleAnswer(isCorrect);
     }
 
-    private string BuildCurrentAnswerSnapshot() // Handles this part of the puzzle state flow.
+    private string BuildCurrentAnswerSnapshot(bool includeCorrectAnswers = false) // Handles this part of the puzzle state flow.
     { // Starts this block.
-        if (CurrentStage == PuzzleStage.Puzzle9 && crosswordManager != null) // Crossword exports wrong words with clue coordinates.
+        if (!includeCorrectAnswers && CurrentStage == PuzzleStage.Puzzle9 && crosswordManager != null) // Crossword exports wrong words with clue coordinates.
             return crosswordManager.GetWrongAnswerSnapshot();
-        if (CurrentStage == PuzzleStage.Puzzle5 && wordSearchManager != null) // Word search exports wrong and expected letters.
+        if (!includeCorrectAnswers && CurrentStage == PuzzleStage.Puzzle5 && wordSearchManager != null) // Word search exports wrong and expected letters.
             return wordSearchManager.GetWrongAnswerSnapshot();
-        if (CurrentStage == PuzzleStage.Puzzle7 && risktableManager != null)
+        if (!includeCorrectAnswers && CurrentStage == PuzzleStage.Puzzle7 && risktableManager != null)
             return risktableManager.GetWrongAnswerSnapshot();
-        if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null
+        if (!includeCorrectAnswers && CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null
             && (diaryPuzzleManager.CurrentStage == 2 || diaryPuzzleManager.CurrentStage == 3))
             return diaryPuzzleManager.GetWrongAnswerSnapshot();
-        if (CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null && activity2PuzzleManager.CurrentPart == 2)
+        if (!includeCorrectAnswers && CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null && activity2PuzzleManager.CurrentPart == 2)
             return activity2PuzzleManager.GetWrongPart2AnswerSnapshot();
         GameObject panel = GetPanelForStage(CurrentStage); // Stores or creates a Unity GameObject reference.
         if (CurrentStage == PuzzleStage.Puzzle6 && diaryPuzzleManager != null && diaryPuzzleManager.ActivePanel != null) // Diary exports only the active page.
@@ -878,14 +878,15 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             if ((CurrentStage == PuzzleStage.Puzzle4 && activity2PuzzleManager != null && activity2PuzzleManager.CurrentPart == 1)
                 || (CurrentStage == PuzzleStage.Puzzle10 && insulinPuzzleManager != null && insulinPuzzleManager.CurrentPart == 2)
                 || (CurrentStage == PuzzleStage.Puzzle11 && deathLapsesManager != null && deathLapsesManager.CurrentStage == 2))
-                cards.RemoveAll(slot.IsCardCorrect); // Keep only wrong cards, so correct Puzzle 4 part 1 slots are omitted from the CSV.
+                if (!includeCorrectAnswers)
+                    cards.RemoveAll(slot.IsCardCorrect); // Keep only wrong cards in wrong-answer snapshots.
             if (cards.Count == 0) // Checks whether this puzzle-state condition requires action.
                 continue; // Handles this part of the puzzle state flow.
 
             var cardList = new StringBuilder(); // Handles this part of the puzzle state flow.
             foreach (DraggableCard card in cards) // Loops through each matching puzzle object.
             { // Starts this block.
-                if (CurrentStage == PuzzleStage.Puzzle1 && slot.IsCardCorrect(card))
+                if (!includeCorrectAnswers && CurrentStage == PuzzleStage.Puzzle1 && slot.IsCardCorrect(card))
                     continue; // The CSV should include only incorrectly selected Puzzle 1 symptoms.
 
                 bool useImageName = (CurrentStage == PuzzleStage.Puzzle3
@@ -956,7 +957,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
                 continue; // Handles this part of the puzzle state flow.
 
             if (CurrentStage == PuzzleStage.Puzzle3 && pictureGridManager != null
-                && !pictureGridManager.IsWrongPictureButton(buttonState.gameObject))
+                && !includeCorrectAnswers && !pictureGridManager.IsWrongPictureButton(buttonState.gameObject))
                 continue; // Excludes correctly selected Puzzle 3 images from the wrong-answer CSV fields.
 
             string buttonLabel = CurrentStage == PuzzleStage.Puzzle3
