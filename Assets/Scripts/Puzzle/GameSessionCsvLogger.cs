@@ -165,6 +165,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         string path = Path.Combine(directory, $"gameplay_{roomName}_{timestamp}.csv"); // Creates a local value used by the following logic.
 
         var individualRows = new List<PuzzlePlayerStats>(statsByKey.Values);
+        individualRows.RemoveAll(row => ShouldSuppressIndividualSubmissionInputs(row.PuzzleNumber, row.PuzzlePart));
         var teamRows = new List<PuzzlePlayerStats>(teamStatsByKey.Values);
         individualRows.Sort((a, b) => // Runs this line of puzzle logic.
         { // Starts this code block.
@@ -367,7 +368,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             EnsureParticipantRowsForPuzzle(roomName, puzzleNumber, puzzlePart); // Creates rows for all players on this diary page.
 
         if (eventType == EventTypeAnswer)
-            FreezeIndividualInputsForSubmission(roomName, puzzleNumber, puzzlePart);
+            FreezeIndividualInputsForSubmission(roomName, puzzleNumber, puzzlePart, answerWasCorrect);
 
         if (eventType == EventTypeEnter) // Checks this condition before continuing.
         { // Starts this code block.
@@ -566,7 +567,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         return string.Join("; ", entries);
     }
 
-    private void FreezeIndividualInputsForSubmission(string roomName, int puzzleNumber, int puzzlePart)
+    private void FreezeIndividualInputsForSubmission(string roomName, int puzzleNumber, int puzzlePart, bool answerWasCorrect)
     {
         foreach (var stats in statsByKey.Values)
         {
@@ -574,13 +575,13 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
                 stats.PuzzleNumber != puzzleNumber || stats.PuzzlePart != puzzlePart)
                 continue;
 
-            stats.SubmittedInputAttempts.Add(ShouldSuppressIndividualSubmissionInputs(puzzleNumber, puzzlePart)
+            stats.SubmittedInputAttempts.Add(answerWasCorrect || ShouldSuppressIndividualSubmissionInputs(puzzleNumber, puzzlePart)
                 ? string.Empty
                 : GetCombinedSubmittedInputs(stats));
         }
     }
 
-    // These puzzle rows remain in the individual section, but their answer-attempt cells must stay blank.
+    // These puzzles are excluded from the individual-submissions CSV section.
     private static bool ShouldSuppressIndividualSubmissionInputs(int puzzleNumber, int puzzlePart)
     {
         return (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle4 && puzzlePart == 2) ||
