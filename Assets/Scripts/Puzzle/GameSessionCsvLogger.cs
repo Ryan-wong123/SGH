@@ -358,7 +358,8 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         if (eventType == EventTypePlayerInput)
         {
-            StoreLatestInput(stats, selectedAnswers);
+            if (!ShouldSuppressIndividualSubmissionInputs(puzzleNumber, puzzlePart))
+                StoreLatestInput(stats, selectedAnswers);
             return;
         }
 
@@ -573,8 +574,20 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
                 stats.PuzzleNumber != puzzleNumber || stats.PuzzlePart != puzzlePart)
                 continue;
 
-            stats.SubmittedInputAttempts.Add(GetCombinedSubmittedInputs(stats));
+            stats.SubmittedInputAttempts.Add(ShouldSuppressIndividualSubmissionInputs(puzzleNumber, puzzlePart)
+                ? string.Empty
+                : GetCombinedSubmittedInputs(stats));
         }
+    }
+
+    // These puzzle rows remain in the individual section, but their answer-attempt cells must stay blank.
+    private static bool ShouldSuppressIndividualSubmissionInputs(int puzzleNumber, int puzzlePart)
+    {
+        return (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle4 && puzzlePart == 2) ||
+               puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle5 ||
+               (puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle6 && puzzlePart >= 1 && puzzlePart <= 3) ||
+               puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle8 ||
+               puzzleNumber == (int)PuzzleStateManager.PuzzleStage.Puzzle9;
     }
 
     private double CaptureElapsedSeconds(int actorNumber, PuzzleStateManager.PuzzleStage stage, bool keepRunning) // Declares a method used by this script.
