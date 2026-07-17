@@ -200,7 +200,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         csv.AppendLine("INDIVIDUAL_PLAYER_INPUTS");
         csv.Append("date_time_played,room_name,player_name,puzzle_number,puzzle_name");
         for (int i = 1; i <= maxIndividualInputs; i++)
-            csv.Append($",selected_or_typed_answer_{i}");
+            csv.Append($",wrong_answer_{i}");
         csv.AppendLine();
         foreach (var row in individualRows)
         {
