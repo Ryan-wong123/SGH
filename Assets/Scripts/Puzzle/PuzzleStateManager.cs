@@ -832,6 +832,10 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
     private string BuildCurrentAnswerSnapshot(bool includeCorrectAnswers = false) // Handles this part of the puzzle state flow.
     { // Starts this block.
+        if (includeCorrectAnswers && CurrentStage == PuzzleStage.Puzzle9 && crosswordManager != null)
+            return crosswordManager.GetCorrectAnswerSnapshot();
+        if (includeCorrectAnswers && CurrentStage == PuzzleStage.Puzzle5 && wordSearchManager != null)
+            return wordSearchManager.GetCorrectAnswerSnapshot();
         if (!includeCorrectAnswers && CurrentStage == PuzzleStage.Puzzle9 && crosswordManager != null) // Crossword exports wrong words with clue coordinates.
             return crosswordManager.GetWrongAnswerSnapshot();
         if (!includeCorrectAnswers && CurrentStage == PuzzleStage.Puzzle5 && wordSearchManager != null) // Word search exports wrong and expected letters.
@@ -930,6 +934,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             AppendSeparated(snapshot, puzzle11Part2 ? cardList.ToString() : $"{slotLabel}=[{cardList}]", puzzle11Part2 ? ", " : "; "); // Puzzle 11 part 2 exports comma-separated direct answer pairings.
         } // Ends this block.
 
+        int dropdownQuestionNumber = 0;
         foreach (TMP_Dropdown dropdown in panel.GetComponentsInChildren<TMP_Dropdown>(true)) // Loops through each matching puzzle object.
         { // Starts this block.
             if (dropdown == null) // Checks whether this puzzle-state condition requires action.
@@ -939,16 +944,23 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
                 ? dropdown.options[dropdown.value].text // Handles this part of the puzzle state flow.
                 : dropdown.value.ToString(); // Handles this part of the puzzle state flow.
 
-            AppendSeparated(snapshot, $"{dropdown.name}={selectedOption}", "; "); // Handles this part of the puzzle state flow.
+            string dropdownLabel = CurrentStage == PuzzleStage.Puzzle7
+                ? $"Question {++dropdownQuestionNumber}"
+                : dropdown.name;
+            AppendSeparated(snapshot, $"{dropdownLabel} = {selectedOption}", "; "); // Handles this part of the puzzle state flow.
         } // Ends this block.
 
+        int inputQuestionNumber = 0;
         if (puzzle4Part2 || CurrentStage != PuzzleStage.Puzzle4)
         foreach (TMP_InputField input in panel.GetComponentsInChildren<TMP_InputField>(true)) // Loops through each matching puzzle object.
         { // Starts this block.
             if (input == null) // Checks whether this puzzle-state condition requires action.
                 continue; // Handles this part of the puzzle state flow.
 
-            AppendSeparated(snapshot, $"{input.name}={input.text}", "; "); // Handles this part of the puzzle state flow.
+            string inputLabel = CurrentStage == PuzzleStage.Puzzle6
+                ? $"Question {++inputQuestionNumber}"
+                : input.name;
+            AppendSeparated(snapshot, $"{inputLabel} = {input.text}", "; "); // Handles this part of the puzzle state flow.
         } // Ends this block.
 
         foreach (PhotonSyncedUIButtonColor buttonState in panel.GetComponentsInChildren<PhotonSyncedUIButtonColor>(true)) // Loops through each matching puzzle object.

@@ -419,15 +419,30 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback // Decl
         }
     }
 
+    public string GetCorrectAnswerSnapshot()
+    {
+        return string.Join("; ", new[]
+        {
+            "Across clue 2=lispro [expected lispro]",
+            "Across clue 4=nph [expected nph]",
+            "Across clue 5=glulisine [expected glulisine]",
+            "Across clue 6=aspart [expected aspart]",
+            "Across clue 8=detemir [expected detemir]",
+            "Down clue 1=lantus [expected lantus]",
+            "Down clue 3=regular [expected regular]",
+            "Down clue 7=toujeo [expected toujeo]"
+        });
+    }
+
     private static int GetClueNumber(int startX, int startY, string direction)
     {
         if (direction == "Across")
         {
             if (startX == 2 && startY == 2) return 2;
-            if (startX == 4 && startY == 5) return 4;
-            if (startX == 6 && startY == 7) return 5;
-            if (startX == 0 && startY == 8) return 6;
-            if (startX == 9 && startY == 2) return 8;
+            if (startX == 4 && startY == 5) return 5;
+            if (startX == 6 && startY == 7) return 6;
+            if (startX == 0 && startY == 8) return 8;
+            if (startX == 9 && startY == 2) return 4;
         }
         else if (direction == "Down")
         {

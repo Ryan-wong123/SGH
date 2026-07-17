@@ -509,6 +509,16 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
         "FLUOROQUINOLONES", "SULFONYLUREAS", "LINEZOLID", "AZOLES", "ELDERLY", "IMPAIRED", "REDUCTION"
     };
 
+    private static readonly string[] ExpectedWordDisplayReferences =
+    {
+        "Fluoroquinolones", "Sulfonylureas", "Linezolid", "Azoles", "Elderly", "Impaired", "reduction"
+    };
+
+    public string GetCorrectAnswerSnapshot()
+    {
+        return string.Join(", ", ExpectedWordDisplayReferences);
+    }
+
     public string GetWrongAnswerSnapshot() // Returns each incorrect word with its clue-reference answer.
     {
         var entries = new List<string>();
