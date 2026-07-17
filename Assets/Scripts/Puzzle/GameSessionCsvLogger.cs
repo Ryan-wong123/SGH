@@ -368,7 +368,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             EnsureParticipantRowsForPuzzle(roomName, puzzleNumber, puzzlePart); // Creates rows for all players on this diary page.
 
         if (eventType == EventTypeAnswer)
-            FreezeIndividualInputsForSubmission(roomName, puzzleNumber, puzzlePart, answerWasCorrect);
+            FreezeIndividualInputsForSubmission(roomName, puzzleNumber, puzzlePart, answerWasCorrect, selectedAnswers);
 
         if (eventType == EventTypeEnter) // Checks this condition before continuing.
         { // Starts this code block.
@@ -415,26 +415,34 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         if (stats == null || string.IsNullOrWhiteSpace(selectedAnswers))
             return;
 
-        string normalized = puzzleNumber == 1
+        string normalized = NormalizeWrongAnswerSnapshot(puzzleNumber, stats.PuzzlePart, selectedAnswers);
+
+        if (!string.IsNullOrWhiteSpace(normalized))
+            stats.WrongAnswerSelections.Add(normalized);
+    }
+
+    private static string NormalizeWrongAnswerSnapshot(int puzzleNumber, int puzzlePart, string selectedAnswers)
+    {
+        if (string.IsNullOrWhiteSpace(selectedAnswers))
+            return string.Empty;
+
+        return puzzleNumber == 1
             ? NormalizePuzzleOneAnswerSnapshot(selectedAnswers)
-            : puzzleNumber == 11 && stats.PuzzlePart == 1
+            : puzzleNumber == 11 && puzzlePart == 1
                 ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers)
             : puzzleNumber == 10
-                ? (stats.PuzzlePart == 1 ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers) : NormalizePuzzleTenCardSnapshot(selectedAnswers))
-                : puzzleNumber == 4 && stats.PuzzlePart == 1
+                ? (puzzlePart == 1 ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers) : NormalizePuzzleTenCardSnapshot(selectedAnswers))
+                : puzzleNumber == 4 && puzzlePart == 1
                     ? NormalizePuzzleTenCardSnapshot(selectedAnswers)
                 : puzzleNumber == 4
                     ? selectedAnswers.Trim()
-                : puzzleNumber == 6 && (stats.PuzzlePart == 2 || stats.PuzzlePart == 3)
+                : puzzleNumber == 6 && (puzzlePart == 2 || puzzlePart == 3)
                     ? selectedAnswers.Trim()
                 : puzzleNumber == 7
                     ? selectedAnswers.Trim()
                 : IsValueOnlyPuzzle(puzzleNumber)
                     ? NormalizeValueOnlyAnswerSnapshot(selectedAnswers)
                     : selectedAnswers.Trim();
-
-        if (!string.IsNullOrWhiteSpace(normalized))
-            stats.WrongAnswerSelections.Add(normalized);
     }
 
     private static bool IsValueOnlyPuzzle(int puzzleNumber)
@@ -567,17 +575,21 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         return string.Join("; ", entries);
     }
 
-    private void FreezeIndividualInputsForSubmission(string roomName, int puzzleNumber, int puzzlePart, bool answerWasCorrect)
+    private void FreezeIndividualInputsForSubmission(string roomName, int puzzleNumber, int puzzlePart, bool answerWasCorrect, string selectedAnswers)
     {
+        string normalizedWrongAnswer = answerWasCorrect
+            ? string.Empty
+            : NormalizeWrongAnswerSnapshot(puzzleNumber, puzzlePart, selectedAnswers);
+
         foreach (var stats in statsByKey.Values)
         {
             if (!string.Equals(stats.RoomName, string.IsNullOrWhiteSpace(roomName) ? "Offline" : roomName, StringComparison.Ordinal) ||
                 stats.PuzzleNumber != puzzleNumber || stats.PuzzlePart != puzzlePart)
                 continue;
 
-            stats.SubmittedInputAttempts.Add(answerWasCorrect || ShouldSuppressIndividualSubmissionInputs(puzzleNumber, puzzlePart)
+            stats.SubmittedInputAttempts.Add(ShouldSuppressIndividualSubmissionInputs(puzzleNumber, puzzlePart)
                 ? string.Empty
-                : GetCombinedSubmittedInputs(stats));
+                : normalizedWrongAnswer);
         }
     }
 
