@@ -15,3 +15,20 @@ C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\Assembly-CSharp.csproj.CoreCompi
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\Assembly.44154EF1.Up2Date
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\Assembly-CSharp.dll
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\Assembly-CSharp.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\Assembly-CSharp.dll
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\Assembly-CSharp.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Editor.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonRealtime.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Demos.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonChat.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PunDemos.DemoHubEditor.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.Culling.Editor.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PunDemos.DemoSlotcarEditor.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.pdb
+C:\Users\ryan\Downloads\SGH\obj\Debug\Assembly-CSharp.csproj.AssemblyReference.cache
+C:\Users\ryan\Downloads\SGH\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache
+C:\Users\ryan\Downloads\SGH\obj\Debug\Assembly.44154EF1.Up2Date
+C:\Users\ryan\Downloads\SGH\obj\Debug\Assembly-CSharp.dll
+C:\Users\ryan\Downloads\SGH\obj\Debug\Assembly-CSharp.pdb

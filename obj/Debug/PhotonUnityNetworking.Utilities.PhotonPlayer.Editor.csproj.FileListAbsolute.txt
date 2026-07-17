@@ -9,3 +9,14 @@ C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUnityNetworking.Utilities.
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUn.B7293062.Up2Date
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.dll
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.dll
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonRealtime.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Editor.pdb
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj.AssemblyReference.cache
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj.CoreCompileInputs.cache
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonUn.B7293062.Up2Date
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.dll
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.pdb

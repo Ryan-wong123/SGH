@@ -8,3 +8,13 @@ C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUnityNetworking.Demos.cspr
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUn.05CC29EB.Up2Date
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUnityNetworking.Demos.dll
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonUnityNetworking.Demos.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Demos.dll
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Demos.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonRealtime.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonUnityNetworking.Utilities.pdb
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonUnityNetworking.Demos.csproj.AssemblyReference.cache
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonUnityNetworking.Demos.csproj.CoreCompileInputs.cache
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonUn.05CC29EB.Up2Date
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonUnityNetworking.Demos.dll
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonUnityNetworking.Demos.pdb

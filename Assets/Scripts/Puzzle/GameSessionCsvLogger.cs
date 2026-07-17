@@ -37,8 +37,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         public double TimeTakenSeconds; // Declares a field, property, or member used by this script.
         public List<string> WrongAnswerSelections = new(); // Declares a field, property, or member used by this script.
         public Dictionary<string, string> LatestInputsByControl = new(); // The latest value entered or selected by this player for each control.
-        public Dictionary<string, string> SubmittedInputsByControl = new(); // The player's final input values at the moment the team submits.
-        public bool HasSubmittedInputSnapshot; // Avoids exporting changes made after submission as part of the prior attempt.
+        public List<string> SubmittedInputAttempts = new(); // One combined input snapshot for each team submission attempt.
     } // Ends this code block.
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)] // Adds an attribute that changes how Unity or C# treats the next declaration.
@@ -158,7 +157,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         hasWrittenCsv = true; // Updates this value.
 
-        string directory = Path.Combine(Application.persistentDataPath, "GameplayLogs"); // Creates a local value used by the following logic.
+        string directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"); // Saves gameplay CSV files directly to the current user's Downloads folder.
         Directory.CreateDirectory(directory); // Runs this line of puzzle logic.
 
         string roomName = SanitizeFileName(GetCurrentRoomName()); // Creates a local value used by the following logic.
@@ -194,7 +193,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         int maxIndividualInputs = 0;
         foreach (var row in individualRows)
-            maxIndividualInputs = Math.Max(maxIndividualInputs, GetSortedSubmittedInputs(row).Count);
+            maxIndividualInputs = Math.Max(maxIndividualInputs, row.SubmittedInputAttempts.Count);
 
         var csv = new StringBuilder(); // Creates a local value used by the following logic.
         string playedAt = sessionPlayedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture); // Formats the session date and time for analytics.
@@ -205,7 +204,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         csv.AppendLine();
         foreach (var row in individualRows)
         {
-            List<string> latestInputs = GetSortedSubmittedInputs(row);
+            List<string> submittedAttempts = row.SubmittedInputAttempts;
             csv.AppendCsv(playedAt).Append(',');
             csv.AppendCsv(row.RoomName).Append(',');
             csv.AppendCsv(row.PlayerName).Append(',');
@@ -214,8 +213,8 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             for (int i = 0; i < maxIndividualInputs; i++)
             {
                 csv.Append(',');
-                if (i < latestInputs.Count)
-                    csv.AppendCsv(latestInputs[i]);
+                if (i < submittedAttempts.Count)
+                    csv.AppendCsv(submittedAttempts[i]);
             }
             csv.AppendLine();
         }
@@ -547,13 +546,13 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             stats.LatestInputsByControl[controlId] = value;
     }
 
-    private static List<string> GetSortedSubmittedInputs(PuzzlePlayerStats stats)
+    private static string GetCombinedSubmittedInputs(PuzzlePlayerStats stats)
     {
-        if (stats?.SubmittedInputsByControl == null || !stats.HasSubmittedInputSnapshot || stats.SubmittedInputsByControl.Count == 0)
-            return new List<string>();
+        if (stats?.LatestInputsByControl == null || stats.LatestInputsByControl.Count == 0)
+            return string.Empty;
 
         var entries = new List<string>();
-        foreach (var pair in stats.SubmittedInputsByControl)
+        foreach (var pair in stats.LatestInputsByControl)
         {
             if (string.Equals(pair.Value, "deselected", StringComparison.OrdinalIgnoreCase))
                 continue;
@@ -563,7 +562,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
                 : $"{pair.Key} = {pair.Value}");
         }
         entries.Sort(StringComparer.OrdinalIgnoreCase);
-        return entries;
+        return string.Join("; ", entries);
     }
 
     private void FreezeIndividualInputsForSubmission(string roomName, int puzzleNumber, int puzzlePart)
@@ -574,10 +573,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
                 stats.PuzzleNumber != puzzleNumber || stats.PuzzlePart != puzzlePart)
                 continue;
 
-            stats.SubmittedInputsByControl.Clear();
-            foreach (var input in stats.LatestInputsByControl)
-                stats.SubmittedInputsByControl[input.Key] = input.Value;
-            stats.HasSubmittedInputSnapshot = true;
+            stats.SubmittedInputAttempts.Add(GetCombinedSubmittedInputs(stats));
         }
     }
 

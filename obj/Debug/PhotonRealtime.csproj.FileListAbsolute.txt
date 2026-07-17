@@ -4,3 +4,9 @@ C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonRealtime.csproj.AssemblyRe
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonRealtime.csproj.CoreCompileInputs.cache
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonRealtime.dll
 C:\Users\USER\Documents\sgh Merit\SGH\obj\Debug\PhotonRealtime.pdb
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonRealtime.dll
+C:\Users\ryan\Downloads\SGH\Temp\bin\Debug\PhotonRealtime.pdb
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonRealtime.csproj.AssemblyReference.cache
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonRealtime.csproj.CoreCompileInputs.cache
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonRealtime.dll
+C:\Users\ryan\Downloads\SGH\obj\Debug\PhotonRealtime.pdb
