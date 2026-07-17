@@ -199,7 +199,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         var csv = new StringBuilder(); // Creates a local value used by the following logic.
         string playedAt = sessionPlayedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture); // Formats the session date and time for analytics.
         csv.AppendLine("INDIVIDUAL_PLAYER_INPUTS");
-        csv.Append("date_time_played,room_name,player_name,puzzle_number,puzzle_name");
+        csv.Append("date_time_played,room_name,player_name,puzzle_number,puzzle_name,total_tries,number_of_times_answer_is_correct,number_of_times_answer_is_wrong");
         for (int i = 1; i <= maxIndividualInputs; i++)
             csv.Append($",wrong_answer_{i}");
         csv.AppendLine();
@@ -211,6 +211,9 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             csv.AppendCsv(row.PlayerName).Append(',');
             csv.Append(row.PuzzleNumber).Append(',');
             csv.AppendCsv(GetPuzzleName(row.PuzzleNumber, row.PuzzlePart));
+            csv.Append(',').Append(row.CorrectAnswers + row.WrongAnswers);
+            csv.Append(',').Append(row.CorrectAnswers);
+            csv.Append(',').Append(row.WrongAnswers);
             for (int i = 0; i < maxIndividualInputs; i++)
             {
                 csv.Append(',');
@@ -368,7 +371,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             EnsureParticipantRowsForPuzzle(roomName, puzzleNumber, puzzlePart); // Creates rows for all players on this diary page.
 
         if (eventType == EventTypeAnswer)
-            FreezeIndividualInputsForSubmission(roomName, puzzleNumber, puzzlePart, answerWasCorrect, selectedAnswers);
+            RecordIndividualSubmission(roomName, actorNumber, playerName, puzzleNumber, puzzlePart, answerWasCorrect, selectedAnswers);
 
         if (eventType == EventTypeEnter) // Checks this condition before continuing.
         { // Starts this code block.
@@ -575,21 +578,20 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         return string.Join("; ", entries);
     }
 
-    private void FreezeIndividualInputsForSubmission(string roomName, int puzzleNumber, int puzzlePart, bool answerWasCorrect, string selectedAnswers)
+    private void RecordIndividualSubmission(string roomName, int actorNumber, string playerName, int puzzleNumber, int puzzlePart, bool answerWasCorrect, string selectedAnswers)
     {
-        if (answerWasCorrect || ShouldSuppressIndividualSubmissionInputs(puzzleNumber, puzzlePart))
+        if (ShouldSuppressIndividualSubmissionInputs(puzzleNumber, puzzlePart))
             return;
 
-        string normalizedWrongAnswer = NormalizeWrongAnswerSnapshot(puzzleNumber, puzzlePart, selectedAnswers);
-
-        foreach (var stats in statsByKey.Values)
+        PuzzlePlayerStats stats = GetOrCreateStats(roomName, actorNumber, playerName, puzzleNumber, puzzlePart);
+        if (answerWasCorrect)
         {
-            if (!string.Equals(stats.RoomName, string.IsNullOrWhiteSpace(roomName) ? "Offline" : roomName, StringComparison.Ordinal) ||
-                stats.PuzzleNumber != puzzleNumber || stats.PuzzlePart != puzzlePart)
-                continue;
-
-            stats.SubmittedInputAttempts.Add(normalizedWrongAnswer);
+            stats.CorrectAnswers++;
+            return;
         }
+
+        stats.WrongAnswers++;
+        stats.SubmittedInputAttempts.Add(NormalizeWrongAnswerSnapshot(puzzleNumber, puzzlePart, selectedAnswers));
     }
 
     // These puzzles are excluded from the individual-submissions CSV section.
