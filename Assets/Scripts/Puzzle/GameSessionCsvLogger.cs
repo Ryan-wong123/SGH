@@ -577,9 +577,10 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
     private void FreezeIndividualInputsForSubmission(string roomName, int puzzleNumber, int puzzlePart, bool answerWasCorrect, string selectedAnswers)
     {
-        string normalizedWrongAnswer = answerWasCorrect
-            ? string.Empty
-            : NormalizeWrongAnswerSnapshot(puzzleNumber, puzzlePart, selectedAnswers);
+        if (answerWasCorrect || ShouldSuppressIndividualSubmissionInputs(puzzleNumber, puzzlePart))
+            return;
+
+        string normalizedWrongAnswer = NormalizeWrongAnswerSnapshot(puzzleNumber, puzzlePart, selectedAnswers);
 
         foreach (var stats in statsByKey.Values)
         {
@@ -587,9 +588,7 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
                 stats.PuzzleNumber != puzzleNumber || stats.PuzzlePart != puzzlePart)
                 continue;
 
-            stats.SubmittedInputAttempts.Add(ShouldSuppressIndividualSubmissionInputs(puzzleNumber, puzzlePart)
-                ? string.Empty
-                : normalizedWrongAnswer);
+            stats.SubmittedInputAttempts.Add(normalizedWrongAnswer);
         }
     }
 
