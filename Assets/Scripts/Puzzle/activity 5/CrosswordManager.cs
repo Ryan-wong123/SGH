@@ -423,14 +423,14 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback // Decl
     {
         return string.Join("; ", new[]
         {
-            "Across clue 2=lispro [expected lispro]",
-            "Across clue 4=nph [expected nph]",
-            "Across clue 5=glulisine [expected glulisine]",
-            "Across clue 6=aspart [expected aspart]",
-            "Across clue 8=detemir [expected detemir]",
-            "Down clue 1=lantus [expected lantus]",
-            "Down clue 3=regular [expected regular]",
-            "Down clue 7=toujeo [expected toujeo]"
+            "Across clue 2=lispro ",
+            "Across clue 4=nph ",
+            "Across clue 5=glulisine ",
+            "Across clue 6=aspart ",
+            "Across clue 8=detemir ",
+            "Down clue 1=lantus ",
+            "Down clue 3=regular ",
+            "Down clue 7=toujeo "
         });
     }
 
