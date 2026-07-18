@@ -9,6 +9,7 @@ using TMPro; // Imports TextMeshPro UI components.
 public class JoinRoomManager : Network // Defines a room-list manager that also inherits Network behavior.
 { // Starts the JoinRoomManager class body.
     private const string RoomPasswordPropertyKey = "RoomPassword"; // Names the Photon custom room property used for passwords.
+    private bool refreshLobbyAfterLeave; // Tracks whether a lobby refresh is waiting for OnLeftLobby.
 
     //instance of available room to join button
     [SerializeField] private GameObject roomItemPrefab; // References the prefab used for each room list button.
@@ -99,10 +100,31 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
     void RefreshRoomList() // Requests a refreshed room list from Photon.
     { // Starts the RefreshRoomList method body.
         Debug.Log("Refreshing room list"); // Logs that the refresh button was used.
-        // Rejoin lobby to refresh list
-        PhotonNetwork.LeaveLobby(); // Leaves the current Photon lobby to force a list refresh.
-        PhotonNetwork.JoinLobby(); // Rejoins the Photon lobby so room updates arrive again.
+
+        if (PhotonNetwork.InRoom)
+            return;
+
+        if (PhotonNetwork.InLobby)
+        {
+            refreshLobbyAfterLeave = true;
+            PhotonNetwork.LeaveLobby();
+            return;
+        }
+
+        refreshLobbyAfterLeave = false;
+        Network.TryJoinLobby();
     } // Ends the RefreshRoomList method body.
+
+    public override void OnLeftLobby()
+    {
+        base.OnLeftLobby();
+
+        if (!refreshLobbyAfterLeave)
+            return;
+
+        refreshLobbyAfterLeave = false;
+        Network.TryJoinLobby();
+    }
 
     void PopulateRoomListUI() // Rebuilds the room list UI from cached rooms.
     { // Starts the PopulateRoomListUI method body.

@@ -187,6 +187,17 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
         }); // Finishes applying the custom player properties.
     } // Ends the ApplyLocalPlayerTag method body.
 
+    public static bool TryJoinLobby()
+    {
+        if (PhotonNetwork.InRoom || PhotonNetwork.InLobby)
+            return false;
+
+        if (PhotonNetwork.NetworkClientState != ClientState.ConnectedToMasterServer)
+            return false;
+
+        return PhotonNetwork.JoinLobby();
+    }
+
     private bool TryRejoinCachedRoom() // Attempts to rejoin the room saved in PlayerPrefs.
     { // Starts the TryRejoinCachedRoom method body.
         string cachedRoomName = GetCachedRoomName(); // Reads the saved room name.
@@ -211,7 +222,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
         // If connected to Master but not in lobby, join lobby
         if (!PhotonNetwork.InLobby && PhotonNetwork.IsConnectedAndReady) // Checks whether the client can join the lobby now.
         { // Starts the join-lobby branch.
-            PhotonNetwork.JoinLobby(); // Requests entry to the Photon lobby.
+            TryJoinLobby(); // Requests entry to the Photon lobby only when Photon is ready.
         } // Ends the join-lobby branch.
     } // Ends the EnsureLobbyJoined method body.
     public override void OnConnectedToMaster() // Runs when Photon connects to the master server.
@@ -225,7 +236,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
             return; // Leaves so Photon can finish the rejoin flow.
         } // Ends the successful-rejoin-started branch.
 
-        PhotonNetwork.JoinLobby(); // Joins the lobby when there is no cached room to rejoin.
+        TryJoinLobby(); // Joins the lobby only when Photon is ready and not already joining.
     } // Ends the OnConnectedToMaster callback body.
 
     public override void OnJoinedLobby() // Runs when Photon confirms lobby entry.
@@ -268,7 +279,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
 
         if (shouldReturnToLobby && PhotonNetwork.IsConnectedAndReady && !PhotonNetwork.InLobby) // Checks whether the client should re-enter the lobby.
         { // Starts the return-to-lobby branch.
-            PhotonNetwork.JoinLobby(); // Requests entry to the Photon lobby.
+            TryJoinLobby(); // Requests entry to the Photon lobby only when Photon is ready.
         } // Ends the return-to-lobby branch.
     } // Ends the OnLeftRoom callback body.
 
@@ -284,7 +295,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
         ClearCachedRoomRejoin(); // Clears the invalid saved room after a failed rejoin.
         if (PhotonNetwork.IsConnectedAndReady && !PhotonNetwork.InLobby) // Checks whether the client can return to the lobby.
         { // Starts the lobby-return branch.
-            PhotonNetwork.JoinLobby(); // Requests entry to the Photon lobby.
+            TryJoinLobby(); // Requests entry to the Photon lobby only when Photon is ready.
         } // Ends the lobby-return branch.
     } // Ends the OnJoinRoomFailed callback body.
 } // Ends the Network class body.

@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviourPunCallbacks // Declares the gameplay ma
             return; // Leaves early because the rejoin process has started.
         } // Ends the successful-rejoin-start block.
 
-        PhotonNetwork.JoinLobby(); // Joins the Photon lobby when there is no gameplay room to rejoin.
+        Network.TryJoinLobby(); // Joins the Photon lobby only when Photon is ready and not already joining.
     } // Ends the OnConnectedToMaster callback body.
 
     public override void OnDisconnected(DisconnectCause cause) // Runs when Photon disconnects this client.
