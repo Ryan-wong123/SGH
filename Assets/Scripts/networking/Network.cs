@@ -27,6 +27,11 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
     [SerializeField] private Button goToRoomListButton; // References the button that proceeds to room selection.
     //join room manager component
     [SerializeField] private JoinRoomManager joinRoomManager; // References the component that controls room list UI.
+    private enum HomeEntryStep { Username }
+    private HomeEntryStep homeEntryStep; // Tracks the active field in the player-name flow.
+    private string pendingUsername; // Stores a validated username before entering the room list.
+    private string initialInputPlaceholder; // Restores the username prompt before the email-entry step.
+    private string initialContinueButtonLabel; // Restores the original button label before the email-entry step.
     private static bool isAttemptingStoredRoomRejoin; // Tracks whether the current join attempt is from saved room data.
     private static bool isReconnectingToMaster; // Tracks whether a reconnect attempt is already in progress.
     private static bool leavingRejectedStoredRoomRejoin; // Tracks whether leaving a rejected rejoin should return to the lobby.
@@ -54,39 +59,69 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
             PhotonNetwork.ConnectUsingSettings(); // Connects to Photon using the configured project settings.
         } // Ends the fresh-connection branch.
 
-        //get username and start game 
-        goToRoomListButton.onClick.RemoveAllListeners(); // Clears existing click listeners to avoid duplicate handlers.
-        goToRoomListButton.onClick.AddListener(() => // Adds the button click handler that validates username and opens room UI.
-        { // Starts the button click handler body.
-            //check if username field is empty
-            string username = usernameInput.text.Trim(); // Reads the username and removes leading or trailing spaces.
-            if (string.IsNullOrEmpty(username)) // Checks whether the player entered a usable username.
-            { // Starts the empty-username branch.
-                //update placeholder text if username is empty
-                if (usernameInput.placeholder is TextMeshProUGUI placeholderText) // Checks whether the placeholder is a TextMeshPro label.
-                { // Starts the placeholder-update branch.
-                    placeholderText.text = "username is required"; // Shows a validation message in the placeholder.
-                } // Ends the placeholder-update branch.
+        initialInputPlaceholder = (usernameInput.placeholder as TextMeshProUGUI)?.text;
+        initialContinueButtonLabel = goToRoomListButton.GetComponentInChildren<TMP_Text>(true)?.text;
 
-                //clear the input field to show the new placeholder
-                usernameInput.text = ""; // Clears the field so the placeholder message becomes visible.
-                return; // Stops the click handler until a username is provided.
-            } // Ends the empty-username branch.
-
-            //set username 
-            PhotonNetwork.NickName = username; // Stores the username in Photon for this local player.
-            PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable // Starts setting the local player's custom Photon properties.
-            { // Starts the custom property table.
-                { PlayerTagPropertyKey, username } // Saves the username under the shared player tag property.
-            }); // Finishes applying the custom player properties.
-
-            //disable home panel and show the room list panel with create room button
-            homePanel.SetActive(false); // Hides the home panel after username validation.
-            joinRoomManager.setRoomListPanelActive(true); // Shows the room list panel.
-            joinRoomManager.setToggleRoomListPanelButtonActive(true); // Shows the room-list toggle button.
-            EnsureLobbyJoined(); // Ensures the player is in the Photon lobby for room browsing.
-        }); // Ends and registers the button click handler.
+        // Collect only the display name; all email settings are held only by the backend.
+        goToRoomListButton.onClick.RemoveAllListeners();
+        goToRoomListButton.onClick.AddListener(HandleHomePanelContinue);
     } // Ends the Start method body.
+
+    private void HandleHomePanelContinue()
+    {
+        switch (homeEntryStep)
+        {
+            case HomeEntryStep.Username:
+                if (string.IsNullOrWhiteSpace(usernameInput.text))
+                {
+                    ShowEntryError("username is required");
+                    return;
+                }
+
+                pendingUsername = usernameInput.text.Trim();
+                CompleteHomeEntry();
+                return;
+        }
+    }
+
+    private void ShowNextEntryStep(HomeEntryStep nextStep, string placeholder)
+    {
+        homeEntryStep = nextStep;
+        usernameInput.text = string.Empty;
+        usernameInput.contentType = TMP_InputField.ContentType.Standard;
+        if (usernameInput.placeholder is TextMeshProUGUI inputPlaceholder)
+            inputPlaceholder.text = placeholder;
+        SetHomePanelButtonLabel("Continue");
+        usernameInput.ActivateInputField();
+    }
+
+    private void ShowEntryError(string message)
+    {
+        if (usernameInput.placeholder is TextMeshProUGUI inputPlaceholder)
+            inputPlaceholder.text = message;
+        usernameInput.text = string.Empty;
+    }
+
+    private void CompleteHomeEntry()
+    {
+        PhotonNetwork.NickName = pendingUsername;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable
+        {
+            { PlayerTagPropertyKey, pendingUsername }
+        });
+
+        homePanel.SetActive(false);
+        joinRoomManager.setRoomListPanelActive(true);
+        joinRoomManager.setToggleRoomListPanelButtonActive(true);
+        EnsureLobbyJoined();
+    }
+
+    private void SetHomePanelButtonLabel(string value)
+    {
+        TMP_Text label = goToRoomListButton.GetComponentInChildren<TMP_Text>(true);
+        if (label != null)
+            label.text = value;
+    }
 
     private static void EnsureChatManagerExists() // Ensures a ChatManager object exists in the scene.
     { // Starts the EnsureChatManagerExists method body.
@@ -169,8 +204,16 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
         if (usernameInput != null) // Checks whether the username input reference is assigned.
         { // Starts the input-reset branch.
             usernameInput.text = string.Empty; // Clears any visible username text in the input field.
+            usernameInput.contentType = TMP_InputField.ContentType.Standard;
+            if (usernameInput.placeholder is TextMeshProUGUI placeholderText && !string.IsNullOrWhiteSpace(initialInputPlaceholder))
+                placeholderText.text = initialInputPlaceholder;
         } // Ends the input-reset branch.
 
+        homeEntryStep = HomeEntryStep.Username;
+        pendingUsername = string.Empty;
+        SessionSmtpCredentials.Clear();
+        if (!string.IsNullOrWhiteSpace(initialContinueButtonLabel))
+            SetHomePanelButtonLabel(initialContinueButtonLabel);
         PhotonNetwork.NickName = string.Empty; // Clears the Photon nickname for this session.
     } // Ends the ClearLegacySavedNickname method body.
 

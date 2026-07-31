@@ -8,3 +8,7 @@ UserSettings/
 # Generated gameplay/data analytics exports
 outputs/
 obj/Debug/
+
+# .NET backend build outputs
+[Bb]in/
+backend/**/obj/

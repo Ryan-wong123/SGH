@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\Keypad\KeypadButton.cs" />
     <Compile Include="Assets\Scripts\Puzzle\PhotonSyncedTMPDropdown.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\SmtpEmailSettings.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 4\Activity2PuzzleManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 5\CrosswordManager.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
     <Compile Include="Assets\Scripts\UI\ClueUI.cs" />
     <Compile Include="Assets\Scripts\Puzzle\PuzzleScoreTracker.cs" />
+    <Compile Include="Assets\Scripts\networking\SessionSmtpCredentials.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 2\Activity1_2DropSlot.cs" />
     <Compile Include="Assets\Scripts\UI\CluePopupUI.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 1\Activity1DropSlot.cs" />

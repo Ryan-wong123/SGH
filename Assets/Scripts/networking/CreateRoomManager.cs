@@ -30,6 +30,7 @@ public class CreateRoomManager : Network // Defines a room creation manager that
     private string cachedRoomName; // Stores the last requested room name for retrying creation.
     private byte cachedMaxPlayers; // Stores the last requested max player count for retrying creation.
     private string cachedRoomPassword; // Stores the generated room password for retrying creation.
+    private bool isCreatingRoom; // Tracks whether this client should become the organiser after Photon assigns its room actor number.
 
     private void Start() // Runs once when Unity starts this component.
     { // Starts the Start method body.
@@ -91,6 +92,7 @@ public class CreateRoomManager : Network // Defines a room creation manager that
 
         //create room with the options
         RoomOptions options = BuildRoomOptions(maxPlayers, cachedRoomPassword); // Builds Photon room options with player limits and password data.
+        isCreatingRoom = true; // Defers organiser assignment until this client has joined and has a valid actor number.
         PhotonNetwork.CreateRoom(roomName, options); // Sends the Photon request to create the room.
     } // Ends the CreateRoom method body.
 
@@ -99,6 +101,21 @@ public class CreateRoomManager : Network // Defines a room creation manager that
         Debug.Log($"Room Created: {cachedRoomName}"); // Logs the newly created room name.
         createRoomPanel.SetActive(false); // Hides the create room panel after success.
     } // Ends the OnCreatedRoom callback body.
+
+    public override void OnJoinedRoom() // Runs when Photon has assigned this client an actor number in the new room.
+    { // Starts the joined-room callback body.
+        base.OnJoinedRoom(); // Lets the base networking callback apply the local player tag.
+
+        if (!isCreatingRoom || PhotonNetwork.CurrentRoom == null || PhotonNetwork.LocalPlayer == null) // Ensures only this room's creator sets the organiser property.
+            return; // Leaves joined existing rooms unchanged.
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable // Stores the valid actor number after Photon assigns it.
+        { // Starts the custom room property table.
+            { SessionSmtpCredentials.OrganizerActorNumberRoomPropertyKey, PhotonNetwork.LocalPlayer.ActorNumber } // Marks this room creator as the only SMTP sender.
+        }); // Sends the organiser identity to Photon without exposing email credentials.
+        isCreatingRoom = false; // Prevents this client from overwriting the organiser property on a later rejoin.
+        Debug.Log($"Session organiser set to actor {PhotonNetwork.LocalPlayer.ActorNumber}."); // Confirms the sender identity was recorded.
+    } // Ends the joined-room callback body.
 
     public override void OnCreateRoomFailed(short returnCode, string message) // Runs when Photon fails to create the requested room.
     { // Starts the OnCreateRoomFailed callback body.
@@ -111,6 +128,7 @@ public class CreateRoomManager : Network // Defines a room creation manager that
         //wait 2 seconds before retry create room again with cached options
         yield return new WaitForSeconds(2f); // Pauses the coroutine for two seconds before retrying.
         RoomOptions options = BuildRoomOptions(cachedMaxPlayers, cachedRoomPassword); // Rebuilds room options from cached creation values.
+        isCreatingRoom = true; // Ensures a successful retry records this client as organiser after joining.
         PhotonNetwork.CreateRoom(cachedRoomName, options); // Sends another Photon request to create the cached room.
     } // Ends the RetryCreateRoom coroutine body.
 

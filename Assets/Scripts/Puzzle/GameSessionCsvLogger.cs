@@ -2,6 +2,8 @@ using System; // Imports a namespace used by this script.
 using System.Collections.Generic; // Imports a namespace used by this script.
 using System.Globalization; // Imports a namespace used by this script.
 using System.IO; // Imports a namespace used by this script.
+using System.Net;
+using System.Net.Mail;
 using System.Text; // Imports a namespace used by this script.
 using ExitGames.Client.Photon; // Imports a namespace used by this script.
 using Photon.Pun; // Imports a namespace used by this script.
@@ -15,6 +17,12 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
     private const int EventTypeAnswer = 1; // Declares a field, property, or member used by this script.
     private const int EventTypeTimeSpent = 2; // Declares a field, property, or member used by this script.
     private const int EventTypePlayerInput = 3; // A player changed an answer control.
+    // Configure all Gmail delivery values here. These values are included in every built game.
+    private const string GmailSenderEmail = "wong.ryan5091@gmail.com";
+    private const string GmailAppPassword = "snwi iaxa qxbl pixd";
+    private const string CsvRecipientEmail = "wong.ryan5091@gmail.com";
+    private const string GmailSmtpHost = "smtp.gmail.com";
+    private const int GmailSmtpPort = 587;
 
     public static GameSessionCsvLogger Instance { get; private set; } // Declares a field, property, or member used by this script.
 
@@ -261,7 +269,54 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
 
         File.WriteAllText(path, csv.ToString(), Encoding.UTF8); // Runs this line of puzzle logic.
         Debug.Log($"Gameplay CSV saved to: {path}"); // Writes a diagnostic message to the Unity console.
+        SendCsvWithSmtp(path, roomName, playedAt);
     } // Ends this code block.
+
+    private async void SendCsvWithSmtp(string path, string roomName, string playedAt)
+    {
+        if (!IsCurrentSessionOrganizer())
+        {
+            Debug.Log("Gameplay CSV was saved locally but not emailed because this client is not the session organiser.");
+            return;
+        }
+
+        string fileName = Path.GetFileName(path);
+        try
+        {
+            using var message = new MailMessage();
+            message.From = new MailAddress(GmailSenderEmail);
+            message.To.Add(CsvRecipientEmail);
+            message.Subject = $"Gameplay CSV - {roomName}";
+            message.Body = $"Gameplay session for room '{roomName}' completed at {playedAt}. The CSV is attached.";
+            message.Attachments.Add(new Attachment(path, "text/csv"));
+
+            using var client = new SmtpClient(GmailSmtpHost, GmailSmtpPort)
+            {
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(GmailSenderEmail, GmailAppPassword.Replace(" ", string.Empty))
+            };
+
+            await client.SendMailAsync(message);
+            Debug.Log($"Gameplay CSV emailed successfully to {CsvRecipientEmail}: {fileName}");
+        }
+        catch (Exception exception)
+        {
+            Debug.LogError($"SMTP failed to send '{fileName}': {exception.Message}");
+        }
+    }
+
+    private static bool IsCurrentSessionOrganizer()
+    {
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom?.CustomProperties == null || PhotonNetwork.LocalPlayer == null)
+            return false;
+
+        if (!PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(SessionSmtpCredentials.OrganizerActorNumberRoomPropertyKey, out object organizerActorNumber))
+            return false;
+
+        return Convert.ToInt32(organizerActorNumber, CultureInfo.InvariantCulture) == PhotonNetwork.LocalPlayer.ActorNumber;
+    }
 
     private static List<string> GetCompactedWrongAnswers(PuzzlePlayerStats row)
     {

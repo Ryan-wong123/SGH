@@ -37,6 +37,7 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
     [SerializeField] private LoadingScreenManager loadingScreen; // References the component that handles loading screen transitions.
 
     private string selectedRoomName; // Stores the room currently selected in the room list.
+    private bool isCreatingFallbackRoom; // Tracks whether this client created a room after random matchmaking failed.
     [SerializeField] private TMP_Text roomPasswordDisplayText; // References the label that displays the joined room password.
     [SerializeField] private TMP_Text selectedRoomLabelText; // References the label that displays the selected room name.
     [SerializeField] private TMP_Text joinRoomFeedbackText; // References the label used for join validation feedback.
@@ -200,12 +201,18 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
     public override void OnJoinRandomFailed(short returnCode, string message) // Runs when Photon fails to join a random room.
     { // Starts the OnJoinRandomFailed callback body.
         Debug.LogWarning($"Join Random Room Failed: {message}. Creating new room..."); // Logs the random-join failure and fallback.
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = maxPlayersPerRoom }); // Creates a new room with the configured max player count.
+        var options = new RoomOptions
+        {
+            MaxPlayers = maxPlayersPerRoom
+        };
+        isCreatingFallbackRoom = true; // Defers organiser assignment until Photon assigns this new room's actor number.
+        PhotonNetwork.CreateRoom(null, options); // Creates a fallback room while preserving its organiser identity without exposing an email address.
     } // Ends the OnJoinRandomFailed callback body.
 
     public override void OnJoinedRoom() // Runs when Photon confirms that the local player joined a room.
     { // Starts the OnJoinedRoom callback body.
         base.OnJoinedRoom(); // Runs the base room-joined handling from Network.
+        SetFallbackRoomOrganizer(); // Records this client only when it created the fallback room.
         Debug.Log($"Joined Room: {PhotonNetwork.CurrentRoom.Name}"); // Logs the joined room name.
         //hide room list panel and show current room panel
         toggleRoomListPanelButton.gameObject.SetActive(false); // Hides the room-list toggle button while in a room.
@@ -219,6 +226,19 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
         startGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Shows the start button only to the master client.
         ClearSelectedRoom(); // Clears the selected-room UI after joining.
     } // Ends the OnJoinedRoom callback body.
+
+    private void SetFallbackRoomOrganizer() // Records a valid organiser actor number after creating a random-match fallback room.
+    { // Starts the fallback organiser assignment body.
+        if (!isCreatingFallbackRoom || PhotonNetwork.CurrentRoom == null || PhotonNetwork.LocalPlayer == null) // Leaves normally joined rooms unchanged.
+            return; // Stops when this client did not create the current room.
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable // Updates the newly created room with its organiser identity.
+        { // Starts the custom room property table.
+            { SessionSmtpCredentials.OrganizerActorNumberRoomPropertyKey, PhotonNetwork.LocalPlayer.ActorNumber } // Uses the actor number assigned by the completed room join.
+        }); // Sends only the organiser identifier, never SMTP credentials.
+        isCreatingFallbackRoom = false; // Prevents overwriting the organiser property on a later rejoin.
+        Debug.Log($"Session organiser set to actor {PhotonNetwork.LocalPlayer.ActorNumber}."); // Confirms the fallback room's sender identity was recorded.
+    } // Ends the fallback organiser assignment body.
     
     //function to show the player count in the room
     private void UpdatePlayerCountUI() // Updates the text showing how many players are in the room.
