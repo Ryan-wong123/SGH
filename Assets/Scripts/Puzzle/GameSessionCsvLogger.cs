@@ -17,10 +17,6 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
     private const int EventTypeAnswer = 1; // Declares a field, property, or member used by this script.
     private const int EventTypeTimeSpent = 2; // Declares a field, property, or member used by this script.
     private const int EventTypePlayerInput = 3; // A player changed an answer control.
-    // Configure all Gmail delivery values here. These values are included in every built game.
-    private const string GmailSenderEmail = "wong.ryan5091@gmail.com";
-    private const string GmailAppPassword = "snwi iaxa qxbl pixd";
-    private const string CsvRecipientEmail = "wong.ryan5091@gmail.com";
     private const string GmailSmtpHost = "smtp.gmail.com";
     private const int GmailSmtpPort = 587;
 
@@ -280,12 +276,18 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             return;
         }
 
+        if (!SessionSmtpCredentials.TryGetCredentials(out string senderEmail, out string appPassword, out string recipientEmail))
+        {
+            Debug.LogWarning("Gameplay CSV was not emailed because the organiser's SMTP details are unavailable on this device.");
+            return;
+        }
+
         string fileName = Path.GetFileName(path);
         try
         {
             using var message = new MailMessage();
-            message.From = new MailAddress(GmailSenderEmail);
-            message.To.Add(CsvRecipientEmail);
+            message.From = new MailAddress(senderEmail);
+            message.To.Add(recipientEmail);
             message.Subject = $"Gameplay CSV - {roomName}";
             message.Body = $"Gameplay session for room '{roomName}' completed at {playedAt}. The CSV is attached.";
             message.Attachments.Add(new Attachment(path, "text/csv"));
@@ -295,11 +297,11 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(GmailSenderEmail, GmailAppPassword.Replace(" ", string.Empty))
+                Credentials = new NetworkCredential(senderEmail, appPassword)
             };
 
             await client.SendMailAsync(message);
-            Debug.Log($"Gameplay CSV emailed successfully to {CsvRecipientEmail}: {fileName}");
+            Debug.Log($"Gameplay CSV emailed successfully to {recipientEmail}: {fileName}");
         }
         catch (Exception exception)
         {

@@ -27,9 +27,9 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
     [SerializeField] private Button goToRoomListButton; // References the button that proceeds to room selection.
     //join room manager component
     [SerializeField] private JoinRoomManager joinRoomManager; // References the component that controls room list UI.
-    private enum HomeEntryStep { Username }
-    private HomeEntryStep homeEntryStep; // Tracks the active field in the player-name flow.
-    private string pendingUsername; // Stores a validated username before entering the room list.
+    private enum HomeEntryStep { Username, SenderEmail, GmailAppPassword, RecipientEmail }
+    private HomeEntryStep homeEntryStep; // Tracks the active field in the player-name and SMTP setup flow.
+    private string pendingUsername; // Stores a validated username while the SMTP details are collected.
     private string initialInputPlaceholder; // Restores the username prompt before the email-entry step.
     private string initialContinueButtonLabel; // Restores the original button label before the email-entry step.
     private static bool isAttemptingStoredRoomRejoin; // Tracks whether the current join attempt is from saved room data.
@@ -62,7 +62,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
         initialInputPlaceholder = (usernameInput.placeholder as TextMeshProUGUI)?.text;
         initialContinueButtonLabel = goToRoomListButton.GetComponentInChildren<TMP_Text>(true)?.text;
 
-        // Collect only the display name; all email settings are held only by the backend.
+        // Collect the display name and SMTP details without persisting them in the built game.
         goToRoomListButton.onClick.RemoveAllListeners();
         goToRoomListButton.onClick.AddListener(HandleHomePanelContinue);
     } // Ends the Start method body.
@@ -79,6 +79,36 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
                 }
 
                 pendingUsername = usernameInput.text.Trim();
+                ShowNextEntryStep(HomeEntryStep.SenderEmail, "Sender Gmail address");
+                return;
+
+            case HomeEntryStep.SenderEmail:
+                if (!SessionSmtpCredentials.TrySetSenderEmail(usernameInput.text, out string senderError))
+                {
+                    ShowEntryError(senderError);
+                    return;
+                }
+
+                ShowNextEntryStep(HomeEntryStep.GmailAppPassword, "Gmail app password");
+                return;
+
+            case HomeEntryStep.GmailAppPassword:
+                if (!SessionSmtpCredentials.TrySetAppPassword(usernameInput.text, out string passwordError))
+                {
+                    ShowEntryError(passwordError);
+                    return;
+                }
+
+                ShowNextEntryStep(HomeEntryStep.RecipientEmail, "Recipient email (for the CSV)");
+                return;
+
+            case HomeEntryStep.RecipientEmail:
+                if (!SessionSmtpCredentials.TrySetRecipientEmail(usernameInput.text, out string recipientError))
+                {
+                    ShowEntryError(recipientError);
+                    return;
+                }
+
                 CompleteHomeEntry();
                 return;
         }
@@ -88,7 +118,9 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
     {
         homeEntryStep = nextStep;
         usernameInput.text = string.Empty;
-        usernameInput.contentType = TMP_InputField.ContentType.Standard;
+        usernameInput.contentType = nextStep == HomeEntryStep.GmailAppPassword
+            ? TMP_InputField.ContentType.Password
+            : TMP_InputField.ContentType.EmailAddress;
         if (usernameInput.placeholder is TextMeshProUGUI inputPlaceholder)
             inputPlaceholder.text = placeholder;
         SetHomePanelButtonLabel("Continue");
