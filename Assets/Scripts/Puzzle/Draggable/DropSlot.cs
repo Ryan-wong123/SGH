@@ -48,7 +48,10 @@ public class DropSlot : MonoBehaviour, IDropHandler // Declares this type.
         // NETWORK: only owner can perform the drop action
         var pv = droppedObj.GetComponent<PhotonView>(); // Creates a local value used by the following logic.
         if (pv != null && !pv.IsMine) // Checks this condition before continuing.
+        { // Starts this code block.
+            DeferDropUntilOwnershipTransferred(droppedObj); // Records a valid first drag while ownership is in flight.
             return; // Returns this result to the caller.
+        } // Ends this code block.
 
         if (transform.childCount > 0) // Checks this condition before continuing.
         { // Starts this code block.
@@ -70,6 +73,25 @@ public class DropSlot : MonoBehaviour, IDropHandler // Declares this type.
 
         card.trueHome = transform.parent; // Updates this value.
         cardImage = card.GetComponent<Image>(); // Updates this value.
+    } // Ends this code block.
+
+    protected bool DeferDropUntilOwnershipTransferred(GameObject droppedObj) // Declares a method used by specialized slots.
+    { // Starts this code block.
+        DraggableCard card = droppedObj != null ? droppedObj.GetComponent<DraggableCard>() : null; // Creates a local value used by this script.
+        return card != null && card.QueueDropUntilOwnershipTransferred(this); // Returns whether the drag was deferred.
+    } // Ends this code block.
+
+    public void CompleteDeferredDrop(DraggableCard card) // Declares a method used after Photon ownership transfers.
+    { // Starts this code block.
+        if (card == null) return; // Checks this condition before continuing.
+
+        if (transform.childCount > 0) // Checks this condition before continuing.
+        { // Starts this code block.
+            TrySnapBack(card.gameObject); // Runs this line of puzzle logic.
+            return; // Returns this method.
+        } // Ends this code block.
+
+        AcceptCard(card); // Runs this line of puzzle logic.
     } // Ends this code block.
 
     protected virtual void TrySnapBack(GameObject droppedObj) // Declares a field, property, or member used by this script.

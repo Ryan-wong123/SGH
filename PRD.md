@@ -29,6 +29,7 @@ The game is designed around shared progression: the room has one current puzzle 
    - Progress through the ordered puzzle stages.
    - At most one active player owns a new puzzle attempt at a time. The lock owner can close and re-open their own active attempt; other players are told that the puzzle is held.
    - Puzzle input and answer feedback use Photon synchronization where the individual puzzle requires it.
+   - A player must be able to drag a shared card on their first interaction, even when another player currently owns its Photon view. The card follows the local pointer immediately; if it is released over a drop slot before ownership transfers, that selected slot is committed once the transfer succeeds.
    - Correct solutions advance the room, reward configured clues, update story objects/objectives, reset the shared countdown, and may unlock keys or doors.
 
 4. **Read clues and story panels**
@@ -50,6 +51,7 @@ The game is designed around shared progression: the room has one current puzzle 
 - A correct submission must survive the submitting player's disconnect during its configured transition delay.
 - When the lock holder disconnects, the new/current master must reassign the lock to an active player when possible or release it. Active players must be able to continue.
 - A master-client switch must preserve/recover pending stage advance work.
+- Card ownership transfer must not consume a drag gesture. A rejected or failed transfer returns only the local drag preview to its recorded origin; a valid deferred drop is applied by the new owner and synchronized to the room.
 
 ### 4.2 Puzzle progression
 

@@ -20,7 +20,10 @@ public class Activity9DropSlot : DropSlot // Declares this type.
         // NETWORK: only owner can perform drop action (matches your base DropSlot behavior)
         var pv = droppedObj.GetComponent<PhotonView>(); // Creates a local value used by the following logic.
         if (pv != null && !pv.IsMine) // Checks this condition before continuing.
+        { // Starts this code block.
+            DeferDropUntilOwnershipTransferred(droppedObj); // Preserves a first drag while Photon ownership transfers.
             return; // Returns this result to the caller.
+        } // Ends this code block.
 
         // Occupied slot => revert to origin slot
         if (transform.childCount > 0) // Checks this condition before continuing.
@@ -42,6 +45,18 @@ public class Activity9DropSlot : DropSlot // Declares this type.
 
         // Otherwise accept normally (base handles parenting + snap + trueHome)
         base.OnDrop(eventData); // Runs this line of puzzle logic.
+    } // Ends this code block.
+
+    protected override void TrySnapBack(GameObject droppedObj) // Preserves this puzzle's occupied-slot behavior for deferred drops.
+    { // Starts this code block.
+        DraggableCard card = droppedObj != null ? droppedObj.GetComponent<DraggableCard>() : null; // Creates a local value used by this script.
+        if (card != null) // Checks this condition before continuing.
+        { // Starts this code block.
+            card.RevertToDragOrigin(); // Runs this line of puzzle logic.
+            return; // Returns this method.
+        } // Ends this code block.
+
+        base.TrySnapBack(droppedObj); // Runs this line of puzzle logic.
     } // Ends this code block.
 
     public override bool IsCardCorrect(DraggableCard card) // Declares a field, property, or member used by this script.

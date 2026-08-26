@@ -86,6 +86,9 @@ public class DraggableCard : MonoBehaviour, // Declares this type.
 
     private bool isFlipped; // Declares a field, property, or member used by this script.
     private bool acceptedThisDrag; // Declares a field, property, or member used by this script.
+    private bool waitingToFinalizeDrop; // Keeps the first drag alive while Photon transfers ownership.
+    private DropSlot pendingDropSlot; // Slot targeted before this client became the card owner.
+    private Coroutine deferredDropFinalizer; // Defers end-of-drag logic until Unity has dispatched OnDrop.
     private Transform dragStartParent; // Declares a field, property, or member used by this script.
     private Vector2 dragStartAnchoredPos; // Declares a field, property, or member used by this script.
     private Vector2 dragStartScale; // Declares a field, property, or member used by this script.
@@ -151,6 +154,15 @@ public class DraggableCard : MonoBehaviour, // Declares this type.
     { // Starts this code block.
         if (canvasGroup == null) return; // Checks this condition before continuing.
 
+        // A local drag must never block the drop target behind the card, including while
+        // this client is waiting for Photon ownership to transfer.
+        if (isDraggingLocal) // Checks this condition before continuing.
+        { // Starts this code block.
+            canvasGroup.interactable = false; // Updates this value.
+            canvasGroup.blocksRaycasts = false; // Updates this value.
+            return; // Returns this result to the caller.
+        } // Ends this code block.
+
         // If someone else is dragging it, lock it locally.
         bool canInteract = !SomeoneElseDragging() && !waitingForOwnership; // Creates a local value used by the following logic.
 
@@ -167,26 +179,29 @@ public class DraggableCard : MonoBehaviour, // Declares this type.
 
         RecordDragOrigin(); // Runs this line of puzzle logic.
         acceptedThisDrag = false; // Updates this value.
+        pendingDropSlot = null; // Clears any previous deferred target.
+        waitingToFinalizeDrop = false; // Clears any previous deferred completion.
 
         if (SomeoneElseDragging()) return; // Checks this condition before continuing.
 
         if (IsNetworked && !pv.IsMine) // Checks this condition before continuing.
         { // Starts this code block.
-            // Request ownership so this player becomes the sync authority
+            // Start moving immediately, then request ownership for the authoritative
+            // placement. Waiting here used to consume the entire first drag.
             waitingForOwnership = true; // Updates this value.
-            SetInteractableState(); // Runs this line of puzzle logic.
+            BeginDragInternal(eventData, true); // Runs this line of puzzle logic.
             pv.RequestOwnership(); // Runs this line of puzzle logic.
-
-            // Don’t start moving yet; wait until ownership transfers.
             return; // Returns this result to the caller.
         } // Ends this code block.
 
         BeginDragInternal(eventData); // Runs this line of puzzle logic.
     } // Ends this code block.
 
-    private void BeginDragInternal(PointerEventData eventData = null) // Declares a method used by this script.
+    private void BeginDragInternal(PointerEventData eventData = null, bool keepWaitingForOwnership = false) // Declares a method used by this script.
     { // Starts this code block.
-        waitingForOwnership = false; // Updates this value.
+        if (!keepWaitingForOwnership) // Checks this condition before continuing.
+            waitingForOwnership = false; // Updates this value.
+
         isDraggingLocal = true; // Updates this value.
 
         canvasGroup.blocksRaycasts = false; // Updates this value.
@@ -201,8 +216,7 @@ public class DraggableCard : MonoBehaviour, // Declares this type.
     public virtual void OnDrag(PointerEventData eventData) // Declares a field, property, or member used by this script.
     { // Starts this code block.
         // Only the owner should move the card (so it stays authoritative)
-        if (IsNetworked && !pv.IsMine) return; // Checks this condition before continuing.
-        if (waitingForOwnership) return; // Checks this condition before continuing.
+        if (!isDraggingLocal) return; // Checks this condition before continuing.
         if (SomeoneElseDragging()) return; // Checks this condition before continuing.
 
         MoveToPointer(eventData); // Runs this line of puzzle logic.
@@ -213,46 +227,16 @@ public class DraggableCard : MonoBehaviour, // Declares this type.
         if (!TryCompleteDrag()) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
-        if (transform.parent != canvas.transform && transform.parent != null) // Checks this condition before continuing.
-            return; // Returns this result to the caller.
-
-        switch (Behavior) // Chooses behavior based on this value.
-        { // Starts this code block.
-            case DraggableCardBehavior.Activity1: // Handles this switch case.
-                HandleActivity1EndDrag(); // Runs this line of puzzle logic.
-                break; // Exits the current loop or switch.
-            case DraggableCardBehavior.Activity1_2: // Handles this switch case.
-                HandleActivity1_2EndDrag(); // Runs this line of puzzle logic.
-                break; // Exits the current loop or switch.
-            case DraggableCardBehavior.Activity2: // Handles this switch case.
-                HandleActivity2EndDrag(); // Runs this line of puzzle logic.
-                break; // Exits the current loop or switch.
-            case DraggableCardBehavior.Activity6: // Handles this switch case.
-                HandleActivity6EndDrag(); // Runs this line of puzzle logic.
-                break; // Exits the current loop or switch.
-            case DraggableCardBehavior.Activity9: // Handles this switch case.
-                HandleActivity9EndDrag(); // Runs this line of puzzle logic.
-                break; // Exits the current loop or switch.
-            default: // Handles any unmatched switch case.
-                HandleDefaultEndDrag(); // Runs this line of puzzle logic.
-                break; // Exits the current loop or switch.
-        } // Ends this code block.
-
-        string destination = transform.parent != null ? transform.parent.name : "unassigned";
-        GameSessionCsvLogger.Instance?.RecordLocalPlayerInput(destination, gameObject.name);
+        // Unity invokes IDropHandler after IEndDragHandler. Wait one frame so a drop
+        // target can register before resolving an outside-drop or deferred ownership drop.
+        waitingToFinalizeDrop = true; // Updates this value.
+        StartDeferredDropFinalizer(); // Runs this line of puzzle logic.
     } // Ends this code block.
 
     protected bool TryCompleteDrag() // Declares a method used by this script.
     { // Starts this code block.
-        if (IsNetworked && !pv.IsMine) // Checks this condition before continuing.
+        if (!isDraggingLocal) // Checks this condition before continuing.
             return false; // Returns this result to the caller.
-
-        if (waitingForOwnership) // Checks this condition before continuing.
-        { // Starts this code block.
-            waitingForOwnership = false; // Updates this value.
-            SetInteractableState(); // Runs this line of puzzle logic.
-            return false; // Returns this result to the caller.
-        } // Ends this code block.
 
         isDraggingLocal = false; // Updates this value.
         SetDragTagVisible(false, string.Empty); // Runs this line of puzzle logic.
@@ -439,8 +423,9 @@ public class DraggableCard : MonoBehaviour, // Declares this type.
             netAnchoredPos = (Vector2)stream.ReceiveNext(); // Updates this value.
             netScale = (Vector2)stream.ReceiveNext(); // Updates this value.
 
-            if (!pv.IsMine) // Checks this condition before continuing.
+            if (!pv.IsMine && !isDraggingLocal) // Checks this condition before continuing.
             { // Starts this code block.
+                // Keep the local first-drag preview in place until ownership arrives.
                 ApplyRemoteState(); // Runs this line of puzzle logic.
             } // Ends this code block.
         } // Ends this code block.
@@ -725,10 +710,13 @@ public class DraggableCard : MonoBehaviour, // Declares this type.
     { // Starts this code block.
         if (pv == null || targetView != pv) return; // Checks this condition before continuing.
 
-        // If we requested it, start dragging now
+        // The local drag already started while ownership was being requested. If the
+        // pointer was released in that interval, complete its recorded target now.
         if (pv.IsMine && waitingForOwnership) // Checks this condition before continuing.
         { // Starts this code block.
-            BeginDragInternal(); // Runs this line of puzzle logic.
+            waitingForOwnership = false; // Updates this value.
+            if (waitingToFinalizeDrop) // Checks this condition before continuing.
+                StartDeferredDropFinalizer(); // Runs this line of puzzle logic.
         } // Ends this code block.
 
         SetInteractableState(); // Runs this line of puzzle logic.
@@ -739,7 +727,87 @@ public class DraggableCard : MonoBehaviour, // Declares this type.
         if (pv == null || targetView != pv) return; // Checks this condition before continuing.
 
         waitingForOwnership = false; // Updates this value.
+        if (waitingToFinalizeDrop) // Checks this condition before continuing.
+            StartDeferredDropFinalizer(); // Runs this line of puzzle logic.
+
         SetInteractableState(); // Runs this line of puzzle logic.
+    } // Ends this code block.
+
+    /// <summary>
+    /// Records a slot selected during the initial gesture, before Photon ownership arrives.
+    /// </summary>
+    public bool QueueDropUntilOwnershipTransferred(DropSlot slot) // Declares a method used by drop slots.
+    { // Starts this code block.
+        if (!waitingForOwnership || !waitingToFinalizeDrop || slot == null) // Checks this condition before continuing.
+            return false; // Returns this result to the caller.
+
+        pendingDropSlot = slot; // Updates this value.
+        return true; // Returns this result to the caller.
+    } // Ends this code block.
+
+    private void StartDeferredDropFinalizer() // Declares a method used by this script.
+    { // Starts this code block.
+        if (deferredDropFinalizer == null) // Checks this condition before continuing.
+            deferredDropFinalizer = StartCoroutine(FinalizeDropAfterEventSystem()); // Updates this value.
+    } // Ends this code block.
+
+    private System.Collections.IEnumerator FinalizeDropAfterEventSystem() // Declares a method used by this script.
+    { // Starts this code block.
+        yield return null; // Lets the EventSystem dispatch IDropHandler for this gesture.
+        deferredDropFinalizer = null; // Updates this value.
+
+        if (!waitingToFinalizeDrop || waitingForOwnership) // Checks this condition before continuing.
+            yield break; // Returns this iterator.
+
+        waitingToFinalizeDrop = false; // Updates this value.
+
+        if (transform.parent == canvas.transform || transform.parent == null) // Checks this condition before continuing.
+        { // Starts this code block.
+            if (pendingDropSlot != null && (!IsNetworked || pv.IsMine)) // Checks this condition before continuing.
+            { // Starts this code block.
+                pendingDropSlot.CompleteDeferredDrop(this); // Runs this line of puzzle logic.
+            } // Ends this code block.
+            else if (!IsNetworked || pv.IsMine) // Runs when the previous condition was false.
+            { // Starts this code block.
+                HandleUnacceptedEndDrag(); // Runs this line of puzzle logic.
+            } // Ends this code block.
+            else // Runs when the previous condition was false.
+            { // Starts this code block.
+                // Ownership was denied, so restore only the local preview position.
+                RevertToDragOrigin(); // Runs this line of puzzle logic.
+            } // Ends this code block.
+        } // Ends this code block.
+
+        pendingDropSlot = null; // Clears the recorded target.
+        SetInteractableState(); // Runs this line of puzzle logic.
+
+        string destination = transform.parent != null ? transform.parent.name : "unassigned"; // Creates a local value used by this script.
+        GameSessionCsvLogger.Instance?.RecordLocalPlayerInput(destination, gameObject.name); // Runs this line of puzzle logic.
+    } // Ends this code block.
+
+    private void HandleUnacceptedEndDrag() // Declares a method used by this script.
+    { // Starts this code block.
+        switch (Behavior) // Chooses behavior based on this value.
+        { // Starts this code block.
+            case DraggableCardBehavior.Activity1: // Handles this switch case.
+                HandleActivity1EndDrag(); // Runs this line of puzzle logic.
+                break; // Exits the current loop or switch.
+            case DraggableCardBehavior.Activity1_2: // Handles this switch case.
+                HandleActivity1_2EndDrag(); // Runs this line of puzzle logic.
+                break; // Exits the current loop or switch.
+            case DraggableCardBehavior.Activity2: // Handles this switch case.
+                HandleActivity2EndDrag(); // Runs this line of puzzle logic.
+                break; // Exits the current loop or switch.
+            case DraggableCardBehavior.Activity6: // Handles this switch case.
+                HandleActivity6EndDrag(); // Runs this line of puzzle logic.
+                break; // Exits the current loop or switch.
+            case DraggableCardBehavior.Activity9: // Handles this switch case.
+                HandleActivity9EndDrag(); // Runs this line of puzzle logic.
+                break; // Exits the current loop or switch.
+            default: // Handles any unmatched switch case.
+                HandleDefaultEndDrag(); // Runs this line of puzzle logic.
+                break; // Exits the current loop or switch.
+        } // Ends this code block.
     } // Ends this code block.
 
     public void MarkAcceptedThisDrag() // Declares a method used by this script.
