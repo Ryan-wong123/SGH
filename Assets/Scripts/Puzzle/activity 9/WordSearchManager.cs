@@ -446,60 +446,82 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
     // True iff:
     //   1) every solution cell is selected AND matches its letter, and
     //   2) no extra cells are selected outside the solution map.
-    // Also: clears previous results, then paints current selection green/red.
+    // Also: clears previous results, then paints whole-word results green/red.
     public bool IsSolved() // Declares a method used by this script.
     { // Starts this code block.
         ClearAllResults(); // fresh attempt paint
 
-        int sizeY = Mathf.Min(gridSize, solution.GetLength(0)); // Creates a local value used by the following logic.
-        int sizeX = Mathf.Min(gridSize, solution.GetLength(1)); // Creates a local value used by the following logic.
-
         bool allMatch = true; // Creates a local value used by the following logic.
+        var expectedCells = new HashSet<LetterCell>(); // All cells belonging to a target word.
+        var correctCells = new HashSet<LetterCell>(); // Cells in fully selected target words.
+        var wrongCells = new HashSet<LetterCell>(); // Selected cells in incomplete target words.
 
-        // 1) Paint every selected cell and track correctness
-        foreach (var cell in selected) // Repeats this block for each item in a collection.
+        // 1) Evaluate each word as a complete selection. A correct letter is only
+        // correct when every letter in that word has also been selected.
+        foreach (string expectedWord in ExpectedWordReferences)
         { // Starts this code block.
-            Vector2Int p = cell.gridPosition; // Runs this line of puzzle logic.
-            if (p.x <= 0 || p.y <= 0 || p.x >= sizeX || p.y >= sizeY) // ignore headers/out-of-range
+            if (!TryFindWordPositions(expectedWord, out List<Vector2Int> positions))
+            {
+                allMatch = false;
                 continue; // Skips to the next loop iteration.
+            }
 
-            char expected = solution[p.y, p.x]; // Runs this line of puzzle logic.
-            char actual = cell.GetLetter(); // Runs this line of puzzle logic.
+            bool wordIsComplete = true;
+            var wordCells = new List<LetterCell>();
+            for (int index = 0; index < positions.Count; index++)
+            {
+                Vector2Int position = positions[index];
+                LetterCell cell = grid[position.x, position.y];
+                if (cell != null)
+                {
+                    expectedCells.Add(cell);
+                    wordCells.Add(cell);
+                }
 
-            bool isCorrect = (expected != '\0') && // Creates a local value used by the following logic.
-                             (char.ToUpperInvariant(expected) == char.ToUpperInvariant(actual)); // Runs this line of puzzle logic.
+                if (cell == null || !selected.Contains(cell) ||
+                    char.ToUpperInvariant(cell.GetLetter()) != char.ToUpperInvariant(expectedWord[index]))
+                {
+                    wordIsComplete = false;
+                }
+            }
 
-            if (isCorrect) ApplyCellState(cell, true, LetterCell.ResultVisualState.Correct, true); // green
-            else ApplyCellState(cell, true, LetterCell.ResultVisualState.Wrong, true);   // red
-
-            if (!isCorrect) allMatch = false; // Checks this condition before continuing.
+            if (wordIsComplete)
+            {
+                foreach (LetterCell cell in wordCells)
+                    correctCells.Add(cell);
+            }
+            else
+            {
+                allMatch = false;
+                foreach (LetterCell cell in wordCells)
+                {
+                    if (selected.Contains(cell))
+                        wrongCells.Add(cell);
+                }
+            }
         } // Ends this code block.
 
-        // 2) Ensure no required cell is missing, and that selected ones match
-        for (int y = 1; y < sizeY; y++) // Repeats this block for a counted loop.
-        { // Starts this code block.
-            for (int x = 1; x < sizeX; x++) // Repeats this block for a counted loop.
+        // 2) Paint selected cells. Red takes precedence when a cell belongs to an
+        // incomplete word, including cells shared with an otherwise complete word.
+        foreach (LetterCell cell in selected)
+        {
+            LetterCell.ResultVisualState resultState;
+            if (wrongCells.Contains(cell) || !expectedCells.Contains(cell))
             { // Starts this code block.
-                if (solution[y, x] == '\0') continue; // Checks this condition before continuing.
+                resultState = LetterCell.ResultVisualState.Wrong;
+                allMatch = false;
+            }
+            else
+            {
+                resultState = correctCells.Contains(cell)
+                    ? LetterCell.ResultVisualState.Correct
+                    : LetterCell.ResultVisualState.Wrong;
+                if (resultState == LetterCell.ResultVisualState.Wrong)
+                    allMatch = false;
+            }
 
-                var neededCell = grid[x, y]; // Creates a local value used by the following logic.
-
-                // must be selected
-                if (!selected.Contains(neededCell)) // Checks this condition before continuing.
-                { // Starts this code block.
-                    allMatch = false; // Updates this value.
-                } // Ends this code block.
-                else // Runs when the previous condition was false.
-                { // Starts this code block.
-                    // and must match expected letter
-                    if (char.ToUpperInvariant(neededCell.GetLetter()) != // Checks this condition before continuing.
-                        char.ToUpperInvariant(solution[y, x])) // Runs this line of puzzle logic.
-                    { // Starts this code block.
-                        allMatch = false; // Updates this value.
-                    } // Ends this code block.
-                } // Ends this code block.
-            } // Ends this code block.
-        } // Ends this code block.
+            ApplyCellState(cell, true, resultState, true);
+        }
 
         return allMatch; // Returns this result to the caller.
     } // Ends this code block.
