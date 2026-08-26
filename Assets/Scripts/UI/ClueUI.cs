@@ -139,9 +139,11 @@ public class ClueUI : MonoBehaviourPunCallbacks, IOnEventCallback // Declares th
         _allowSharedCloseHide = false; // Updates whether shared close may hide the panel.
         _broadcastRemainingPlayers = -1; // Updates the cached broadcast remaining-player count.
         EnsureCloseGateKeys(id); // Handles this part of the clue UI flow.
+        HideActiveSlideshows(); // Gives the regular clue exclusive ownership of the shared close button.
 
         if (mainRoot != null) mainRoot.SetActive(true); // Checks whether this clue UI condition requires action.
         _currentPanel.SetActive(true); // Shows or hides a clue UI GameObject.
+        ShowStandardCloseButton(); // Ensures standard clue panels always expose their close action.
         RefreshCloseButtonState(); // Refreshes close button text and interactability.
         BeginCloseGateRoundIfNeeded(); // Handles this part of the clue UI flow.
 
@@ -153,6 +155,28 @@ public class ClueUI : MonoBehaviourPunCallbacks, IOnEventCallback // Declares th
         ResetUnreadCount(); // Clears unread clue notifications.
 
         return true; // Reports that the requested clue UI action succeeded.
+    } // Ends this block.
+
+    private void ShowStandardCloseButton() // Makes the shared close button available for regular clue content.
+    { // Starts this block.
+        if (closeButton == null || SlideshowUI.ShouldSuppressLegacyCloseHandlers()) // Checks whether a slideshow owns the shared close button.
+            return; // Leaves the current method early.
+
+        closeButton.gameObject.SetActive(true); // Shows the shared close button for a standard clue.
+        RestoreDefaultCloseButtonText(); // Restores normal close button text.
+        closeButton.interactable = true; // Enables the standard clue close action.
+    } // Ends this block.
+
+    private void HideActiveSlideshows() // Stops an earlier slideshow from controlling the shared close button.
+    { // Starts this block.
+        if (mainRoot == null) // Checks whether this clue UI condition requires action.
+            return; // Leaves the current method early.
+
+        foreach (SlideshowUI slideshow in mainRoot.GetComponentsInChildren<SlideshowUI>(true)) // Loops through slideshow clue panels.
+        { // Starts this block.
+            if (slideshow != null && slideshow.gameObject.activeSelf) // Checks whether a slideshow panel is still active.
+                slideshow.gameObject.SetActive(false); // Releases the shared close button for the regular clue.
+        } // Ends this block.
     } // Ends this block.
 
     /// <summary>Hide the current clue panel + root. If userAction=true, invoke onClosed callback.</summary>
@@ -280,6 +304,9 @@ public class ClueUI : MonoBehaviourPunCallbacks, IOnEventCallback // Declares th
     { // Starts this block.
         if (closeButton == null) // Checks whether this clue UI condition requires action.
             return; // Leaves the current method early.
+
+        if (!SlideshowUI.ShouldSuppressLegacyCloseHandlers()) // Checks whether a slideshow owns the shared close button.
+            closeButton.gameObject.SetActive(true); // Keeps the shared close button visible while its status changes.
 
         if (!ShouldUseSharedCloseGate()) // Checks whether this clue UI condition requires action.
         { // Starts this block.
@@ -729,6 +756,7 @@ public class ClueUI : MonoBehaviourPunCallbacks, IOnEventCallback // Declares th
 
 
         detailPanelRoot.SetActive(true); // Shows or hides a clue UI GameObject.
+        ShowStandardCloseButton(); // Ensures image-detail clues have a visible close action.
 
         Cursor.lockState = CursorLockMode.None; // Unlocks or restores cursor lock state for UI interaction.
         Cursor.visible = true; // Shows the cursor for clue UI interaction.
