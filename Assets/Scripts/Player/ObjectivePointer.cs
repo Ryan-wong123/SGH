@@ -1,5 +1,4 @@
 using UnityEngine; // Imports Unity engine types such as MonoBehaviour, Transform, Camera, and Vector3.
-using TMPro; // Imports TextMeshPro types if pointer UI text is added later.
 
 public class ObjectivePointer : MonoBehaviour // Declares the component that points the player toward waypoint objectives.
 { // Starts the ObjectivePointer class body.
@@ -20,6 +19,9 @@ public class ObjectivePointer : MonoBehaviour // Declares the component that poi
     [Header("World Arrow Settings")] // Groups world arrow positioning settings in the Unity inspector.
     [SerializeField] private float forwardOffset = 1.5f;  // how far in front of the player // Sets how far in front of the player/camera the arrow appears.
     [SerializeField] private float heightOffset = 1.2f;   // how high above the player // Sets how high above the player/camera the arrow appears.
+
+    [Header("GPS Guidance Settings")] // Groups settings that make the arrow behave like a route-navigation cue.
+    [SerializeField] private float waypointArrivalDistance = 1.5f; // Stores how close the local player must be before the next route point is selected.
 
     // -------- Paths --------
     [Header("Available Paths")] // Groups available waypoint paths in the Unity inspector.
@@ -55,18 +57,42 @@ public class ObjectivePointer : MonoBehaviour // Declares the component that poi
             return; // Leaves because the arrow cannot be updated this frame.
         } // Ends the missing-reference block.
 
-        // Use camera as reference if available, otherwise fallback to player
+        // Use camera as reference if available, otherwise fall back to player.
         Transform refTransform = cam != null ? cam.transform : player; // Chooses the camera transform when available, otherwise the player transform.
 
-        // 1) Position arrow in front of the camera/player
+        // Keep the display position in front of the player's horizontal facing direction.
+        // Using camera.forward directly makes the arrow rise or fall whenever the player looks up or down.
+        Vector3 horizontalForward = Vector3.ProjectOnPlane(refTransform.forward, Vector3.up); // Removes the camera pitch so the cue remains level like a GPS arrow.
+        if (horizontalForward.sqrMagnitude < 0.001f && player != null) // Checks whether the camera is looking straight up or down.
+            horizontalForward = Vector3.ProjectOnPlane(player.forward, Vector3.up); // Falls back to the player's yaw-only direction.
+
+        if (horizontalForward.sqrMagnitude < 0.001f) // Checks whether a stable horizontal display direction is still unavailable.
+        { // Starts the unavailable-display-direction block.
+            arrowObject.gameObject.SetActive(false); // Hides the arrow until it can be placed reliably.
+            return; // Leaves because the arrow would otherwise have an invalid position.
+        } // Ends the unavailable-display-direction block.
+
+        horizontalForward.Normalize(); // Normalizes the direction before using it as an offset.
+
+        AdvanceWhenCurrentWaypointIsReached(); // Moves to the next route point when the local player arrives without relying on an exact trigger hit.
+        if (currentTarget == null) // Checks whether reaching the previous waypoint completed the route.
+        { // Starts the completed-route block.
+            arrowObject.gameObject.SetActive(false); // Hides the arrow because there is no remaining destination.
+            return; // Leaves because there is no target to display.
+        } // Ends the completed-route block.
+
+        // Position the arrow in front of the camera/player.
         Vector3 basePos = refTransform.position // Starts the arrow base-position calculation from the reference position.
-                        + refTransform.forward * forwardOffset // Offsets the arrow forward from the reference transform.
+                        + horizontalForward * forwardOffset // Offsets the arrow in the player's horizontal facing direction.
                         + Vector3.up * heightOffset; // Offsets the arrow upward in world space.
 
         arrowObject.position = basePos; // Moves the arrow to its world-space display position.
 
-        // 2) Compute direction to target in full 3D space so different floors are shown.
+        // Point across the floor toward the next route point, rather than at its elevation.
+        // Each configured path contains the route to a staircase or doorway before a higher-floor goal,
+        // so the player is told where to walk instead of being given an ambiguous upward arrow.
         Vector3 toTarget = currentTarget.position - arrowObject.position; // Calculates the direction from the arrow to the current target.
+        toTarget = Vector3.ProjectOnPlane(toTarget, Vector3.up); // Removes vertical displacement to keep the arrow as a practical movement cue.
 
         if (toTarget.sqrMagnitude < 0.001f) // Checks whether the arrow is effectively at the target.
         { // Starts the near-target block.
@@ -74,8 +100,8 @@ public class ObjectivePointer : MonoBehaviour // Declares the component that poi
             return; // Leaves because rotation would be unreliable.
         } // Ends the near-target block.
 
-        // 3) Rotate arrow to face target
-        Quaternion lookRot = Quaternion.LookRotation(toTarget.normalized, refTransform.up); // Calculates the rotation that points the arrow at the target.
+        // Rotate the level arrow toward the next walkable route direction.
+        Quaternion lookRot = Quaternion.LookRotation(toTarget.normalized, Vector3.up); // Calculates the rotation that points the arrow at the target.
         arrowObject.rotation = lookRot; // Applies the target-facing rotation to the arrow.
 
         if (!arrowObject.gameObject.activeSelf) // Checks whether the arrow is currently hidden.
@@ -161,6 +187,9 @@ public class ObjectivePointer : MonoBehaviour // Declares the component that poi
         if (reachedWaypointIndex < 0 || reachedWaypointIndex >= path.waypoints.Length) // Checks whether the reached waypoint index is valid.
             return; // Ignores invalid waypoint indices.
 
+        if (reachedWaypointIndex != currentWaypointIndex) // Checks whether an old or out-of-order waypoint trigger fired.
+            return; // Keeps the route focused on the next required navigation point.
+
         Debug.Log($"[ObjectiveNavigator] Reached waypoint {reachedWaypointIndex} ({path.waypoints[reachedWaypointIndex].name})"); // Logs the reached waypoint.
 
         // If player reached the FINAL waypoint, complete the path and hide the arrow
@@ -180,6 +209,18 @@ public class ObjectivePointer : MonoBehaviour // Declares the component that poi
         SetTarget(path.waypoints[currentWaypointIndex]); // Points the arrow at the next waypoint.
         Debug.Log($"[ObjectiveNavigator] Next waypoint {currentWaypointIndex}: {currentTarget.name}"); // Logs the next waypoint target.
     } // Ends the UpdateTargetFromReachedWaypoint method body.
+
+    private void AdvanceWhenCurrentWaypointIsReached() // Advances the GPS route when the local player reaches its current target.
+    { // Starts the automatic-waypoint-advance method body.
+        if (!IsActive || player == null || currentTarget == null || currentWaypointIndex < 0) // Checks whether automatic progression has a valid active target.
+            return; // Leaves because there is no waypoint to evaluate.
+
+        Vector3 playerToWaypoint = currentTarget.position - player.position; // Calculates the player's full 3D distance to the current route point.
+        if (playerToWaypoint.sqrMagnitude > waypointArrivalDistance * waypointArrivalDistance) // Checks whether the player is still outside the arrival radius.
+            return; // Keeps the current waypoint selected until the player arrives.
+
+        UpdateTargetFromReachedWaypoint(currentWaypointIndex); // Advances exactly one route point after the local player arrives.
+    } // Ends the automatic-waypoint-advance method body.
 
     private int FindPathIndex(string id) // Finds the configured path index for a path ID.
     { // Starts the FindPathIndex method body.

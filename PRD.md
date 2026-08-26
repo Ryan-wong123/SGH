@@ -23,6 +23,7 @@ The game is designed around shared progression: the room has one current puzzle 
 2. **Explore and interact**
    - Move a first-person character around the scene.
    - Use the crosshair interaction prompt to collect items, open doors, trigger puzzles, operate keypads, and follow objectives.
+   - When a stage has a destination, follow a floating GPS-style arrow. It continuously points across the current floor toward the next configured route waypoint (such as a corridor, doorway, or staircase), automatically advances when the player arrives, and hides at the final destination. It must not point vertically at a higher-floor objective.
    - Use sidebar UI for inventory, clues, instructions, settings, and chat.
 
 3. **Solve the shared game**
@@ -127,6 +128,13 @@ Each puzzle must support the `IPuzzle` contract where applicable: evaluate compl
 1. A comic/slideshow was previously active.
 2. A regular clue such as `Phone Message From Father` opens.
 3. The regular clue owns the shared Close button; the button is visible and the clue's multiplayer close gate is used.
+
+### GPS route to another floor
+
+1. A stage starts a configured route whose final objective is on another floor.
+2. The objective arrow stays level and points toward the next walkable route point, including the route to the stairs or doorway.
+3. As the local player reaches each point, the arrow selects the next one without requiring an exact trigger hit.
+4. The arrow hides after the local player reaches the final waypoint.
 
 ## 7. Current product risks and follow-up work
 

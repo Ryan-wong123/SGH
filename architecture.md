@@ -150,6 +150,10 @@ This interaction is intentionally separate from puzzle-attempt locks: Photon vie
 
 ```text
 PlayerController owns local camera/movement
+  -> ObjectivePointer receives the local player and camera
+      -> selects the configured waypoint path for the shared puzzle stage
+      -> keeps the floating arrow level and points to the next walkable route point
+      -> advances locally when the player reaches a waypoint
   -> CrosshairInteractor raycasts from player camera
       -> IInteractable.GetInteractionText / Interact
       -> optional IHighlightable.ShowHighlight / HideHighlight
@@ -159,6 +163,10 @@ Interactables:
 ```
 
 Door/keypad, pickup, and movement interactions use Photon views/RPCs when connected. The player prefab is created through `PhotonNetwork.Instantiate`, while scene-created objects can register their Photon view at runtime.
+
+`ObjectivePointer` is a local navigation presentation layer, not shared gameplay authority. `PuzzleStateManager` maps selected shared stages to named `WaypointPath` entries configured in `GameScene`; once the local `PlayerController` has registered its player transform and camera, it starts that path. The pointer positions its arrow in front of the local player, projects the direction to the current waypoint onto the horizontal plane, and rotates the arrow toward that level direction. This produces GPS-style guidance to the next corridor, doorway, or staircase rather than an ambiguous upward/downward arrow for destinations on another floor.
+
+Waypoint progression is also local: when the player comes within `waypointArrivalDistance` (currently 1.5 metres) of the current target, `ObjectivePointer` advances to the next configured waypoint and hides the arrow after the final one. `WaypointTrigger` can report an arrival too, but the pointer accepts it only when it is the current waypoint, preventing late or out-of-order triggers from skipping the route. The shared puzzle stage remains the source of truth; each client independently renders and follows the same configured route for that stage.
 
 ## Clue and comic UI architecture
 
