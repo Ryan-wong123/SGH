@@ -110,6 +110,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
     private const string RP_PUZZLE_LOCKED = "PuzzleLocked";   // bool // Defines a Photon room-property key used for shared puzzle state.
     private const string RP_LOCK_OWNER = "LockOwner";       // int ActorNumber // Defines a Photon room-property key used for shared puzzle state.
     private const string RP_ROUND = "Round";           // int; increments to signal a reset // Defines a Photon room-property key used for shared puzzle state.
+    private const string RP_PENDING_ADVANCE_STAGE = "PendingAdvanceStage"; // int; stage waiting for a durable delayed transition.
+    private const string RP_PENDING_ADVANCE_AT = "PendingAdvanceAt"; // double; Photon time when the pending transition should run.
     private const string PP_PLAYED_ROUND = "PlayedRound";     // bool on each player // Defines a Photon player-property key used for per-player puzzle state.
 
     public enum PuzzleStage // Defines the ordered puzzle stages used by the game flow.
@@ -159,6 +161,12 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
         EnsureRoomProps(); // initialize fair-turn props in room // Initializes shared Photon room puzzle properties.
         RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
+    } // Ends this block.
+
+    private void Update() // Lets the current master finish room-owned delayed transitions.
+    { // Starts this block.
+        if (PhotonNetwork.IsMasterClient) // Only the current master may advance shared puzzle state.
+            ProcessPendingStageAdvance(); // Completes a transition even when the original submitting player disconnected.
     } // Ends this block.
 
     private void InitStagePanels() // Builds the stage-to-panel lookup table.
@@ -1047,8 +1055,46 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
     private IEnumerator DelayAndAdvance(PuzzleStage stage, float delay) // Runs a delayed puzzle-state coroutine.
     { // Starts this block.
+        if (PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom != null) // Stores the delayed transition in room state so it survives a player disconnect.
+        { // Starts this block.
+            ScheduleStageAdvance(stage, delay); // Lets the current or replacement master complete the transition.
+            yield break; // Stops because room state now owns the delayed transition.
+        } // Ends this block.
+
         yield return new WaitForSeconds(delay); // Waits before continuing this coroutine.
         photonView.RPC(nameof(RPC_AdvanceStageForAll), RpcTarget.AllBuffered, (int)stage); // Sends a synchronized RPC to Photon clients.
+    } // Ends this block.
+
+    private void ScheduleStageAdvance(PuzzleStage stage, float delay) // Stores a delayed puzzle completion in shared room properties.
+    { // Starts this block.
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable // Publishes a recoverable, master-independent stage transition.
+        { // Starts this initializer block.
+            [RP_PENDING_ADVANCE_STAGE] = (int)stage, // Records which completed puzzle stage must advance.
+            [RP_PENDING_ADVANCE_AT] = PhotonNetwork.Time + Math.Max(0f, delay) // Records the absolute Photon time when it may advance.
+        }); // Ends and sends the shared transition state.
+    } // Ends this block.
+
+    private void ProcessPendingStageAdvance() // Completes any due room-owned transition on the current master client.
+    { // Starts this block.
+        var room = PhotonNetwork.CurrentRoom; // Reads the active room properties.
+        if (room == null || // Stops when no active room exists.
+            !room.CustomProperties.TryGetValue(RP_PENDING_ADVANCE_STAGE, out object stageValue) || // Stops when no transition is pending.
+            !room.CustomProperties.TryGetValue(RP_PENDING_ADVANCE_AT, out object dueValue) || // Stops when no deadline was stored.
+            !(stageValue is int stageInt) || // Stops when the stored stage is invalid.
+            !(dueValue is double dueTime) || // Stops when the stored deadline is invalid.
+            stageInt < (int)PuzzleStage.Puzzle0 || stageInt > (int)PuzzleStage.Puzzle11 || // Stops when the stage falls outside the defined puzzle range.
+            PhotonNetwork.Time < dueTime) // Waits until the shared deadline has elapsed.
+        { // Starts this block.
+            return; // Leaves until a valid due transition exists.
+        } // Ends this block.
+
+        room.SetCustomProperties(new Hashtable // Clears the pending state before broadcasting so a replacement master cannot duplicate it.
+        { // Starts this initializer block.
+            [RP_PENDING_ADVANCE_STAGE] = -1, // Marks that no stage remains pending.
+            [RP_PENDING_ADVANCE_AT] = 0d // Clears the pending deadline.
+        }); // Ends and sends the cleared state.
+
+        photonView.RPC(nameof(RPC_AdvanceStageForAll), RpcTarget.AllBuffered, stageInt); // Advances every active and future client from the durable schedule.
     } // Ends this block.
 
     [PunRPC] // Marks the next method as callable through Photon RPC.
@@ -1183,6 +1229,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         if (!room.CustomProperties.ContainsKey(RP_PUZZLE_LOCKED)) changed[RP_PUZZLE_LOCKED] = false; // Checks whether this puzzle-state condition requires action.
         if (!room.CustomProperties.ContainsKey(RP_LOCK_OWNER)) changed[RP_LOCK_OWNER] = -1; // Checks whether this puzzle-state condition requires action.
         if (!room.CustomProperties.ContainsKey(RP_ROUND)) changed[RP_ROUND] = 1; // Checks whether this puzzle-state condition requires action.
+        if (!room.CustomProperties.ContainsKey(RP_PENDING_ADVANCE_STAGE)) changed[RP_PENDING_ADVANCE_STAGE] = -1; // Initializes the durable delayed-transition marker.
+        if (!room.CustomProperties.ContainsKey(RP_PENDING_ADVANCE_AT)) changed[RP_PENDING_ADVANCE_AT] = 0d; // Initializes the durable delayed-transition deadline.
 
         if (changed.Count > 0) room.SetCustomProperties(changed); // Checks whether this puzzle-state condition requires action.
     } // Ends this block.
@@ -1219,31 +1267,48 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
     { // Starts this block.
         if (!PhotonNetwork.IsMasterClient) return; // Checks whether this puzzle-state condition requires action.
 
-        var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.
+        ReconcilePuzzleLockAfterMembershipChange(); // Removes an inactive lock owner immediately so the remaining team can continue.
+    } // Ends this block.
 
-        int owner = -1; // Stores an integer puzzle-state value.
-        if (room.CustomProperties.ContainsKey(RP_LOCK_OWNER)) // Checks whether this puzzle-state condition requires action.
-            owner = (int)room.CustomProperties[RP_LOCK_OWNER]; // Handles this part of the puzzle state flow.
+    public override void OnMasterClientSwitched(Player newMasterClient) // Rebuilds puzzle authority after the master client disconnects.
+    { // Starts this block.
+        if (!PhotonNetwork.IsMasterClient) // Stops on clients that did not become the new master.
+            return; // Leaves because only the replacement master may repair shared state.
 
-        bool disconnectedPlayerOwnsSubmit = // Stores a boolean puzzle-state result.
-            owner == otherPlayer.ActorNumber || // Handles this part of the puzzle state flow.
-            currentSubmitOwnerActorNumber == otherPlayer.ActorNumber; // Updates which actor owns submit controls.
+        EnsureRoomProps(); // Ensures the new master can safely read every required shared property.
+        ReconcilePuzzleLockAfterMembershipChange(); // Reassigns or releases a lock owned by any inactive actor.
+        ProcessPendingStageAdvance(); // Immediately resumes a due transition left by the disconnected master.
+    } // Ends this block.
 
-        if (disconnectedPlayerOwnsSubmit) // Checks whether this puzzle-state condition requires action.
+    private void ReconcilePuzzleLockAfterMembershipChange() // Keeps the current puzzle lock assigned only to an active player.
+    { // Starts this block.
+        var room = PhotonNetwork.CurrentRoom; // Reads the active room state.
+        if (room == null) // Checks whether there is no room to reconcile.
+            return; // Leaves because no shared puzzle state exists.
+
+        bool locked = room.CustomProperties.TryGetValue(RP_PUZZLE_LOCKED, out object lockedValue) && lockedValue is bool isLocked && isLocked; // Reads whether an attempt is currently locked.
+        int owner = room.CustomProperties.TryGetValue(RP_LOCK_OWNER, out object ownerValue) && ownerValue is int ownerActorNumber // Reads the actor that owns the attempt.
+            ? ownerActorNumber // Uses the valid stored owner.
+            : -1; // Treats missing or invalid ownership as unassigned.
+
+        if (locked && !IsActorInRoom(owner)) // Replaces a disconnected owner without waiting for a re-login.
         { // Starts this block.
-            int replacementOwner = GetRandomActiveActorNumber(otherPlayer.ActorNumber); // Stores an integer puzzle-state value.
-            bool hasReplacementOwner = replacementOwner > 0; // Stores a boolean puzzle-state result.
+            int replacementOwner = GetRandomActiveActorNumber(owner); // Chooses any remaining active player as the new submit owner.
+            bool hasReplacementOwner = replacementOwner > 0; // Tracks whether at least one teammate remains.
 
-            var ht = new Hashtable // Handles this part of the puzzle state flow.
-            { // Starts this block.
-                [RP_PUZZLE_LOCKED] = hasReplacementOwner, // Handles this part of the puzzle state flow.
-                [RP_LOCK_OWNER] = replacementOwner // Handles this part of the puzzle state flow.
-            }; // Ends this initializer block.
-            room.SetCustomProperties(ht); // Writes updated custom properties to Photon.
-            photonView.RPC(nameof(RPC_SetSubmitOwnerForAll), RpcTarget.All, replacementOwner); // Sends a synchronized RPC to Photon clients.
+            room.SetCustomProperties(new Hashtable // Updates the shared lock to an active owner or releases it when nobody remains.
+            { // Starts this initializer block.
+                [RP_PUZZLE_LOCKED] = hasReplacementOwner, // Keeps the attempt locked only while an active teammate can own it.
+                [RP_LOCK_OWNER] = replacementOwner // Stores the replacement owner or -1 when the room is empty.
+            }); // Ends and sends the ownership repair.
+            photonView.RPC(nameof(RPC_SetSubmitOwnerForAll), RpcTarget.All, replacementOwner); // Refreshes submit controls on every remaining client.
+        } // Ends this block.
+        else if (!locked && owner != -1) // Clears stale owner metadata left behind by an unlocked attempt.
+        { // Starts this block.
+            room.SetCustomProperties(new Hashtable { [RP_LOCK_OWNER] = -1 }); // Keeps unlocked state unowned.
         } // Ends this block.
 
-        MaybeAdvanceRoundIfEveryonePlayed(); // Handles this part of the puzzle state flow.
+        MaybeAdvanceRoundIfEveryonePlayed(); // Excludes inactive players when deciding whether the remaining team may start a new round.
     } // Ends this block.
 
     [PunRPC] // Marks the next method as callable through Photon RPC.
