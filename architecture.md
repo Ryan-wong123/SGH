@@ -134,6 +134,8 @@ Puzzle UI submit
 
 Individual managers own local puzzle rules and UI. Shared input/feedback behavior is supplied by components such as `DraggableCard`, `DropSlot`, `PhotonSyncedUIButtonColor`, `PhotonSyncedTMPDropdown`, `PhotonSyncedInputField`, and `WordSearchManager`.
 
+`WordSearchManager` validates its target paths as whole words before applying feedback. A selected letter is green only when its complete target word is selected; selected letters in incomplete words and unrelated selections are red. For shared cells in overlapping target words, red feedback takes precedence when either target word is incomplete.
+
 ### Shared card drag ownership
 
 `DraggableCard` supports an optimistic first drag for Photon-owned scene cards. When a player begins dragging a card they do not own, the card immediately follows that player's local pointer while it requests ownership. Incoming state from the current owner does not overwrite this local preview. If the player releases over a `DropSlot` before the transfer completes, the slot records the target and defers the placement. Once Photon confirms ownership, `DropSlot.CompleteDeferredDrop` performs the normal occupied-slot validation and placement, then the new owner persists and synchronizes the layout. If ownership transfer fails, the preview returns to its recorded drag origin without changing shared state.

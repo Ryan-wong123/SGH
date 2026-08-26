@@ -77,6 +77,7 @@ Each puzzle must support the `IPuzzle` contract where applicable: evaluate compl
 ### 4.3 UI and accessibility
 
 - Gameplay UI uses Unity Canvas Scaler configuration from `GameScene`; screen changes must be checked at common 16:9, 16:10, ultrawide, tablet portrait, and mobile landscape resolutions.
+- Word-search answer feedback is evaluated per complete target word. A selected cell is green only when every cell in its target word is selected; selected cells in an incomplete word, or outside a target word, are red. When target words overlap, red takes precedence for a shared cell that belongs to an incomplete word.
 - A normal clue must explicitly make its shared Close button visible. It must not depend on a previous slideshow's state.
 - A regular clue must deactivate any active slideshow under the shared clue root before it takes control of the shared Close button.
 - Close-button status text must remain visible while a multiplayer close gate is waiting.
