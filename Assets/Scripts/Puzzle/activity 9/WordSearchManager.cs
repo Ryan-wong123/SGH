@@ -452,6 +452,8 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
         ClearAllResults(); // fresh attempt paint
 
         bool allMatch = true; // Creates a local value used by the following logic.
+        int foundWordCount = 0; // Counts target words that exist in the generated grid.
+        int completedWordCount = 0; // Counts target words whose complete paths are selected.
         var expectedCells = new HashSet<LetterCell>(); // All cells belonging to a target word.
         var correctCells = new HashSet<LetterCell>(); // Cells in fully selected target words.
         var wrongCells = new HashSet<LetterCell>(); // Selected cells in incomplete target words.
@@ -465,6 +467,8 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
                 allMatch = false;
                 continue; // Skips to the next loop iteration.
             }
+
+            foundWordCount++; // A target must be present before it can be completed.
 
             bool wordIsComplete = true;
             var wordCells = new List<LetterCell>();
@@ -487,6 +491,7 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
 
             if (wordIsComplete)
             {
+                completedWordCount++; // Every configured target must reach this branch.
                 foreach (LetterCell cell in wordCells)
                     correctCells.Add(cell);
             }
@@ -521,6 +526,16 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
             }
 
             ApplyCellState(cell, true, resultState, true);
+        }
+
+        // Stage progression must require every configured word, not just a
+        // subset of correct selections. The exact-cell check also rejects
+        // submissions containing unrelated selected letters.
+        if (foundWordCount != ExpectedWordReferences.Length ||
+            completedWordCount != ExpectedWordReferences.Length ||
+            selected.Count != expectedCells.Count)
+        {
+            allMatch = false;
         }
 
         return allMatch; // Returns this result to the caller.
