@@ -1,144 +1,138 @@
 # SGH Game Product Requirements Document
 
-## 1. Product summary
+## Scope and evidence
 
-SGH is a cooperative, first-person, multiplayer educational puzzle game built in Unity. A team enters a private Photon room, selects characters, explores a hospital-themed scene, completes a sequence of eleven clinical-learning puzzles, collects clues and keys, and reaches the end-game state together.
+Updated 8 September 2026 from project-owned scripts, Lobby/GameScene serialization, relevant prefabs, project settings, and `backend/SghCsvEmailApi`. This describes implementation, with requirements and gaps identified separately. Source inspection is not a completed multiplayer playtest. Imported packages, artwork, and vendor demos are dependencies, not additional SGH game modes.
 
-The game is designed around shared progression: the room has one current puzzle stage, puzzle interactions are coordinated across players, and key story/clue events are synchronized through Photon.
+See [architecture.md](architecture.md) for runtime contracts and [AGENTS.md](AGENTS.md) for maintenance rules.
 
-## 2. Players and session model
+## Product and player journey
 
-- A player supplies a display name, joins the Photon lobby, then creates or joins a room.
-- A room has a generated six-character password, a configurable player capacity, a 10-minute player rejoin TTL, and a five-minute empty-room TTL.
-- The room creator is the Photon master client and can start the game. Starting the game hides the room from the lobby and loads `GameScene` for the room.
-- Each player chooses one of the configured character prefabs. `GameManager` spawns that player at a deterministic spawn point based on the sorted Photon player list.
-- A temporary disconnect does not end the session. Players can rejoin their room while its player TTL is valid. The remaining active players must still be able to progress.
+SGH is a cooperative first-person hospital puzzle game about hypoglycemia, diabetes medicines, insulin, and lapses surrounding a patient's death. Players investigate through documents, conversations, comics, and eleven ordered puzzles. Story text moves between the present, two hours before death, and two weeks before death. Routes lead through the canteen, physician room, pharmacy, nurse education room, and mortuary.
 
-## 3. Core player experience
+The team shares progression, supported puzzle inputs, card layouts, clues, and inventory rewards. Each player has their own avatar, camera, navigation progress, and reading controls. Photon provides gameplay networking and a separate Chat service; there is no project-owned dedicated gameplay server or database. Clinical answers documented here describe game validation, not independently reviewed clinical guidance.
 
-1. **Lobby and team formation**
-   - Connect to Photon, set a nickname, create or select a room, provide its password, and wait for the master client to start.
-   - Use room chat while waiting or playing.
+### Session setup
 
-2. **Explore and interact**
-   - Move a first-person character around the scene.
-   - Use the crosshair interaction prompt to collect items, open doors, trigger puzzles, operate keypads, and follow objectives.
-   - When a stage has a destination, follow a floating GPS-style arrow. It continuously points across the current floor toward the next configured route waypoint (such as a corridor, doorway, or staircase), automatically advances when the player arrives, and hides at the final destination. It must not point vertically at a higher-floor objective.
-   - Use sidebar UI for inventory, clues, instructions, settings, and chat.
+1. Connect to Photon with game version `1.0` and a device-local persistent user ID.
+2. The home form asks sequentially for username, sender Gmail address, Gmail app password, and CSV recipient. It reuses one input field and masks the password. This flow currently applies generally, not only to the eventual organiser. Credentials remain in runtime memory.
+3. Create a named room with dropdown-selected capacity or select a listed room and enter its password. Creation generates six characters. Password checks use lobby properties and are a convenience gate rather than secure authentication.
+4. Choose Doctor, Nurse, or Therapist (indices 0, 1, 2). Selection is highlighted and stored in player properties. No distinct abilities or exclusive role reservations are implemented. Invalid/missing selection defaults to Doctor.
+5. The waiting room shows names, population, and password. Only the master starts; `StartGame` has no all-ready requirement. The room becomes invisible but stays open, and all clients load GameScene through Photon.
+6. Each client spawns its avatar after a short readiness delay, using sorted actor number to select one of four spawn points; overflow uses the first point.
 
-3. **Solve the shared game**
-   - Progress through the ordered puzzle stages.
-   - At most one active player owns a new puzzle attempt at a time. The lock owner can close and re-open their own active attempt; other players are told that the puzzle is held.
-   - Puzzle input and answer feedback use Photon synchronization where the individual puzzle requires it.
-   - A player must be able to drag a shared card on their first interaction, even when another player currently owns its Photon view. The card follows the local pointer immediately; if it is released over a drop slot before ownership transfers, that selected slot is committed once the transfer succeeds.
-   - Correct solutions advance the room, reward configured clues, update story objects/objectives, reset the shared countdown, and may unlock keys or doors.
+The room allows inactive actors to rejoin for ten minutes and retains an empty room for five minutes. Local room caching additionally requires another active player. This is temporary session recovery, not save/load.
 
-4. **Read clues and story panels**
-   - Regular clue panels, image-detail clues, and comic/slideshow panels are local views of shared game content.
-   - In multiplayer, configured close gates require every active player to click Close. After a player votes, the button remains visible, displays the remaining player count, and is no longer interactable for that player.
-   - Inactive/disconnected Photon players are not expected to vote, so they cannot indefinitely block a clue or comic from closing.
+### Player controls
 
-5. **Finish and record the session**
-   - Puzzle completion and player inputs are collected into per-player and team rows.
-   - The master client writes a gameplay CSV at the final stage, on an intentional room exit, or when quitting through game UI.
-   - The current implementation writes the file to the current user's Downloads folder and conditionally emails it from the session organiser client when runtime SMTP credentials are available.
-
-## 4. Functional requirements
-
-### 4.1 Multiplayer and recovery
-
-- Scene changes must be synchronized by Photon master-client authority.
-- Puzzle stage, puzzle lock, lock owner, turn round, and delayed stage transition state must be stored in Photon room/player properties or buffered RPCs as appropriate.
-- A correct submission must survive the submitting player's disconnect during its configured transition delay.
-- When the lock holder disconnects, the new/current master must reassign the lock to an active player when possible or release it. Active players must be able to continue.
-- A master-client switch must preserve/recover pending stage advance work.
-- Card ownership transfer must not consume a drag gesture. A rejected or failed transfer returns only the local drag preview to its recorded origin; a valid deferred drop is applied by the new owner and synchronized to the room.
-
-### 4.2 Puzzle progression
-
-The ordered stage mapping in `PuzzleStateManager` is authoritative. Folder/activity names are content labels and do not always match the stage number.
-
-| Stage | Runtime manager / content |
+| Action | Behavior |
 | --- | --- |
-| Puzzle 0 | Opening comic / pre-puzzle state |
-| Puzzle 1 | `SymptomsCardManager` |
-| Puzzle 2 | `BearCardManager` |
-| Puzzle 3 | `PictureGridManager` |
-| Puzzle 4 | `Activity2PuzzleManager` |
-| Puzzle 5 | `WordSearchManager` |
-| Puzzle 6 | `DiaryPuzzleManager` |
-| Puzzle 7 | `RiskTable` |
-| Puzzle 8 | `PrescriptionManager` |
-| Puzzle 9 | `CrosswordManager` |
-| Puzzle 10 | `InsulinPuzzleManager` |
-| Puzzle 11 | `DeathLapsesManager` |
+| Movement / look | Horizontal and Vertical input axes, mouse look, CharacterController movement, walking animation. |
+| Free cursor | Q toggles the cursor and suppresses local movement/look while unlocked. |
+| World interaction | E uses the crosshair target; prompts and highlighting identify usable objects. |
+| Keypad | Left-click world buttons to enter numbers, backspace, and submit. |
+| Cards | Drag into slots; occupied/invalid drops return according to configured card behavior. Right-click enlarges a card image. |
+| Sidebar | Toggle configured inventory, clues, instructions, settings, and other panels with a shared blocker. |
+| Identity | Remote avatars have camera-facing name tags; shared dragged cards show the dragging player's name. |
 
-Each puzzle must support the `IPuzzle` contract where applicable: evaluate completion and reset state when the shared timer expires.
+Only the owned avatar runs movement/look; remote cameras are disabled. Cursor state and panel visibility are separate systems, so opening a panel is not a universal input-lock contract.
 
-### 4.3 UI and accessibility
+### Guiding arrow
 
-- Gameplay UI uses Unity Canvas Scaler configuration from `GameScene`; screen changes must be checked at common 16:9, 16:10, ultrawide, tablet portrait, and mobile landscape resolutions.
-- Word-search answer feedback is evaluated per complete target word. A selected cell is green only when every cell in its target word is selected; selected cells in an incomplete word, or outside a target word, are red. When target words overlap, red takes precedence for a shared cell that belongs to an incomplete word.
-- A normal clue must explicitly make its shared Close button visible. It must not depend on a previous slideshow's state.
-- A regular clue must deactivate any active slideshow under the shared clue root before it takes control of the shared Close button.
-- Close-button status text must remain visible while a multiplayer close gate is waiting.
-- Room-list prefabs must be laid out so every visible room can be selected. The current scene's room-list content has no layout component, so room entries can overlap; this remains a known UI issue to resolve.
+The floating arrow stays horizontal and points to authored waypoints through corridors and stairs. It runs at stages 3 (Canteen, 7 points), 5 (Physician Room, 4), 7 (Pharmacy, 8), 9 (Nurse Education Room, 6), and 11 (`Morturary`, serialized spelling, 6). Other stages clear its target.
 
-### 4.4 Analytics and email delivery
+Each client advances its route within 1.5 metres of the current waypoint. Matching trigger volumes can also report arrival; out-of-order arrivals cannot skip the route. The arrow hides at the final point. This is authored guidance, not automatic pathfinding.
 
-- CSV output includes individual player input activity and team submissions, attempts, correct/wrong counts, expected answers, and time taken.
-- Only the Photon room organiser may send the email attachment.
-- Credentials, app passwords, and API secrets must never be committed, displayed in a UI, placed in Photon properties, or included in logs.
-- The intended production route is a server-side HTTPS endpoint. The repository currently has a separate .NET email API, but Unity does not yet call it; production delivery should consolidate on the backend route.
+## Puzzle sequence
 
-## 5. Non-functional requirements
+`PuzzleStateManager` stage numbers are authoritative; activity folder and panel names sometimes differ. Standard main-stage success waits two seconds in GameScene. Multipart success can reveal another page without changing the main stage.
 
-- **Consistency:** all clients eventually render the same room stage and shared puzzle result.
-- **Resilience:** a disconnect, rejoin, or master-client handoff must not strand the team in a puzzle lock, stage delay, or close gate.
-- **Privacy and security:** do not publish room passwords or SMTP/API credentials beyond their necessary scope. Treat gameplay CSVs as potentially sensitive learning data.
-- **Maintainability:** new puzzles must be registered in `PuzzleStateManager`, configured in `GameScene`, and verified in both single-player and two-client Photon runs.
-- **Performance:** world interaction, UI updates, and Photon property/RPC traffic must remain responsive at the room's configured capacity.
+| Stage / content | Mechanism and actual success rule | Completion effect |
+| --- | --- | --- |
+| 0: Opening comic | Nine slides; all active players reach the last slide and vote Close. | Master sets stage 1. Not scored. |
+| 1: Decode hypoglycemia symptoms | `SymptomsCardManager`: every registered slot must contain a first card whose symptom matches its configured answer list. Serialized `required` is unused by this validator. | Opens Puzzle 2; same timer continues. |
+| 2: Align the palette | `BearCardManager`: at least 10 correct first-card placements against slot symptom lists. | Time Crystal1, clue `325`, stage 3, Canteen route, timer reset. Excluded from CSV. |
+| 3: Fuel up against low sugar | `PictureGridManager`: select exactly the correct pictures, without extras or omissions. Scene has 20 buttons, correct zero-based indices 0, 1, 7, 8, 17, 19. | Opens Puzzle 4; same timer continues. |
+| 4: Survival code | `Activity2PuzzleManager`: part 1 requires 20 correct card/slot step matches; part 2 requires exact strings `15` and `4`. | Part 1 broadcasts part 2. Final success gives Time Crystal2, clue `154`, stage 5, Physician Room route, timer reset. |
+| 5: Hidden interactions | `WordSearchManager`: select all seven target words and no unrelated cells. Fixed 21×21 grid includes coordinate headers. | Clue `477`, stage 6, panel closes, timer resets. |
+| 6: Glucose Diary | Three pages, configured field-order answers: `32`; then `24, 8, 8, 8`; then `40, 20, 40`. Trims text, supports case rules and numeric equivalence within 0.0001. | Correct pages advance together. Final page gives Time Crystal3, stage 7, Pharmacy route, timer reset. |
+| 7: Medicine risk table | `RiskTable`: six dropdowns match configured indices `1, 2, 1, 1, 1, 1`. Null references are skipped, making scene wiring essential. | Clue `28`, opens Puzzle 8, timer reset. |
+| 8: Insulatard dose | `PrescriptionManager`: trimmed answer must be `28`. | Time Crystal4, stage 9, Nurse Education Room route, timer reset. Fourth trigger reference is unassigned, so this hook removes no trigger. |
+| 9: Decode insulin | `CrosswordManager`: every active letter in a fixed 13×13 crossword must match case-insensitively. | Across-hint switches to image-hint; clue `135`, stage 10, timer reset. Hook does not explicitly close the whole crossword panel. |
+| 10: Insulatard vial sequence | Syringe dropdown index 1 through a dedicated submit action; correct selection opens part 2 after a local two-second delay. Then require nine correct step-card placements. | Closes panel, stage 11, mortuary route, timer reset. |
+| 11: Hidden lapses | Five part-1 placements store normalized `lapsesAnswer`; part 2 requires four cards matching stored answers through linked slots. | Time Crystal5, trigger hiding, configured world-object movement, CSV request. Stage stays 11. |
 
-## 6. Acceptance scenarios
+Word-search targets: FLUOROQUINOLONES, SULFONYLUREAS, LINEZOLID, AZOLES, ELDERLY, IMPAIRED, REDUCTION. Dragging adds/removes cells. Complete words turn green; selected cells in incomplete words or outside target words turn red. Red takes precedence where an incomplete word overlaps a complete one.
 
-### Disconnect during a puzzle
+Crossword words: lispro, NPH, glulisine, aspart, detemir, Lantus, regular, and Toujeo. Empty or wrong letters fail. Most puzzles show green/red feedback; several card managers clear wrong tint after one second.
 
-1. Player A owns the current puzzle lock.
-2. Player A disconnects before completing the puzzle.
-3. The master reconciles the lock; an active team member can open and submit the puzzle.
-4. The team can advance without Player A returning.
+Puzzle 11 part 1 normally compares each card with the answer just stored from that same card. It primarily validates filled-slot count rather than an independent predefined answer key. Rotation-tile scripts also exist but are not registered as another stage.
 
-### Disconnect during delayed stage advance
+## Cooperative attempts and transitions
 
-1. A puzzle is solved and a delayed stage transition is scheduled.
-2. The player that solved it disconnects, including the possibility that they were the master.
-3. The pending stage and Photon-time deadline remain in room properties.
-4. The current master performs the transition once the deadline passes.
+A world trigger requests an attempt from `PuzzleStateManager`. The master manages the room lock and actor owner. Opening a puzzle is broadcast to all participants. Supported controls let teammates contribute, while the designated owner receives managed Submit buttons. The lock controls attempts/submission, not exclusive ownership of every input.
 
-### Multiplayer clue close
+Starting marks `PlayedRound`. The owner can close/reopen the same attempt; clients already granted re-entry can reopen that shared attempt too. Others trying to start a held attempt receive a temporary warning. Successful main-stage completion releases the lock. When all active players have used their turn, the master increments `Round` and clients clear played flags. Wrong submissions do not automatically release the lock.
 
-1. Two or more active players open a clue.
-2. A player clicks Close.
-3. Their button remains on screen as `Waiting for (N players to close)` and cannot be clicked again.
-4. The clue stays open until every active player votes.
-5. When the final active player votes, the clue closes for all clients.
+Some triggers show a clue before opening the puzzle through its close callback. First-view memory is local to the trigger. Correct main-stage answers store a pending stage and Photon-time deadline in room properties. The current master completes that transition even if the submitting client disconnects. Multipart page changes use separate RPCs and do not all have durable recovery.
 
-### Normal clue after a slideshow
+## Countdown, losing, and winning
 
-1. A comic/slideshow was previously active.
-2. A regular clue such as `Phone Message From Father` opens.
-3. The regular clue owns the shared Close button; the button is visible and the clue's multiplayer close gate is used.
+GameScene configures **15 minutes (900 seconds)**. The timer starts with the game timer component, including the opening state. Warnings appear at five minutes (Time's almost up!) and two minutes (Puzzle is going to reset!).
 
-### GPS route to another floor
+Expiry resets the current stage's configured cards, inputs, selections, or multipart page, then the master restarts the timer for stages 1–11. It does not erase all earlier progress, remove all keys, kill a player, or load a loss scene. Stage 0 has no reset handler and does not automatically restart at expiry. Stages 1→2 and 3→4 share their current timer; most other completion hooks reset it.
 
-1. A stage starts a configured route whose final objective is on another floor.
-2. The objective arrow stays level and points toward the next walkable route point, including the route to the stairs or doorway.
-3. As the local player reaches each point, the arrow selects the next one without requiring an exact trigger hit.
-4. The arrow hides after the local player reaches the final waypoint.
+The countdown uses Photon time. Local `Time.timeScale = 0` for a clue does not pause it. There is no separate global loss state, limited-lives system, or permanently failed session state.
 
-## 7. Current product risks and follow-up work
+Puzzle 11 completion finishes the puzzle chain and requests analytics, but does not set a terminal won flag or stop the timer. The two-slide End Game Comic is separately registered as `Title Deed Trigger`. Its last-slide Close leaves the room and loads Lobby independently for each client; this comic has no all-player gate. The optional score-summary panel is not automatically invoked by Puzzle 11 completion. A debug message saying You win after Puzzle 2 is not the ending.
 
-- Room passwords are published as Photon lobby custom properties so clients can validate them locally. This is convenience, not secure access control.
-- The repository contains SMTP handling and credential material in backend source. Rotate any exposed credentials, move configuration into secure deployment secrets, and remove source-controlled values before release.
-- The .NET CSV email API and `SmtpEmailSettings` asset are present, but the Unity logger currently sends SMTP directly instead of posting to that API. The two paths should be reconciled.
-- There are no project-owned automated gameplay tests in the repository. Multiplayer recovery, stage transitions, and close gates need repeatable two-client verification.
+## Doors, inventory, clues, and story
+
+Keypads accept up to nine input characters, backspace, and enter. They compare a parsed integer with their configured combination. Incorrect entries show Denied, play feedback, then clear after the display delay. Success latches Granted, unlocks assigned door leaves, can remove key requirements, and can open the doors automatically. GameScene combinations are `325`, `154`, `477`, `28`, and `135`; the standalone prefab default is different.
+
+Doors separately check hard-lock and inventory-key conditions. Allowed E interaction toggles a hinge with instant or smooth rotation. Inventory is a deduplicated set of item names; keys are not consumed. Time crystals, keypad inventory rewards, and password-clue images are distinct concepts.
+
+The clue grid includes envelope, Glucose Diary, prescription, Intervention Note, Property Bag, and five password clues. Locked slots remain clickable and explain their state. Collected slots reveal an icon and full-image view. New clues increment a badge; viewing clears it. Pickups synchronize collection and notifications, optionally open a display, then ask the master to remove the world pickup.
+
+`StorylineDirector` applies stage-configured object activation, component/trigger disabling, queue board text/flashing, timeline text, audio, and delayed popups. Stage 0 opens Comic 1; stage 9 opens the nurse dialogue. The nurse dialogue autoplays seven timed slides with audio. Other story comics use previous/next controls. Local collider triggers also activate comics. Diary/prescription/date-helper labels use dates relative to the device clock.
+
+Regular clues and comics share a physical Close button. Gated presentations wait for all active players; a local vote leaves Close visible, disabled, and showing the remaining count. Inactive players are excluded. Slides show Close only on the final page; page navigation itself is local. Collected-image detail viewing closes locally instead of creating another team gate.
+
+Notifications use a FIFO popup queue with unscaled fade/slide timing, including while gameplay is paused. Pickups, password rewards, locked clues, and story messages feed it. Turn warnings, timer banners, chat badges, and clue badges are separate mechanisms.
+
+## Chat and reconnection
+
+Photon Chat uses a separate persistent connection, waits for a nickname, services messages every frame, and rebinds UI across scenes. Send or Enter publishes trimmed text; hidden messages increment unread count, cleared when opened.
+
+Outside rooms the channel is Global. In Lobby, the master also uses Global while joiners use the room name. In GameScene all participants use the room-name channel. This waiting-room asymmetry can split the conversation. The dropdown displays the automatic channel; private-message callbacks are empty. Independent chat reconnection is incomplete.
+
+Gameplay recovery first attempts ReconnectAndRejoin, then reconnect/fresh connection followed by cached-room rejoin. Failed gameplay rejoin returns to Lobby. Intentional leave clears the cache. The master removes inactive players' avatar objects; rejoining spawns a replacement if no owned model exists. Position is not restored from a saved checkpoint.
+
+On membership changes the master repairs an absent lock owner by choosing an active replacement or releasing the lock. Inactive players do not block turn rounds or close votes. Room properties and buffered effects recover portions of state; this is not complete restoration of all UI, multipart pages, historical analytics, or organiser credentials.
+
+## Analytics and automatic email
+
+The persistent logger gathers entry, submission, elapsed-time, and supported control-input events. Non-masters send reliable event 41 to the master for in-memory aggregation. Eligible completion/leave/quit paths export UTF-8 `gameplay_<room>_<timestamp>.csv` into the user's Downloads directory.
+
+The file has `INDIVIDUAL_PLAYER_INPUTS` and `TEAM_SUBMISSIONS` sections. They include date, room, player/submitter, puzzle identity, tries, correct/wrong counts, and variable wrong-answer columns. Team rows add the first successful snapshot as expected answers, elapsed time, and summed team time on the first row. Team grouping includes submitter, so there can be multiple rows per puzzle/part.
+
+Stage 0 and Puzzle 2 are excluded. Individual rows are suppressed for Puzzle 4 part 2, Puzzle 5, all three diary parts, Puzzle 8, and Puzzle 9. Remaining individual counts belong to the submitter; they do not measure every teammate's contribution. Latest control values are collected internally but not exported as a complete raw input history. Team timing is accumulated attempt time, not guaranteed session wall time.
+
+Automatic delivery currently means the master writes the file and, if it is also the recorded organiser still in the room with runtime SMTP details, sends it through Gmail SMTP over TLS. Failures are logged; there is no retry queue or guaranteed send completion before quit. Master migration does not transfer analytics history or credentials. The persistent logger lacks a new-room reset, so repeated sessions in one process need verification.
+
+The optional ASP.NET Core API can accept and email a CSV, but Unity currently does not call it. Changing `SmtpEmailSettings` does not alter direct SMTP delivery. Its existing backend README has stale integration and credential instructions; the verified contract is in architecture.md.
+
+## Acceptance requirements and known gaps
+
+Required verification, not asserted completed testing:
+
+1. With two clients, create/join/start, choose every avatar, and verify owned controls, remote models/tags, shared inputs, and chat channel behavior.
+2. Solve every stage and part; verify rewards, next panel, guidance route, story effects, and the timer exceptions above.
+3. Make wrong submissions and expire each stage; ensure retry leaves usable cards/controls and no orphaned state.
+4. Disconnect the lock owner/master during drag, multipart change, delayed advance, and close vote. Verify remaining-team progress and rejoin without duplicate avatars or reversed state.
+5. Open a regular clue after a slideshow; verify Close visibility/count, local image close, and independent ending exit.
+6. Verify keypad rejection/retry, shared unlock, and rejoin after doors open.
+7. Check guidance across floors and UI at 16:9, 16:10, ultrawide, tablet portrait, and mobile landscape. Keyboard/mouse controls do not imply implemented touch controls.
+8. Validate synthetic CSV data, exclusions, early exit, master migration, second-session behavior, and explicitly configured test email delivery.
+
+Known gaps: event 41 overlaps analytics/crossword text; event 42 overlaps word-search/clue-close data; durable main-stage transitions do not cover every substage; validation is client-side; Puzzle 11 has no terminal latch; analytics/email are not durable across master migration. Backend credential constants and recipient logging require production remediation. Lobby content layout must prevent room-entry overlap. None of these gaps is fixed by this documentation update.
