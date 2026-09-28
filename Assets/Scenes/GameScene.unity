@@ -35879,6 +35879,8 @@ MonoBehaviour:
   clueId: Syringe Trigger
   startWithClue: 0
   dontDestroyOnCompletion: 0
+  restrictToStage: 1
+  requiredStage: 10
   alreadyPlayedImage: {fileID: 321013863}
   warningMessage: {fileID: 550520579}
   showDuration: 2
@@ -141776,6 +141778,8 @@ MonoBehaviour:
   Puzzle9AcrossHint: {fileID: 1425878409}
   insulinPuzzleManager: {fileID: 1067863178}
   Puzzle10Panel: {fileID: 1067863174}
+  puzzle10SyringeTrigger: {fileID: 550995252}
+  puzzle10ChestLid: {fileID: 8196937307459001344}
   deathLapsesManager: {fileID: 280907649}
   Puzzle11Panel: {fileID: 280907644}
   movementTargetPuzzle11: {fileID: 5130600388808461207}

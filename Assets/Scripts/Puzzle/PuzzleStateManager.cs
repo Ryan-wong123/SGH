@@ -83,6 +83,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
     [Header("puzzle 10")] // Groups related fields in the Unity inspector.
     [SerializeField] private InsulinPuzzleManager insulinPuzzleManager; // Exposes this private field in the Unity inspector.
     [SerializeField] private GameObject Puzzle10Panel; // Exposes this private field in the Unity inspector.
+    [SerializeField] private PuzzleTrigger puzzle10SyringeTrigger; // The syringe box is the only world entry point for Puzzle 10.
+    [SerializeField] private DoorInteractable puzzle10ChestLid; // The chest must be opened before its contents can start Puzzle 10.
 
     [Header("puzzle 11")] // Groups related fields in the Unity inspector.
     [SerializeField] private DeathLapsesManager deathLapsesManager; // Exposes this private field in the Unity inspector.
@@ -1478,9 +1480,16 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
     // Gate attempt; called by triggers
     // Gate attempt; called by triggers
-    public bool TryBeginAttempt(out string reason) // Handles this part of the puzzle state flow.
+    public bool TryBeginAttempt(PuzzleTrigger source, out string reason) // Handles this part of the puzzle state flow.
     { // Starts this block.
         reason = null; // Handles this part of the puzzle state flow.
+
+        if (CurrentStage == PuzzleStage.Puzzle10 &&
+            (source != puzzle10SyringeTrigger || puzzle10ChestLid == null || !puzzle10ChestLid.HasBeenOpened))
+        {
+            reason = "Open the chestbox before starting the syringe puzzle.";
+            return false;
+        }
 
         var me = PhotonNetwork.LocalPlayer; // Handles this part of the puzzle state flow.
         var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.

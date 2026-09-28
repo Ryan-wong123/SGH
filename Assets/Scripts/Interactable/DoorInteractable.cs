@@ -26,6 +26,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable // 
     private Transform highlightRoot; // Optionally stores the root transform to search for a highlight effect.
 
     private bool isOpen = false; // Tracks whether the door is currently open.
+    public bool HasBeenOpened { get; private set; } // Remembers an opening even if the door is later closed; buffered door RPCs restore it on rejoin.
     private Quaternion closedRotLocal; // Stores the hinge's local rotation when the door is closed.
     private Quaternion openRotLocal; // Stores the hinge's local rotation when the door is open.
 
@@ -179,6 +180,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable, IHighlightable // 
         if (hinge == null) return; // Stops if there is no hinge to rotate.
 
         isOpen = open; // Stores the current open state.
+        if (open) HasBeenOpened = true; // Records that this door's prerequisite interaction happened.
         Quaternion target = isOpen ? openRotLocal : closedRotLocal; // Chooses the target hinge rotation for the desired state.
 
         if (!smooth) // Checks whether the door should snap instantly.

@@ -123,12 +123,12 @@ The scene delay is two seconds. Multipart changes for Puzzle 4, Diary, and Death
 | 7 | RiskTable, activity 10 | Dropdown index comparison; reset values/feedback; opens 8. |
 | 8 | PrescriptionManager, activity 7 | Trimmed string answer; reset input; Crystal4. |
 | 9 | CrosswordManager, activity 5 | Fixed solution; reset text/results and rebuild cells; switch hint objects. |
-| 10 | InsulinPuzzleManager, activity 8 | Dedicated syringe submit then nine step matches; reset cards/dropdown/part visibility. |
+| 10 | InsulinPuzzleManager, activity 8 | GameScene permits entry only through the syringe trigger after the chestbox lid has opened. Dedicated syringe submit then nine step matches; reset cards/dropdown/part visibility. |
 | 11 | DeathLapsesManager, activity 11 | Stage1Slot/Stage2Slot linked-answer matching; reset cards/unlock flags/second-stage visibility; Crystal5, world movement, CSV. |
 
 PRD.md records exact current thresholds and answers. `DropSlot.allDropSlots` registers on Start and unregisters on destruction, not disable; several validators iterate this global collection. Some reset searches only find active cards. Therefore activation order, tags, card behavior, and panel lifetime affect validation/reset; do not assume every loop is scoped to the currently visible puzzle.
 
-Reward configuration: stage 2→clue 325, 4→154, 5→477, 7→28, 9→135. Crystal rewards occur after 2, 4, 6, 8, 11. GameScene restricts the phone trigger to stage 1 and the mortuary chest trigger to stage 11. The phone is hidden by a buffered RPC after stage 1; stage 2 still awards Time Crystal1 without hiding it a second time. Trigger hiding honors `dontDestroyOnCompletion` and Photon view references. `puzzle4Object` is unassigned in GameScene. Stage 11 does not increment CurrentStage, stop the timer, or call ShowEndScreen.
+Reward configuration: stage 2→clue 325, 4→154, 5→477, 7→28, 9→135. Crystal rewards occur after 2, 4, 6, 8, 11. GameScene restricts the phone trigger to stage 1, the syringe trigger to stage 10, and the mortuary chest trigger to stage 11. Stage 10 also checks that its chestbox lid has received an open state; buffered door RPCs replay this history for clients that rejoin. The phone is hidden by a buffered RPC after stage 1; stage 2 still awards Time Crystal1 without hiding it a second time. Trigger hiding honors `dontDestroyOnCompletion` and Photon view references. `puzzle4Object` is unassigned in GameScene. Stage 11 does not increment CurrentStage, stop the timer, or call ShowEndScreen.
 
 ## Shared inputs, drag ownership, and event contracts
 

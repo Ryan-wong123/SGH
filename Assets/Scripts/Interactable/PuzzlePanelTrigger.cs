@@ -60,7 +60,7 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable // 
             : -1; // Uses -1 as a local/offline fallback actor number.
 
         // Fair-turn gate // Marks the check that prevents unfair or repeated puzzle attempts.
-        if (!puzzleStateManager.TryBeginAttempt(out string reason)) // Asks the puzzle manager whether a new attempt may begin.
+        if (!puzzleStateManager.TryBeginAttempt(this, out string reason)) // Asks the puzzle manager whether this world object may begin an attempt.
         { // Opens the blocked-attempt block.
             Debug.Log(reason); // Logs the reason the attempt was blocked.
             ShowAlreadyPlayedUI(reason); // Shows the blocked-attempt reason in the UI.
