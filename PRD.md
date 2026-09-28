@@ -18,10 +18,10 @@ The team shares progression, supported puzzle inputs, card layouts, clues, and i
 2. The home form asks sequentially for username, sender Gmail address, Gmail app password, and CSV recipient. It reuses one input field and masks the password. This flow currently applies generally, not only to the eventual organiser. Credentials remain in runtime memory.
 3. Create a named room with dropdown-selected capacity or select a listed room and enter its password. Creation generates six characters. Password checks use lobby properties and are a convenience gate rather than secure authentication.
 4. Choose Doctor, Nurse, or Therapist (indices 0, 1, 2). Selection is highlighted and stored in player properties. No distinct abilities or exclusive role reservations are implemented. Invalid/missing selection defaults to Doctor.
-5. The waiting room shows names, population, and password. Only the master starts; `StartGame` has no all-ready requirement. The room becomes invisible but stays open, and all clients load GameScene through Photon.
+5. The waiting room shows names, population, and password. Only the master starts; `StartGame` has no all-ready requirement. The room stays visible and open, is marked as in progress, and all clients load GameScene through Photon. The Lobby lists it as a rejoin option; only a player with that room cached locally can select its rejoin path.
 6. Each client spawns its avatar after a short readiness delay, using sorted actor number to select one of four spawn points; overflow uses the first point.
 
-The room allows inactive actors to rejoin for ten minutes and retains an empty room for five minutes. Local room caching additionally requires another active player. This is temporary session recovery, not save/load.
+The room allows inactive actors to rejoin for ten minutes and retains an empty room for five minutes. Clients cache the room name even if they are the last active player; an empty room can still expire, and a cached name does not guarantee that Photon can restore the actor. This is temporary session recovery, not save/load.
 
 ### Player controls
 

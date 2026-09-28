@@ -172,12 +172,6 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
             return; // Leaves because there is no room to save.
         } // Ends the no-room branch.
 
-        if (!HasOtherActivePlayersInRoom()) // Checks whether any other active player remains in the room.
-        { // Starts the no-other-players branch.
-            ClearCachedRoomRejoin(); // Clears the saved room because rejoining would not be useful.
-            return; // Stops after clearing the cache.
-        } // Ends the no-other-players branch.
-
         PlayerPrefs.SetString(RejoinRoomPrefKey, PhotonNetwork.CurrentRoom.Name); // Saves the current room name in PlayerPrefs.
         PlayerPrefs.Save(); // Flushes PlayerPrefs changes to disk.
     } // Ends the CacheCurrentRoomForRejoin method body.

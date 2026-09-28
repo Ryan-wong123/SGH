@@ -142,9 +142,10 @@ public class CreateRoomManager : Network // Defines a room creation manager that
             PublishUserId = true, // Publishes user IDs so rejoin and user tracking can work.
             CustomRoomProperties = new ExitGames.Client.Photon.Hashtable // Creates the custom room properties table.
             { // Starts the custom room properties initializer.
-                { RoomPasswordPropertyKey, roomPassword } // Stores the room password in Photon custom room properties.
+                { RoomPasswordPropertyKey, roomPassword }, // Stores the room password in Photon custom room properties.
+                { "GameStarted", false } // Publishes whether this room has entered gameplay.
             }, // Ends the custom room properties initializer.
-            CustomRoomPropertiesForLobby = new[] { RoomPasswordPropertyKey } // Makes the password property available in lobby room info.
+            CustomRoomPropertiesForLobby = new[] { RoomPasswordPropertyKey, "GameStarted" } // Exposes the room password and gameplay status to the lobby.
         }; // Ends and returns the RoomOptions initializer.
     } // Ends the BuildRoomOptions method body.
 
