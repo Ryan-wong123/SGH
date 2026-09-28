@@ -261,7 +261,9 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
         base.OnJoinRoomFailed(returnCode, message);
 
         if (listedGameRejoinFailed)
-            SetJoinFeedback("Rejoin failed. Your previous player slot may have expired.", true);
+            SetJoinFeedback(returnCode == ErrorCode.JoinFailedFoundActiveJoiner
+                ? "Your old connection is still active. Wait a moment, then retry."
+                : "Rejoin failed. Your previous player slot may have expired.", true);
     }
 
     private void SetFallbackRoomOrganizer() // Records a valid organiser actor number after creating a random-match fallback room.

@@ -1314,29 +1314,34 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             ? ownerActorNumber // Uses the valid stored owner.
             : -1; // Treats missing or invalid ownership as unassigned.
 
-        if (locked && !IsActorInRoom(owner)) // Replaces a disconnected owner without waiting for a re-login.
+        if (locked && !IsActorInRoom(owner)) // Releases an attempt whose owner disconnected so a teammate can interact again.
         { // Starts this block.
-            int replacementOwner = GetRandomActiveActorNumber(owner); // Chooses any remaining active player as the new submit owner.
-            bool hasReplacementOwner = replacementOwner > 0; // Tracks whether at least one teammate remains.
-
-            room.SetCustomProperties(new Hashtable // Updates the shared lock to an active owner or releases it when nobody remains.
+            room.SetCustomProperties(new Hashtable // Clears the stale lock without assigning it to a player who never opened the puzzle.
             { // Starts this initializer block.
-                [RP_PUZZLE_LOCKED] = hasReplacementOwner, // Keeps the attempt locked only while an active teammate can own it.
-                [RP_LOCK_OWNER] = replacementOwner // Stores the replacement owner or -1 when the room is empty.
+                [RP_PUZZLE_LOCKED] = false,
+                [RP_LOCK_OWNER] = -1
             }); // Ends and sends the ownership repair.
-            photonView.RPC(nameof(RPC_SetSubmitOwnerForAll), RpcTarget.All, replacementOwner); // Refreshes submit controls on every remaining client.
+            photonView.RPC(nameof(RPC_SetSubmitOwnerForAll), RpcTarget.All, -1); // Refreshes submit controls on every remaining client.
         } // Ends this block.
         else if (!locked && owner != -1) // Clears stale owner metadata left behind by an unlocked attempt.
         { // Starts this block.
             room.SetCustomProperties(new Hashtable { [RP_LOCK_OWNER] = -1 }); // Keeps unlocked state unowned.
         } // Ends this block.
 
-        MaybeAdvanceRoundIfEveryonePlayed(); // Excludes inactive players when deciding whether the remaining team may start a new round.
+        if (!locked || !IsActorInRoom(owner))
+            MaybeAdvanceRoundIfEveryonePlayed(); // Do not end an active player's attempt when someone else disconnects.
     } // Ends this block.
 
     [PunRPC] // Marks the next method as callable through Photon RPC.
     private void RPC_SetSubmitOwnerForAll(int actorNumber) // Runs a synchronized Photon RPC action.
     { // Starts this block.
+        if (actorNumber < 0)
+        {
+            var panel = GetPanelForStage(CurrentStage);
+            if (panel != null) panel.SetActive(false); // End the abandoned attempt before another player starts it.
+            ClearLocalPuzzleAccess();
+        }
+
         currentSubmitOwnerActorNumber = IsActorInRoom(actorNumber) ? actorNumber : -1; // Updates which actor owns submit controls.
         RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
     } // Ends this block.
@@ -1477,7 +1482,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             return true; // don't change any props; I still hold the lock // Returns the computed puzzle-state value to the caller.
         } // Ends this block.
 
-        if (localPlayerHasActivePuzzleLock && localActivePuzzleLockOwnerActorNumber == me.ActorNumber) // Checks whether this puzzle-state condition requires action.
+        if (!locked && localPlayerHasActivePuzzleLock && localActivePuzzleLockOwnerActorNumber == me.ActorNumber) // Reopens a released local attempt only while no teammate owns it.
         { // Starts this block.
             if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
             { // Starts this block.
@@ -1506,7 +1511,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         // 2) If someone else holds it, block.
         if (locked && owner != me.ActorNumber) // Checks whether this puzzle-state condition requires action.
         { // Starts this block.
-            reason = "Another player is currently holding this puzzle."; // Handles this part of the puzzle state flow.
+            reason = "A teammate is using this puzzle. Try again when they finish."; // Explains the temporary shared attempt lock.
             return false; // Reports failure to the caller.
         } // Ends this block.
 

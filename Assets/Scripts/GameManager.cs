@@ -78,7 +78,8 @@ public class GameManager : MonoBehaviourPunCallbacks // Declares the gameplay ma
         Debug.LogWarning($"Gameplay rejoin failed ({returnCode}): {message}"); // Logs the rejoin failure details for debugging.
         isAttemptingGameplayRejoin = false; // Clears the gameplay rejoin attempt flag.
         isReconnectingToGameplayRoom = false; // Clears the gameplay reconnect flag.
-        Network.ClearCachedRoomRejoin(); // Removes the cached room because rejoin failed.
+        if (returnCode != ErrorCode.JoinFailedFoundActiveJoiner)
+            Network.ClearCachedRoomRejoin(); // Keep the room for a later retry if Photon has not yet marked the old actor inactive.
         SceneManager.LoadScene("Lobby"); // Returns the player to the lobby after failed rejoin.
     } // Ends the OnJoinRoomFailed callback body.
 

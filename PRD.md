@@ -108,7 +108,7 @@ Outside rooms the channel is Global. In Lobby, the master also uses Global while
 
 Gameplay recovery first attempts ReconnectAndRejoin, then reconnect/fresh connection followed by cached-room rejoin. Failed gameplay rejoin returns to Lobby. Intentional leave clears the cache. The master removes inactive players' avatar objects; rejoining spawns a replacement if no owned model exists. Position is not restored from a saved checkpoint.
 
-On membership changes the master repairs an absent lock owner by choosing an active replacement or releasing the lock. Inactive players do not block turn rounds or close votes. Room properties and buffered effects recover portions of state; this is not complete restoration of all UI, multipart pages, historical analytics, or organiser credentials.
+On membership changes the master releases a lock whose owner is absent, allowing a teammate to start the attempt. An unrelated departure does not end an active attempt. Inactive players do not block turn rounds or close votes. Room properties and buffered effects recover portions of state; this is not complete restoration of all UI, multipart pages, historical analytics, or organiser credentials.
 
 ## Analytics and automatic email
 

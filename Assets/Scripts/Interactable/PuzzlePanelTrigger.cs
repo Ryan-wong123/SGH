@@ -186,7 +186,7 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable // 
     { // Opens the temporary image coroutine body.
         alreadyPlayedImage.SetActive(true); // Shows the blocked-attempt UI object.
         warningMessage.text = message; // Displays the blocked-attempt reason text.
-        yield return new WaitForSeconds(showDuration); // Waits for the configured display duration.
+        yield return new WaitForSecondsRealtime(showDuration); // Hides the warning even while a clue pauses scaled game time.
         alreadyPlayedImage.SetActive(false); // Hides the blocked-attempt UI object.
     } // Closes the temporary image coroutine body.
 } // Closes the PuzzleTrigger class body.
