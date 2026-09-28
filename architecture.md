@@ -128,7 +128,7 @@ The scene delay is two seconds. Multipart changes for Puzzle 4, Diary, and Death
 
 PRD.md records exact current thresholds and answers. `DropSlot.allDropSlots` registers on Start and unregisters on destruction, not disable; several validators iterate this global collection. Some reset searches only find active cards. Therefore activation order, tags, card behavior, and panel lifetime affect validation/reset; do not assume every loop is scoped to the currently visible puzzle.
 
-Reward configuration: stage 2→clue 325, 4→154, 5→477, 7→28, 9→135. Crystal rewards occur after 2, 4, 6, 8, 11. Trigger hiding honors `dontDestroyOnCompletion` and Photon view references. `puzzle4Object` is unassigned in GameScene. Stage 11 does not increment CurrentStage, stop the timer, or call ShowEndScreen.
+Reward configuration: stage 2→clue 325, 4→154, 5→477, 7→28, 9→135. Crystal rewards occur after 2, 4, 6, 8, 11. GameScene restricts the phone trigger to stage 1 and the mortuary chest trigger to stage 11. The phone is hidden by a buffered RPC after stage 1; stage 2 still awards Time Crystal1 without hiding it a second time. Trigger hiding honors `dontDestroyOnCompletion` and Photon view references. `puzzle4Object` is unassigned in GameScene. Stage 11 does not increment CurrentStage, stop the timer, or call ShowEndScreen.
 
 ## Shared inputs, drag ownership, and event contracts
 

@@ -50,7 +50,7 @@ Each client advances its route within 1.5 metres of the current waypoint. Matchi
 | Stage / content | Mechanism and actual success rule | Completion effect |
 | --- | --- | --- |
 | 0: Opening comic | Nine slides; all active players reach the last slide and vote Close. | Master sets stage 1. Not scored. |
-| 1: Decode hypoglycemia symptoms | `SymptomsCardManager`: every registered slot must contain a first card whose symptom matches its configured answer list. Serialized `required` is unused by this validator. | Opens Puzzle 2; same timer continues. |
+| 1: Decode hypoglycemia symptoms | `SymptomsCardManager`: every registered slot must contain a first card whose symptom matches its configured answer list. Serialized `required` is unused by this validator. The phone is this stage's world trigger. | Hides the phone trigger, opens Puzzle 2; same timer continues. |
 | 2: Align the palette | `BearCardManager`: at least 10 correct first-card placements against slot symptom lists. | Time Crystal1, clue `325`, stage 3, Canteen route, timer reset. Excluded from CSV. |
 | 3: Fuel up against low sugar | `PictureGridManager`: select exactly the correct pictures, without extras or omissions. Scene has 20 buttons, correct zero-based indices 0, 1, 7, 8, 17, 19. | Opens Puzzle 4; same timer continues. |
 | 4: Survival code | `Activity2PuzzleManager`: part 1 requires 20 correct card/slot step matches; part 2 requires exact strings `15` and `4`. | Part 1 broadcasts part 2. Final success gives Time Crystal2, clue `154`, stage 5, Physician Room route, timer reset. |
@@ -60,7 +60,7 @@ Each client advances its route within 1.5 metres of the current waypoint. Matchi
 | 8: Insulatard dose | `PrescriptionManager`: trimmed answer must be `28`. | Time Crystal4, stage 9, Nurse Education Room route, timer reset. Fourth trigger reference is unassigned, so this hook removes no trigger. |
 | 9: Decode insulin | `CrosswordManager`: every active letter in a fixed 13×13 crossword must match case-insensitively. | Across-hint switches to image-hint; clue `135`, stage 10, timer reset. Hook does not explicitly close the whole crossword panel. |
 | 10: Insulatard vial sequence | Syringe dropdown index 1 through a dedicated submit action; correct selection opens part 2 after a local two-second delay. Then require nine correct step-card placements. | Closes panel, stage 11, mortuary route, timer reset. |
-| 11: Hidden lapses | Five part-1 placements store normalized `lapsesAnswer`; part 2 requires four cards matching stored answers through linked slots. | Time Crystal5, trigger hiding, configured world-object movement, CSV request. Stage stays 11. |
+| 11: Hidden lapses | Five part-1 placements store normalized `lapsesAnswer`; part 2 requires four cards matching stored answers through linked slots. The mortuary chest trigger is available only at this stage. | Time Crystal5, trigger hiding, configured world-object movement, CSV request. Stage stays 11. |
 
 Word-search targets: FLUOROQUINOLONES, SULFONYLUREAS, LINEZOLID, AZOLES, ELDERLY, IMPAIRED, REDUCTION. Dragging adds/removes cells. Complete words turn green; selected cells in incomplete words or outside target words turn red. Red takes precedence where an incomplete word overlaps a complete one.
 

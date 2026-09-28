@@ -15,6 +15,8 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable // 
     [Header("Clue Flow")] // Groups clue flow fields in the Inspector.
     [Tooltip("If true, show the clue page first (if clueId exists). If false, open puzzle immediately.")] // Explains how the clue-first toggle behaves.
     [SerializeField] private bool startWithClue = true; // Stores whether interaction should show a clue before opening the puzzle.
+    [SerializeField] private bool restrictToStage; // Prevents this world trigger from opening a different puzzle stage.
+    [SerializeField] private PuzzleStateManager.PuzzleStage requiredStage = PuzzleStateManager.PuzzleStage.Puzzle1; // Identifies the stage this trigger belongs to.
 
     [Header("Settings")] // Groups general trigger settings in the Inspector.
     [Tooltip("If true, this trigger will NOT be destroyed after puzzle completion.")] // Explains the completion lifetime setting.
@@ -50,6 +52,8 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable // 
             Debug.LogWarning("PuzzleTrigger: PuzzleStateManager is not assigned."); // Logs a warning so the scene setup issue is visible.
             return; // Stops interaction because the puzzle cannot open without a manager.
         } // Closes the missing-manager block.
+
+        if (!IsCurrentStage()) return; // A later puzzle's world object must not open the current puzzle early.
 
         int submitOwnerActorNumber = PhotonNetwork.IsConnected && PhotonNetwork.LocalPlayer != null // Starts calculating the actor number for the submitting player.
             ? PhotonNetwork.LocalPlayer.ActorNumber // Uses the Photon actor number when connected.
@@ -160,10 +164,12 @@ public class PuzzleTrigger : MonoBehaviourPun, IInteractable, IHighlightable // 
         puzzleStateManager.OpenCurrentStagePanel(submitOwnerActorNumber); // Delegates opening the current puzzle stage to the puzzle state manager.
     } // Closes the OpenPuzzle method body.
 
-    public string GetInteractionPrompt() => "Press E to start puzzle"; // Returns the prompt shown when the player looks at this trigger.
+    private bool IsCurrentStage() => !restrictToStage || (puzzleStateManager != null && puzzleStateManager.CurrentStage == requiredStage);
+
+    public string GetInteractionPrompt() => IsCurrentStage() ? "Press E to start puzzle" : string.Empty; // Hides the prompt until this trigger's stage.
 
     // IHighlightable // Marks the start of the IHighlightable implementation.
-    public void Highlight() => highlightEffect?.Highlight(); // Turns on the highlight effect if it exists.
+    public void Highlight() { if (IsCurrentStage()) highlightEffect?.Highlight(); } // Highlights only a currently usable puzzle trigger.
     public void Unhighlight() => highlightEffect?.Unhighlight(); // Turns off the highlight effect if it exists.
 
     public void ClosePuzzle() // Closes puzzle UI mode and restores gameplay cursor state.

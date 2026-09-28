@@ -104154,6 +104154,8 @@ MonoBehaviour:
   clueUI: {fileID: 2075314858}
   clueId: phone
   startWithClue: 1
+  restrictToStage: 1
+  requiredStage: 1
   dontDestroyOnCompletion: 0
   alreadyPlayedImage: {fileID: 321013863}
   warningMessage: {fileID: 550520579}
@@ -153254,6 +153256,8 @@ MonoBehaviour:
   clueUI: {fileID: 2075314858}
   clueId: Morturary Trigger
   startWithClue: 0
+  restrictToStage: 1
+  requiredStage: 11
   dontDestroyOnCompletion: 0
   alreadyPlayedImage: {fileID: 321013863}
   warningMessage: {fileID: 550520579}

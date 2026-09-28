@@ -380,6 +380,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         Puzzle1Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
         Puzzle2Panel?.SetActive(true); // Shows or hides this puzzle-related UI object.
 
+        HidePuzzleTriggerOnCompletion(puzzle1Object); // The phone belongs to Puzzle 1 and is no longer an entry point after it.
+
         CurrentStage = PuzzleStage.Puzzle2; // Updates the current puzzle stage.
     } // Ends this block.
 
@@ -389,7 +391,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
         Puzzle2Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
 
-        GetKeyUponCompletion(puzzle1Object, "Time Crystal1"); // Handles this part of the puzzle state flow.
+        GetKeyUponCompletion(null, "Time Crystal1"); // Puzzle 2 awards the crystal without removing the already completed phone.
 
         CurrentStage = PuzzleStage.Puzzle3; // Updates the current puzzle stage.
         ResetTimer(); // Handles this part of the puzzle state flow.
@@ -1077,6 +1079,26 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         yield return new WaitForSeconds(delay); // Waits before continuing this coroutine.
         photonView.RPC(nameof(RPC_AdvanceStageForAll), RpcTarget.AllBuffered, (int)stage); // Sends a synchronized RPC to Photon clients.
     } // Ends this block.
+
+    private void HidePuzzleTriggerOnCompletion(GameObject puzzleTriggerObject)
+    {
+        if (puzzleTriggerObject == null) return;
+
+        var trigger = puzzleTriggerObject.GetComponent<PuzzleTrigger>();
+        if (trigger != null && trigger.dontDestroyOnCompletion) return;
+
+        if (PhotonNetwork.InRoom)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+            var targetView = puzzleTriggerObject.GetComponent<PhotonView>();
+            if (targetView != null)
+                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, targetView.ViewID);
+            else
+                Debug.LogError("Puzzle trigger does not have a PhotonView component!");
+        }
+        else
+            puzzleTriggerObject.SetActive(false);
+    }
 
     public override void OnLeftRoom()
     {
