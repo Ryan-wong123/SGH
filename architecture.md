@@ -72,11 +72,14 @@ Its OnJoinRandomFailed fallback creates an unnamed room with the same rejoin and
 | `Round` room integer | Master | Clients reset their `PlayedRound` boolean when it changes. |
 | `PlayedRound` player boolean | Each client | Master checks all active players to advance turn round. It is not an integer round number. |
 | `PendingAdvanceStage`, `PendingAdvanceAt` | Successful submitter writes room properties | Master polls due time and executes main-stage completion; initializes/repairs on master switch. |
+| `SGH_ClueRewardGranted_{stage}` | Master writes `true` after broadcasting a completed stage's clue reward | Master skips another award when a buffered completion RPC replays or authority changes; the current master also keeps a local guard until the room update arrives. |
 | `CurrentStage` | Local field updated by buffered stage/advance RPCs | No dedicated room property storing a complete current-stage snapshot. |
 | Timer end time | StartTimer broadcasts buffered SyncTimer(float) | Clients subtract PhotonNetwork.Time; not stored in room properties. |
 | `Score_Puzzle{stageInt+1}` | Master, optionally via request RPC | Optional wrong-count summary. Stored label is offset by one from runtime stage. |
 
 Master authority is the coordination design, not a fully enforced server-validation boundary. `Submit()` evaluates locally, scheduling is written by the successful client, and managed-button visibility is not an authorization check on every method. Some all-client completion hooks emit additional shared RPCs themselves. Do not describe all global effects as executed only once by a server.
+
+Clue rewards for stages 2, 4, 5, 7, and 9 are emitted by the master after the shared completion RPC. The clue addition is buffered for rejoining players; the `Password Clue` popup is transient and sent once to current players. The room reward marker prevents normal replay from emitting the popup again, but its write and the two RPCs are not an atomic transaction.
 
 ### Attempt and main-stage transition
 

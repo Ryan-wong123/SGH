@@ -112,7 +112,9 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
     private const string RP_ROUND = "Round";           // int; increments to signal a reset // Defines a Photon room-property key used for shared puzzle state.
     private const string RP_PENDING_ADVANCE_STAGE = "PendingAdvanceStage"; // int; stage waiting for a durable delayed transition.
     private const string RP_PENDING_ADVANCE_AT = "PendingAdvanceAt"; // double; Photon time when the pending transition should run.
+    private const string RP_CLUE_REWARD_GRANTED_PREFIX = "SGH_ClueRewardGranted_"; // bool per completed stage; prevents replayed completion RPCs from re-awarding a clue.
     private const string PP_PLAYED_ROUND = "PlayedRound";     // bool on each player // Defines a Photon player-property key used for per-player puzzle state.
+    private readonly HashSet<PuzzleStage> locallyGrantedClueRewards = new(); // Prevents a second award before the room property update arrives.
 
     public enum PuzzleStage // Defines the ordered puzzle stages used by the game flow.
     { // Starts this block.
@@ -638,9 +640,20 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
         if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom) // Checks whether this puzzle-state condition requires action.
         { // Starts this block.
-            CluePopupUI.Instance?.Show(popupText); // Updates or calls this puzzle-state object.
+            if (!PhotonNetwork.IsMasterClient) // Every client handles the completion RPC, but only the master awards the shared clue.
+                return;
+
+            string grantedPropertyKey = RP_CLUE_REWARD_GRANTED_PREFIX + (int)stage;
+            if (locallyGrantedClueRewards.Contains(stage) ||
+                (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(grantedPropertyKey, out object granted) &&
+                 granted is bool wasGranted && wasGranted)) // Buffered completion RPCs can replay when a player rejoins.
+                return;
+
+            locallyGrantedClueRewards.Add(stage);
+
             photonView.RPC(nameof(RPC_AddSharedClue), RpcTarget.AllBuffered, clueId); // Sends a synchronized RPC to Photon clients.
-            photonView.RPC(nameof(RPC_ShowSharedCluePopup), RpcTarget.Others, popupText); // Sends a synchronized RPC to Photon clients.
+            photonView.RPC(nameof(RPC_ShowSharedCluePopup), RpcTarget.All, popupText); // Shows one transient popup on each current client.
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { [grantedPropertyKey] = true }); // Records the award for a replacement master and future replays.
             return; // Leaves the current method early.
         } // Ends this block.
 
@@ -1064,6 +1077,16 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         yield return new WaitForSeconds(delay); // Waits before continuing this coroutine.
         photonView.RPC(nameof(RPC_AdvanceStageForAll), RpcTarget.AllBuffered, (int)stage); // Sends a synchronized RPC to Photon clients.
     } // Ends this block.
+
+    public override void OnLeftRoom()
+    {
+        locallyGrantedClueRewards.Clear(); // A later room starts with its own reward history.
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        locallyGrantedClueRewards.Clear(); // The room property will restore the guard if this room is rejoined.
+    }
 
     private void ScheduleStageAdvance(PuzzleStage stage, float delay) // Stores a delayed puzzle completion in shared room properties.
     { // Starts this block.
