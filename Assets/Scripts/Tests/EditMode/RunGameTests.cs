@@ -25,10 +25,10 @@ namespace SGH.Tests
         [MenuItem("SGH/Tests/Run Play Mode suite")]
         public static void PlayMode() { Run(TestMode.PlayMode); }
 
-        [MenuItem("SGH/Tests/Run known-gap Edit Mode diagnostics")]
+        [MenuItem("SGH/Tests/Run fixed-issue Edit Mode regressions")]
         public static void EditDiagnostics() { Run(TestMode.EditMode, true); }
 
-        [MenuItem("SGH/Tests/Run known-gap Play Mode diagnostics")]
+        [MenuItem("SGH/Tests/Run fixed-issue Play Mode regressions")]
         public static void PlayDiagnostics() { Run(TestMode.PlayMode, true); }
 
         // Also callable with Unity -runTests -testPlatform EditMode/PlayMode.
@@ -39,9 +39,9 @@ namespace SGH.Tests
                 Debug.LogWarning("Wait until Unity is idle in Edit Mode before running SGH tests.");
                 return;
             }
-            SessionState.SetString(PendingRun, "sgh-" + mode + (diagnostics ? "-diagnostics" : "") + ".xml");
+            SessionState.SetString(PendingRun, "sgh-" + mode + (diagnostics ? "-fixes" : "") + ".xml");
             runner.Execute(new ExecutionSettings(new Filter { testMode = mode,
-                categoryNames = new[] { diagnostics ? "KnownGap" : "!KnownGap" }, assemblyNames = new[]
+                categoryNames = new[] { diagnostics ? "RegressionFixes" : "!KnownGap" }, assemblyNames = new[]
             {
                 mode == TestMode.EditMode ? "SGH.Tests.EditMode" : "SGH.Tests.PlayMode"
             } }));

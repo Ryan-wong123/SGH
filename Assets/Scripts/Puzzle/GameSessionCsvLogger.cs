@@ -12,7 +12,7 @@ using UnityEngine; // Imports a namespace used by this script.
 
 public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback // Declares this type.
 { // Starts this code block.
-    private const byte GameplayLogEventCode = 41; // Declares a field, property, or member used by this script.
+    private const byte GameplayLogEventCode = SghPhotonEvents.Analytics; // Declares a field, property, or member used by this script.
     private const int EventTypeEnter = 0; // Declares a field, property, or member used by this script.
     private const int EventTypeAnswer = 1; // Declares a field, property, or member used by this script.
     private const int EventTypeTimeSpent = 2; // Declares a field, property, or member used by this script.
@@ -340,24 +340,19 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         WriteCsvIfNeeded(); // Runs this line of puzzle logic.
     } // Ends this code block.
 
-    public void OnEvent(EventData photonEvent) // Declares a method used by this script.
-    { // Starts this code block.
-        if (photonEvent.Code != GameplayLogEventCode || photonEvent.CustomData is not object[] data || data.Length < 7) // Checks this condition before continuing.
-            return; // Returns this result to the caller.
+    public void OnEvent(EventData photonEvent)
+    {
+        if (!SghPhotonEvents.TryGetPayload(photonEvent, GameplayLogEventCode, 8, out object[] data) ||
+            data[0] is not int eventType || eventType < EventTypeEnter || eventType > EventTypePlayerInput ||
+            data[1] is not string roomName || data[2] is not int actor || actor <= 0 ||
+            data[3] is not string playerName || data[4] is not int puzzle || puzzle < 0 || puzzle > 11 ||
+            data[5] is not int correct || (correct != 0 && correct != 1) ||
+            data[6] is not double elapsed || double.IsNaN(elapsed) || double.IsInfinity(elapsed) ||
+            data[7] is not string answers || (photonEvent.Sender > 0 && photonEvent.Sender != actor))
+            return;
 
-        string selectedAnswers = data.Length >= 8 ? data[7] as string : string.Empty; // Creates a local value used by the following logic.
-
-        ApplyEvent( // Runs this line of puzzle logic.
-            Convert.ToInt32(data[0], CultureInfo.InvariantCulture), // Runs this line of puzzle logic.
-            data[1] as string, // Runs this line of puzzle logic.
-            Convert.ToInt32(data[2], CultureInfo.InvariantCulture), // Runs this line of puzzle logic.
-            data[3] as string, // Runs this line of puzzle logic.
-            Convert.ToInt32(data[4], CultureInfo.InvariantCulture), // Runs this line of puzzle logic.
-            Convert.ToInt32(data[5], CultureInfo.InvariantCulture) == 1, // Runs this line of puzzle logic.
-            Convert.ToDouble(data[6], CultureInfo.InvariantCulture), // Runs this line of puzzle logic.
-            selectedAnswers // Runs this line of puzzle logic.
-        ); // Runs this line of puzzle logic.
-    } // Ends this code block.
+        ApplyEvent(eventType, roomName, actor, playerName, puzzle, correct == 1, elapsed, answers);
+    }
 
     private void SendOrApplyEvent(int eventType, string roomName, int actorNumber, string playerName, int puzzleNumber, int answerWasCorrect, double elapsedSeconds, string selectedAnswers = null) // Declares a method used by this script.
     { // Starts this code block.

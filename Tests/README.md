@@ -31,7 +31,7 @@ Close this project's Unity editor first, then from the repository root:
 ```powershell
 ./Tests/Run-UnityTests.ps1
 ./Tests/Run-UnityTests.ps1 -Mode EditMode
-./Tests/Run-UnityTests.ps1 -Mode PlayMode -KnownGaps
+./Tests/Run-UnityTests.ps1 -Mode PlayMode -FixedIssues
 dotnet build Assembly-CSharp.csproj --no-restore
 git diff --check
 ```
@@ -41,21 +41,19 @@ nonzero for failed tests and writes XML/logs to `TestResults`. A `dotnet build`
 compiles C# only; it does not execute Unity tests. Restore build-generated tracked
 `obj` artifacts only when they were clean before running the build.
 
-## Known-gap diagnostics
+## Fixed-issue regressions
 
-The separate menu commands **Run known-gap Edit Mode diagnostics** and **Run
-known-gap Play Mode diagnostics** intentionally test desired invariants that the
-current runtime does not satisfy. Their failure is a reported defect, not a
-reason to weaken the assertion:
+The **Run fixed-issue Edit Mode regressions** and **Run fixed-issue Play Mode
+regressions** menu commands select `RegressionFixes`. These tests also run in the
+regular suites. The former three failing diagnostics now assert distinct event
+codes and cancellation of insulin's pending delay after reset. Additional cases
+cover malformed payloads, reset revisions, deadline recovery, duplicate requests,
+and ownership checks using Photon offline rooms. Offline rooms do not verify
+server compare-and-swap ordering or real master migration; use two clients for
+those checks. Focused runs write `sgh-EditMode-fixes.xml` / `sgh-PlayMode-fixes.xml`.
 
-| Diagnostic | Failure means |
-| --- | --- |
-| AnalyticsAndCrosswordMustUseDifferentEventCodes | Both protocols still use 41. |
-| ClueVotesAndWordSearchMustUseDifferentEventCodes | Both protocols still use 42. |
-| InsulinResetDuringDelayMustNotReopenPartTwo | A pending local part-1 coroutine survives reset. |
-
-Keep multiplayer recovery/session-lifecycle gaps in the manual matrix visible as
-well. Do not mark those scenarios passed based on offline fixture tests.
+Keep multiplayer recovery/session-lifecycle gaps in the manual matrix visible.
+Do not mark those scenarios passed based on offline fixture tests.
 
 ## Optional backend
 

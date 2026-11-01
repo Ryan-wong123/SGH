@@ -108,7 +108,7 @@ sequenceDiagram
 
 Wrong answers remain in the same stage/part, record analytics, and generally mark optional score counts; they do not release the lock. After success, DelayAndAdvance immediately schedules room properties rather than waiting locally. The master reads them in Update, clears pending fields, then sends AllBuffered completion. This is recoverable scheduling, but clearing then broadcasting is not an atomic transaction or exactly-once terminal latch.
 
-The scene delay is two seconds. Multipart changes for Puzzle 4, Diary, and Death Lapses use unbuffered all-client RPCs. Insulin part 1 waits in a local two-second coroutine before broadcasting part 2. Those pages/local flags are not covered by PendingAdvanceStage/At and can be lost during interruption/rejoin.
+The scene delay is two seconds. Multipart changes for Puzzle 4, Diary, and Death Lapses use unbuffered all-client RPCs. Those pages/local flags are not covered by PendingAdvanceStage/At and can be lost during interruption/rejoin. Insulin uses a separate durable room snapshot described below.
 
 ### Stage integrations
 
@@ -146,15 +146,35 @@ A non-owner card drag starts an immediate local preview and requests ownership. 
 
 Hierarchy paths are used for parent restoration, including same-name sibling disambiguation. Preserve path roots, relevant names, PhotonView IDs, tags, and prefab references when editing assets. Crossword/word-search cell managers are responsible for dynamically generated grid state; do not assume a generated cell PhotonView alone supplies stable synchronization.
 
-### Existing event allocation conflict
+### Application event allocation
 
 | Code | Current producers | Current payload shape |
 | --- | --- | --- |
-| 41 | GameSessionCsvLogger; CrosswordManager text | Analytics: 8 fields (event kind, room, actor, name, puzzle, result, elapsed, snapshot); crossword: 5 fields (x, y, text, actor, sequence). |
-| 42 | ClueUI; WordSearchManager | Clue: close-key string, round, remaining; word search: x, y, encoded state. |
-| 43 | CrosswordManager result | x, y, result enum. |
+| 61 | GameSessionCsvLogger | 8 fields: event kind, room, actor, name, puzzle, result, elapsed, snapshot. |
+| 62 | ClueUI | close-key string, round, remaining. |
+| 63 | CrosswordManager text | x, y, text, actor, sequence. |
+| 64 | CrosswordManager result | x, y, result enum. |
+| 65 | WordSearchManager | x, y, encoded state. |
 
-These are collisions, not intentionally safe multiplexing. Some handlers check only code and minimum length before casting. Keep a central allocation inventory and migrate all producers/consumers together when fixing them; do not assign new traffic to 41–43. This documentation records the problem without changing runtime behavior.
+`SghPhotonEvents` owns this allocation and the `sgh2` protocol version. Codes 41-43
+are retired. All senders and receivers migrated together; Network appends `-sgh2`
+to the serialized game version to partition old clients/rooms. Each receiver checks
+exact array length and field types/ranges before applying data. Analytics and text
+also reject a claimed actor that differs from a positive transport sender.
+
+Insulin room keys are `SGH_Insulin_Revision` (nonnegative int),
+`SGH_Insulin_Part` (1/2), and `SGH_Insulin_AdvanceAt` (finite nonnegative double;
+zero means no deadline). PuzzleStateManager initializes and writes the snapshot;
+all clients read it to restore part visibility. A correct selection from the active
+lock owner schedules PhotonNetwork.Time + 2 using compare-and-swap against the
+current revision/part/empty deadline. Only the master commits due part 2, also
+conditionally against that snapshot. Reset increments the revision, clears the
+deadline, sets part 1 and writes the synced dropdown reset in one property update.
+A local minimum revision rejects old requests immediately while reset is in flight.
+Master migration resumes the room deadline; leaving/disconnecting clears local
+caches. No local coroutine decides a room transition. Offline preview retains a
+cancelled, revision-checked realtime coroutine. Real server ordering and migration
+require two-client verification; offline fixtures do not prove these guarantees.
 
 ## Timer and recovery
 
@@ -199,7 +219,7 @@ TriggerComic is a local once-only collider script: any Player-tagged collider ca
 
 | Gate | Stored state | Closing behavior |
 | --- | --- | --- |
-| Regular clue | Room keys `ClueClose_<sanitized base+id>_Round`, `_Done`, `_Remaining`, and actor-suffixed vote keys storing round numbers | Master begins a round; clients write their votes/count, event 42 refreshes waiting UI; active-player votes determine completion. |
+| Regular clue | Room keys `ClueClose_<sanitized base+id>_Round`, `_Done`, `_Remaining`, and actor-suffixed vote keys storing round numbers | Master begins a round; clients write their votes/count, event 62 refreshes waiting UI; active-player votes determine completion. |
 | Comic | Room `ComicClose_<id-or-path>_Round` and `_Done`; player property `ComicClose_<id-or-path>` holds voted round | Local last-slide Close votes; active participants determine completion. Page index itself is local. |
 | Collected image | Local detail state | No new shared vote round. |
 
@@ -211,7 +231,7 @@ CluePopupUI queues messages FIFO, with fade/slide/hold driven by unscaled time a
 
 ## Analytics schema, lifecycle, and email
 
-GameSessionCsvLogger auto-creates after scene load and persists across scenes. It captures a local sessionPlayedAt timestamp in Awake. Event types are Enter=0, Answer=1, TimeSpent=2, PlayerInput=3. Non-masters send reliable event 41 to MasterClient; the master applies locally. No database, disk journal, server ingestion, or historic-event replay exists.
+GameSessionCsvLogger auto-creates after scene load and persists across scenes. It captures a local sessionPlayedAt timestamp in Awake. Event types are Enter=0, Answer=1, TimeSpent=2, PlayerInput=3. Non-masters send reliable event 61 to MasterClient; the master applies locally. No database, disk journal, server ingestion, or historic-event replay exists.
 
 Rows are keyed by room, actor, puzzle number, and part, in separate individual/team dictionaries. Part markers use `__PUZZLE_PART=<n>__|` for stages 4, 6, 10, 11. Untagged events for those multipart puzzles are dropped by ApplyEvent; crossword forces part 0. Stages 0/2 are excluded. Team submissions retain submitter identity, so they are not aggregated into a single actor-free row.
 

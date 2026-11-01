@@ -1,3 +1,14 @@
+> Update, 1 November 2026: the three earlier failing diagnostics below now have
+> runtime fixes and normal `RegressionFixes` tests. Analytics/clue/crossword/word
+> search use unique codes 61–65 with typed payload validation and protocol version
+> `sgh2`. Insulin uses a master-written revision/part/deadline snapshot; reset
+> invalidates pending work. Historical failure descriptions document the original
+> reproduction; the expected result after these fixes is that all three pass.
+> Verified in Unity on 1 November: 185 Edit Mode and 13 Play Mode tests passed,
+> including all three former failing diagnostics.
+> See `Tests/README.md` for running the focused regressions. Two-client reset,
+> disconnect/rejoin and master-migration checks remain necessary.
+
 # SGH detailed test cases
 
 Prepared: **1 November 2026**. Requirements baseline: [PRD.md](PRD.md) and

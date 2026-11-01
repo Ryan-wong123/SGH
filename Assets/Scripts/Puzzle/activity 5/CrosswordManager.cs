@@ -11,8 +11,8 @@ using Hashtable = ExitGames.Client.Photon.Hashtable; // Imports a namespace used
 
 public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback // Declares this type.
 { // Starts this code block.
-    private const byte CrosswordTextSyncEventCode = 41; // Declares a field, property, or member used by this script.
-    private const byte CrosswordResultSyncEventCode = 43; // Declares a field, property, or member used by this script.
+    private const byte CrosswordTextSyncEventCode = SghPhotonEvents.CrosswordText; // Declares a field, property, or member used by this script.
+    private const byte CrosswordResultSyncEventCode = SghPhotonEvents.CrosswordResult; // Declares a field, property, or member used by this script.
     private const string CrosswordCellPropertyPrefix = "P5CW_"; // Declares a field, property, or member used by this script.
     private const string CrosswordCellResultPropertyPrefix = "P9CW_RESULT_"; // Declares a field, property, or member used by this script.
 
@@ -174,36 +174,30 @@ public class CrosswordManager : MonoBehaviour, IPuzzle, IOnEventCallback // Decl
         }); // Runs this line of puzzle logic.
     } // Ends this code block.
 
-    public void OnEvent(EventData photonEvent) // Declares a method used by this script.
-    { // Starts this code block.
-        if (photonEvent.Code != CrosswordTextSyncEventCode) // Checks this condition before continuing.
-        { // Starts this code block.
-            if (photonEvent.Code != CrosswordResultSyncEventCode) // Checks this condition before continuing.
-                return; // Returns this result to the caller.
+    public void OnEvent(EventData photonEvent)
+    {
+        if (SghPhotonEvents.TryGetPayload(photonEvent, CrosswordResultSyncEventCode, 3, out object[] resultData))
+        {
+            if (resultData[0] is int rx && resultData[1] is int ry && resultData[2] is int result &&
+                rx >= 0 && ry >= 0 && rx < gridSize && ry < gridSize && result >= 0 && result <= 2)
+                ApplyRemoteResultState(rx, ry, (CrosswordCellResultState)result);
+            return;
+        }
 
-            if (!(photonEvent.CustomData is object[] resultData) || resultData.Length < 3) // Checks this condition before continuing.
-                return; // Returns this result to the caller.
+        if (!SghPhotonEvents.TryGetPayload(photonEvent, CrosswordTextSyncEventCode, 5, out object[] data) ||
+            data[0] is not int x || data[1] is not int y || data[2] is not string text || text.Length > 1 ||
+            data[3] is not int actor || actor <= 0 || data[4] is not int seq || seq <= 0 ||
+            x < 0 || y < 0 || x >= gridSize || y >= gridSize ||
+            (photonEvent.Sender > 0 && photonEvent.Sender != actor))
+            return;
 
-            ApplyRemoteResultState((int)resultData[0], (int)resultData[1], (CrosswordCellResultState)(int)resultData[2]); // Runs this line of puzzle logic.
-            return; // Returns this result to the caller.
-        } // Ends this code block.
+        int senderKey = (actor * 1000) + (y * gridSize) + x;
+        if (lastSeqBySender.TryGetValue(senderKey, out int lastSeq) && seq <= lastSeq)
+            return;
 
-        if (!(photonEvent.CustomData is object[] data) || data.Length < 5) // Checks this condition before continuing.
-            return; // Returns this result to the caller.
-
-        int x = (int)data[0]; // Creates a local value used by the following logic.
-        int y = (int)data[1]; // Creates a local value used by the following logic.
-        string text = (string)data[2]; // Creates a local value used by the following logic.
-        int actor = (int)data[3]; // Creates a local value used by the following logic.
-        int seq = (int)data[4]; // Creates a local value used by the following logic.
-
-        int senderKey = (actor * 1000) + (y * gridSize) + x; // Creates a local value used by the following logic.
-        if (lastSeqBySender.TryGetValue(senderKey, out int lastSeq) && seq <= lastSeq) // Checks this condition before continuing.
-            return; // Returns this result to the caller.
-
-        lastSeqBySender[senderKey] = seq; // Updates this value.
-        ApplyRemoteText(x, y, text); // Runs this line of puzzle logic.
-    } // Ends this code block.
+        lastSeqBySender[senderKey] = seq;
+        ApplyRemoteText(x, y, text);
+    }
 
     private void ApplyRemoteText(int x, int y, string text) // Declares a method used by this script.
     { // Starts this code block.

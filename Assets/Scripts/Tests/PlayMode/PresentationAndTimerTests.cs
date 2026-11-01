@@ -140,7 +140,7 @@ namespace SGH.Tests
             finally { network.GetProperty("OfflineMode").SetValue(null, savedOfflineMode); }
         }
 
-        [UnityTest, Category("KnownGap"), Explicit("Reset does not currently cancel the insulin part-1 delay. Expected failure until durable/cancellable recovery is implemented.")]
+        [UnityTest, Category("RegressionFixes")]
         public IEnumerator InsulinResetDuringDelayMustNotReopenPartTwo()
         {
             Component insulin = Component("InsulinPuzzleManager");

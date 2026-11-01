@@ -45,7 +45,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
         //connect to photon server with settings
         Debug.Log("Connecting to Photon..."); // Writes a connection status message to the Unity console.
         PhotonNetwork.AutomaticallySyncScene = true; // Enables Photon scene synchronization for all players.
-        PhotonNetwork.GameVersion = gameVersion; // Sets the Photon game version used for matchmaking compatibility.
+        PhotonNetwork.GameVersion = gameVersion + "-" + SghPhotonEvents.ProtocolVersion; // Sets the Photon game version used for matchmaking compatibility.
 
         // If already connected, don't reconnect (reconnecting can kick you out / reset state)
         if (PhotonNetwork.IsConnected) // Checks whether Photon is already connected.

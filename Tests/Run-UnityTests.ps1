@@ -1,7 +1,7 @@
 param(
     [ValidateSet('EditMode', 'PlayMode', 'Both')][string]$Mode = 'Both',
     [string]$Unity = 'C:\Program Files\Unity\Hub\Editor\6000.3.11f1\Editor\Unity.exe',
-    [switch]$KnownGaps
+    [Alias("KnownGaps")][switch]$FixedIssues
 )
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
@@ -16,10 +16,10 @@ New-Item -ItemType Directory -Path $resultsDirectory -Force | Out-Null
 $modes = if ($Mode -eq 'Both') { @('EditMode', 'PlayMode') } else { @($Mode) }
 $anyFailures = $false
 foreach ($platform in $modes) {
-    $suffix = if ($KnownGaps) { '-diagnostics' } else { '' }
+    $suffix = if ($FixedIssues) { '-fixes' } else { '' }
     $resultPath = Join-Path $resultsDirectory "sgh-$platform$suffix.xml"
     $logPath = Join-Path $resultsDirectory "sgh-$platform$suffix.log"
-    $category = if ($KnownGaps) { 'KnownGap' } else { '!KnownGap' }
+    $category = if ($FixedIssues) { 'RegressionFixes' } else { '!KnownGap' }
     # Unity exits when its test run finishes; -quit can terminate the run early.
     & $Unity -batchmode -projectPath $projectRoot -runTests -testPlatform $platform `
         -assemblyNames "SGH.Tests.$platform" -testCategory $category -testResults $resultPath -logFile $logPath
