@@ -47,6 +47,16 @@ runner and never removes project files. Disk usage is logged before and after
 Unity. A future standalone build needs a suitable build image and a separate cache
 namespace.
 
+Before importing, CI runs `python3 Tests/Check-AssetPaths.py` to reject tracked
+asset paths (including implicit folders) that differ only by casing. Windows can
+hide these collisions while Linux checks out both paths. The 2 November archive
+`logs_112061134117.zip` contains passing XML for all 185 Edit Mode and 13 Play Mode
+tests, but both editors exit 3 during cleanup because `Assets/UI/Activity 7` and
+`Assets/UI/activity 7` collide. The image and `.meta` paths are now consolidated
+under `Assets/UI/activity 7`, preserving their bytes and GUIDs. The new preflight
+reports future collisions before the expensive Unity run; Unity errors are not
+suppressed and failed jobs are not converted into successes.
+
 The 2 November Play Mode log failed before any NUnit test ran: Crunch reported
 `crn_threading_pthreads.cpp(194)` / `sem_wait() or sem_timedwait() failed` while
 importing a texture, then the editor crashed with exit 255 and produced no test
@@ -56,7 +66,7 @@ forceUncompressed -overrideMaxTextureSize 256 -job-worker-count 2` in both jobs.
 These [Unity import overrides](https://docs.unity3d.com/6000.3/Documentation/Manual/EditorCommandLineArguments.html)
 bypass Crunch and limit texture memory/worker pressure for the automated fixtures.
 The source texture `.meta` files are unchanged. Import caches use the distinct
-`unity-base-fast-import-v2` prefix so incomplete/old compressed imports are not
+`unity-base-fast-import-v3` prefix so incomplete/old compressed imports are not
 restored. This suite does not verify full-resolution rendering or production
 compression; those remain separate manual/build checks. A fresh GitHub run is
 required to confirm the Linux crash workaround on the runner.

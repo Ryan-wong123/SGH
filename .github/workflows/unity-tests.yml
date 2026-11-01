@@ -48,6 +48,9 @@ jobs:
           lfs: true
           persist-credentials: false
 
+      - name: Check Unity asset path casing
+        run: python3 Tests/Check-AssetPaths.py
+
       - name: Check Unity licensing configuration
         shell: bash
         env:
@@ -78,9 +81,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: Library
-          key: unity-base-fast-import-v2-${{ runner.os }}-${{ matrix.testMode }}-${{ hashFiles('ProjectSettings/ProjectVersion.txt', 'Packages/**', 'Assets/**') }}
+          key: unity-base-fast-import-v3-${{ runner.os }}-${{ matrix.testMode }}-${{ hashFiles('ProjectSettings/ProjectVersion.txt', 'Packages/**', 'Assets/**') }}
           restore-keys: |
-            unity-base-fast-import-v2-${{ runner.os }}-${{ matrix.testMode }}-
+            unity-base-fast-import-v3-${{ runner.os }}-${{ matrix.testMode }}-
 
       - name: Check disk space before Unity
         shell: bash
