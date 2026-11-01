@@ -52,8 +52,12 @@ asset paths (including implicit folders) that differ only by casing. Windows can
 hide these collisions while Linux checks out both paths. The 2 November archive
 `logs_112061134117.zip` contains passing XML for all 185 Edit Mode and 13 Play Mode
 tests, but both editors exit 3 during cleanup because `Assets/UI/Activity 7` and
-`Assets/UI/activity 7` collide. The image and `.meta` paths are now consolidated
-under `Assets/UI/activity 7`, preserving their bytes and GUIDs. The new preflight
+`Assets/UI/activity 7` collide. The subsequent preflight run still found those
+paths because the case-only renames were absent from the pushed commit. The
+physical folder is now named `Assets/UI/Activity7`, including its folder `.meta`,
+so Windows Git clients retain the rename when staging files again. All 26 image
+and file-metadata contents plus the folder GUID are preserved byte-for-byte.
+The preflight
 reports future collisions before the expensive Unity run; Unity errors are not
 suppressed and failed jobs are not converted into successes.
 
