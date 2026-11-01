@@ -78,9 +78,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: Library
-          key: unity-base-v1-${{ runner.os }}-${{ matrix.testMode }}-${{ hashFiles('ProjectSettings/ProjectVersion.txt', 'Packages/**', 'Assets/**') }}
+          key: unity-base-fast-import-v2-${{ runner.os }}-${{ matrix.testMode }}-${{ hashFiles('ProjectSettings/ProjectVersion.txt', 'Packages/**', 'Assets/**') }}
           restore-keys: |
-            unity-base-v1-${{ runner.os }}-${{ matrix.testMode }}-
+            unity-base-fast-import-v2-${{ runner.os }}-${{ matrix.testMode }}-
 
       - name: Check disk space before Unity
         shell: bash
@@ -103,7 +103,15 @@ jobs:
           unityVersion: auto
           customImage: ${{ steps.editor.outputs.image }}
           testMode: ${{ matrix.testMode }}
-          customParameters: -assemblyNames SGH.Tests.${{ matrix.testMode }} -testCategory !KnownGap
+          # Fixture/scene-wiring tests do not validate texture compression or pixels.
+          # Bypass the Linux Crunch semaphore crash during import, and bound the
+          # memory cost of uncompressed textures. Source .meta settings stay intact.
+          customParameters: >-
+            -assemblyNames SGH.Tests.${{ matrix.testMode }}
+            -testCategory !KnownGap
+            -overrideTextureCompression forceUncompressed
+            -overrideMaxTextureSize 256
+            -job-worker-count 2
           artifactsPath: TestResults/${{ matrix.testMode }}
 
       - name: Report remaining runner disk space

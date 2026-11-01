@@ -44,9 +44,22 @@ checkout, the workflow frees unused host SDKs and Docker images on the disposabl
 GitHub-hosted runner. This prevents the previous Docker extraction failure
 (`no space left on device`, exit 125). The cleanup refuses to run on a self-hosted
 runner and never removes project files. Disk usage is logged before and after
-Unity. Import caches use a new `unity-base-v1` prefix to avoid restoring caches
-from the larger IL2CPP image. A future standalone build needs a suitable build
-image and a separate cache namespace.
+Unity. A future standalone build needs a suitable build image and a separate cache
+namespace.
+
+The 2 November Play Mode log failed before any NUnit test ran: Crunch reported
+`crn_threading_pthreads.cpp(194)` / `sem_wait() or sem_timedwait() failed` while
+importing a texture, then the editor crashed with exit 255 and produced no test
+XML. The Edit Mode job in that archive was canceled during startup/import; it
+contains no assertion result either. CI now uses `-overrideTextureCompression
+forceUncompressed -overrideMaxTextureSize 256 -job-worker-count 2` in both jobs.
+These [Unity import overrides](https://docs.unity3d.com/6000.3/Documentation/Manual/EditorCommandLineArguments.html)
+bypass Crunch and limit texture memory/worker pressure for the automated fixtures.
+The source texture `.meta` files are unchanged. Import caches use the distinct
+`unity-base-fast-import-v2` prefix so incomplete/old compressed imports are not
+restored. This suite does not verify full-resolution rendering or production
+compression; those remain separate manual/build checks. A fresh GitHub run is
+required to confirm the Linux crash workaround on the runner.
 
 The test runner is pinned to `game-ci/unity-test-runner@v4.3.2`, the Docker-based
 release. The floating `@v4` moved to a CLI wrapper that passed
