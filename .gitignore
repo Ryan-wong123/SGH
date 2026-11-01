@@ -7,6 +7,8 @@ UserSettings/
 
 # Generated gameplay/data analytics exports
 outputs/
+TestResults/
+SGH.Tests.*.csproj
 obj/Debug/
 
 # .NET backend build outputs

@@ -1,0 +1,6 @@
+{
+  "name": "SGH.Tests.Shared",
+  "references": ["Unity.TextMeshPro", "Unity.ugui"],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "autoReferenced": false
+}
