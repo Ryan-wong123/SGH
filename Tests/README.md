@@ -26,6 +26,36 @@ Generated `SGH.Tests.*.csproj` files are ignored; Unity recreates them.
 
 ## Batch / CI
 
+### GitHub Actions
+
+[Unity tests](../.github/workflows/unity-tests.yml) runs when a pull request is
+opened, updated, reopened, or marked ready for review. It can also be started
+manually from Actions. Separate Edit Mode and Play Mode jobs use the Unity version
+in `ProjectSettings/ProjectVersion.txt` (currently `6000.3.11f1`), select the SGH
+test assemblies, and exclude `KnownGap`, matching the local runner. The fixed-issue
+regressions are included. A failing test fails its job; both jobs run even if one
+fails. Imports are cached and XML/results/logs are uploaded for 14 days, including
+after test failures. Coverage instrumentation is disabled for this Unity 6 run.
+
+Before the first run, configure repository **Settings > Secrets and variables >
+Actions** with `UNITY_EMAIL`, `UNITY_PASSWORD`, and either `UNITY_LICENSE` (an
+activated Personal license file) or `UNITY_SERIAL` (Pro), following the
+[GameCI licensing instructions](https://game.ci/docs/github/activation/).
+Never commit license files or account credentials. Jobs run sequentially to avoid
+acquiring two license seats concurrently. The workflow uses a read-only GitHub
+token; job status provides the PR checks and downloadable artifacts provide details.
+
+Fork pull requests and Dependabot PRs normally cannot access these Actions secrets;
+the workflow reports missing licensing and fails rather than claiming tests passed.
+Run an approved change from a trusted repository branch to supply the secrets.
+Do not switch to `pull_request_target` to run untrusted PR code with credentials.
+No Photon account or SMTP credentials are required: these are the automated
+fixture/offline-room suites, not the live two-client or email-delivery scenarios.
+The workflow must be committed and pushed before GitHub can execute it. Configure
+`Unity EditMode` and `Unity PlayMode` as required branch checks if desired.
+
+### Local batch runner
+
 Close this project's Unity editor first, then from the repository root:
 
 ```powershell

@@ -1,0 +1,77 @@
+name: Unity tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unity-tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Unity ${{ matrix.testMode }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      # Avoid acquiring two seats concurrently with the same Unity license.
+      max-parallel: 1
+      matrix:
+        testMode: [EditMode, PlayMode]
+
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          persist-credentials: false
+
+      - name: Check Unity licensing configuration
+        shell: bash
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        run: |
+          if [[ -z "$UNITY_EMAIL" || -z "$UNITY_PASSWORD" || ( -z "$UNITY_LICENSE" && -z "$UNITY_SERIAL" ) ]]; then
+            echo "::error::Configure UNITY_EMAIL, UNITY_PASSWORD and either UNITY_LICENSE (Personal) or UNITY_SERIAL (Pro) in repository Actions secrets. Fork PRs do not receive these secrets. See Tests/README.md."
+            exit 1
+          fi
+
+      - name: Cache Unity imports
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: unity-${{ runner.os }}-${{ matrix.testMode }}-${{ hashFiles('ProjectSettings/ProjectVersion.txt', 'Packages/**', 'Assets/**') }}
+          restore-keys: |
+            unity-${{ runner.os }}-${{ matrix.testMode }}-
+
+      - name: Run ${{ matrix.testMode }} tests
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: .
+          unityVersion: auto
+          testMode: ${{ matrix.testMode }}
+          customParameters: -assemblyNames SGH.Tests.${{ matrix.testMode }} -testCategory !KnownGap
+          coverageEnabled: false
+          artifactsPath: TestResults/${{ matrix.testMode }}
+
+      - name: Upload test results and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-${{ matrix.testMode }}-results
+          path: TestResults/${{ matrix.testMode }}
+          if-no-files-found: warn
+          retention-days: 1
