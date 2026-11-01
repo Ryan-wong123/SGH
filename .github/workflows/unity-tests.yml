@@ -25,6 +25,23 @@ jobs:
         testMode: [EditMode, PlayMode]
 
     steps:
+      - name: Free disk space on GitHub-hosted runner
+        shell: bash
+        env:
+          RUNNER_ENVIRONMENT: ${{ runner.environment }}
+        run: |
+          set -euo pipefail
+          if [[ "$RUNNER_ENVIRONMENT" != "github-hosted" ]]; then
+            echo "::error::Disk cleanup is restricted to disposable GitHub-hosted runners."
+            exit 1
+          fi
+          df -h /
+          # These host SDKs are unused: Unity runs with its own tools in Docker.
+          # Run before checkout; never remove project files or restored imports.
+          sudo rm -rf -- /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/local/swift
+          docker image prune --all --force
+          df -h /
+
       - name: Check out project
         uses: actions/checkout@v4
         with:
@@ -44,13 +61,32 @@ jobs:
             exit 1
           fi
 
+      - name: Select editor-only Unity image
+        id: editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          unity_version="$(sed -n 's/^m_EditorVersion: //p' ProjectSettings/ProjectVersion.txt | tr -d '\r')"
+          if [[ ! "$unity_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+[abfp][0-9]+$ ]]; then
+            echo "::error::Cannot determine Unity version from ProjectSettings/ProjectVersion.txt."
+            exit 1
+          fi
+          # EditMode/PlayMode do not build a player or require IL2CPP modules.
+          echo "image=unityci/editor:ubuntu-${unity_version}-base-3" >> "$GITHUB_OUTPUT"
+
       - name: Cache Unity imports
         uses: actions/cache@v4
         with:
           path: Library
-          key: unity-${{ runner.os }}-${{ matrix.testMode }}-${{ hashFiles('ProjectSettings/ProjectVersion.txt', 'Packages/**', 'Assets/**') }}
+          key: unity-base-v1-${{ runner.os }}-${{ matrix.testMode }}-${{ hashFiles('ProjectSettings/ProjectVersion.txt', 'Packages/**', 'Assets/**') }}
           restore-keys: |
-            unity-${{ runner.os }}-${{ matrix.testMode }}-
+            unity-base-v1-${{ runner.os }}-${{ matrix.testMode }}-
+
+      - name: Check disk space before Unity
+        shell: bash
+        run: |
+          df -h / /var/lib/docker "$GITHUB_WORKSPACE"
+          df -i /var/lib/docker
 
       - name: Run ${{ matrix.testMode }} tests
         # v4 now delegates to a CLI that rejects --no-coverageEnabled.
@@ -65,9 +101,17 @@ jobs:
         with:
           projectPath: .
           unityVersion: auto
+          customImage: ${{ steps.editor.outputs.image }}
           testMode: ${{ matrix.testMode }}
           customParameters: -assemblyNames SGH.Tests.${{ matrix.testMode }} -testCategory !KnownGap
           artifactsPath: TestResults/${{ matrix.testMode }}
+
+      - name: Report remaining runner disk space
+        if: always()
+        shell: bash
+        run: |
+          df -h /
+          docker system df
 
       - name: Upload test results and logs
         if: always()

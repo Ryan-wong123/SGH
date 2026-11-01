@@ -37,6 +37,17 @@ regressions are included. A failing test fails its job; both jobs run even if on
 fails. Imports are cached and XML/results/logs are uploaded for 1 day, including
 after test failures.
 
+Both jobs use the editor-only `unityci/editor:ubuntu-<UnityVersion>-base-3` image,
+with the version read from `ProjectSettings/ProjectVersion.txt`. Neither suite
+builds a standalone player, so Linux IL2CPP modules are unnecessary. Before
+checkout, the workflow frees unused host SDKs and Docker images on the disposable
+GitHub-hosted runner. This prevents the previous Docker extraction failure
+(`no space left on device`, exit 125). The cleanup refuses to run on a self-hosted
+runner and never removes project files. Disk usage is logged before and after
+Unity. Import caches use a new `unity-base-v1` prefix to avoid restoring caches
+from the larger IL2CPP image. A future standalone build needs a suitable build
+image and a separate cache namespace.
+
 The test runner is pinned to `game-ci/unity-test-runner@v4.3.2`, the Docker-based
 release. The floating `@v4` moved to a CLI wrapper that passed
 `--no-coverageEnabled` to CLI v0.1.72, which rejected the argument before either
