@@ -34,8 +34,17 @@ manually from Actions. Separate Edit Mode and Play Mode jobs use the Unity versi
 in `ProjectSettings/ProjectVersion.txt` (currently `6000.3.11f1`), select the SGH
 test assemblies, and exclude `KnownGap`, matching the local runner. The fixed-issue
 regressions are included. A failing test fails its job; both jobs run even if one
-fails. Imports are cached and XML/results/logs are uploaded for 14 days, including
-after test failures. Coverage instrumentation is disabled for this Unity 6 run.
+fails. Imports are cached and XML/results/logs are uploaded for 1 day, including
+after test failures.
+
+The test runner is pinned to `game-ci/unity-test-runner@v4.3.2`, the Docker-based
+release. The floating `@v4` moved to a CLI wrapper that passed
+`--no-coverageEnabled` to CLI v0.1.72, which rejected the argument before either
+suite started. The pinned release does not support the `coverageEnabled` input,
+so it is omitted. Its built-in Unity command still includes coverage arguments;
+this project does not install the Code Coverage package or require a coverage
+report. See the [upstream release notes](https://github.com/game-ci/unity-test-runner/releases/tag/v4.3.2)
+before upgrading the action. Both matrix jobs use the same pinned implementation.
 
 Before the first run, configure repository **Settings > Secrets and variables >
 Actions** with `UNITY_EMAIL`, `UNITY_PASSWORD`, and either `UNITY_LICENSE` (an
