@@ -72,7 +72,7 @@ namespace SGH.Tests
             {
                 object current;
                 try { if (!routine.MoveNext()) yield break; current = routine.Current; }
-                catch (Exception e) { Fail(e.GetType().Name + ": " + e.Message); yield break; }
+                catch (Exception e) { Fail(e.ToString()); yield break; }
                 if (current is IEnumerator nested) yield return Guard(nested);
                 else yield return current;
             }
@@ -198,6 +198,25 @@ namespace SGH.Tests
             finished = true; report.status = "passed"; Save(); PhotonNetwork.Disconnect(); Application.Quit(0);
         }
 
+        internal static Button ResolveChatToggleButton(Component chat)
+        {
+            Assert.That(chat, Is.Not.Null, "Chat singleton must exist before probing its scene controls");
+            var assigned = (Button)Get(chat, "collapseButton");
+            if (assigned != null && assigned.gameObject.scene == SceneManager.GetActiveScene()) return assigned;
+            // GameScene authors its toggle as a persistent UnityEvent on a
+            // separate button, without assigning the optional collapseButton field.
+            foreach (var button in FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (button.gameObject.scene != SceneManager.GetActiveScene()) continue;
+                for (int i = 0; i < button.onClick.GetPersistentEventCount(); i++)
+                    if (button.onClick.GetPersistentMethodName(i) == "ToggleChatPanel" &&
+                        button.onClick.GetPersistentTarget(i) is Component target && target.GetType() == RuntimeType("ChatManager"))
+                        return button;
+            }
+            Assert.Fail("Active scene has no authored Chat toggle button");
+            return null;
+        }
+
         private IEnumerator ProbeInput(Component local)
         {
             Time.timeScale = 1;
@@ -213,7 +232,7 @@ namespace SGH.Tests
             report.keyboard = report.mouse = true; report.status = "cursor-ready"; Save();
             yield return Until(() => Cursor.lockState == CursorLockMode.None, "OS Q unlocks the gameplay cursor", 30);
             var chat = Get(RuntimeType("ChatManager"), "Instance");
-            var button = (Button)Get(chat, "collapseButton"); Assert.That(button.IsActive(), Is.True);
+            var button = ResolveChatToggleButton((Component)chat); Assert.That(button.IsActive(), Is.True, "Authored Chat toggle must be active");
             var rect = (RectTransform)button.transform; var canvas = button.GetComponentInParent<Canvas>();
             Vector2 point = RectTransformUtility.WorldToScreenPoint(canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera, rect.TransformPoint(rect.rect.center));
             report.clickX = Mathf.RoundToInt(point.x); report.clickY = Screen.height - Mathf.RoundToInt(point.y);

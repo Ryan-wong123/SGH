@@ -78,6 +78,14 @@ namespace SGH.Tests
         public IEnumerator AuthoredPuzzlePagesFitFiveAspectRatiosAndProduceScreenshots()
         {
             yield return Load("GameScene");
+            var chat = (Component)Get(RuntimeType("ChatManager"), "Instance");
+            var chatToggle = RenderedClientHarness.ResolveChatToggleButton(chat);
+            Assert.That(chatToggle.IsActive(), Is.True, "Authored GameScene Chat toggle is reachable");
+            bool chatWasVisible = (bool)Get(chat, "isVisible");
+            chatToggle.onClick.Invoke();
+            Assert.That(Get(chat, "isVisible"), Is.EqualTo(!chatWasVisible), "Serialized Chat action toggles exactly once");
+            chatToggle.onClick.Invoke();
+            Assert.That(Get(chat, "isVisible"), Is.EqualTo(chatWasVisible));
             foreach (var director in UnityEngine.Object.FindObjectsByType(RuntimeType("StorylineDirector"), FindObjectsSortMode.None).Cast<MonoBehaviour>())
             { director.StopAllCoroutines(); director.enabled = false; }
             var comic = UnityEngine.Object.FindObjectsByType(RuntimeType("SlideshowUI"), FindObjectsInactive.Include, FindObjectsSortMode.None)
