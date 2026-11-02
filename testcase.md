@@ -1203,9 +1203,7 @@ file existing from a prior run as evidence the latest exit exported successfully
 4. Inspect write flag, session date, dictionaries and files for both sessions.
 
 **Expected acceptance:** Retry possible and second session isolated.
-**Current gap:** `hasWrittenCsv` is set before I/O; persistent logger state/date
-and dictionaries lack complete new-room reset. Record suppressed retries, mixed
-data or missing second output as failures; preserve synthetic evidence.
+**Automated regression:** Export marks success after writing. Normal joins clear rows/timers/date/write latch and rotate the export ID; same-actor rejoins preserve them. Synthetic tests verify retry, two distinct rapid-session files and exclusion of prior-session rows.
 
 ### A06 — Historic analytics and organiser eligibility after master migration
 
@@ -1600,3 +1598,8 @@ lock, writes XML/logs and returns failure for failing runs; batch launching was 
 historically exercised while the project was open. `Tests/Test-EmailApiValidation.ps1`
 contains B01 rejected synthetic requests; syntax was checked, but no deployment
 was contacted. These are authored scripts, not additional completed acceptance runs.
+
+
+## 2 November 2026 automated expansion
+
+The new automation and execution evidence are mapped in [Tests/AutomatedCoverage.md](Tests/AutomatedCoverage.md), with commands in [Tests/README.md](Tests/README.md). This supplements the scenario matrix above; it does not retroactively mark its manual rows as passed. Coverage includes actual scene and standalone journeys, live transport fixtures, visual containment captures, a stability smoke soak, synthetic CSV disk tests, adversarial protocol tests and isolated HTTP/SMTP tests. Second-session regressions now run in green CI and have passed in the editor. The rendered PR job adds two independent players, native desktop input, actual Chat UI, alternating puzzle turns and two sessions; dedicated Photon/Chat execution remains pending test-secret configuration. Every puzzle page has five-aspect-ratio captures. Physical mobile hardware qualification remains separate from desktop and viewport automation.

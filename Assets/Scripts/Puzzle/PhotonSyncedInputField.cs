@@ -50,7 +50,7 @@ public class PhotonSyncedTMPInputField : MonoBehaviourPun // Declares this type.
 
         GameSessionCsvLogger.Instance?.RecordLocalPlayerInput(gameObject.name, value);
 
-        if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
+        if (!PhotonNetwork.InRoom || photonView.ViewID <= 0) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
         localSeq++; // Runs this line of puzzle logic.
@@ -83,7 +83,7 @@ public class PhotonSyncedTMPInputField : MonoBehaviourPun // Declares this type.
     { // Starts this code block.
         ApplyBackgroundColor(color); // Runs this line of puzzle logic.
 
-        if (!PhotonNetwork.InRoom) // Checks this condition before continuing.
+        if (!PhotonNetwork.InRoom || photonView.ViewID <= 0) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
         PhotonNetwork.CurrentRoom?.SetCustomProperties(new Hashtable // Runs this line of puzzle logic.
@@ -113,7 +113,7 @@ public class PhotonSyncedTMPInputField : MonoBehaviourPun // Declares this type.
 
     private void ApplyPersistedRoomState() // Declares a method used by this script.
     { // Starts this code block.
-        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom == null || input == null) // Checks this condition before continuing.
+        if (!PhotonNetwork.InRoom || photonView.ViewID <= 0 || PhotonNetwork.CurrentRoom == null || input == null) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
         Hashtable properties = PhotonNetwork.CurrentRoom.CustomProperties; // Creates a local value used by the following logic.

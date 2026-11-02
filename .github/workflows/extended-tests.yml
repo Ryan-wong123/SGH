@@ -1,0 +1,200 @@
+name: Extended Unity automation
+'on':
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Suite to execute (live requires dedicated Photon secrets)
+        type: choice
+        default: all
+        options:
+        - all
+        - live
+        - journey
+        - visual
+        - soak
+        - standalone
+        - rendered
+  pull_request:
+    types:
+    - opened
+    - synchronize
+    - reopened
+    - ready_for_review
+permissions:
+  contents: read
+concurrency:
+  group: extended-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  plan:
+    runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.suites.outputs.matrix }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+    - name: Verify rendered orchestration contracts
+      run: python3 -m unittest discover -s Tests -p test_rendered_runner.py
+    - id: suites
+      env:
+        SELECTION: ${{ inputs.suite }}
+      run: "python3 - <<'PY'\nimport json, os\nfast = '-overrideTextureCompression forceUncompressed -overrideMaxTextureSize\
+        \ 256'\nrows = [\n {'suite':'live','assembly':'SGH.Tests.Live','category':'!KnownGap','testMode':'PlayMode','module':'base','importOptions':fast},\n\
+        \ {'suite':'journey','assembly':'SGH.Tests.System','category':'Journey','testMode':'PlayMode','module':'base','importOptions':fast},\n\
+        \ {'suite':'visual','assembly':'SGH.Tests.System','category':'Visual','testMode':'PlayMode','module':'base','importOptions':'-overrideTextureCompression\
+        \ forceUncompressed'},\n {'suite':'soak','assembly':'SGH.Tests.System','category':'Soak','testMode':'PlayMode','module':'base','importOptions':fast},\n\
+        \ {'suite':'rendered','assembly':'SGH.Tests.System','category':'Journey','testMode':'Standalone','module':'linux-il2cpp','importOptions':fast},\n\
+        \ {'suite':'standalone','assembly':'SGH.Tests.System','category':'Journey','testMode':'Standalone','module':'linux-il2cpp','importOptions':fast}\n\
+        ]\nselection = os.environ.get('SELECTION') or 'all'\nrows = [r for r in rows if selection == 'all' or r['suite'] ==\
+        \ selection]\nif not rows: raise SystemExit('Unknown suite')\nwith open(os.environ['GITHUB_OUTPUT'], 'a') as f: f.write('matrix='\
+        \ + json.dumps({'include':rows}) + '\\n')\nPY\n"
+  extended:
+    name: Extended ${{ matrix.suite }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+    - name: Free disk space on GitHub-hosted runner
+      shell: bash
+      env:
+        RUNNER_ENVIRONMENT: ${{ runner.environment }}
+      run: "set -euo pipefail\nif [[ \"$RUNNER_ENVIRONMENT\" != \"github-hosted\" ]]; then\n  echo \"::error::Disk cleanup\
+        \ is restricted to disposable GitHub-hosted runners.\"\n  exit 1\nfi\ndf -h /\n# These host SDKs are unused: Unity\
+        \ runs with its own tools in Docker.\n# Run before checkout; never remove project files or restored imports.\nsudo\
+        \ rm -rf -- /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/local/swift\n\
+        docker image prune --all --force\ndf -h /\n"
+    - name: Check out project
+      uses: actions/checkout@v4
+      with:
+        lfs: 'true'
+        persist-credentials: 'false'
+    - name: Check Unity asset path casing
+      run: python3 Tests/Check-AssetPaths.py
+    - name: Check Unity licensing configuration
+      shell: bash
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+      run: "if [[ -z \"$UNITY_EMAIL\" || -z \"$UNITY_PASSWORD\" || ( -z \"$UNITY_LICENSE\" && -z \"$UNITY_SERIAL\" ) ]]; then\n\
+        \  echo \"::error::Configure UNITY_EMAIL, UNITY_PASSWORD and either UNITY_LICENSE (Personal) or UNITY_SERIAL (Pro)\
+        \ in repository Actions secrets. Fork PRs do not receive these secrets. See Tests/README.md.\"\n  exit 1\nfi\n"
+    - name: Configure isolated Photon test applications
+      if: matrix.suite == 'live' || matrix.suite == 'rendered'
+      shell: bash
+      env:
+        SGH_PHOTON_APP_ID: ${{ secrets.SGH_PHOTON_APP_ID }}
+        SGH_PHOTON_CHAT_APP_ID: ${{ secrets.SGH_PHOTON_CHAT_APP_ID }}
+        SGH_PHOTON_REGION: ${{ vars.SGH_PHOTON_REGION || 'sg' }}
+      run: "python3 - <<'PY'\nimport json, os, uuid\nfor key in ['SGH_PHOTON_APP_ID', 'SGH_PHOTON_CHAT_APP_ID']:\n    try:\
+        \ uuid.UUID(os.environ.get(key, ''))\n    except ValueError: raise SystemExit('Configure dedicated test secret ' +\
+        \ key)\n# GameCI's Docker wrapper does not forward arbitrary environment variables.\n# The workspace file is outside\
+        \ Assets and is excluded from artifact uploads.\nfd = os.open('.sgh-ci-test-config.json', os.O_WRONLY | os.O_CREAT\
+        \ | os.O_TRUNC, 0o600)\nwith os.fdopen(fd, 'w') as f:\n    json.dump({'appId': os.environ['SGH_PHOTON_APP_ID'], 'chatAppId':\
+        \ os.environ['SGH_PHOTON_CHAT_APP_ID'], 'region': os.environ['SGH_PHOTON_REGION']}, f)\nPY\n"
+    - name: Select editor-only Unity image
+      id: editor
+      shell: bash
+      run: "set -euo pipefail\nunity_version=\"$(sed -n 's/^m_EditorVersion: //p' ProjectSettings/ProjectVersion.txt | tr\
+        \ -d '\\r')\"\nif [[ ! \"$unity_version\" =~ ^[0-9]+\\.[0-9]+\\.[0-9]+[abfp][0-9]+$ ]]; then\n  echo \"::error::Cannot\
+        \ determine Unity version from ProjectSettings/ProjectVersion.txt.\"\n  exit 1\nfi\n# EditMode/PlayMode do not build\
+        \ a player or require IL2CPP modules.\necho \"image=unityci/editor:ubuntu-${unity_version}-${{ matrix.module }}-3\"\
+        \ >> \"$GITHUB_OUTPUT\"\n"
+    - name: Cache Unity imports
+      uses: actions/cache@v4
+      with:
+        path: Library
+        key: extended-v1-${{ runner.os }}-${{ matrix.suite }}-${{ hashFiles('ProjectSettings/ProjectVersion.txt', 'Packages/**',
+          'Assets/**') }}
+        restore-keys: extended-v1-${{ runner.os }}-${{ matrix.suite }}-
+    - name: Check disk space before Unity
+      shell: bash
+      run: 'df -h / /var/lib/docker "$GITHUB_WORKSPACE"
+
+        df -i /var/lib/docker
+
+        '
+    - name: Build rendered multiplayer automation player
+      if: matrix.suite == 'rendered'
+      uses: game-ci/unity-builder@v4.8.2
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+      with:
+        targetPlatform: StandaloneLinux64
+        customImage: ${{ steps.editor.outputs.image }}
+        buildMethod: SGH.Tests.RenderedPlayerBuild.Linux
+        versioning: None
+        allowDirtyBuild: 'true'
+        customParameters: -overrideTextureCompression forceUncompressed -overrideMaxTextureSize 256 -job-worker-count 2
+    - name: Run two rendered clients with real desktop input
+      if: matrix.suite == 'rendered'
+      shell: bash
+      run: 'set -euo pipefail
+
+        sudo apt-get update
+
+        sudo apt-get install -y xvfb xdotool openbox libgl1-mesa-dri libglu1-mesa libgtk-3-0
+
+        sudo chown -R "$(id -u):$(id -g)" TestResults
+
+        chmod +x TestResults/RenderedPlayer/SGH
+
+        xvfb-run -a -s "-screen 0 1920x1080x24" bash -c ''openbox >/dev/null 2>&1 & python3 Tests/Run-RenderedClients.py --player
+        TestResults/RenderedPlayer/SGH --config .sgh-ci-test-config.json --results TestResults/rendered''
+
+        '
+    - name: Run ${{ matrix.testMode }} tests
+      uses: game-ci/unity-test-runner@v4.3.2
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+      with:
+        projectPath: .
+        unityVersion: auto
+        customImage: ${{ steps.editor.outputs.image }}
+        testMode: ${{ matrix.testMode }}
+        customParameters: -assemblyNames ${{ matrix.assembly }} -testCategory ${{ matrix.category }} -job-worker-count 2 ${{
+          matrix.importOptions }}
+        artifactsPath: TestResults/${{ matrix.suite }}
+      if: matrix.suite != 'rendered'
+    - name: Report remaining runner disk space
+      if: always()
+      shell: bash
+      run: 'df -h /
+
+        docker system df
+
+        '
+    - name: Upload test results and logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: extended-${{ matrix.suite }}-results
+        path: 'TestResults/${{ matrix.suite }}
+
+          TestResults/System'
+        if-no-files-found: warn
+        retention-days: '1'
+    - name: Remove ephemeral test configuration
+      if: always()
+      shell: bash
+      run: 'python3 - <<''PY''
+
+        from pathlib import Path
+
+        Path(''.sgh-ci-test-config.json'').unlink(missing_ok=True)
+
+        PY
+
+        '
+    needs: plan

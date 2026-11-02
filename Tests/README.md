@@ -144,7 +144,44 @@ Against a dedicated test deployment, use:
 This validates health and rejected synthetic requests only; it never deliberately
 submits a valid CSV, reads gameplay exports, or exercises SMTP. Redirects are
 disabled so an HTTP/TLS deployment problem cannot silently change the target.
-Successful delivery, exact-limit acceptance, SMTP failures and cancellation must
-use the manual backend cases with verified test recipients after sender constants
-have been replaced by secure test configuration. The Unity direct SMTP route is
-separate from this API.
+Successful delivery, exact-limit acceptance, SMTP rejection, cancellation and rate limiting now have local integration tests:
+
+```powershell
+dotnet test backend/SghCsvEmailApi.Tests/SghCsvEmailApi.Tests.csproj
+```
+
+They bind fake SMTP on loopback, use synthetic CSV only, and cannot forward mail externally. The Unity direct SMTP route remains separate.
+
+## Extended automation
+
+See [AutomatedCoverage.md](AutomatedCoverage.md) for coverage and execution boundaries. The default PR Unity job still runs the isolated EditMode/PlayMode assemblies. Backend tests have their own PR workflow.
+
+All extended suites now run automatically on PR opened/synchronize/reopened/ready-for-review events alongside the fast suite. No repository opt-in variable is required. Manual dispatch remains available to rerun `journey`, `visual`, `soak`, `standalone`, `live`, `rendered` or `all`. Missing licensing/Photon secrets fail the selected jobs explicitly; fork PRs cannot receive these secrets, so a maintainer must run them from a trusted repository branch. The workflow uses pull_request, never pull_request_target.
+
+Live tests require dedicated test-only Actions secrets `SGH_PHOTON_APP_ID` and `SGH_PHOTON_CHAT_APP_ID`. Optional repository variable `SGH_PHOTON_REGION` selects a region (default `sg`). These must be separate from production applications. The workflow creates a temporary ignored configuration outside Assets for the Docker test process and deletes it afterward. Never commit it or upload it as an artifact. Rooms, users and messages are synthetic, randomized and isolated by an automation application version.
+
+For local live execution, set the corresponding environment variables in the editor process before launch. Missing IDs fail the selected live suite instead of silently using production settings. Never paste IDs/passwords into test source or reports.
+
+System tests need a graphics context (do not add `-nographics`). Real scene tests isolate Chat and CSV delivery; they must run in a separate Unity process. The standalone suite uses the project's Mono backend with Lobby/GameScene included. It does not change project build settings. Screenshots and smoke-budget metrics are saved under `TestResults/System`; these contain synthetic state only.
+
+Local extended runner (close Unity first):
+
+```powershell
+./Tests/Run-ExtendedUnityTests.ps1 -Suite Journey
+./Tests/Run-ExtendedUnityTests.ps1 -Suite Visual
+./Tests/Run-ExtendedUnityTests.ps1 -Suite Soak
+./Tests/Run-ExtendedUnityTests.ps1 -Suite Standalone
+# Live requires the dedicated IDs in this process environment:
+./Tests/Run-ExtendedUnityTests.ps1 -Suite Live
+```
+
+A failed product invariant is a test failure, not a reason to relax assertions. The coverage manifest distinguishes pending external execution and unsupported lifecycle features from verified passing suites.
+
+
+## Two rendered clients and desktop device input
+
+The `rendered` PR job builds a separate automation player, launches two independent processes under Xvfb/openbox, and uses xdotool to send OS W movement, mouse camera motion, Q cursor unlock and a pointer click to the actual Chat collapse button in each window. Both processes must report measured movement/camera/UI changes, two authored avatars, real scene Chat delivery/unread/channel behavior, all 11 stages and two consecutive sessions. Players alternate puzzle turns, acquire active card ownership through PUN, and exit the ending independently. Any error log, timeout, missing window, missing input evidence, wrong stage count, failed process exit or stale report directory fails the run. Six Python contract tests verify the orchestrator's pass/fail and cleanup rules.
+
+The player builds through `SGH.Tests.RenderedPlayerBuild.Linux` (CI) or `.Windows` (local build verification). It includes a minimal authored `RenderedBootstrap` scene and test assemblies; normal production builds do not include this harness. Dedicated IDs are injected from an external configuration file, and fallback reconnect settings are fenced to the dedicated applications in runtime memory. SMTP credentials are cleared and CSV export is suppressed in this synthetic journey.
+
+The full rendered orchestration runs on Linux/X11 and needs real dedicated Photon/Chat secrets. Its desktop input checks do not certify Android/iOS hardware, touch controls, GPU vendors or physical screen quality. The five aspect ratios are rendered viewport tests, including every authored multipart puzzle page; they are not a claim that phone hardware was exercised. The project currently uses desktop keyboard/mouse controls.

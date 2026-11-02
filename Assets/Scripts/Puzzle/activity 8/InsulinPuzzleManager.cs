@@ -152,8 +152,9 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle // Declares this type
     { // Starts this code block.
         yield return new WaitForSeconds(delaySeconds); // Pauses this coroutine until the yielded condition finishes.
 
-        foreach (Activity6DropSlot slot in Activity6DropSlot.allDropSlots) // Repeats this block for each item in a collection.
+        foreach (DropSlot slot in DropSlot.allDropSlots) // The registry also contains slots belonging to other puzzles.
         { // Starts this code block.
+            if (!(slot is Activity6DropSlot)) continue;
             foreach (DraggableCard card in slot.GetCardsInSlot()) // Repeats this block for each item in a collection.
             { // Starts this code block.
                 Image img = card.GetComponent<Image>(); // Runs this line of puzzle logic.

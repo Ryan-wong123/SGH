@@ -1,0 +1,20 @@
+{
+  "name": "SGH.Tests.Live",
+  "references": [
+    "SGH.Tests.Shared",
+    "PhotonUnityNetworking",
+    "PhotonRealtime",
+    "PhotonChat",
+    "Unity.TextMeshPro",
+    "Unity.ugui"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "autoReferenced": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Photon3Unity3D.dll",
+    "nunit.framework.dll"
+  ]
+}

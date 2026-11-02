@@ -26,7 +26,11 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
     private readonly Dictionary<string, PuzzlePlayerStats> teamStatsByKey = new(); // Team submission rows, keyed by the player who submitted.
     private readonly Dictionary<string, double> localAttemptStartTimes = new(); // Declares a field, property, or member used by this script.
     private DateTime sessionPlayedAt; // Stores when this game session started for CSV export.
+    // Injectable I/O boundaries keep synthetic export tests away from user Downloads.
+    private Func<string> csvDirectory = () => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+    private Action<string, string> csvWriter = (path, contents) => File.WriteAllText(path, contents, Encoding.UTF8);
     private bool hasWrittenCsv; // Declares a field, property, or member used by this script.
+    private string sessionExportId = Guid.NewGuid().ToString("N"); // Prevent same-name rapid sessions overwriting an export.
 
     private sealed class PuzzlePlayerStats // Declares a field, property, or member used by this script.
     { // Starts this code block.
@@ -160,14 +164,12 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
-        hasWrittenCsv = true; // Updates this value.
-
-        string directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"); // Saves gameplay CSV files directly to the current user's Downloads folder.
+        string directory = csvDirectory(); // Saves gameplay CSV files directly to the current user's Downloads folder.
         Directory.CreateDirectory(directory); // Runs this line of puzzle logic.
 
         string roomName = SanitizeFileName(GetCurrentRoomName()); // Creates a local value used by the following logic.
         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture); // Creates a local value used by the following logic.
-        string path = Path.Combine(directory, $"gameplay_{roomName}_{timestamp}.csv"); // Creates a local value used by the following logic.
+        string path = Path.Combine(directory, $"gameplay_{roomName}_{timestamp}_{sessionExportId}.csv"); // One distinct export per session.
 
         var individualRows = new List<PuzzlePlayerStats>(statsByKey.Values);
         individualRows.RemoveAll(row => ShouldSuppressIndividualSubmissionInputs(row.PuzzleNumber, row.PuzzlePart));
@@ -263,7 +265,8 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             csv.AppendLine();
         } // Ends this code block.
 
-        File.WriteAllText(path, csv.ToString(), Encoding.UTF8); // Runs this line of puzzle logic.
+        csvWriter(path, csv.ToString());
+        hasWrittenCsv = true; // A failed write remains retryable. // Runs this line of puzzle logic.
         Debug.Log($"Gameplay CSV saved to: {path}"); // Writes a diagnostic message to the Unity console.
         SendCsvWithSmtp(path, roomName, playedAt);
     } // Ends this code block.
@@ -333,6 +336,19 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         }
 
         return compacted;
+    }
+
+    public override void OnJoinedRoom()
+    {
+        // Rejoining an existing actor resumes the same session. A normal room join,
+        // including a newly created room with a reused name, starts fresh analytics.
+        if (PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.HasRejoined) return;
+        statsByKey.Clear();
+        teamStatsByKey.Clear();
+        localAttemptStartTimes.Clear();
+        sessionPlayedAt = DateTime.Now;
+        sessionExportId = Guid.NewGuid().ToString("N");
+        hasWrittenCsv = false;
     }
 
     public override void OnLeftRoom() // Overrides a Unity or Photon callback method.

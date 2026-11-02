@@ -118,9 +118,9 @@ The file has `INDIVIDUAL_PLAYER_INPUTS` and `TEAM_SUBMISSIONS` sections. They in
 
 Stage 0 and Puzzle 2 are excluded. Individual rows are suppressed for Puzzle 4 part 2, Puzzle 5, all three diary parts, Puzzle 8, and Puzzle 9. Remaining individual counts belong to the submitter; they do not measure every teammate's contribution. Latest control values are collected internally but not exported as a complete raw input history. Team timing is accumulated attempt time, not guaranteed session wall time.
 
-Automatic delivery currently means the master writes the file and, if it is also the recorded organiser still in the room with runtime SMTP details, sends it through Gmail SMTP over TLS. Failures are logged; there is no retry queue or guaranteed send completion before quit. Master migration does not transfer analytics history or credentials. The persistent logger lacks a new-room reset, so repeated sessions in one process need verification.
+Automatic delivery currently means the master writes the file and, if it is also the recorded organiser still in the room with runtime SMTP details, sends it through Gmail SMTP over TLS. Failures are logged; there is no retry queue or guaranteed send completion before quit. Master migration does not transfer analytics history or credentials. Normal room joins now reset the logger rows, timers, export identity and session date; same-actor rejoin preserves the current session. Scene-owned puzzle/score managers are recreated with GameScene. Same-process repeat journeys have offline regression coverage; dedicated live execution remains separate.
 
-The optional ASP.NET Core API can accept and email a CSV, but Unity currently does not call it. Changing `SmtpEmailSettings` does not alter direct SMTP delivery. Its existing backend README has stale integration and credential instructions; the verified contract is in architecture.md.
+The optional ASP.NET Core API can accept and email a CSV, but Unity currently does not call it. Changing `SmtpEmailSettings` does not alter direct SMTP delivery. Its README documents secure deployment configuration and loopback fake SMTP tests; the verified contract is in architecture.md.
 
 ## Acceptance requirements and known gaps
 
@@ -135,7 +135,7 @@ Required verification, not asserted completed testing:
 7. Check guidance across floors and UI at 16:9, 16:10, ultrawide, tablet portrait, and mobile landscape. Keyboard/mouse controls do not imply implemented touch controls.
 8. Validate synthetic CSV data, exclusions, early exit, master migration, second-session behavior, and explicitly configured test email delivery.
 
-Known gaps: durable main-stage transitions do not cover every substage; validation is client-side; Puzzle 11 has no terminal latch; analytics/email are not durable across master migration. Backend credential constants and recipient logging require production remediation. Lobby content layout must prevent room-entry overlap. The event-code collisions and insulin pending-delay reset defect were addressed on 1 November 2026; the other gaps remain.
+Known gaps: durable main-stage transitions do not cover every substage; validation is client-side; Puzzle 11 has no terminal latch; analytics/email are not durable across master migration. The backend now requires deployment-provided credentials and omits recipient success logging; the Unity SMTP route remains separate. Lobby content layout must prevent room-entry overlap. The event-code collisions and insulin pending-delay reset defect were addressed on 1 November 2026; the other gaps remain.
 
 
 ### Protocol and insulin recovery update — 1 November 2026

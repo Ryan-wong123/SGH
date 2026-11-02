@@ -51,7 +51,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         if (backgroundImage != null) backgroundImage.raycastTarget = playable; // Checks this condition before continuing.
 
         // (Optional) If you want playable state synced too, uncomment:
-        // if (pv != null && PhotonNetwork.InRoom && !suppressNet)
+        // if (pv != null && pv.ViewID > 0 && PhotonNetwork.InRoom && !suppressNet)
         //     pv.RPC(nameof(RPC_SetPlayable), RpcTarget.Others, playable);
     } // Ends this code block.
 
@@ -98,7 +98,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
             backgroundImage.color = isSelected ? new Color(1f, 0.95f, 0.4f) : Color.white; // yellow or white
 
         // ✅ Sync to others
-        if (pv != null && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
+        if (pv != null && pv.ViewID > 0 && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
         { // Starts this code block.
             pv.RPC(nameof(RPC_SetSelectedVisual), RpcTarget.Others, selected); // Runs this line of puzzle logic.
         } // Ends this code block.
@@ -110,7 +110,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         if (backgroundImage != null) backgroundImage.color = Color.green; // Checks this condition before continuing.
 
         // ✅ Sync to others
-        if (pv != null && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
+        if (pv != null && pv.ViewID > 0 && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
         { // Starts this code block.
             pv.RPC(nameof(RPC_SetResultCorrect), RpcTarget.Others); // Runs this line of puzzle logic.
         } // Ends this code block.
@@ -122,7 +122,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         if (backgroundImage != null) backgroundImage.color = Color.red; // Checks this condition before continuing.
 
         // ✅ Sync to others
-        if (pv != null && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
+        if (pv != null && pv.ViewID > 0 && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
         { // Starts this code block.
             pv.RPC(nameof(RPC_SetResultWrong), RpcTarget.Others); // Runs this line of puzzle logic.
         } // Ends this code block.
@@ -136,7 +136,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
             backgroundImage.color = isSelected ? new Color(1f, 0.95f, 0.4f) : Color.white; // Updates this value.
 
         // ✅ Sync to others
-        if (pv != null && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
+        if (pv != null && pv.ViewID > 0 && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
         { // Starts this code block.
             pv.RPC(nameof(RPC_ClearResult), RpcTarget.Others); // Runs this line of puzzle logic.
         } // Ends this code block.
@@ -151,7 +151,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         } // Ends this code block.
 
         // ✅ Sync to others
-        if (pv != null && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
+        if (pv != null && pv.ViewID > 0 && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
         { // Starts this code block.
             pv.RPC(nameof(RPC_DisableCellUI), RpcTarget.Others); // Runs this line of puzzle logic.
         } // Ends this code block.
@@ -162,7 +162,7 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         if (letterText != null) letterText.color = color; // Checks this condition before continuing.
 
         // ✅ Sync to others (send floats because Color is not always safe in RPC across setups)
-        if (pv != null && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
+        if (pv != null && pv.ViewID > 0 && PhotonNetwork.InRoom && !suppressNet) // Checks this condition before continuing.
         { // Starts this code block.
             pv.RPC(nameof(RPC_SetTextColor), RpcTarget.Others, color.r, color.g, color.b, color.a); // Runs this line of puzzle logic.
         } // Ends this code block.

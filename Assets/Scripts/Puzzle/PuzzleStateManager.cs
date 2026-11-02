@@ -144,8 +144,13 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         else { Destroy(gameObject); return; } // Handles this part of the puzzle state flow.
 
         InitStagePanels(); // Initializes the stage panel lookup.
-        DontDestroyOnLoad(gameObject); // optional if changing scenes // Keeps this manager alive across scene loads.
+        // Scene-owned panels and handlers must be recreated for the next GameScene.
     } // Ends this block.
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
 
     private void Start() // Initializes puzzle handlers and room state after Unity startup.
     { // Starts this block.

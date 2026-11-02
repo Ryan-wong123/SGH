@@ -140,6 +140,18 @@ namespace SGH.Tests
         }
 
         [Test]
+        public void FinalRewardRemovesTheNetworkedMortuaryTriggerRatherThanASyringeMesh()
+        {
+            var target = (GameObject)Get(Only("PuzzleStateManager"), "puzzle5Object");
+            Assert.That(target, Is.Not.Null);
+            Assert.That(target.GetComponents<Component>().Any(c => c != null && c.GetType().Name == "PhotonView"), Is.True);
+            var trigger = target.GetComponent(RuntimeType("PuzzleTrigger"));
+            Assert.That(trigger, Is.Not.Null);
+            Assert.That(Get(trigger, "restrictToStage"), Is.True);
+            Assert.That(System.Convert.ToInt32(Get(trigger, "requiredStage")), Is.EqualTo(11));
+        }
+
+        [Test]
         public void SyringeEntryHasBothChestAndDedicatedTrigger()
         {
             Component state = Only("PuzzleStateManager");

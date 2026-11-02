@@ -110,7 +110,7 @@ public class HighlightEffect : MonoBehaviour // Defines a component that highlig
 
     private void RestartScale(Vector3 targetScale) // Restarts the scale coroutine toward a new target scale.
     { // Opens the RestartScale method body.
-        if (!enableScaling) // Checks whether scaling has been disabled.
+        if (!enableScaling || !gameObject.activeInHierarchy) // Scene shutdown can deactivate the object during another component's OnDisable.
         { // Opens the disabled-scaling guard block.
             StopScaleAndSnapToOriginal(); // Stops current scaling and restores the original scale.
             return; // Stops because no new scaling coroutine should run.

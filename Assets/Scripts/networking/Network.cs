@@ -258,7 +258,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
 
     public static bool TryJoinLobby()
     {
-        if (PhotonNetwork.InRoom || PhotonNetwork.InLobby)
+        if (PhotonNetwork.OfflineMode || PhotonNetwork.InRoom || PhotonNetwork.InLobby)
             return false;
 
         if (PhotonNetwork.NetworkClientState != ClientState.ConnectedToMasterServer)

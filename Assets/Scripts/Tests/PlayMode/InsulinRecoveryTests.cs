@@ -67,6 +67,37 @@ namespace SGH.Tests
         }
 
         [UnityTest]
+        public IEnumerator UnregisteredGeneratedInputDoesNotShareViewZeroRoomKeysOrSendRpc()
+        {
+            yield return CreateOfflineRoom();
+            var field = Input();
+            var sync = field.gameObject.AddComponent(RuntimeType("PhotonSyncedTMPInputField"));
+            Call(sync, "Awake");
+            field.text = "synthetic";
+            Call(sync, "SetBackgroundColorAndSync", Color.green);
+            var properties = (IDictionary)Get(room, "CustomProperties");
+            Assert.That(properties.Contains("TMPInputText_0"), Is.False);
+            Assert.That(properties.Contains("TMPInputColor_0"), Is.False);
+            Assert.That(field.text, Is.EqualTo("synthetic"));
+        }
+
+        [UnityTest]
+        public IEnumerator RuntimeWordSearchCellWithNoViewIdAppliesVisualsWithoutInvalidRpc()
+        {
+            yield return CreateOfflineRoom();
+            var cell = Component("LetterCell");
+            Set(cell, "backgroundImage", Object("Background").AddComponent<UnityEngine.UI.Image>());
+            Set(cell, "letterText", Object("Letter").AddComponent<TMPro.TextMeshProUGUI>());
+            Call(cell, "Awake");
+            Call(cell, "SetTextColor", Color.blue);
+            Call(cell, "SetSelectedVisual", true);
+            Call(cell, "SetResultCorrect"); Call(cell, "SetResultWrong");
+            Call(cell, "ClearResult"); Call(cell, "DisableCellUI");
+            Assert.That(((TMPro.TMP_Text)Get(cell, "letterText")).color, Is.EqualTo(Color.blue));
+            Assert.That(((UnityEngine.UI.Image)Get(cell, "backgroundImage")).enabled, Is.False);
+        }
+
+        [UnityTest]
         public IEnumerator CorrectSubmissionCreatesDeadlineAndDuplicateDoesNotExtendIt()
         {
             yield return CreateOfflineRoom();
