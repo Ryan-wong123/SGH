@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SghCsvEmailApi.Options;
 using SghCsvEmailApi.Services;
 using Xunit;
@@ -24,6 +26,25 @@ public class HttpContractTests
             await csv.CopyToAsync(stream, token);
             Content = stream.ToArray();
             if (BeforeComplete != null) await BeforeComplete(token);
+        }
+    }
+
+    // Minimal-host startup can dispose its services before WebApplicationFactory's
+    // deferred host observes the original exception. Capture that exception at the
+    // host boundary so a bare disposal error cannot satisfy a validation test.
+    private sealed class StartupFailureProbe : ILoggerProvider, ILogger
+    {
+        public readonly TaskCompletionSource<OptionsValidationException> Failure =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public ILogger CreateLogger(string categoryName) => this;
+        public bool IsEnabled(LogLevel logLevel) => logLevel >= LogLevel.Error;
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+        public void Dispose() { }
+        public void Log<TState>(LogLevel level, EventId id, TState state, Exception? error,
+            Func<TState, Exception?, string> formatter)
+        {
+            if (error is OptionsValidationException validation && validation.OptionsType == typeof(GmailOptions))
+                Failure.TrySetResult(validation);
         }
     }
 
@@ -155,18 +176,24 @@ public class HttpContractTests
     }
 
     [Theory]
-    [InlineData("Gmail:SmtpPort", "0")]
-    [InlineData("Gmail:SmtpPort", "65536")]
-    [InlineData("Gmail:SenderEmail", "invalid")]
-    [InlineData("Gmail:RecipientEmail", "invalid")]
-    [InlineData("Gmail:AppPassword", "")]
-    [InlineData("Gmail:EnableSsl", "false")]
-    public void InvalidMailConfigurationFailsAtStartup(string key, string value)
+    [InlineData("Gmail:SmtpPort", "0", "SmtpPort")]
+    [InlineData("Gmail:SmtpPort", "65536", "SmtpPort")]
+    [InlineData("Gmail:SenderEmail", "invalid", "SenderEmail")]
+    [InlineData("Gmail:RecipientEmail", "invalid", "RecipientEmail")]
+    [InlineData("Gmail:AppPassword", "", "AppPassword")]
+    [InlineData("Gmail:EnableSsl", "false", "Unencrypted SMTP is allowed only on loopback.")]
+    public async Task InvalidMailConfigurationFailsAtStartup(string key, string value, string expectedFailure)
     {
         using var original = new Host();
-        using var invalid = original.WithWebHostBuilder(builder => builder.UseSetting(key, value));
-        Exception error = Assert.ThrowsAny<Exception>(() => invalid.CreateClient());
-        Assert.Contains("OptionsValidationException", error.ToString());
+        using var probe = new StartupFailureProbe();
+        using var invalid = original.WithWebHostBuilder(builder =>
+        {
+            builder.UseSetting(key, value);
+            builder.ConfigureLogging(logging => logging.AddProvider(probe));
+        });
+        Assert.ThrowsAny<Exception>(() => invalid.CreateClient());
+        var validation = await probe.Failure.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.Contains(validation.Failures, failure => failure.Contains(expectedFailure, StringComparison.Ordinal));
         Assert.Equal(0, original.Mail.Calls);
     }
 }
