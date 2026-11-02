@@ -42,7 +42,7 @@ namespace SGH.Tests
             var settings = new AppSettings
             {
                 AppIdRealtime = app, AppVersion = PhotonNetwork.NetworkingClient.AppVersion,
-                FixedRegion = LiveTestConfig.Get("SGH_PHOTON_REGION") ?? "sg"
+                FixedRegion = LiveTestConfig.Region
             };
             peer = new LoadBalancingClient();
             peer.AuthValues = new AuthenticationValues("sgh-owner-" + Guid.NewGuid().ToString("N"));

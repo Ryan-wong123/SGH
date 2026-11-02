@@ -42,8 +42,8 @@ jobs:
       run: "python3 - <<'PY'\nimport json, os\nfast = '-overrideTextureCompression forceUncompressed -overrideMaxTextureSize\
         \ 256'\nrows = [\n {'suite':'live','assembly':'SGH.Tests.Live','category':'!KnownGap','testMode':'PlayMode','module':'base','importOptions':fast},\n\
         \ {'suite':'journey','assembly':'SGH.Tests.System','category':'Journey','testMode':'PlayMode','module':'base','importOptions':fast},\n\
-        \ {'suite':'visual','assembly':'SGH.Tests.System','category':'Visual','testMode':'PlayMode','module':'base','importOptions':'-overrideTextureCompression\
-        \ forceUncompressed'},\n {'suite':'soak','assembly':'SGH.Tests.System','category':'Soak','testMode':'PlayMode','module':'base','importOptions':fast},\n\
+        \ {'suite':'visual','assembly':'SGH.Tests.System','category':'Visual','testMode':'PlayMode','module':'base','importOptions':fast},\n\
+        \ {'suite':'soak','assembly':'SGH.Tests.System','category':'Soak','testMode':'PlayMode','module':'base','importOptions':fast},\n\
         \ {'suite':'rendered','assembly':'SGH.Tests.System','category':'Journey','testMode':'Standalone','module':'linux-il2cpp','importOptions':fast},\n\
         \ {'suite':'standalone','assembly':'SGH.Tests.System','category':'Journey','testMode':'Standalone','module':'linux-il2cpp','importOptions':fast}\n\
         ]\nselection = os.environ.get('SELECTION') or 'all'\nrows = [r for r in rows if selection == 'all' or r['suite'] ==\
@@ -90,13 +90,14 @@ jobs:
       env:
         SGH_PHOTON_APP_ID: ${{ secrets.SGH_PHOTON_APP_ID }}
         SGH_PHOTON_CHAT_APP_ID: ${{ secrets.SGH_PHOTON_CHAT_APP_ID }}
-        SGH_PHOTON_REGION: ${{ vars.SGH_PHOTON_REGION || 'sg' }}
+        SGH_PHOTON_REGION: ${{ vars.SGH_PHOTON_REGION || 'asia' }}
       run: "python3 - <<'PY'\nimport json, os, uuid\nfor key in ['SGH_PHOTON_APP_ID', 'SGH_PHOTON_CHAT_APP_ID']:\n    try:\
         \ uuid.UUID(os.environ.get(key, ''))\n    except ValueError: raise SystemExit('Configure dedicated test secret ' +\
         \ key)\n# GameCI's Docker wrapper does not forward arbitrary environment variables.\n# The workspace file is outside\
         \ Assets and is excluded from artifact uploads.\nfd = os.open('.sgh-ci-test-config.json', os.O_WRONLY | os.O_CREAT\
         \ | os.O_TRUNC, 0o600)\nwith os.fdopen(fd, 'w') as f:\n    json.dump({'appId': os.environ['SGH_PHOTON_APP_ID'], 'chatAppId':\
-        \ os.environ['SGH_PHOTON_CHAT_APP_ID'], 'region': os.environ['SGH_PHOTON_REGION']}, f)\nPY\n"
+        \ os.environ['SGH_PHOTON_CHAT_APP_ID'], 'region': 'asia' if os.environ['SGH_PHOTON_REGION'].strip().lower() == 'sg'\
+        \ else os.environ['SGH_PHOTON_REGION'].strip().lower()}, f)\nPY\n"
     - name: Select editor-only Unity image
       id: editor
       shell: bash

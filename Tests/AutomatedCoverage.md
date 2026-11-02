@@ -33,7 +33,7 @@ Updated 2 November 2026. All six extended Unity suites now run on PR opened, syn
 | Dedicated rendered automation Windows player | Build verified; cloud execution not yet performed |
 | Live Photon/Chat and rendered Linux input | Authored and compiled; pending dedicated test secrets and CI execution |
 
-The former second-session KnownGap tests are normal regressions now; they are no longer excluded to keep CI green. There are no claims of physical mobile-device execution. Local visual verification uses 256-pixel texture import caps; the PR Visual job removes that cap for full-quality screenshot review. Native desktop input runs under an isolated X display, not against the user's desktop.
+The former second-session KnownGap tests are normal regressions now; they are no longer excluded to keep CI green. There are no claims of physical mobile-device execution. Local visual verification uses 256-pixel texture import caps; the PR Visual job uses the same cap to bound memory on the 8 GB hosted runner; screenshot viewport dimensions are unchanged. Native desktop input runs under an isolated X display, not against the user's desktop.
 
 ## Isolation and failures
 

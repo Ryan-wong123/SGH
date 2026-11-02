@@ -62,7 +62,7 @@ namespace SGH.Tests
             Assert.That(client.ConnectUsingSettings(new AppSettings
             {
                 AppIdRealtime = appId, AppVersion = "sgh-automation-v1",
-                FixedRegion = LiveTestConfig.Get("SGH_PHOTON_REGION") ?? "sg",
+                FixedRegion = LiveTestConfig.Region,
                 Protocol = ConnectionProtocol.Tcp, EnableProtocolFallback = false
             }), Is.True);
             return client;

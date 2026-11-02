@@ -19,13 +19,24 @@ namespace SGH.Tests
     {
         private readonly List<GameObject> initialRoots = new List<GameObject>();
         private bool configured;
+        private static bool commandLineFence;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void FenceColdEditorStartup()
+        {
+            var args = Environment.GetCommandLineArgs();
+            if (!args.Contains("-runTests") || !args.Contains("SGH.Tests.System") || args.Contains("-sgh-rendered")) return;
+            SceneManager.sceneLoaded -= IsolateServices;
+            SceneManager.sceneLoaded += IsolateServices;
+            commandLineFence = true;
+        }
 
         private static Component[] All(string type) => UnityEngine.Object.FindObjectsByType(RuntimeType(type), FindObjectsInactive.Include, FindObjectsSortMode.None)
             .Cast<Component>().Where(c => c.gameObject.scene.IsValid()).ToArray();
 
         private static Component One(string type) => All(type).First(); // Persistent managers move to DontDestroyOnLoad.
 
-        private void IsolateServices(Scene scene, LoadSceneMode mode)
+        private static void IsolateServices(Scene scene, LoadSceneMode mode)
         {
             foreach (var root in scene.GetRootGameObjects())
             foreach (var m in root.GetComponentsInChildren<MonoBehaviour>(true))
@@ -37,6 +48,12 @@ namespace SGH.Tests
             }
             var logger = Get(RuntimeType("GameSessionCsvLogger"), "Instance");
             if (logger != null) Set(logger, "hasWrittenCsv", true); // No CSV or SMTP in scene journey.
+            var chat = Get(RuntimeType("ChatManager"), "Instance") as MonoBehaviour;
+            if (chat != null)
+            {
+                Set(chat, "chatAppId", ""); chat.enabled = false;
+                var client = Get(chat, "chatClient"); if (client != null) Call(client, "Disconnect");
+            }
         }
 
         private IEnumerator SetupJourney()
@@ -46,7 +63,8 @@ namespace SGH.Tests
             foreach (var go in Resources.FindObjectsOfTypeAll<GameObject>())
                 if (go.scene.IsValid() && go.transform.parent == null) initialRoots.Add(go);
             Call(RuntimeType("SessionSmtpCredentials"), "Clear");
-            if (!configured) SceneManager.sceneLoaded += IsolateServices;
+            IsolateServices(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+            if (!configured && !commandLineFence) SceneManager.sceneLoaded += IsolateServices;
             configured = true;
             yield return SceneManager.LoadSceneAsync("Lobby");
             Assert.That(All("Network").Length, Is.GreaterThan(0));
@@ -59,7 +77,7 @@ namespace SGH.Tests
             Call(PhotonNetwork.NetworkingClient, "UpdateCallbackTargets");
             Assert.That(PhotonNetwork.CreateRoom("synthetic-journey-" + Guid.NewGuid().ToString("N")), Is.True);
             PhotonNetwork.LoadLevel("GameScene");
-            yield return Until(() => SceneManager.GetActiveScene().name == "GameScene", "GameScene load");
+            yield return Until(() => SceneManager.GetActiveScene().name == "GameScene", "GameScene load", 120);
             yield return null;
         }
 
@@ -74,7 +92,7 @@ namespace SGH.Tests
         public IEnumerator CleanupJourney()
         {
             if (!configured) yield break;
-            SceneManager.sceneLoaded -= IsolateServices;
+            if (!commandLineFence) SceneManager.sceneLoaded -= IsolateServices;
             if (PhotonNetwork.InRoom) PhotonNetwork.LeaveRoom(false);
             yield return null;
             PhotonNetwork.OfflineMode = false; Time.timeScale = 1;

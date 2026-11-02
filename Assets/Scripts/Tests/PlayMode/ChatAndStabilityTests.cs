@@ -10,6 +10,29 @@ namespace SGH.Tests
 {
     public class ChatAndStabilityTests : GameTestFixture
     {
+        [Test]
+        public void FirstChatOnSharedSceneObjectCreatesOnlyADedicatedPersistentHost()
+        {
+            var type = RuntimeType("ChatManager"); object previous = Get(type, "Instance");
+            Component persistent = null;
+            try
+            {
+                Set(type, "<Instance>k__BackingField", null);
+                var sceneChat = Component("ChatManager"); sceneChat.gameObject.AddComponent<CanvasScaler>();
+                Set(sceneChat, "chatAppId", "");
+                Call(sceneChat, "Awake"); persistent = (Component)Get(type, "Instance");
+                Assert.That(persistent.gameObject, Is.Not.SameAs(sceneChat.gameObject));
+                Assert.That(persistent.GetComponents<MonoBehaviour>().Length, Is.EqualTo(1));
+                Assert.That(Get(sceneChat, "isProxy"), Is.True);
+                Assert.That(Get(persistent, "chatAppId"), Is.EqualTo(""));
+            }
+            finally
+            {
+                if (persistent != null) UnityEngine.Object.DestroyImmediate(persistent.gameObject);
+                Set(type, "<Instance>k__BackingField", previous);
+            }
+        }
+
         [TestCase("Activity2PuzzleManager", "Activity2DropSlot")]
         [TestCase("InsulinPuzzleManager", "Activity6DropSlot")]
         public void DelayedCardFeedbackHandlesGlobalRegistryContainingOtherPuzzleSlots(string managerType, string slotType)

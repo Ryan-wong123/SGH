@@ -39,6 +39,12 @@ namespace SGH.Tests
             }
             object logger = Get(RuntimeType("GameSessionCsvLogger"), "Instance");
             if (logger != null) Set(logger, "hasWrittenCsv", true);
+            var chat = Get(RuntimeType("ChatManager"), "Instance") as MonoBehaviour;
+            if (chat != null)
+            {
+                Set(chat, "chatAppId", ""); chat.enabled = false;
+                var client = Get(chat, "chatClient"); if (client != null) Call(client, "Disconnect");
+            }
         }
 
         [UnityTearDown]

@@ -124,14 +124,14 @@ namespace SGH.Tests
             // must stay in the dedicated test application, never production.
             var fallback = PhotonNetwork.PhotonServerSettings.AppSettings;
             fallback.AppIdRealtime = config.appId; fallback.AppIdChat = config.chatAppId;
-            fallback.AppVersion = "sgh-rendered-v1"; fallback.FixedRegion = config.region ?? "sg";
+            fallback.AppVersion = "sgh-rendered-v1"; fallback.FixedRegion = (string.IsNullOrWhiteSpace(config.region) || config.region.Trim().ToLowerInvariant() == "sg" ? "asia" : config.region.Trim().ToLowerInvariant());
             PhotonNetwork.AuthValues = new AuthenticationValues("sgh-rendered-" + report.role + "-" + Guid.NewGuid().ToString("N"));
             PhotonNetwork.NickName = "Synthetic " + report.role + "-" + room;
             yield return SceneManager.LoadSceneAsync("Lobby");
             PhotonNetwork.AutomaticallySyncScene = true;
             Assert.That(PhotonNetwork.ConnectUsingSettings(new AppSettings
             {
-                AppIdRealtime = config.appId, AppVersion = "sgh-rendered-v1", FixedRegion = config.region ?? "sg"
+                AppIdRealtime = config.appId, AppVersion = "sgh-rendered-v1", FixedRegion = (string.IsNullOrWhiteSpace(config.region) || config.region.Trim().ToLowerInvariant() == "sg" ? "asia" : config.region.Trim().ToLowerInvariant())
             }), Is.True);
             yield return Until(() => PhotonNetwork.IsConnectedAndReady, "connect dedicated test application");
             yield return Until(() => Get(Get(RuntimeType("ChatManager"), "Instance"), "chatClient") != null &&

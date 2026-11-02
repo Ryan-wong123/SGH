@@ -6,6 +6,14 @@ namespace SGH.Tests
 {
     internal static class LiveTestConfig
     {
+        public static string Region
+        {
+            get
+            {
+                string region = Get("SGH_PHOTON_REGION")?.Trim().ToLowerInvariant();
+                return string.IsNullOrEmpty(region) || region == "sg" ? "asia" : region;
+            }
+        }
         [Serializable] private class Config { public string appId; public string chatAppId; public string region; }
         public static string Get(string name)
         {

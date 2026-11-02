@@ -295,3 +295,10 @@ Generated controls with unassigned PhotonView IDs now retain local visuals/input
 
 
 The 2 November follow-up makes every extended suite a PR job without an opt-in flag. `RenderedClientHarness` and the X11 runner add two independent rendered processes, alternating puzzle turns, card ownership acquisition, scene Chat UI and native desktop input probes. Windows build verification and dedicated Linux cloud execution are recorded separately in the coverage manifest. GameScene's inspected 1920x1080 UI CanvasScaler now uses Expand, preserving the reference layout within the screen at ultrawide/portrait ratios. Viewport snapshots cover every puzzle part.
+
+
+### CI log follow-up, 2 November 2026
+
+Photon's Singapore region code is `asia`, not `sg`. Live and rendered test configuration defaults to `asia` and migrates legacy `sg` inputs without changing dedicated App IDs. Visual CI retains the 256-pixel asset-import cap while rendering all configured viewport sizes; the uncapped job was killed with exit 137 on the hosted runner.
+
+ChatManager now creates a dedicated persistent Chat-only host when first encountered on a GameObject shared with other behaviours. The authored component becomes a scene proxy and supplies its UI references; gameplay managers are no longer carried into another scene by Chat's DontDestroyOnLoad call. Offline CLI system tests fence Chat/network services before cold-start scene Start callbacks and explicitly disable the persistent Chat singleton. GameManager cancels pending spawn on disable and checks the spawn transform before dereferencing it. The scene-load assertion allows 120 seconds for cold CI loads; ordinary puzzle-transition assertions retain their existing deadlines.

@@ -67,6 +67,27 @@ namespace SGH.Tests
         }
 
         [UnityTest]
+        public IEnumerator DisablingGameManagerCancelsSpawnBeforeItsSceneTransformsAreDestroyed()
+        {
+            yield return CreateOfflineRoom();
+            var go = new GameObject("Synthetic scene manager");
+            try
+            {
+                var manager = go.AddComponent(RuntimeType("GameManager"));
+                var spawn = Object("Synthetic spawn").transform;
+                Set(manager, "spawnPoints", new[] { spawn });
+                Call(manager, "TrySpawnLocalPlayer");
+                Assert.That(Get(manager, "spawnRoutine"), Is.Not.Null);
+                go.SetActive(false);
+                Assert.That(Get(manager, "spawnRoutine"), Is.Null);
+                UnityEngine.Object.DestroyImmediate(spawn.gameObject);
+                yield return new WaitForSecondsRealtime(.6f);
+                Assert.That(Get(manager, "hasSpawned"), Is.False);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(go); }
+        }
+
+        [UnityTest]
         public IEnumerator UnregisteredGeneratedInputDoesNotShareViewZeroRoomKeysOrSendRpc()
         {
             yield return CreateOfflineRoom();
