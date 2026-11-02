@@ -20,6 +20,7 @@ def run(player, config, directory, timeout=600):
     processes = {}
     files = {}
     injected = set()
+    mouse_injected = set()
     cursor_keys = set()
     clicked = set()
     window_ids = {}
@@ -55,12 +56,19 @@ def run(player, config, directory, timeout=600):
                     window_ids[role] = windows[-1]
                     subprocess.run(["xdotool", "keydown", "w"], check=True)
                     try:
-                        time.sleep(.3)
-                        subprocess.run(["xdotool", "mousemove_relative", "--sync", "--", "180", "0"], check=True)
-                        time.sleep(1.3)
+                        time.sleep(1.6)
                     finally:
                         subprocess.run(["xdotool", "keyup", "w"], check=True)
                     injected.add(role)
+                if reports.get(role, {}).get("status") == "mouse-ready" and role not in mouse_injected:
+                    subprocess.run(["xdotool", "windowactivate", "--sync", window_ids[role]], check=True)
+                    # Focus/relative-pointer capture can discard the first X event.
+                    # Deliver motion over multiple rendered frames after keyboard evidence.
+                    time.sleep(.3)
+                    for _ in range(20):
+                        subprocess.run(["xdotool", "mousemove_relative", "--sync", "--", "12", "3"], check=True)
+                        time.sleep(.05)
+                    mouse_injected.add(role)
                 if reports.get(role, {}).get("status") == "cursor-ready" and role not in cursor_keys:
                     subprocess.run(["xdotool", "windowactivate", "--sync", window_ids[role]], check=True)
                     subprocess.run(["xdotool", "key", "q"], check=True)
@@ -72,7 +80,7 @@ def run(player, config, directory, timeout=600):
                     subprocess.run(["xdotool", "click", "1"], check=True)
                     clicked.add(role)
             if len(reports) == 2 and all(r.get("status") == "passed" for r in reports.values()):
-                if injected != {"host", "guest"} or clicked != {"host", "guest"} or cursor_keys != {"host", "guest"}:
+                if injected != {"host", "guest"} or mouse_injected != {"host", "guest"} or clicked != {"host", "guest"} or cursor_keys != {"host", "guest"}:
                     raise RuntimeError("Passing reports without input injection are insufficient")
                 for role, report in reports.items():
                     if report.get("sessions") != 2 or not all(report.get(k) for k in ("keyboard", "mouse", "click", "avatars", "chat")):

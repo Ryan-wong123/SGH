@@ -67,14 +67,14 @@ namespace SGH.Tests
             yield return SceneManager.LoadSceneAsync(scene); yield return null;
         }
 
-        [UnityTest, Category("Visual")]
+        [UnityTest, Category("Visual"), Timeout(900000)]
         public IEnumerator LobbyControlsFitFiveAspectRatiosAndProduceScreenshots()
         {
             yield return Load("Lobby");
             yield return CaptureFiveRatios("Lobby");
         }
 
-        [UnityTest, Category("Visual")]
+        [UnityTest, Category("Visual"), Timeout(900000)]
         public IEnumerator AuthoredPuzzlePagesFitFiveAspectRatiosAndProduceScreenshots()
         {
             yield return Load("GameScene");

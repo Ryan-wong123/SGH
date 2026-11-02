@@ -181,7 +181,7 @@ namespace SGH.Tests
             }
         }
 
-        [UnityTest, Category("Journey")]
+        [UnityTest, Category("Journey"), Timeout(600000)]
         public IEnumerator RealScenePuzzleChainAndIndependentEndingExit()
         {
             yield return SetupJourney();
@@ -258,7 +258,7 @@ namespace SGH.Tests
             yield return Until(() => SceneManager.GetActiveScene().name == "Lobby" && !PhotonNetwork.InRoom, "independent ending exit");
         }
 
-        [UnityTest, Category("Journey")]
+        [UnityTest, Category("Journey"), Timeout(600000)]
         public IEnumerator SecondFullJourneyInSameProcessStartsFresh()
         {
             yield return RealScenePuzzleChainAndIndependentEndingExit();

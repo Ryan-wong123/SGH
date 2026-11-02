@@ -208,6 +208,7 @@ namespace SGH.Tests
             yield return Until(() => Input.GetKey(KeyCode.W), "OS keyboard W reaches game", 120);
             yield return new WaitForSecondsRealtime(1);
             Assert.That(Vector3.Distance(position, local.transform.position), Is.GreaterThan(.05f), "actual PlayerController movement");
+            report.keyboard = true; report.status = "mouse-ready"; Save();
             yield return Until(() => Quaternion.Angle(rotation, camera.transform.rotation) > 1, "OS mouse moves player camera", 30);
             report.keyboard = report.mouse = true; report.status = "cursor-ready"; Save();
             yield return Until(() => Cursor.lockState == CursorLockMode.None, "OS Q unlocks the gameplay cursor", 30);

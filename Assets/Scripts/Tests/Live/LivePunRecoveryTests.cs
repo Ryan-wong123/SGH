@@ -72,6 +72,10 @@ namespace SGH.Tests
         public IEnumerator CleanupLiveRoom()
         {
             if (flow != null) PhotonNetwork.RemoveCallbackTarget(flow);
+            // These fixtures stay inactive, so Unity never calls PhotonView.OnDestroy.
+            // Release their explicitly registered IDs before the base fixture destroys them.
+            foreach (var view in Root.GetComponentsInChildren<PhotonView>(true))
+                PhotonNetwork.LocalCleanPhotonView(view);
             Set(RuntimeType("PuzzleStateManager"), "Instance", previousFlow);
             if (PhotonNetwork.InRoom) PhotonNetwork.LeaveRoom(false);
             peer?.Disconnect(); PhotonNetwork.Disconnect();

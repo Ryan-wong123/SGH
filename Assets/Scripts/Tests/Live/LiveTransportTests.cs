@@ -111,7 +111,7 @@ namespace SGH.Tests
             var a = Client(); var b = Client(); yield return Room(a, b);
             const string key = "SGH_TEST_RaceWinner";
             a.CurrentRoom.SetCustomProperties(new Hashtable { [key] = 0 });
-            yield return Until(() => b.CurrentRoom.CustomProperties.ContainsKey(key), "initial state");
+            yield return Until(() => a.CurrentRoom.CustomProperties.ContainsKey(key) && b.CurrentRoom.CustomProperties.ContainsKey(key), "initial state");
             a.CurrentRoom.SetCustomProperties(new Hashtable { [key] = a.LocalPlayer.ActorNumber }, new Hashtable { [key] = 0 });
             b.CurrentRoom.SetCustomProperties(new Hashtable { [key] = b.LocalPlayer.ActorNumber }, new Hashtable { [key] = 0 });
             yield return Until(() => (int)a.CurrentRoom.CustomProperties[key] != 0 &&
