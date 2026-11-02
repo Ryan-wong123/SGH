@@ -24,6 +24,7 @@ def run(player, config, directory, timeout=600):
     cursor_keys = set()
     clicked = set()
     window_ids = {}
+    window_deadlines = {}
     deadline = time.monotonic() + timeout
     try:
         for role in ("host", "guest"):
@@ -47,11 +48,22 @@ def run(player, config, directory, timeout=600):
                 if process.poll() is not None and (process.returncode or reports.get(role, {}).get("status") != "passed"):
                     raise RuntimeError(role + " exited without a passing report")
                 if reports.get(role, {}).get("status") == "input-ready" and role not in injected:
-                    windows = subprocess.check_output([
-                        "xdotool", "search", "--onlyvisible", "--pid", str(process.pid)
-                    ], text=True).splitlines()
+                    window_deadlines.setdefault(role, min(deadline - .1, time.monotonic() + 15))
+                    try:
+                        windows = subprocess.check_output([
+                            "xdotool", "search", "--pid", str(process.pid)
+                        ], text=True).splitlines()
+                    except subprocess.CalledProcessError as error:
+                        if error.returncode != 1:
+                            raise
+                        windows = []  # X search uses exit 1 for no match yet.
                     if not windows:
-                        raise RuntimeError(role + " has no rendered window")
+                        if time.monotonic() >= window_deadlines[role]:
+                            raise RuntimeError(role + " has no rendered window after waiting for X11 registration")
+                        continue
+                    # The second player can be unmapped/iconified while its peer
+                    # owns focus. Map its PID-owned window before activating it.
+                    subprocess.run(["xdotool", "windowmap", "--sync", windows[-1]], check=True)
                     subprocess.run(["xdotool", "windowactivate", "--sync", windows[-1]], check=True)
                     window_ids[role] = windows[-1]
                     subprocess.run(["xdotool", "keydown", "w"], check=True)

@@ -71,8 +71,13 @@ namespace SGH.Tests
         [TearDown]
         public void DestroyRoot()
         {
+            BeforeDestroyRoot();
             UnityEngine.Object.DestroyImmediate(Root);
         }
+
+        // NUnit TearDown can precede UnityTearDown. Release registered resources
+        // while the inactive hierarchy still exists, before coroutine cleanup.
+        protected virtual void BeforeDestroyRoot() { }
 
         protected GameObject Object(string name)
         {

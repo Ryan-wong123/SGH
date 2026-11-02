@@ -22,6 +22,15 @@ namespace SGH.Tests
         private object previousLogger;
         private string version;
 
+        [SetUp]
+        public void CaptureRuntimeState()
+        {
+            previousFlow = Get(RuntimeType("PuzzleStateManager"), "Instance");
+            previousLogger = Get(RuntimeType("GameSessionCsvLogger"), "Instance");
+            version = PhotonNetwork.GameVersion;
+            flow = null; peer = null;
+        }
+
         private IEnumerator Until(Func<bool> condition, string message, float timeout = 45)
         {
             float due = Time.realtimeSinceStartup + timeout;
@@ -34,10 +43,8 @@ namespace SGH.Tests
             string app = LiveTestConfig.Get("SGH_PHOTON_APP_ID");
             Assert.That(Guid.TryParse(app, out _), Is.True, "Dedicated SGH_PHOTON_APP_ID required");
             Assert.That(PhotonNetwork.IsConnected, Is.False);
-            previousLogger = Get(RuntimeType("GameSessionCsvLogger"), "Instance");
             Set(RuntimeType("GameSessionCsvLogger"), "<Instance>k__BackingField", null);
             Call(RuntimeType("SessionSmtpCredentials"), "Clear");
-            version = PhotonNetwork.GameVersion;
             PhotonNetwork.GameVersion = "sgh-live-pun-v1";
             var settings = new AppSettings
             {
@@ -58,7 +65,6 @@ namespace SGH.Tests
             Assert.That(PhotonNetwork.JoinRoom(name), Is.True);
             yield return Until(() => PhotonNetwork.InRoom && peer.CurrentRoom.PlayerCount == 2, "PUN joins owner");
             Assert.That(PhotonNetwork.IsMasterClient, Is.False);
-            previousFlow = Get(RuntimeType("PuzzleStateManager"), "Instance");
             flow = Component("PuzzleStateManager");
             var view = flow.gameObject.AddComponent<PhotonView>(); view.ViewID = 991;
             Set(flow, "CurrentStage", Enum.ToObject(RuntimeType("PuzzleStateManager+PuzzleStage"), stage));
@@ -68,21 +74,40 @@ namespace SGH.Tests
             PhotonNetwork.AddCallbackTarget(flow);
         }
 
+        protected override void BeforeDestroyRoot()
+        {
+            if (flow != null) PhotonNetwork.RemoveCallbackTarget(flow);
+            // Never-activated views do not receive OnDestroy. NUnit destroys the
+            // hierarchy before Unity's coroutine teardown starts on this runner.
+            if (Root != null)
+                foreach (var view in Root.GetComponentsInChildren<PhotonView>(true))
+                    PhotonNetwork.LocalCleanPhotonView(view);
+        }
+
         [UnityTearDown]
         public IEnumerator CleanupLiveRoom()
         {
-            if (flow != null) PhotonNetwork.RemoveCallbackTarget(flow);
-            // These fixtures stay inactive, so Unity never calls PhotonView.OnDestroy.
-            // Release their explicitly registered IDs before the base fixture destroys them.
-            foreach (var view in Root.GetComponentsInChildren<PhotonView>(true))
-                PhotonNetwork.LocalCleanPhotonView(view);
             Set(RuntimeType("PuzzleStateManager"), "Instance", previousFlow);
             if (PhotonNetwork.InRoom) PhotonNetwork.LeaveRoom(false);
             peer?.Disconnect(); PhotonNetwork.Disconnect();
             float due = Time.realtimeSinceStartup + 10;
-            while (PhotonNetwork.IsConnected && Time.realtimeSinceStartup < due) { peer?.Service(); yield return null; }
+            while ((PhotonNetwork.IsConnected || peer?.IsConnected == true) && Time.realtimeSinceStartup < due) { peer?.Service(); yield return null; }
             if (version != null) PhotonNetwork.GameVersion = version;
             Set(RuntimeType("GameSessionCsvLogger"), "<Instance>k__BackingField", previousLogger);
+            Assert.That(PhotonNetwork.GetPhotonView(991), Is.Null, "Inactive fixture view must be released before coroutine teardown");
+            Assert.That(PhotonNetwork.IsConnected || peer?.IsConnected == true, Is.False, "Both test clients disconnect between cases");
+        }
+
+        [UnityTest]
+        public IEnumerator FixtureViewIsReleasedBeforeCoroutineTeardown()
+        {
+            Assert.That(PhotonNetwork.IsConnected, Is.False);
+            var view = Object("Inactive registered fixture view").AddComponent<PhotonView>();
+            view.ViewID = 991;
+            Assert.That(PhotonNetwork.GetPhotonView(991), Is.SameAs(view));
+            // The real NUnit/UTF teardown order must release this never-awakened
+            // view before CleanupLiveRoom checks the registry, without Cloud IDs.
+            yield return null;
         }
 
         [UnityTest]

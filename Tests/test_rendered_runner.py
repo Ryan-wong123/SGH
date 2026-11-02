@@ -91,6 +91,19 @@ class RunnerContracts(unittest.TestCase):
             self.execute(window=lambda args, text: "")
         self.assertTrue(all(c.stopped for c in self.children))
 
+    def test_initial_missing_x11_window_is_retried_then_mapped(self):
+        attempts = {}
+        def delayed(args, text):
+            pid = args[-1]
+            attempts[pid] = attempts.get(pid, 0) + 1
+            if attempts[pid] == 1:
+                raise subprocess.CalledProcessError(1, args)
+            self.assertNotIn("--onlyvisible", args)
+            return pid + "\n"
+        self.execute(window=delayed)
+        self.assertEqual({"100": 2, "101": 2}, attempts)
+        self.assertEqual(2, len([c for c in self.commands if c[1] == "windowmap"]))
+
     def test_mouse_injection_failure_releases_key_and_terminates_players(self):
         def fail_mouse(args, check):
             self.command(args, check)
