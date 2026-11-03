@@ -13,6 +13,11 @@ namespace SGH.Tests
 
         static RunGameTests()
         {
+            // GameCI v4.3.2 enables instrumentation on launch. Disable it before
+            // entering Play Mode when requested by the CI fixture workflow.
+            if (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-sgh-disable-coverage") >= 0)
+                UnityEngine.TestTools.Coverage.enabled = false;
+
             // Play Mode reloads the scripting domain. Register again after reload,
             // and keep only the pending result filename in editor SessionState.
             runner = ScriptableObject.CreateInstance<TestRunnerApi>();

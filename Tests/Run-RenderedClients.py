@@ -85,7 +85,11 @@ def run(player, config, directory, timeout=600):
                     next_mouse_attempt[role] = time.monotonic() + .5
                 if reports.get(role, {}).get("status") == "cursor-ready" and role not in cursor_keys:
                     subprocess.run(["xdotool", "windowactivate", "--sync", window_ids[role]], check=True)
-                    subprocess.run(["xdotool", "key", "q"], check=True)
+                    subprocess.run(["xdotool", "keydown", "q"], check=True)
+                    try:
+                        time.sleep(.5)
+                    finally:
+                        subprocess.run(["xdotool", "keyup", "q"], check=True)
                     cursor_keys.add(role)
                 if reports.get(role, {}).get("status") == "click-ready" and role not in clicked:
                     subprocess.run(["xdotool", "windowactivate", "--sync", window_ids[role]], check=True)

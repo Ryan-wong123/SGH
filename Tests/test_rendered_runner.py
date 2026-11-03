@@ -63,11 +63,11 @@ class RunnerContracts(unittest.TestCase):
         self.commands.append(args)
         if args[1] == "windowactivate":
             self.current = "host" if args[-1] == "100" else "guest"
-        if args[1] == "keyup":
+        if args[1:] == ["keyup", "w"]:
             self.report(self.current, "mouse-ready")
         if args[1] == "mousemove_relative":
             self.report(self.current, "cursor-ready")
-        if args[1] == "key":
+        if args[1:] == ["keyup", "q"]:
             self.report(self.current, "click-ready")
         if args[1] == "click":
             self.report(self.current)
@@ -81,7 +81,9 @@ class RunnerContracts(unittest.TestCase):
 
     def test_both_windows_require_input_and_complete_evidence_and_logs_are_redacted(self):
         self.execute()
-        self.assertEqual(2, len([c for c in self.commands if c[1] == "keydown"]))
+        for key in ("w", "q"):
+            self.assertEqual(2, sum(c[1:] == ["keydown", key] for c in self.commands))
+            self.assertEqual(2, sum(c[1:] == ["keyup", key] for c in self.commands))
         self.assertEqual(40, len([c for c in self.commands if c[1] == "mousemove_relative"]))
         for log in self.output.glob("*.log"):
             self.assertNotIn(self.identifier, log.read_text())

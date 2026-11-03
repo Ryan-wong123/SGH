@@ -55,7 +55,7 @@ Its OnJoinRandomFailed fallback creates an unnamed room with the same rejoin and
 
 `CharacterSelection.SetCharacter` writes `CharacterIndex` and colors selection buttons. GameScene prefab order is Doctor, Nurse, Therapist. `GameManager` waits 0.5 seconds, checks for an existing owned PlayerController, selects a spawn by sorted ActorNumber, and uses PhotonNetwork.Instantiate. Missing/invalid index becomes 0. Four spawn transforms are assigned; overflow uses spawn 0. No role-specific mechanics or role reservation is implemented.
 
-`PlayerController` creates a PlayerTagDisplay if needed, enables its owned camera, disables the owned PhotonTransformView component, and disables remote camera roots. Movement is camera-relative on the horizontal plane using CharacterController.SimpleMove; mouse pitch clamps to ±85 degrees; walking updates `isWalking`. Q toggles free cursor before the ownership guard in Update. This and multiple independent cursor writers are reasons to test UI/movement together rather than infer it from panel activation.
+`PlayerController` creates a PlayerTagDisplay if needed, enables its owned camera, disables the owned PhotonTransformView component, and disables remote camera roots. Movement is camera-relative on the horizontal plane using CharacterController.SimpleMove; mouse pitch clamps to ±85 degrees; walking updates `isWalking`. Only the owned avatar handles Q and writes the gameplay cursor state. Other UI systems also write cursor state, so test cursor behavior with both movement and panels.
 
 `PlayerTagDisplay` derives name from PlayerTag, NickName, then actor fallback, positions text above renderer bounds, faces an active camera, and normally hides the owned player's tag.
 

@@ -58,9 +58,11 @@ public class PlayerController : MonoBehaviourPunCallbacks // Defines a Photon-aw
     private void Update() // Runs once per frame.
     { // Starts the Update method body.
      
+        if (!photonView.IsMine) return; // Only the local avatar can control this client's cursor.
+
         ToggleCursor(); // Checks whether the cursor lock state should be toggled.
         
-        if (!photonView.IsMine || cursorUnlocked) return; // Stops movement and camera look for remote players or while the cursor is unlocked.
+        if (cursorUnlocked) return; // Stops movement and camera look while the cursor is unlocked.
 
         HandleMovement(); // Reads movement input and moves the local player.
         HandleCameraLook(); // Reads mouse input and rotates the camera/player.

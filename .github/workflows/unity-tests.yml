@@ -112,6 +112,7 @@ jobs:
           customParameters: >-
             -assemblyNames SGH.Tests.${{ matrix.testMode }}
             -testCategory !KnownGap
+            ${{ matrix.testMode == 'PlayMode' && '-sgh-disable-coverage' || '' }}
             -overrideTextureCompression forceUncompressed
             -overrideMaxTextureSize 256
             -job-worker-count 2
