@@ -73,11 +73,18 @@ class RunnerContracts(unittest.TestCase):
             self.report(self.current)
 
     def execute(self, command=None, window=lambda args, text: args[-1] + "\n"):
+        now = 0.0
+
+        def advance(seconds):
+            nonlocal now
+            now += seconds
+
         with patch.object(runner.subprocess, "Popen", side_effect=self.launch), \
              patch.object(runner.subprocess, "check_output", side_effect=window), \
              patch.object(runner.subprocess, "run", side_effect=command or self.command), \
-             patch.object(runner.time, "sleep"), patch("builtins.print"):
-            runner.run(self.root / "player", self.config, self.output, timeout=2)
+             patch.object(runner.time, "monotonic", side_effect=lambda: now), \
+             patch.object(runner.time, "sleep", side_effect=advance), patch("builtins.print"):
+            runner.run(self.root / "player", self.config, self.output, timeout=30)
 
     def test_both_windows_require_input_and_complete_evidence_and_logs_are_redacted(self):
         self.execute()
