@@ -86,6 +86,17 @@ class RunnerContracts(unittest.TestCase):
         for log in self.output.glob("*.log"):
             self.assertNotIn(self.identifier, log.read_text())
 
+    def test_mouse_motion_is_retried_until_player_acknowledges_it(self):
+        motions = {}
+        def delayed(args, check):
+            if args[1] == "mousemove_relative":
+                motions[self.current] = motions.get(self.current, 0) + 1
+                if motions[self.current] <= 20:
+                    return
+            self.command(args, check)
+        self.execute(command=delayed)
+        self.assertEqual({"host": 40, "guest": 40}, motions)
+
     def test_missing_window_fails_and_terminates_both_players(self):
         with self.assertRaisesRegex(RuntimeError, "no rendered window"):
             self.execute(window=lambda args, text: "")

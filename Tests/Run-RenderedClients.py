@@ -21,6 +21,7 @@ def run(player, config, directory, timeout=600):
     files = {}
     injected = set()
     mouse_injected = set()
+    next_mouse_attempt = {}
     cursor_keys = set()
     clicked = set()
     window_ids = {}
@@ -72,7 +73,7 @@ def run(player, config, directory, timeout=600):
                     finally:
                         subprocess.run(["xdotool", "keyup", "w"], check=True)
                     injected.add(role)
-                if reports.get(role, {}).get("status") == "mouse-ready" and role not in mouse_injected:
+                if reports.get(role, {}).get("status") == "mouse-ready" and time.monotonic() >= next_mouse_attempt.get(role, 0):
                     subprocess.run(["xdotool", "windowactivate", "--sync", window_ids[role]], check=True)
                     # Focus/relative-pointer capture can discard the first X event.
                     # Deliver motion over multiple rendered frames after keyboard evidence.
@@ -81,6 +82,7 @@ def run(player, config, directory, timeout=600):
                         subprocess.run(["xdotool", "mousemove_relative", "--sync", "--", "12", "3"], check=True)
                         time.sleep(.05)
                     mouse_injected.add(role)
+                    next_mouse_attempt[role] = time.monotonic() + .5
                 if reports.get(role, {}).get("status") == "cursor-ready" and role not in cursor_keys:
                     subprocess.run(["xdotool", "windowactivate", "--sync", window_ids[role]], check=True)
                     subprocess.run(["xdotool", "key", "q"], check=True)
