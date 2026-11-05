@@ -217,7 +217,17 @@ namespace SGH.Tests
                     yield return Until(() => (bool)Get(lid, "HasBeenOpened"), "correct keypad opens prerequisite lid");
                 }
                 object[] attempt = { stage == 10 ? Get(flow, "puzzle10SyringeTrigger") : null, null };
-                Assert.That(Call(flow, "TryBeginAttempt", attempt), Is.True, "Start stage " + stage + ": " + attempt[1]);
+                // The shared attempt lock is released by the master over the network, so a teammate's
+                // lock can still be visible for a moment after the stage advances. The game tells the
+                // player to try again; do the same, bounded, and fail with the final refusal reason.
+                bool began = (bool)Call(flow, "TryBeginAttempt", attempt);
+                for (float retryUntil = Time.realtimeSinceStartup + 20f; !began && Time.realtimeSinceStartup < retryUntil;)
+                {
+                    yield return new WaitForSecondsRealtime(.25f);
+                    attempt[1] = null;
+                    began = (bool)Call(flow, "TryBeginAttempt", attempt);
+                }
+                Assert.That(began, Is.True, "Start stage " + stage + ": " + attempt[1]);
                 Call(flow, "OpenCurrentStagePanel", PhotonNetwork.LocalPlayer.ActorNumber);
                 yield return null;
                 var panel = (GameObject)Get(flow, "Puzzle" + stage + "Panel");
