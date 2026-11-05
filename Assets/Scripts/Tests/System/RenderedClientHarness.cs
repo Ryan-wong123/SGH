@@ -174,9 +174,16 @@ namespace SGH.Tests
                 yield return Until(() => Prop(Key("ready_host")) && Prop(Key("ready_guest")), "scene-ready barrier");
                 CloseComic(true);
                 yield return Until(() => Convert.ToInt32(Get(Get(RuntimeType("PuzzleStateManager"), "Instance"), "CurrentStage")) == 1, "both opening votes");
-                if (session == 1) yield return ProbeInput(local);
+                if (session == 1)
+                {
+                    // Both windows share one X11 focus and pointer. Probe one client at a time
+                    // (host, then guest) so an idle window never loses focus mid-keypress/click
+                    // and a failure is reported by the client that actually failed.
+                    if (!host) yield return Until(() => Prop(Key("input_host")), "host finishes its physical input probe first", 300);
+                    yield return ProbeInput(local);
+                }
                 Publish(Key("input_" + report.role));
-                yield return Until(() => Prop(Key("input_host")) && Prop(Key("input_guest")), "both physical input probes");
+                yield return Until(() => Prop(Key("input_host")) && Prop(Key("input_guest")), "both physical input probes", 300);
                 yield return ProbeSceneChat();
                 yield return new SceneJourneyTests().DriveCurrentGameSceneToLobby(false, PhotonNetwork.LocalPlayer.ActorNumber, host, stage =>
                 {

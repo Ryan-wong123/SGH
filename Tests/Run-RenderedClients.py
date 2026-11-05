@@ -96,6 +96,8 @@ def run(player, config, directory, timeout=600):
                     subprocess.run(["xdotool", "mousemove", "--window", window_ids[role],
                                     str(int(reports[role]["clickX"])), str(int(reports[role]["clickY"]))], check=True)
                     subprocess.run(["xdotool", "click", "1"], check=True)
+                    # Let this window consume the press/release before focus moves to the peer.
+                    time.sleep(.5)
                     clicked.add(role)
             if len(reports) == 2 and all(r.get("status") == "passed" for r in reports.values()):
                 if injected != {"host", "guest"} or mouse_injected != {"host", "guest"} or clicked != {"host", "guest"} or cursor_keys != {"host", "guest"}:
