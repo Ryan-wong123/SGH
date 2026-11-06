@@ -234,11 +234,16 @@ namespace SGH.Tests
                     var lid = (Component)Get(flow, "puzzle10ChestLid");
                     var keypad = All("NavKeypad.Keypad").First(k => ((Array)Get(k, "doorsToUnlock")).Cast<object>().Contains(lid));
                     int code = (int)Get(keypad, "keypadCombo");
+                    // Online, the master decides and broadcasts the result, so the denial only appears a
+                    // round trip after CheckCombo. Wait for it to start, then to clear; otherwise the
+                    // retry is appended to the uncleared wrong code and never forms a valid combo.
+                    float keypadSeconds = participatingActor > 0 ? 60f : 15f;
                     Call(keypad, "AddInput", (code + 1).ToString()); Call(keypad, "CheckCombo");
-                    yield return Until(() => !(bool)Get(keypad, "displayingResult"), "keypad denial clears for retry");
+                    yield return Until(() => (bool)Get(keypad, "displayingResult"), "keypad denial is shown", keypadSeconds);
+                    yield return Until(() => !(bool)Get(keypad, "displayingResult"), "keypad denial clears for retry", keypadSeconds);
                     Assert.That(Get(lid, "HasBeenOpened"), Is.False, "Wrong code must not unlock the chest");
                     Call(keypad, "AddInput", code.ToString()); Call(keypad, "CheckCombo");
-                    yield return Until(() => (bool)Get(lid, "HasBeenOpened"), "correct keypad opens prerequisite lid");
+                    yield return Until(() => (bool)Get(lid, "HasBeenOpened"), "correct keypad opens prerequisite lid", keypadSeconds);
                 }
                 object[] attempt = { stage == 10 ? Get(flow, "puzzle10SyringeTrigger") : null, null };
                 // The shared attempt lock is released by the master over the network, so a teammate's
