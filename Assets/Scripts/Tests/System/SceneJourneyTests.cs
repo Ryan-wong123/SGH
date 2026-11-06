@@ -269,7 +269,18 @@ namespace SGH.Tests
                     ((TMP_Dropdown)Get(insulin, "syringeDropdown")).value = 1;
                     Call(insulin, "SubmitSyringeAnswer");
                     // Online: guest -> master request, a 2s durable deadline, then the master publishes part 2.
-                    yield return Until(() => (int)Get(insulin, "CurrentPart") == 2, () => StageState(flow, "insulin durable deadline"), participatingActor > 0 ? 60f : 15f);
+                    // If that first request is dropped (CI showed the master never scheduling it while the guest
+                    // held the lock), do what a player does and press Submit again. The master's compare-and-swap
+                    // ignores repeats, so this cannot extend the deadline. Offline never retries.
+                    float insulinDue = Time.realtimeSinceStartup + (participatingActor > 0 ? 60f : 15f);
+                    while ((int)Get(insulin, "CurrentPart") != 2 && Time.realtimeSinceStartup < insulinDue)
+                    {
+                        float retryAt = Mathf.Min(Time.realtimeSinceStartup + 3f, insulinDue);
+                        while ((int)Get(insulin, "CurrentPart") != 2 && Time.realtimeSinceStartup < retryAt) yield return null;
+                        if (participatingActor > 0 && (int)Get(insulin, "CurrentPart") != 2 && Time.realtimeSinceStartup < insulinDue)
+                            Call(insulin, "SubmitSyringeAnswer");
+                    }
+                    Assert.That((int)Get(insulin, "CurrentPart"), Is.EqualTo(2), StageState(flow, "insulin durable deadline"));
                 }
                 for (int part = 0; part < parts; part++)
                 {
