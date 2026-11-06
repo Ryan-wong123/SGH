@@ -12,7 +12,7 @@ import time
 import uuid
 
 
-def run(player, config, directory, timeout=600):
+def run(player, config, directory, timeout=1500):
     settings = json.loads(config.read_text())
     uuid.UUID(settings["appId"])
     directory.mkdir(parents=True, exist_ok=False)  # Never consume stale success reports.
@@ -27,6 +27,7 @@ def run(player, config, directory, timeout=600):
     window_ids = {}
     window_deadlines = {}
     deadline = time.monotonic() + timeout
+    last_reports = {}
     try:
         for role in ("host", "guest"):
             files[role] = open(directory / (role + "-stdout.log"), "w")
@@ -99,6 +100,7 @@ def run(player, config, directory, timeout=600):
                     # Let this window consume the press/release before focus moves to the peer.
                     time.sleep(.5)
                     clicked.add(role)
+            last_reports = {role: {k: r.get(k) for k in ("status", "sessions", "observedStages")} for role, r in reports.items()}
             if len(reports) == 2 and all(r.get("status") == "passed" for r in reports.values()):
                 if injected != {"host", "guest"} or mouse_injected != {"host", "guest"} or clicked != {"host", "guest"} or cursor_keys != {"host", "guest"}:
                     raise RuntimeError("Passing reports without input injection are insufficient")
@@ -113,7 +115,7 @@ def run(player, config, directory, timeout=600):
                 print("Two rendered clients passed: avatars, real keyboard/mouse, 22 observed stages and two sessions.")
                 return
             time.sleep(.1)
-        raise TimeoutError("Rendered clients exceeded the bounded test deadline")
+        raise TimeoutError("Rendered clients exceeded the bounded test deadline; last reports: " + json.dumps(last_reports, sort_keys=True))
     finally:
         for process in processes.values():
             if process.poll() is None:

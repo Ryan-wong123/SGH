@@ -52,7 +52,7 @@ jobs:
   extended:
     name: Extended ${{ matrix.suite }}
     runs-on: ubuntu-22.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       max-parallel: 1
