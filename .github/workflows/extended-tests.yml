@@ -165,7 +165,7 @@ jobs:
         customImage: ${{ steps.editor.outputs.image }}
         testMode: ${{ matrix.testMode }}
         customParameters: -assemblyNames ${{ matrix.assembly }} -testCategory ${{ matrix.category }} -job-worker-count 2 ${{
-          matrix.importOptions }}
+          matrix.testMode == 'PlayMode' && '-sgh-disable-coverage' || '' }} ${{ matrix.importOptions }}
         artifactsPath: TestResults/${{ matrix.suite }}
       if: matrix.suite != 'rendered'
     - name: Report remaining runner disk space
