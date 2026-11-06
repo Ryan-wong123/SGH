@@ -98,7 +98,7 @@ namespace SGH.Tests
                 var parts = new List<string>();
                 if (PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom != null)
                     foreach (System.Collections.DictionaryEntry entry in PhotonNetwork.CurrentRoom.CustomProperties)
-                        if (entry.Key is string key && (key == "PuzzleLocked" || key == "LockOwner" || key.StartsWith("Pending")))
+                        if (entry.Key is string key && (key == "PuzzleLocked" || key == "LockOwner" || key.StartsWith("Pending") || key.StartsWith("SGH_Insulin_")))
                             parts.Add(key + "=" + entry.Value);
                 return what + " [CurrentStage=" + Get(flow, "CurrentStage") + "; " + (parts.Count > 0 ? string.Join(", ", parts) : "no lock/pending state") + "]";
             }
@@ -266,7 +266,8 @@ namespace SGH.Tests
                     var insulin = Get(flow, "insulinPuzzleManager");
                     ((TMP_Dropdown)Get(insulin, "syringeDropdown")).value = 1;
                     Call(insulin, "SubmitSyringeAnswer");
-                    yield return Until(() => (int)Get(insulin, "CurrentPart") == 2, "insulin durable deadline");
+                    // Online: guest -> master request, a 2s durable deadline, then the master publishes part 2.
+                    yield return Until(() => (int)Get(insulin, "CurrentPart") == 2, () => StageState(flow, "insulin durable deadline"), participatingActor > 0 ? 60f : 15f);
                 }
                 for (int part = 0; part < parts; part++)
                 {
