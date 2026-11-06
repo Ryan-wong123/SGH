@@ -225,7 +225,9 @@ namespace SGH.Tests
                 {
                     Call(flow, "OpenCurrentStagePanel", stage % 2 == 1 ? 1 : 2);
                     var observedPanel = (GameObject)Get(flow, "Puzzle" + stage + "Panel");
-                    yield return Until(() => stage < 11 ? Convert.ToInt32(Get(flow, "CurrentStage")) == stage + 1 : !observedPanel.activeSelf, "remote completion of stage " + stage, 60);
+                    // Passive wait for the partner's whole stage (stage 10 alone is a keypad, a 2s deadline and two
+                    // parts). The partner's own steps have their own timeouts, so a stuck partner still fails first.
+                    yield return Until(() => stage < 11 ? Convert.ToInt32(Get(flow, "CurrentStage")) == stage + 1 : !observedPanel.activeSelf, () => StageState(flow, "remote completion of stage " + stage), 180);
                     Time.timeScale = 1;
                     continue;
                 }
