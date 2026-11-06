@@ -81,6 +81,30 @@ namespace SGH.Tests
             yield return null;
         }
 
+        // Same wait, but the failure message is built only when the wait fails, so it can
+        // describe the room state at that moment (artifacts from CI are short-lived).
+        private static IEnumerator Until(Func<bool> condition, Func<string> describe, float seconds)
+        {
+            float deadline = Time.realtimeSinceStartup + seconds;
+            while (!condition() && Time.realtimeSinceStartup < deadline) yield return null;
+            Assert.That(condition(), Is.True, describe());
+        }
+
+        private static string StageState(object flow, string what)
+        {
+            // Diagnostics must never replace the real failure, so swallow any error here.
+            try
+            {
+                var parts = new List<string>();
+                if (PhotonNetwork.InRoom && PhotonNetwork.CurrentRoom != null)
+                    foreach (System.Collections.DictionaryEntry entry in PhotonNetwork.CurrentRoom.CustomProperties)
+                        if (entry.Key is string key && (key == "PuzzleLocked" || key == "LockOwner" || key.StartsWith("Pending")))
+                            parts.Add(key + "=" + entry.Value);
+                return what + " [CurrentStage=" + Get(flow, "CurrentStage") + "; " + (parts.Count > 0 ? string.Join(", ", parts) : "no lock/pending state") + "]";
+            }
+            catch (Exception) { return what; }
+        }
+
         private static IEnumerator Until(Func<bool> condition, string message, float seconds = 15)
         {
             float deadline = Time.realtimeSinceStartup + seconds;
@@ -256,8 +280,10 @@ namespace SGH.Tests
                     if (participatingActor > 0) yield return new WaitForSecondsRealtime(.25f);
                     Call(flow, "Submit"); yield return null;
                 }
-                if (stage < 11) yield return Until(() => Convert.ToInt32(Get(flow, "CurrentStage")) == stage + 1, "completion of stage " + stage);
-                else yield return Until(() => !panel.activeSelf, "final puzzle closes");
+                // Two real clients (Photon latency, software rendering) need more than the offline 15s.
+                float completionSeconds = participatingActor > 0 ? 90f : 15f;
+                if (stage < 11) yield return Until(() => Convert.ToInt32(Get(flow, "CurrentStage")) == stage + 1, () => StageState(flow, "completion of stage " + stage), completionSeconds);
+                else yield return Until(() => !panel.activeSelf, () => StageState(flow, "final puzzle closes"), completionSeconds);
                 Time.timeScale = 1;
             }
             yield return Until(() => (bool)Call(Get(RuntimeType("InventorySystem"), "Instance"), "HasItem", "Time Crystal5"), "final crystal reward");
