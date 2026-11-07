@@ -1,0 +1,263 @@
+using System;
+using System.Collections;
+using System.Linq;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+
+namespace SGH.Tests
+{
+    // Real Photon offline room/property APIs, without cloud traffic or email.
+    // This verifies flow integration; it is not a two-process transport test.
+    [Category("RegressionFixes")]
+    public class InsulinRecoveryTests : GameTestFixture
+    {
+        private Type network;
+        private object room;
+        private Component flow;
+        private Component insulin;
+        private object savedFlow;
+        private object savedLogger;
+        private bool savedOffline;
+
+        private object Snapshot(int revision, int part, double due)
+        {
+            return Call(RuntimeType("InsulinRoomState"), "Snapshot", revision, part, due);
+        }
+
+        private void Publish(object snapshot)
+        {
+            Call(room, "SetCustomProperties", snapshot, null, null);
+        }
+
+        private IEnumerator CreateOfflineRoom()
+        {
+            network = AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType("Photon.Pun.PhotonNetwork")).First(t => t != null);
+            Assert.That(Get(network, "IsConnected"), Is.False);
+            savedFlow = Get(RuntimeType("PuzzleStateManager"), "Instance");
+            savedLogger = Get(RuntimeType("GameSessionCsvLogger"), "Instance");
+            Set(RuntimeType("GameSessionCsvLogger"), "<Instance>k__BackingField", null);
+            savedOffline = (bool)Get(network, "OfflineMode");
+            network.GetProperty("OfflineMode").SetValue(null, true);
+            Assert.That(Call(network, "CreateRoom", "synthetic-insulin", null, null, null), Is.True);
+            yield return null;
+            room = Get(network, "CurrentRoom");
+            insulin = Component("InsulinPuzzleManager");
+            Set(insulin, "syringeDropdown", Dropdown(1));
+            Set(insulin, "panel1", Object("Part1"));
+            GameObject part2 = Object("Part2"); part2.SetActive(false); Set(insulin, "panel2", part2);
+            flow = Component("PuzzleStateManager");
+            Set(flow, "CurrentStage", Enum.ToObject(RuntimeType("PuzzleStateManager+PuzzleStage"), 10));
+            Set(flow, "insulinPuzzleManager", insulin);
+            Set(RuntimeType("PuzzleStateManager"), "Instance", flow);
+            Call(flow, "EnsureRoomProps");
+            IDictionary properties = (IDictionary)Get(room, "CustomProperties");
+            properties["PuzzleLocked"] = true;
+            properties["LockOwner"] = Get(Get(network, "LocalPlayer"), "ActorNumber");
+        }
+
+        [UnityTearDown]
+        public IEnumerator LeaveOfflineRoom()
+        {
+            Set(RuntimeType("PuzzleStateManager"), "Instance", savedFlow);
+            if ((bool)Get(network, "InRoom")) Call(network, "LeaveRoom", false);
+            yield return null;
+            network.GetProperty("OfflineMode").SetValue(null, savedOffline);
+            Set(RuntimeType("GameSessionCsvLogger"), "<Instance>k__BackingField", savedLogger);
+        }
+
+        [UnityTest]
+        public IEnumerator DisablingGameManagerCancelsSpawnBeforeItsSceneTransformsAreDestroyed()
+        {
+            yield return CreateOfflineRoom();
+            var go = new GameObject("Synthetic scene manager");
+            try
+            {
+                var manager = go.AddComponent(RuntimeType("GameManager"));
+                var spawn = Object("Synthetic spawn").transform;
+                Set(manager, "spawnPoints", new[] { spawn });
+                Call(manager, "TrySpawnLocalPlayer");
+                Assert.That(Get(manager, "spawnRoutine"), Is.Not.Null);
+                go.SetActive(false);
+                Assert.That(Get(manager, "spawnRoutine"), Is.Null);
+                UnityEngine.Object.DestroyImmediate(spawn.gameObject);
+                yield return new WaitForSecondsRealtime(.6f);
+                Assert.That(Get(manager, "hasSpawned"), Is.False);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(go); }
+        }
+
+        [UnityTest]
+        public IEnumerator UnregisteredGeneratedInputDoesNotShareViewZeroRoomKeysOrSendRpc()
+        {
+            yield return CreateOfflineRoom();
+            var field = Input();
+            var sync = field.gameObject.AddComponent(RuntimeType("PhotonSyncedTMPInputField"));
+            Call(sync, "Awake");
+            field.text = "synthetic";
+            Call(sync, "SetBackgroundColorAndSync", Color.green);
+            var properties = (IDictionary)Get(room, "CustomProperties");
+            Assert.That(properties.Contains("TMPInputText_0"), Is.False);
+            Assert.That(properties.Contains("TMPInputColor_0"), Is.False);
+            Assert.That(field.text, Is.EqualTo("synthetic"));
+        }
+
+        [UnityTest]
+        public IEnumerator RuntimeWordSearchCellWithNoViewIdAppliesVisualsWithoutInvalidRpc()
+        {
+            yield return CreateOfflineRoom();
+            var cell = Component("LetterCell");
+            Set(cell, "backgroundImage", Object("Background").AddComponent<UnityEngine.UI.Image>());
+            Set(cell, "letterText", Object("Letter").AddComponent<TMPro.TextMeshProUGUI>());
+            Call(cell, "Awake");
+            Call(cell, "SetTextColor", Color.blue);
+            Call(cell, "SetSelectedVisual", true);
+            Call(cell, "SetResultCorrect"); Call(cell, "SetResultWrong");
+            Call(cell, "ClearResult"); Call(cell, "DisableCellUI");
+            Assert.That(((TMPro.TMP_Text)Get(cell, "letterText")).color, Is.EqualTo(Color.blue));
+            Assert.That(((UnityEngine.UI.Image)Get(cell, "backgroundImage")).enabled, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator CorrectSubmissionCreatesDeadlineAndDuplicateDoesNotExtendIt()
+        {
+            yield return CreateOfflineRoom();
+            Call(insulin, "SubmitSyringeAnswer");
+            object properties = Get(room, "CustomProperties");
+            double due = (double)((IDictionary)properties)["SGH_Insulin_AdvanceAt"];
+            Assert.That(due, Is.GreaterThan((double)Get(network, "Time")));
+            Call(insulin, "SubmitSyringeAnswer");
+            Assert.That(((IDictionary)Get(room, "CustomProperties"))["SGH_Insulin_AdvanceAt"], Is.EqualTo(due));
+            Assert.That(Get(insulin, "CurrentPart"), Is.EqualTo(1));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator ResetRejectsOldSubmissionAndExpiredDeadlineCannotReopenPage()
+        {
+            yield return CreateOfflineRoom();
+            Call(insulin, "SubmitSyringeAnswer");
+            Call(insulin, "ResetPuzzle");
+            int actor = (int)Get(Get(network, "LocalPlayer"), "ActorNumber");
+            Call(flow, "ScheduleInsulinAdvance", 1, 0, actor);
+            Call(flow, "ProcessPendingInsulinAdvance");
+            Call(flow, "RefreshInsulinRoomState");
+            IDictionary properties = (IDictionary)Get(room, "CustomProperties");
+            Assert.That(properties["SGH_Insulin_Revision"], Is.EqualTo(1));
+            Assert.That(properties["SGH_Insulin_AdvanceAt"], Is.EqualTo(0d));
+            Assert.That(Get(insulin, "CurrentPart"), Is.EqualTo(1));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator PendingSnapshotCompletesAfterLocalRecoveryAndPartTwoReapplies()
+        {
+            yield return CreateOfflineRoom();
+            while ((double)Get(network, "Time") <= 0.01d) yield return null;
+            double now = (double)Get(network, "Time");
+            Publish(Snapshot(4, 1, now / 2d));
+            Call(flow, "ClearInsulinLocalState"); // Simulate loss of local cached transition state.
+            Call(flow, "ProcessPendingInsulinAdvance");
+            Call(flow, "RefreshInsulinRoomState");
+            Assert.That(Get(insulin, "CurrentPart"), Is.EqualTo(2));
+            Call(insulin, "ApplyRoomPart", 1, false); // Simulate freshly restored UI.
+            Call(flow, "ClearInsulinLocalState");
+            Call(flow, "RefreshInsulinRoomState");
+            Assert.That(Get(insulin, "CurrentPart"), Is.EqualTo(2));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator WrongOwnerAndWrongSelectionCannotSchedule()
+        {
+            yield return CreateOfflineRoom();
+            int actor = (int)Get(Get(network, "LocalPlayer"), "ActorNumber");
+            Call(flow, "ScheduleInsulinAdvance", 0, 0, actor);
+            Call(flow, "ScheduleInsulinAdvance", 1, 0, actor + 100);
+            Assert.That(((IDictionary)Get(room, "CustomProperties"))["SGH_Insulin_AdvanceAt"], Is.EqualTo(0d));
+            yield return null;
+        }
+
+        private IDictionary Properties() { return (IDictionary)Get(room, "CustomProperties"); }
+        private int LocalActor() { return (int)Get(Get(network, "LocalPlayer"), "ActorNumber"); }
+
+        private void ReleaseLock()
+        {
+            IDictionary properties = Properties();
+            properties["PuzzleLocked"] = false;
+            properties["LockOwner"] = -1;
+        }
+
+        // The lock request and the syringe request are separate messages. If the syringe request is handled
+        // first, the master must not drop it: it takes the free lock for the sender and schedules the deadline.
+        [UnityTest]
+        public IEnumerator RequestOnAFreeLockIsAcceptedAndTakesTheLockForTheSender()
+        {
+            yield return CreateOfflineRoom();
+            ReleaseLock();
+            int actor = LocalActor();
+            Call(flow, "ScheduleInsulinAdvance", 1, 0, actor);
+            IDictionary properties = Properties();
+            Assert.That((double)properties["SGH_Insulin_AdvanceAt"], Is.GreaterThan((double)Get(network, "Time")));
+            Assert.That(properties["PuzzleLocked"], Is.EqualTo(true));
+            Assert.That(properties["LockOwner"], Is.EqualTo(actor));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator SubmitFromTheUiOnAFreeLockSchedulesTheDeadline()
+        {
+            yield return CreateOfflineRoom();
+            ReleaseLock();
+            Call(insulin, "SubmitSyringeAnswer");
+            IDictionary properties = Properties();
+            Assert.That((double)properties["SGH_Insulin_AdvanceAt"], Is.GreaterThan((double)Get(network, "Time")));
+            Assert.That(properties["LockOwner"], Is.EqualTo(LocalActor()));
+            Assert.That(Get(insulin, "CurrentPart"), Is.EqualTo(1), "Part 2 only appears after the deadline");
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator RepeatedRequestsOnAFreeLockScheduleExactlyOneDeadline()
+        {
+            yield return CreateOfflineRoom();
+            ReleaseLock();
+            int actor = LocalActor();
+            Call(flow, "ScheduleInsulinAdvance", 1, 0, actor);
+            double due = (double)Properties()["SGH_Insulin_AdvanceAt"];
+            for (int i = 0; i < 10; i++) Call(flow, "ScheduleInsulinAdvance", 1, 0, actor);
+            Assert.That((double)Properties()["SGH_Insulin_AdvanceAt"], Is.EqualTo(due), "Repeats must not extend the deadline");
+            Assert.That(Properties()["LockOwner"], Is.EqualTo(actor));
+            yield return null;
+        }
+
+        // Taking a free lock must never become taking over someone else's attempt.
+        [UnityTest]
+        public IEnumerator RequestWhileAnotherPlayerHoldsTheLockIsRejectedAndLeavesTheLockAlone()
+        {
+            yield return CreateOfflineRoom();
+            int actor = LocalActor();
+            IDictionary properties = Properties();
+            properties["PuzzleLocked"] = true;
+            properties["LockOwner"] = actor + 100;
+            Call(flow, "ScheduleInsulinAdvance", 1, 0, actor);
+            Assert.That(properties["SGH_Insulin_AdvanceAt"], Is.EqualTo(0d));
+            Assert.That(properties["PuzzleLocked"], Is.EqualTo(true));
+            Assert.That(properties["LockOwner"], Is.EqualTo(actor + 100));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator WrongSelectionOnAFreeLockDoesNotTakeTheLock()
+        {
+            yield return CreateOfflineRoom();
+            ReleaseLock();
+            Call(flow, "ScheduleInsulinAdvance", 0, 0, LocalActor());
+            IDictionary properties = Properties();
+            Assert.That(properties["SGH_Insulin_AdvanceAt"], Is.EqualTo(0d));
+            Assert.That(properties["PuzzleLocked"], Is.EqualTo(false));
+            Assert.That(properties["LockOwner"], Is.EqualTo(-1));
+            yield return null;
+        }
+    }
+}

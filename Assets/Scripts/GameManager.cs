@@ -16,6 +16,13 @@ public class GameManager : MonoBehaviourPunCallbacks // Declares the gameplay ma
     private bool isReconnectingToGameplayRoom; // Tracks whether this client has already started a reconnect flow.
     private static string pendingSceneAfterLeavingRoom; // Stores a static scene target while Photon finishes leaving a room.
 
+    public override void OnDisable()
+    {
+        if (spawnRoutine != null) StopCoroutine(spawnRoutine);
+        spawnRoutine = null;
+        base.OnDisable();
+    }
+
     private void Start() // Runs when Unity starts this GameManager instance.
     { // Starts the Start method body.
         Network.EnsurePersistentUserId(); // Ensures this player has a stable ID for Photon and rejoin behavior.
@@ -78,7 +85,8 @@ public class GameManager : MonoBehaviourPunCallbacks // Declares the gameplay ma
         Debug.LogWarning($"Gameplay rejoin failed ({returnCode}): {message}"); // Logs the rejoin failure details for debugging.
         isAttemptingGameplayRejoin = false; // Clears the gameplay rejoin attempt flag.
         isReconnectingToGameplayRoom = false; // Clears the gameplay reconnect flag.
-        Network.ClearCachedRoomRejoin(); // Removes the cached room because rejoin failed.
+        if (returnCode != ErrorCode.JoinFailedFoundActiveJoiner)
+            Network.ClearCachedRoomRejoin(); // Keep the room for a later retry if Photon has not yet marked the old actor inactive.
         SceneManager.LoadScene("Lobby"); // Returns the player to the lobby after failed rejoin.
     } // Ends the OnJoinRoomFailed callback body.
 
@@ -161,7 +169,7 @@ public class GameManager : MonoBehaviourPunCallbacks // Declares the gameplay ma
         yield return new WaitForSeconds(0.5f); // Waits briefly for scene and Photon state to settle.
         spawnRoutine = null; // Clears the coroutine handle because this spawn attempt is now running.
 
-        if (!PhotonNetwork.InRoom || HasLocalPlayerModel()) // Checks whether the client left the room or already has a local model.
+        if (!isActiveAndEnabled || !PhotonNetwork.InRoom || HasLocalPlayerModel()) // A scene can unload while the delayed spawn is pending.
         { // Starts the abort-spawn block.
             hasSpawned = HasLocalPlayerModel(); // Records whether the local model already exists.
             yield break; // Stops the coroutine without spawning a duplicate.
@@ -169,6 +177,7 @@ public class GameManager : MonoBehaviourPunCallbacks // Declares the gameplay ma
 
         int playerIndex = GetPlayerIndex(PhotonNetwork.LocalPlayer); // Calculates this player's index among room players.
         Transform spawnPoint = spawnPoints.Length > playerIndex ? spawnPoints[playerIndex] : spawnPoints[0]; // Chooses a matching spawn point or falls back to the first one.
+        if (spawnPoint == null) yield break; // Never read a destroyed scene transform during teardown.
         int characterIndex = GetSelectedCharacterIndex(); // Reads and validates the selected character index.
         PhotonNetwork.Instantiate(characterPrefabs[characterIndex].name, spawnPoint.position, spawnPoint.rotation); // Creates the selected character as a networked Photon object.
         hasSpawned = true; // Marks this client as spawned after instantiation.

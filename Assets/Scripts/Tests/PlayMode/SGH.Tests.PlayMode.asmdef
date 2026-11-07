@@ -1,0 +1,6 @@
+{
+  "name": "SGH.Tests.PlayMode",
+  "references": ["SGH.Tests.Shared", "Unity.TextMeshPro", "Unity.ugui"],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "autoReferenced": false
+}

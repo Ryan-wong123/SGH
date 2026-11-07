@@ -9,7 +9,9 @@ using TMPro; // Imports TextMeshPro UI components.
 public class JoinRoomManager : Network // Defines a room-list manager that also inherits Network behavior.
 { // Starts the JoinRoomManager class body.
     private const string RoomPasswordPropertyKey = "RoomPassword"; // Names the Photon custom room property used for passwords.
+    private const string GameStartedPropertyKey = "GameStarted"; // Marks a room whose players have entered GameScene.
     private bool refreshLobbyAfterLeave; // Tracks whether a lobby refresh is waiting for OnLeftLobby.
+    private bool isAttemptingListedGameRejoin; // Tracks a rejoin selected from the visible room list.
 
     //instance of available room to join button
     [SerializeField] private GameObject roomItemPrefab; // References the prefab used for each room list button.
@@ -86,7 +88,7 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
 
         foreach (RoomInfo info in roomList) // Loops through every room update received from Photon.
         { // Starts the room update loop body.
-            if (info.RemovedFromList || !info.IsOpen || !info.IsVisible) // Checks whether this room should no longer appear.
+            if (info.RemovedFromList || !info.IsOpen || !info.IsVisible) // Removes rooms that Photon no longer lists as joinable.
             { // Starts the remove-room branch.
                 cachedRoomList.Remove(info.Name); // Removes the room from the local cache.
             } // Ends the remove-room branch.
@@ -138,7 +140,9 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
         foreach (RoomInfo info in cachedRoomList.Values) // Loops through every cached available room.
         { // Starts the room item creation loop body.
             GameObject item = Instantiate(roomItemPrefab, contentPanel); // Creates a room item under the content panel.
-            item.GetComponentInChildren<Text>().text = $"{info.Name} ({info.PlayerCount}/{info.MaxPlayers})"; // Displays the room name and player count.
+            item.GetComponentInChildren<Text>().text = HasGameStarted(info)
+                ? $"{info.Name} (Rejoin game)"
+                : $"{info.Name} ({info.PlayerCount}/{info.MaxPlayers})"; // Displays a rejoin label for an in-progress room.
             item.GetComponent<Button>().onClick.AddListener(() => SelectRoom(info.Name)); // Makes the room item select this room when clicked.
         } // Ends the room item creation loop body.
 
@@ -159,7 +163,9 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
 
         if (joinRoomFeedbackText != null) // Checks whether the feedback label is assigned.
         { // Starts the feedback-label branch.
-            joinRoomFeedbackText.text = "Enter the room password to join."; // Prompts the player for the room password.
+            joinRoomFeedbackText.text = cachedRoomList.TryGetValue(roomName, out RoomInfo selectedInfo) && HasGameStarted(selectedInfo)
+                ? "Only a player returning to this game can rejoin."
+                : "Enter the room password to join."; // Explains the selected room's join path.
             joinRoomFeedbackText.color = new Color(0.2f, 0.2f, 0.2f, 1f); // Sets the feedback text to the neutral color.
         } // Ends the feedback-label branch.
 
@@ -185,6 +191,21 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
             return; // Stops because the selected room cannot be joined.
         } // Ends the unavailable-room branch.
 
+        if (HasGameStarted(roomInfo))
+        {
+            if (selectedRoomName != Network.GetCachedRoomName())
+            {
+                SetJoinFeedback("This game is already in progress.", true);
+                return;
+            }
+
+            SetJoinFeedback("Rejoining game...", false);
+            isAttemptingListedGameRejoin = PhotonNetwork.RejoinRoom(selectedRoomName);
+            if (!isAttemptingListedGameRejoin)
+                SetJoinFeedback("Could not start rejoining. Try again after reconnecting.", true);
+            return;
+        }
+
         string expectedPassword = GetRoomPassword(roomInfo); // Reads the selected room's password from custom properties.
         string enteredPassword = roomPasswordInputField != null ? roomPasswordInputField.text.Trim() : string.Empty; // Reads and trims the entered password.
 
@@ -203,7 +224,12 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
         Debug.LogWarning($"Join Random Room Failed: {message}. Creating new room..."); // Logs the random-join failure and fallback.
         var options = new RoomOptions
         {
-            MaxPlayers = maxPlayersPerRoom
+            MaxPlayers = maxPlayersPerRoom,
+            PlayerTtl = 600000,
+            EmptyRoomTtl = 300000,
+            PublishUserId = true,
+            CustomRoomProperties = new Hashtable { { GameStartedPropertyKey, false } },
+            CustomRoomPropertiesForLobby = new[] { GameStartedPropertyKey }
         };
         isCreatingFallbackRoom = true; // Defers organiser assignment until Photon assigns this new room's actor number.
         PhotonNetwork.CreateRoom(null, options); // Creates a fallback room while preserving its organiser identity without exposing an email address.
@@ -212,6 +238,7 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
     public override void OnJoinedRoom() // Runs when Photon confirms that the local player joined a room.
     { // Starts the OnJoinedRoom callback body.
         base.OnJoinedRoom(); // Runs the base room-joined handling from Network.
+        isAttemptingListedGameRejoin = false;
         SetFallbackRoomOrganizer(); // Records this client only when it created the fallback room.
         Debug.Log($"Joined Room: {PhotonNetwork.CurrentRoom.Name}"); // Logs the joined room name.
         //hide room list panel and show current room panel
@@ -226,6 +253,18 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
         startGameButton.gameObject.SetActive(PhotonNetwork.IsMasterClient); // Shows the start button only to the master client.
         ClearSelectedRoom(); // Clears the selected-room UI after joining.
     } // Ends the OnJoinedRoom callback body.
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        bool listedGameRejoinFailed = isAttemptingListedGameRejoin;
+        isAttemptingListedGameRejoin = false;
+        base.OnJoinRoomFailed(returnCode, message);
+
+        if (listedGameRejoinFailed)
+            SetJoinFeedback(returnCode == ErrorCode.JoinFailedFoundActiveJoiner
+                ? "Your old connection is still active. Wait a moment, then retry."
+                : "Rejoin failed. Your previous player slot may have expired.", true);
+    }
 
     private void SetFallbackRoomOrganizer() // Records a valid organiser actor number after creating a random-match fallback room.
     { // Starts the fallback organiser assignment body.
@@ -283,7 +322,8 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
     { // Starts the StartGame method body.
         if (!PhotonNetwork.IsMasterClient) return; // Stops non-master clients from starting the game.
 
-        PhotonNetwork.CurrentRoom.IsVisible = false; // Hides the room from lobby listings once the game starts.
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { GameStartedPropertyKey, true } }); // Identifies the room as an in-progress game in the lobby.
+        PhotonNetwork.CurrentRoom.IsVisible = true; // Keeps the room discoverable by its returning players.
         PhotonNetwork.CurrentRoom.IsOpen = true; // Keeps the room open while the scene load begins.
 
         // Tell everyone to show loading UI + start tracking progress
@@ -313,6 +353,13 @@ public class JoinRoomManager : Network // Defines a room-list manager that also 
 
         return string.Empty; // Returns no password when the property is missing or not a string.
     } // Ends the GetRoomPassword method body.
+
+    private static bool HasGameStarted(RoomInfo roomInfo)
+    {
+        return roomInfo?.CustomProperties != null &&
+            roomInfo.CustomProperties.TryGetValue(GameStartedPropertyKey, out object started) &&
+            started is bool isStarted && isStarted;
+    }
 
     private void UpdateRoomPasswordDisplay() // Updates the UI label that shows the current room password.
     { // Starts the UpdateRoomPasswordDisplay method body.

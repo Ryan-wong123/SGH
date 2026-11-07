@@ -5,14 +5,8 @@ using SghCsvEmailApi.Options;
 
 namespace SghCsvEmailApi.Services;
 
-public sealed class CsvEmailSender
+public sealed class CsvEmailSender : ICsvEmailSender
 {
-    // Set the Gmail account that generated the app password below.
-    private const string GmailSenderEmail = "wong.ryan5091@gmail.com";
-
-    // Paste the 16-character Gmail App Password here. This file must remain on the backend server only.
-    private const string GmailAppPassword = "snwi iaxa qxbl pixd";
-
     private readonly GmailOptions settings;
     private readonly ILogger<CsvEmailSender> logger;
 
@@ -22,31 +16,28 @@ public sealed class CsvEmailSender
         this.logger = logger;
     }
 
-    // Set the fixed address that receives every gameplay CSV.
-    private const string RecipientEmail = "wong.ryan5091@gmail.com";
-
-    public async Task SendAsync(IFormFile csv, string roomName, string playedAt)
+    public async Task SendAsync(IFormFile csv, string roomName, string playedAt, CancellationToken cancellationToken = default)
     {
         await using Stream csvStream = csv.OpenReadStream();
         using var message = new MailMessage
         {
-            From = new MailAddress(GmailSenderEmail),
+            From = new MailAddress(settings.SenderEmail),
             Subject = $"Gameplay CSV - {roomName}",
             Body = $"Gameplay session for room '{roomName}' completed at {playedAt}. The CSV is attached."
         };
-        message.To.Add(RecipientEmail);
+        message.To.Add(settings.RecipientEmail);
         message.Attachments.Add(new Attachment(csvStream, Path.GetFileName(csv.FileName), "text/csv"));
 
         using var client = new SmtpClient(settings.SmtpHost, settings.SmtpPort)
         {
-            EnableSsl = true,
+            EnableSsl = settings.EnableSsl,
             DeliveryMethod = SmtpDeliveryMethod.Network,
             UseDefaultCredentials = false,
-            Credentials = new NetworkCredential(GmailSenderEmail, GmailAppPassword.Replace(" ", string.Empty))
+            Credentials = new NetworkCredential(settings.SenderEmail, settings.AppPassword.Replace(" ", string.Empty))
         };
 
-        await client.SendMailAsync(message);
-        logger.LogInformation("Sent gameplay CSV for room {RoomName} to {RecipientEmail}.", roomName, RecipientEmail);
+        await client.SendMailAsync(message, cancellationToken);
+        logger.LogInformation("Gameplay CSV delivery completed.");
     }
 
     public static bool IsValidEmail(string email)

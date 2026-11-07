@@ -1,3 +1,5 @@
+using Photon.Pun;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 using UnityEngine; // Imports a namespace used by this script.
 using System.Collections.Generic; // Imports a namespace used by this script.
 using System.Collections; // Imports a namespace used by this script.
@@ -19,43 +21,87 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle // Declares this type
     public Color correctColor = Color.green; // Declares a field, property, or member used by this script.
     public Color wrongColor = Color.red; // Declares a field, property, or member used by this script.
     public Color defaultColor = Color.white; // Declares a field, property, or member used by this script.
-    private Coroutine part1AdvanceRoutine; // Declares a field, property, or member used by this script.
+    private Coroutine part1AdvanceRoutine;
+    private int localResetRevision;
 
-    public void SubmitSyringeAnswer() // Declares a method used by this script.
-    { // Starts this code block.
-        if (part1AdvanceRoutine != null) // Checks this condition before continuing.
-            StopCoroutine(part1AdvanceRoutine); // Stops a Unity coroutine.
+    public void SubmitSyringeAnswer()
+    {
+        if (CurrentPart != 1 || syringeDropdown == null || part1AdvanceRoutine != null)
+            return;
 
-        part1AdvanceRoutine = StartCoroutine(CheckCorrectSyringe()); // Updates this value.
-    } // Ends this code block.
-
-    public IEnumerator CheckCorrectSyringe() // Declares a method used by this script.
-    { // Starts this code block.
-        // Get the user's selected option
-        int selected = syringeDropdown.value; // Creates a local value used by the following logic.
-
-        // Check correctness
-        if (selected == correctSyringeIndex) // Checks this condition before continuing.
-        { // Starts this code block.
-            PuzzleStateManager.Instance?.RecordPuzzle10PartAnswer(true); // Records the dropdown answer as Puzzle 10 part 1.
-            syringeDropdown.SetSyncedFeedbackColor(correctColor); // Runs this line of puzzle logic.
-            // Optional delay before showing result (remove if not needed)
-            yield return new WaitForSeconds(2f); // Pauses this coroutine until the yielded condition finishes.
-
-            if (PuzzleStateManager.Instance != null) // Checks this condition before continuing.
-                PuzzleStateManager.Instance.BroadcastInsulinPart2Transition(); // Runs this line of puzzle logic.
-            else // Runs when the previous condition was false.
-                GoToPart2(); // Runs this line of puzzle logic.
-        } // Ends this code block.
-           
-        else // Runs when the previous condition was false.
+        // In a room only the master schedules the shared deadline. Never fall
+        // back to a client-local delay if the flow manager is unavailable.
+        if (PhotonNetwork.InRoom)
         {
-            PuzzleStateManager.Instance?.RecordPuzzle10PartAnswer(false); // Records the incorrect dropdown answer as Puzzle 10 part 1.
-            syringeDropdown.SetSyncedFeedbackColor(wrongColor); // Runs this line of puzzle logic.
+            PuzzleStateManager.Instance?.RequestInsulinPart2Transition(syringeDropdown.value);
+            return;
         }
+        part1AdvanceRoutine = StartCoroutine(CheckCorrectSyringe());
+    }
 
-        part1AdvanceRoutine = null; // Updates this value.
-    } // Ends this code block.
+    public IEnumerator CheckCorrectSyringe()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            PuzzleStateManager.Instance?.RequestInsulinPart2Transition(syringeDropdown.value);
+            yield break;
+        }
+        int revision = localResetRevision;
+        bool correct = syringeDropdown.value == correctSyringeIndex;
+        PuzzleStateManager.Instance?.RecordPuzzle10PartAnswer(correct);
+        syringeDropdown.SetSyncedFeedbackColor(correct ? correctColor : wrongColor);
+        if (correct)
+        {
+            yield return new WaitForSecondsRealtime(2f);
+            if (revision == localResetRevision && !PhotonNetwork.InRoom && CurrentPart == 1)
+                GoToPart2();
+        }
+        else
+        {
+            // Let StartCoroutine return its handle before clearing it, so an
+            // immediately incorrect answer cannot leave a completed handle latched.
+            yield return null;
+        }
+        part1AdvanceRoutine = null;
+    }
+
+    public void CancelLocalAdvance()
+    {
+        localResetRevision++;
+        if (part1AdvanceRoutine != null)
+            StopCoroutine(part1AdvanceRoutine);
+        part1AdvanceRoutine = null;
+    }
+
+    private void OnDisable()
+    {
+        CancelLocalAdvance();
+    }
+
+    private void OnEnable()
+    {
+        PuzzleStateManager.Instance?.RefreshInsulinRoomState();
+    }
+
+    public void ApplyRoomPart(int part, bool reset)
+    {
+        CancelLocalAdvance();
+        if (reset && syringeDropdown != null)
+        {
+            syringeDropdown.SetValueWithoutNotify(0);
+            if (syringeDropdown.targetGraphic != null)
+                syringeDropdown.targetGraphic.color = defaultColor;
+        }
+        if (panel1 != null) panel1.SetActive(part == 1);
+        if (panel2 != null) panel2.SetActive(part == 2);
+    }
+
+    public void AddResetProperties(Hashtable properties)
+    {
+        if (syringeDropdown == null) return;
+        PhotonSyncedTMPDropdown synced = syringeDropdown.GetComponent<PhotonSyncedTMPDropdown>();
+        if (synced != null) synced.AddResetProperties(properties);
+    }
 
     public void GoToPart2() // Declares a method used by this script.
     { // Starts this code block.
@@ -106,8 +152,9 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle // Declares this type
     { // Starts this code block.
         yield return new WaitForSeconds(delaySeconds); // Pauses this coroutine until the yielded condition finishes.
 
-        foreach (Activity6DropSlot slot in Activity6DropSlot.allDropSlots) // Repeats this block for each item in a collection.
+        foreach (DropSlot slot in DropSlot.allDropSlots) // The registry also contains slots belonging to other puzzles.
         { // Starts this code block.
+            if (!(slot is Activity6DropSlot)) continue;
             foreach (DraggableCard card in slot.GetCardsInSlot()) // Repeats this block for each item in a collection.
             { // Starts this code block.
                 Image img = card.GetComponent<Image>(); // Runs this line of puzzle logic.
@@ -119,27 +166,24 @@ public class InsulinPuzzleManager : MonoBehaviour, IPuzzle // Declares this type
         } // Ends this code block.
     } // Ends this code block.
 
-    public void ResetPuzzle() // Declares a method used by this script.
-    { // Starts this code block.
-        Debug.Log("[InsulinPuzzle] Resetting Puzzle"); // Writes a diagnostic message to the Unity console.
-
-        // -----------------------------
-        // 1) Reset syringe dropdown
-        // -----------------------------
-        if (syringeDropdown != null) // Checks this condition before continuing.
-        { // Starts this code block.
-            syringeDropdown.value = 0;                   // Reset selection to first option
-            syringeDropdown.RefreshShownValue();         // Update UI
-            syringeDropdown.SetSyncedFeedbackColor(defaultColor); // Runs this line of puzzle logic.
-        } // Ends this code block.
-
-        // -----------------------------
-        // 5) Reset panel visibility
-        // -----------------------------
-        if (panel1 != null) panel1.SetActive(true); // Checks this condition before continuing.
-        if (panel2 != null) panel2.SetActive(false); // Checks this condition before continuing.
-
-        Debug.Log("[InsulinPuzzle] RESET COMPLETE"); // Writes a diagnostic message to the Unity console.
-    } // Ends this code block.
+    public void ResetPuzzle()
+    {
+        CancelLocalAdvance();
+        if (PhotonNetwork.InRoom)
+        {
+            // The stage reset runs on every client; only its master publishes
+            // the new revision and clears the shared dropdown snapshot.
+            PuzzleStateManager.Instance?.ResetInsulinRoomState(this);
+            ApplyRoomPart(1, true);
+            return;
+        }
+        if (syringeDropdown != null)
+        {
+            syringeDropdown.value = 0;
+            syringeDropdown.RefreshShownValue();
+            syringeDropdown.SetSyncedFeedbackColor(defaultColor);
+        }
+        ApplyRoomPart(1, false);
+    }
 
 } // Ends this code block.

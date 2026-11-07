@@ -9,7 +9,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable; // Imports a namespace used
 
 public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCallback // Declares this type.
 { // Starts this code block.
-    private const byte WordSearchCellStateEventCode = 42; // Declares a field, property, or member used by this script.
+    private const byte WordSearchCellStateEventCode = SghPhotonEvents.WordSearchState; // Declares a field, property, or member used by this script.
     private const string WordSearchCellStatePrefix = "P5WS_"; // Declares a field, property, or member used by this script.
 
     [Header("Grid Setup")] // Adds a labeled section in the Unity Inspector.
@@ -267,7 +267,8 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
                 if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(key)) // Checks this condition before continuing.
                     continue; // Skips to the next loop iteration.
 
-                ApplyEncodedStateToCell(x, y, (int)PhotonNetwork.CurrentRoom.CustomProperties[key]); // Runs this line of puzzle logic.
+                if (PhotonNetwork.CurrentRoom.CustomProperties[key] is int state && state >= 0 && state <= 5)
+                    ApplyEncodedStateToCell(x, y, state); // Runs this line of puzzle logic.
             } // Ends this code block.
         } // Ends this code block.
 
@@ -335,18 +336,17 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
         PhotonNetwork.CurrentRoom.SetCustomProperties(clearedStates); // Runs this line of puzzle logic.
     } // Ends this code block.
 
-    public void OnEvent(EventData photonEvent) // Declares a method used by this script.
-    { // Starts this code block.
-        if (photonEvent.Code != WordSearchCellStateEventCode) // Checks this condition before continuing.
-            return; // Returns this result to the caller.
+    public void OnEvent(EventData photonEvent)
+    {
+        if (!SghPhotonEvents.TryGetPayload(photonEvent, WordSearchCellStateEventCode, 3, out object[] data) ||
+            data[0] is not int x || data[1] is not int y || data[2] is not int state ||
+            x <= 0 || y <= 0 || x >= gridSize || y >= gridSize || state < 0 || state > 5)
+            return;
 
-        if (!(photonEvent.CustomData is object[] data) || data.Length < 3) // Checks this condition before continuing.
-            return; // Returns this result to the caller.
-
-        suppressNetworkStateApply = true; // Updates this value.
-        ApplyEncodedStateToCell((int)data[0], (int)data[1], (int)data[2]); // Runs this line of puzzle logic.
-        suppressNetworkStateApply = false; // Updates this value.
-    } // Ends this code block.
+        suppressNetworkStateApply = true;
+        try { ApplyEncodedStateToCell(x, y, state); }
+        finally { suppressNetworkStateApply = false; }
+    }
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged) // Overrides a Unity or Photon callback method.
     { // Starts this code block.
@@ -366,7 +366,8 @@ public class WordSearchManager : MonoBehaviourPunCallbacks, IPuzzle, IOnEventCal
                 !int.TryParse(parts[1], out int y)) // Runs this line of puzzle logic.
                 continue; // Skips to the next loop iteration.
 
-            ApplyEncodedStateToCell(x, y, (int)entry.Value); // Runs this line of puzzle logic.
+            if (entry.Value is int state && state >= 0 && state <= 5)
+                ApplyEncodedStateToCell(x, y, state); // Runs this line of puzzle logic.
         } // Ends this code block.
 
         suppressNetworkStateApply = false; // Updates this value.

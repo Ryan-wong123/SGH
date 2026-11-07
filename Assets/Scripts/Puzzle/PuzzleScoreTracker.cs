@@ -24,8 +24,13 @@ public class PuzzleScoreTracker : MonoBehaviourPunCallbacks // Declares the netw
     { // Starts the Awake method body.
         if (Instance == null) Instance = this; // Registers this component as the singleton if none exists.
         else { Destroy(gameObject); return; } // Destroys duplicate score trackers and exits setup.
-        DontDestroyOnLoad(gameObject); // Keeps the score tracker alive across scene changes.
+        // The tracker owns scene UI references; a new GameScene gets a new tracker.
     } // Ends the Awake method body.
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
 
     /// <summary>
     /// Call this when a player submits and the puzzle is NOT solved.

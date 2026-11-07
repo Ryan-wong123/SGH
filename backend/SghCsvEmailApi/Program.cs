@@ -9,8 +9,11 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOptions<GmailOptions>()
     .BindConfiguration(GmailOptions.SectionName)
     .ValidateDataAnnotations()
+    .Validate(o => o.EnableSsl || o.SmtpHost == "localhost" ||
+        (System.Net.IPAddress.TryParse(o.SmtpHost, out var address) && System.Net.IPAddress.IsLoopback(address)),
+        "Unencrypted SMTP is allowed only on loopback.")
     .ValidateOnStart();
-builder.Services.AddSingleton<CsvEmailSender>();
+builder.Services.AddSingleton<ICsvEmailSender, CsvEmailSender>();
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -29,7 +32,7 @@ app.UseRateLimiter();
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 
-app.MapPost("/api/gameplay-csv", async (HttpRequest request, CsvEmailSender sender, CancellationToken cancellationToken) =>
+app.MapPost("/api/gameplay-csv", async (HttpRequest request, ICsvEmailSender sender, CancellationToken cancellationToken) =>
 {
     if (!request.HasFormContentType)
         return Results.BadRequest(new { error = "Expected multipart form data." });
@@ -45,8 +48,11 @@ app.MapPost("/api/gameplay-csv", async (HttpRequest request, CsvEmailSender send
     if (!csv.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
         return Results.BadRequest(new { error = "The attachment must be a CSV file." });
 
-    await sender.SendAsync(csv, roomName, playedAt);
+    await sender.SendAsync(csv, roomName, playedAt, cancellationToken);
     return Results.NoContent();
 }).RequireRateLimiting("gameplay-email");
 
 app.Run();
+
+// Expose the entry point to the isolated HTTP integration test host.
+public partial class Program { }

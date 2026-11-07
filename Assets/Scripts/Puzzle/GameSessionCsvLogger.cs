@@ -12,7 +12,7 @@ using UnityEngine; // Imports a namespace used by this script.
 
 public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback // Declares this type.
 { // Starts this code block.
-    private const byte GameplayLogEventCode = 41; // Declares a field, property, or member used by this script.
+    private const byte GameplayLogEventCode = SghPhotonEvents.Analytics; // Declares a field, property, or member used by this script.
     private const int EventTypeEnter = 0; // Declares a field, property, or member used by this script.
     private const int EventTypeAnswer = 1; // Declares a field, property, or member used by this script.
     private const int EventTypeTimeSpent = 2; // Declares a field, property, or member used by this script.
@@ -26,7 +26,11 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
     private readonly Dictionary<string, PuzzlePlayerStats> teamStatsByKey = new(); // Team submission rows, keyed by the player who submitted.
     private readonly Dictionary<string, double> localAttemptStartTimes = new(); // Declares a field, property, or member used by this script.
     private DateTime sessionPlayedAt; // Stores when this game session started for CSV export.
+    // Injectable I/O boundaries keep synthetic export tests away from user Downloads.
+    private Func<string> csvDirectory = () => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+    private Action<string, string> csvWriter = (path, contents) => File.WriteAllText(path, contents, Encoding.UTF8);
     private bool hasWrittenCsv; // Declares a field, property, or member used by this script.
+    private string sessionExportId = Guid.NewGuid().ToString("N"); // Prevent same-name rapid sessions overwriting an export.
 
     private sealed class PuzzlePlayerStats // Declares a field, property, or member used by this script.
     { // Starts this code block.
@@ -160,14 +164,12 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient) // Checks this condition before continuing.
             return; // Returns this result to the caller.
 
-        hasWrittenCsv = true; // Updates this value.
-
-        string directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"); // Saves gameplay CSV files directly to the current user's Downloads folder.
+        string directory = csvDirectory(); // Saves gameplay CSV files directly to the current user's Downloads folder.
         Directory.CreateDirectory(directory); // Runs this line of puzzle logic.
 
         string roomName = SanitizeFileName(GetCurrentRoomName()); // Creates a local value used by the following logic.
         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture); // Creates a local value used by the following logic.
-        string path = Path.Combine(directory, $"gameplay_{roomName}_{timestamp}.csv"); // Creates a local value used by the following logic.
+        string path = Path.Combine(directory, $"gameplay_{roomName}_{timestamp}_{sessionExportId}.csv"); // One distinct export per session.
 
         var individualRows = new List<PuzzlePlayerStats>(statsByKey.Values);
         individualRows.RemoveAll(row => ShouldSuppressIndividualSubmissionInputs(row.PuzzleNumber, row.PuzzlePart));
@@ -263,7 +265,8 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
             csv.AppendLine();
         } // Ends this code block.
 
-        File.WriteAllText(path, csv.ToString(), Encoding.UTF8); // Runs this line of puzzle logic.
+        csvWriter(path, csv.ToString());
+        hasWrittenCsv = true; // A failed write remains retryable. // Runs this line of puzzle logic.
         Debug.Log($"Gameplay CSV saved to: {path}"); // Writes a diagnostic message to the Unity console.
         SendCsvWithSmtp(path, roomName, playedAt);
     } // Ends this code block.
@@ -335,29 +338,37 @@ public class GameSessionCsvLogger : MonoBehaviourPunCallbacks, IOnEventCallback 
         return compacted;
     }
 
+    public override void OnJoinedRoom()
+    {
+        // Rejoining an existing actor resumes the same session. A normal room join,
+        // including a newly created room with a reused name, starts fresh analytics.
+        if (PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.HasRejoined) return;
+        statsByKey.Clear();
+        teamStatsByKey.Clear();
+        localAttemptStartTimes.Clear();
+        sessionPlayedAt = DateTime.Now;
+        sessionExportId = Guid.NewGuid().ToString("N");
+        hasWrittenCsv = false;
+    }
+
     public override void OnLeftRoom() // Overrides a Unity or Photon callback method.
     { // Starts this code block.
         WriteCsvIfNeeded(); // Runs this line of puzzle logic.
     } // Ends this code block.
 
-    public void OnEvent(EventData photonEvent) // Declares a method used by this script.
-    { // Starts this code block.
-        if (photonEvent.Code != GameplayLogEventCode || photonEvent.CustomData is not object[] data || data.Length < 7) // Checks this condition before continuing.
-            return; // Returns this result to the caller.
+    public void OnEvent(EventData photonEvent)
+    {
+        if (!SghPhotonEvents.TryGetPayload(photonEvent, GameplayLogEventCode, 8, out object[] data) ||
+            data[0] is not int eventType || eventType < EventTypeEnter || eventType > EventTypePlayerInput ||
+            data[1] is not string roomName || data[2] is not int actor || actor <= 0 ||
+            data[3] is not string playerName || data[4] is not int puzzle || puzzle < 0 || puzzle > 11 ||
+            data[5] is not int correct || (correct != 0 && correct != 1) ||
+            data[6] is not double elapsed || double.IsNaN(elapsed) || double.IsInfinity(elapsed) ||
+            data[7] is not string answers || (photonEvent.Sender > 0 && photonEvent.Sender != actor))
+            return;
 
-        string selectedAnswers = data.Length >= 8 ? data[7] as string : string.Empty; // Creates a local value used by the following logic.
-
-        ApplyEvent( // Runs this line of puzzle logic.
-            Convert.ToInt32(data[0], CultureInfo.InvariantCulture), // Runs this line of puzzle logic.
-            data[1] as string, // Runs this line of puzzle logic.
-            Convert.ToInt32(data[2], CultureInfo.InvariantCulture), // Runs this line of puzzle logic.
-            data[3] as string, // Runs this line of puzzle logic.
-            Convert.ToInt32(data[4], CultureInfo.InvariantCulture), // Runs this line of puzzle logic.
-            Convert.ToInt32(data[5], CultureInfo.InvariantCulture) == 1, // Runs this line of puzzle logic.
-            Convert.ToDouble(data[6], CultureInfo.InvariantCulture), // Runs this line of puzzle logic.
-            selectedAnswers // Runs this line of puzzle logic.
-        ); // Runs this line of puzzle logic.
-    } // Ends this code block.
+        ApplyEvent(eventType, roomName, actor, playerName, puzzle, correct == 1, elapsed, answers);
+    }
 
     private void SendOrApplyEvent(int eventType, string roomName, int actorNumber, string playerName, int puzzleNumber, int answerWasCorrect, double elapsedSeconds, string selectedAnswers = null) // Declares a method used by this script.
     { // Starts this code block.

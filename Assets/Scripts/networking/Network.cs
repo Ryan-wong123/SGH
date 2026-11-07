@@ -45,7 +45,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
         //connect to photon server with settings
         Debug.Log("Connecting to Photon..."); // Writes a connection status message to the Unity console.
         PhotonNetwork.AutomaticallySyncScene = true; // Enables Photon scene synchronization for all players.
-        PhotonNetwork.GameVersion = gameVersion; // Sets the Photon game version used for matchmaking compatibility.
+        PhotonNetwork.GameVersion = gameVersion + "-" + SghPhotonEvents.ProtocolVersion; // Sets the Photon game version used for matchmaking compatibility.
 
         // If already connected, don't reconnect (reconnecting can kick you out / reset state)
         if (PhotonNetwork.IsConnected) // Checks whether Photon is already connected.
@@ -172,12 +172,6 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
             return; // Leaves because there is no room to save.
         } // Ends the no-room branch.
 
-        if (!HasOtherActivePlayersInRoom()) // Checks whether any other active player remains in the room.
-        { // Starts the no-other-players branch.
-            ClearCachedRoomRejoin(); // Clears the saved room because rejoining would not be useful.
-            return; // Stops after clearing the cache.
-        } // Ends the no-other-players branch.
-
         PlayerPrefs.SetString(RejoinRoomPrefKey, PhotonNetwork.CurrentRoom.Name); // Saves the current room name in PlayerPrefs.
         PlayerPrefs.Save(); // Flushes PlayerPrefs changes to disk.
     } // Ends the CacheCurrentRoomForRejoin method body.
@@ -264,7 +258,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
 
     public static bool TryJoinLobby()
     {
-        if (PhotonNetwork.InRoom || PhotonNetwork.InLobby)
+        if (PhotonNetwork.OfflineMode || PhotonNetwork.InRoom || PhotonNetwork.InLobby)
             return false;
 
         if (PhotonNetwork.NetworkClientState != ClientState.ConnectedToMasterServer)
@@ -302,6 +296,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
     } // Ends the EnsureLobbyJoined method body.
     public override void OnConnectedToMaster() // Runs when Photon connects to the master server.
     { // Starts the OnConnectedToMaster callback body.
+        if (GetType() != typeof(Network)) return; // Lobby also has two derived Network components; only this component starts a rejoin.
         Debug.Log("Connected to Photon Master Server"); // Logs successful master server connection.
         isReconnectingToMaster = false; // Clears the reconnect-in-progress flag.
         ApplyLocalPlayerTag(); // Reapplies the local player tag after connection.
@@ -321,6 +316,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
    
     public override void OnDisconnected(DisconnectCause cause) // Runs when Photon disconnects from the server.
     { // Starts the OnDisconnected callback body.
+        if (GetType() != typeof(Network)) return; // Avoid parallel reconnect requests from room-list and room-creation components.
         Debug.LogError($"Disconnected from Photon: {cause}"); // Logs the disconnect reason as an error.
 
         string cachedRoomName = GetCachedRoomName(); // Reads any saved room name for reconnection.
@@ -360,6 +356,7 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
 
     public override void OnJoinRoomFailed(short returnCode, string message) // Runs when Photon fails to join a room.
     { // Starts the OnJoinRoomFailed callback body.
+        if (GetType() != typeof(Network)) return; // The standalone Network component owns saved-room retry state.
         Debug.LogWarning($"Join room failed ({returnCode}): {message}"); // Logs the failed join result from Photon.
 
         if (!isAttemptingStoredRoomRejoin) // Checks whether the failure was unrelated to cached-room rejoining.
@@ -367,7 +364,10 @@ public class Network : MonoBehaviourPunCallbacks // Defines a Photon callback-en
             return; // Leaves normal join failures for other UI or logic to handle.
         } // Ends the non-cached-failure branch.
 
-        ClearCachedRoomRejoin(); // Clears the invalid saved room after a failed rejoin.
+        if (returnCode == ErrorCode.JoinFailedFoundActiveJoiner)
+            isAttemptingStoredRoomRejoin = false; // Keep the room name while Photon still considers the previous connection active.
+        else
+            ClearCachedRoomRejoin(); // Clear a saved room only when the previous actor cannot be rejoined.
         if (PhotonNetwork.IsConnectedAndReady && !PhotonNetwork.InLobby) // Checks whether the client can return to the lobby.
         { // Starts the lobby-return branch.
             TryJoinLobby(); // Requests entry to the Photon lobby only when Photon is ready.

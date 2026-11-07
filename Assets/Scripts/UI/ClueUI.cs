@@ -68,7 +68,7 @@ public class ClueUI : MonoBehaviourPunCallbacks, IOnEventCallback // Declares th
     private bool _pendingCloseClick; // Tracks whether this player clicked close before the close round was ready.
     private bool _allowSharedCloseHide; // Allows the shared close flow to hide the clue panel.
     private int _broadcastRemainingPlayers = -1; // Caches the latest remaining-player count received by event.
-    private const byte ClueCloseRemainingEventCode = 42; // Defines the Photon event code for remaining-player broadcasts.
+    private const byte ClueCloseRemainingEventCode = SghPhotonEvents.ClueCloseRemaining; // Defines the Photon event code for remaining-player broadcasts.
 
     [Header("Image Layout")] // Groups related clue UI fields in the Unity inspector.
     [SerializeField] private Vector2 portraitSize = new Vector2(600, 900); // Exposes this private clue UI field in the Unity inspector.
@@ -553,35 +553,23 @@ public class ClueUI : MonoBehaviourPunCallbacks, IOnEventCallback // Declares th
             SendOptions.SendReliable); // Sends the Photon event reliably.
     } // Ends this block.
 
-    public void OnEvent(EventData photonEvent) // Handles Photon events received by the clue UI.
-    { // Starts this block.
-        if (photonEvent.Code != ClueCloseRemainingEventCode) // Checks whether this clue UI condition requires action.
-            return; // Leaves the current method early.
+    public void OnEvent(EventData photonEvent)
+    {
+        if (!SghPhotonEvents.TryGetPayload(photonEvent, ClueCloseRemainingEventCode, 3, out object[] content) ||
+            content[0] is not string closeKey || !closeKey.StartsWith("ClueClose_", StringComparison.Ordinal) ||
+            content[1] is not int round || round <= 0 || content[2] is not int remainingPlayers || remainingPlayers < 0 ||
+            !ShouldUseSharedCloseGate() || closeKey != _clueClosePropertyKey)
+            return;
 
-        if (!ShouldUseSharedCloseGate() || !(photonEvent.CustomData is object[] content) || content.Length < 3) // Checks whether this clue UI condition requires action.
-            return; // Leaves the current method early.
+        int currentRound = GetCurrentCloseRound();
+        if (currentRound > 0 && round != currentRound)
+            return;
 
-        string closeKey = content[0] as string; // Stores a clue UI text or property-key value.
-        if (closeKey != _clueClosePropertyKey) // Checks whether this clue UI condition requires action.
-            return; // Leaves the current method early.
-
-        if (!(content[1] is int round)) // Checks whether this clue UI condition requires action.
-            return; // Leaves the current method early.
-
-        if (!(content[2] is int remainingPlayers)) // Checks whether this clue UI condition requires action.
-            return; // Leaves the current method early.
-
-        int currentRound = GetCurrentCloseRound(); // Stores a clue UI count, round, or actor value.
-        if (currentRound > 0 && round != currentRound) // Checks whether this clue UI condition requires action.
-            return; // Leaves the current method early.
-
-        _broadcastRemainingPlayers = remainingPlayers; // Updates the cached broadcast remaining-player count.
-
-        if (HasLocalPlayerClickedClose()) // Checks whether this clue UI condition requires action.
-            _pendingCloseClick = false; // Updates this client pending close-click state.
-
-        RefreshSharedCloseGateState(); // Refreshes shared close-gate UI and completion.
-    } // Ends this block.
+        _broadcastRemainingPlayers = remainingPlayers;
+        if (HasLocalPlayerClickedClose())
+            _pendingCloseClick = false;
+        RefreshSharedCloseGateState();
+    }
 
     private int GetCurrentCloseRound() // Reads the current shared close round from room properties.
     { // Starts this block.

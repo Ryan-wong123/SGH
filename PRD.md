@@ -14,14 +14,14 @@ The team shares progression, supported puzzle inputs, card layouts, clues, and i
 
 ### Session setup
 
-1. Connect to Photon with game version `1.0` and a device-local persistent user ID.
+1. Connect to Photon with game version `1.0-sgh2` (serialized base `1.0` plus the `sgh2` protocol suffix) and a device-local persistent user ID.
 2. The home form asks sequentially for username, sender Gmail address, Gmail app password, and CSV recipient. It reuses one input field and masks the password. This flow currently applies generally, not only to the eventual organiser. Credentials remain in runtime memory.
 3. Create a named room with dropdown-selected capacity or select a listed room and enter its password. Creation generates six characters. Password checks use lobby properties and are a convenience gate rather than secure authentication.
 4. Choose Doctor, Nurse, or Therapist (indices 0, 1, 2). Selection is highlighted and stored in player properties. No distinct abilities or exclusive role reservations are implemented. Invalid/missing selection defaults to Doctor.
-5. The waiting room shows names, population, and password. Only the master starts; `StartGame` has no all-ready requirement. The room becomes invisible but stays open, and all clients load GameScene through Photon.
+5. The waiting room shows names, population, and password. Only the master starts; `StartGame` has no all-ready requirement. The room stays visible and open, is marked as in progress, and all clients load GameScene through Photon. The Lobby lists it as a rejoin option; only a player with that room cached locally can select its rejoin path.
 6. Each client spawns its avatar after a short readiness delay, using sorted actor number to select one of four spawn points; overflow uses the first point.
 
-The room allows inactive actors to rejoin for ten minutes and retains an empty room for five minutes. Local room caching additionally requires another active player. This is temporary session recovery, not save/load.
+The room allows inactive actors to rejoin for ten minutes and retains an empty room for five minutes. Clients cache the room name even if they are the last active player; an empty room can still expire, and a cached name does not guarantee that Photon can restore the actor. This is temporary session recovery, not save/load.
 
 ### Player controls
 
@@ -50,7 +50,7 @@ Each client advances its route within 1.5 metres of the current waypoint. Matchi
 | Stage / content | Mechanism and actual success rule | Completion effect |
 | --- | --- | --- |
 | 0: Opening comic | Nine slides; all active players reach the last slide and vote Close. | Master sets stage 1. Not scored. |
-| 1: Decode hypoglycemia symptoms | `SymptomsCardManager`: every registered slot must contain a first card whose symptom matches its configured answer list. Serialized `required` is unused by this validator. | Opens Puzzle 2; same timer continues. |
+| 1: Decode hypoglycemia symptoms | `SymptomsCardManager`: every registered slot must contain a first card whose symptom matches its configured answer list. Serialized `required` is unused by this validator. The phone is this stage's world trigger. | Hides the phone trigger, opens Puzzle 2; same timer continues. |
 | 2: Align the palette | `BearCardManager`: at least 10 correct first-card placements against slot symptom lists. | Time Crystal1, clue `325`, stage 3, Canteen route, timer reset. Excluded from CSV. |
 | 3: Fuel up against low sugar | `PictureGridManager`: select exactly the correct pictures, without extras or omissions. Scene has 20 buttons, correct zero-based indices 0, 1, 7, 8, 17, 19. | Opens Puzzle 4; same timer continues. |
 | 4: Survival code | `Activity2PuzzleManager`: part 1 requires 20 correct card/slot step matches; part 2 requires exact strings `15` and `4`. | Part 1 broadcasts part 2. Final success gives Time Crystal2, clue `154`, stage 5, Physician Room route, timer reset. |
@@ -59,8 +59,8 @@ Each client advances its route within 1.5 metres of the current waypoint. Matchi
 | 7: Medicine risk table | `RiskTable`: six dropdowns match configured indices `1, 2, 1, 1, 1, 1`. Null references are skipped, making scene wiring essential. | Clue `28`, opens Puzzle 8, timer reset. |
 | 8: Insulatard dose | `PrescriptionManager`: trimmed answer must be `28`. | Time Crystal4, stage 9, Nurse Education Room route, timer reset. Fourth trigger reference is unassigned, so this hook removes no trigger. |
 | 9: Decode insulin | `CrosswordManager`: every active letter in a fixed 13Ã—13 crossword must match case-insensitively. | Across-hint switches to image-hint; clue `135`, stage 10, timer reset. Hook does not explicitly close the whole crossword panel. |
-| 10: Insulatard vial sequence | Syringe dropdown index 1 through a dedicated submit action; correct selection opens part 2 after a local two-second delay. Then require nine correct step-card placements. | Closes panel, stage 11, mortuary route, timer reset. |
-| 11: Hidden lapses | Five part-1 placements store normalized `lapsesAnswer`; part 2 requires four cards matching stored answers through linked slots. | Time Crystal5, trigger hiding, configured world-object movement, CSV request. Stage stays 11. |
+| 10: Insulatard vial sequence | Open the chestbox lid before using its syringe trigger; other puzzle triggers cannot launch this stage. Syringe dropdown index 1 through a dedicated submit action; correct selection opens part 2 after a local two-second delay. Then require nine correct step-card placements. | Closes panel, stage 11, mortuary route, timer reset. |
+| 11: Hidden lapses | Five part-1 placements store normalized `lapsesAnswer`; part 2 requires four cards matching stored answers through linked slots. The mortuary chest trigger is available only at this stage. | Time Crystal5, trigger hiding, configured world-object movement, CSV request. Stage stays 11. |
 
 Word-search targets: FLUOROQUINOLONES, SULFONYLUREAS, LINEZOLID, AZOLES, ELDERLY, IMPAIRED, REDUCTION. Dragging adds/removes cells. Complete words turn green; selected cells in incomplete words or outside target words turn red. Red takes precedence where an incomplete word overlaps a complete one.
 
@@ -108,19 +108,19 @@ Outside rooms the channel is Global. In Lobby, the master also uses Global while
 
 Gameplay recovery first attempts ReconnectAndRejoin, then reconnect/fresh connection followed by cached-room rejoin. Failed gameplay rejoin returns to Lobby. Intentional leave clears the cache. The master removes inactive players' avatar objects; rejoining spawns a replacement if no owned model exists. Position is not restored from a saved checkpoint.
 
-On membership changes the master repairs an absent lock owner by choosing an active replacement or releasing the lock. Inactive players do not block turn rounds or close votes. Room properties and buffered effects recover portions of state; this is not complete restoration of all UI, multipart pages, historical analytics, or organiser credentials.
+On membership changes the master releases a lock whose owner is absent, allowing a teammate to start the attempt. An unrelated departure does not end an active attempt. Inactive players do not block turn rounds or close votes. Room properties and buffered effects recover portions of state; this is not complete restoration of all UI, multipart pages, historical analytics, or organiser credentials.
 
 ## Analytics and automatic email
 
-The persistent logger gathers entry, submission, elapsed-time, and supported control-input events. Non-masters send reliable event 41 to the master for in-memory aggregation. Eligible completion/leave/quit paths export UTF-8 `gameplay_<room>_<timestamp>.csv` into the user's Downloads directory.
+The persistent logger gathers entry, submission, elapsed-time, and supported control-input events. Non-masters send reliable event 61 to the master for in-memory aggregation. Eligible completion/leave/quit paths export UTF-8 `gameplay_<room>_<timestamp>.csv` into the user's Downloads directory.
 
 The file has `INDIVIDUAL_PLAYER_INPUTS` and `TEAM_SUBMISSIONS` sections. They include date, room, player/submitter, puzzle identity, tries, correct/wrong counts, and variable wrong-answer columns. Team rows add the first successful snapshot as expected answers, elapsed time, and summed team time on the first row. Team grouping includes submitter, so there can be multiple rows per puzzle/part.
 
 Stage 0 and Puzzle 2 are excluded. Individual rows are suppressed for Puzzle 4 part 2, Puzzle 5, all three diary parts, Puzzle 8, and Puzzle 9. Remaining individual counts belong to the submitter; they do not measure every teammate's contribution. Latest control values are collected internally but not exported as a complete raw input history. Team timing is accumulated attempt time, not guaranteed session wall time.
 
-Automatic delivery currently means the master writes the file and, if it is also the recorded organiser still in the room with runtime SMTP details, sends it through Gmail SMTP over TLS. Failures are logged; there is no retry queue or guaranteed send completion before quit. Master migration does not transfer analytics history or credentials. The persistent logger lacks a new-room reset, so repeated sessions in one process need verification.
+Automatic delivery currently means the master writes the file and, if it is also the recorded organiser still in the room with runtime SMTP details, sends it through Gmail SMTP over TLS. Failures are logged; there is no retry queue or guaranteed send completion before quit. Master migration does not transfer analytics history or credentials. Normal room joins now reset the logger rows, timers, export identity and session date; same-actor rejoin preserves the current session. Scene-owned puzzle/score managers are recreated with GameScene. Same-process repeat journeys have offline regression coverage; dedicated live execution remains separate.
 
-The optional ASP.NET Core API can accept and email a CSV, but Unity currently does not call it. Changing `SmtpEmailSettings` does not alter direct SMTP delivery. Its existing backend README has stale integration and credential instructions; the verified contract is in architecture.md.
+The optional ASP.NET Core API can accept and email a CSV, but Unity currently does not call it. Changing `SmtpEmailSettings` does not alter direct SMTP delivery. Its README documents secure deployment configuration and loopback fake SMTP tests; the verified contract is in architecture.md.
 
 ## Acceptance requirements and known gaps
 
@@ -135,4 +135,21 @@ Required verification, not asserted completed testing:
 7. Check guidance across floors and UI at 16:9, 16:10, ultrawide, tablet portrait, and mobile landscape. Keyboard/mouse controls do not imply implemented touch controls.
 8. Validate synthetic CSV data, exclusions, early exit, master migration, second-session behavior, and explicitly configured test email delivery.
 
-Known gaps: event 41 overlaps analytics/crossword text; event 42 overlaps word-search/clue-close data; durable main-stage transitions do not cover every substage; validation is client-side; Puzzle 11 has no terminal latch; analytics/email are not durable across master migration. Backend credential constants and recipient logging require production remediation. Lobby content layout must prevent room-entry overlap. None of these gaps is fixed by this documentation update.
+Known gaps: durable main-stage transitions do not cover every substage; validation is client-side; Puzzle 11 has no terminal latch; analytics/email are not durable across master migration. The backend now requires deployment-provided credentials and omits recipient success logging; the Unity SMTP route remains separate. Lobby content layout must prevent room-entry overlap. The event-code collisions and insulin pending-delay reset defect were addressed on 1 November 2026; the other gaps remain.
+
+
+### Protocol and insulin recovery update — 1 November 2026
+
+Application events now use the central `SghPhotonEvents` allocation: analytics 61,
+clue waiting counts 62, crossword text 63, crossword result 64, word search 65.
+Receivers reject invalid payload shapes, types and out-of-range values. Codes
+41–43 are retired. All players must upgrade together: the `sgh2` game-version
+suffix isolates the new protocol from older clients and rooms.
+
+In a room, a correct insulin syringe answer requests a master-owned two-second
+Photon-time deadline. The room stores the reset revision, current part and deadline.
+Reset increments the revision, clears the deadline and resets the dropdown; stale
+requests cannot advance the reset attempt. The master resumes an expired deadline
+from the room snapshot, including after migration, and clients restore the current
+part from it. Offline preview cancels its local delay on reset or disable. This
+change does not add durable recovery to the other multipart puzzles.

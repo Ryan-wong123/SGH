@@ -10,6 +10,7 @@ public class PictureGridManager : MonoBehaviour, IPuzzle // Declares this type.
     public List<int> correctIndexes; // e.g. [0, 4, 7, 9, 15, 19]
 
     private HashSet<int> selectedIndexes = new HashSet<int>(); // Declares a field, property, or member used by this script.
+    private readonly HashSet<int> observedSelectedIndexes = new HashSet<int>(); // Reuses a snapshot when checking synced button state.
     private readonly List<PhotonSyncedUIButtonColor> syncedButtons = new List<PhotonSyncedUIButtonColor>(); // Declares a field, property, or member used by this script.
 
     public Color defaultColor = Color.white; // Declares a field, property, or member used by this script.
@@ -52,6 +53,15 @@ public class PictureGridManager : MonoBehaviour, IPuzzle // Declares this type.
         } // Ends this code block.
     } // Ends this code block.
 
+    private void LateUpdate()
+    {
+        // A missed state-change callback must not leave the count or Submit button behind the visible cards.
+        if (!RebuildSelectedIndexesFromButtons()) return;
+
+        RefreshSubmitButtonVisibility();
+        UpdateSelectedCountText();
+    }
+
     void OnPictureClick(int index) // Declares a method used by this script.
     { // Starts this code block.
         if (selectedIndexes.Contains(index)) // Checks this condition before continuing.
@@ -88,9 +98,9 @@ public class PictureGridManager : MonoBehaviour, IPuzzle // Declares this type.
         UpdateSelectedCountText(); // Runs this line of puzzle logic.
     } // Ends this code block.
 
-    private void RebuildSelectedIndexesFromButtons() // Declares a method used by this script.
+    private bool RebuildSelectedIndexesFromButtons() // Declares a method used by this script.
     { // Starts this code block.
-        selectedIndexes.Clear(); // Runs this line of puzzle logic.
+        observedSelectedIndexes.Clear(); // Collects the current synced state without disturbing the displayed count yet.
 
         for (int i = 0; i < pictureButtons.Count; i++) // Repeats this block for a counted loop.
         { // Starts this code block.
@@ -98,15 +108,21 @@ public class PictureGridManager : MonoBehaviour, IPuzzle // Declares this type.
             if (syncedButton != null) // Checks this condition before continuing.
             { // Starts this code block.
                 if (syncedButton.IsSelected) // Checks this condition before continuing.
-                    selectedIndexes.Add(i); // Runs this line of puzzle logic.
+                    observedSelectedIndexes.Add(i); // Runs this line of puzzle logic.
 
                 continue; // Skips to the next loop iteration.
             } // Ends this code block.
 
             var image = pictureButtons[i].GetComponent<Image>(); // Creates a local value used by the following logic.
             if (image != null && (image.color == selectedColor || image.color == correctColor || image.color == wrongColor)) // Checks this condition before continuing.
-                selectedIndexes.Add(i); // Runs this line of puzzle logic.
+                observedSelectedIndexes.Add(i); // Runs this line of puzzle logic.
         } // Ends this code block.
+
+        if (selectedIndexes.SetEquals(observedSelectedIndexes)) return false;
+
+        selectedIndexes.Clear();
+        selectedIndexes.UnionWith(observedSelectedIndexes);
+        return true;
     } // Ends this code block.
 
     // ✅ FULL FIX IS HERE:

@@ -1,21 +1,21 @@
-# SGH CSV Email API
+# SGH CSV email API
 
-This backend sends completed-game CSVs for the Unity client. The Gmail app password stays on this server; it is never included in Unity.
+Requires .NET 10. Configure Gmail__SenderEmail, Gmail__AppPassword and
+Gmail__RecipientEmail using user secrets or deployment environment variables.
+Gmail__SmtpHost and Gmail__SmtpPort configure the server. Never put credentials
+in source. SMTP TLS defaults on; disabling it is permitted only on loopback for
+an isolated local test server. This service is separate from Unity direct SMTP.
 
-## Local development setup
+GET /health returns 200. POST /api/gameplay-csv accepts multipart file `csv`,
+roomName and playedAt. A nonempty .csv file up to 5 MiB is required. The endpoint
+awaits mail delivery before 204, propagates request cancellation, and limits the
+shared endpoint to 20 requests/minute. HTTPS redirection remains enabled.
 
-Put the app password in the `GmailAppPassword` constant in `Services/CsvEmailSender.cs`, then run:
+Run isolated HTTP and local SMTP tests (no real mail or personal CSVs):
 
-```powershell
-dotnet run
-```
+    dotnet test backend/SghCsvEmailApi.Tests/SghCsvEmailApi.Tests.csproj
 
-Set `GmailSenderEmail`, `GmailAppPassword`, and `RecipientEmail` in `Services/CsvEmailSender.cs`. The game does not ask players for either email address.
-
-Deploy the API behind HTTPS. Then set `emailApiUrl` in `Assets/Resources/SmtpEmailSettings.asset` to `https://your-domain/api/gameplay-csv`.
-
-For an Editor-only local test on the same computer, run `dotnet run` and use `http://localhost:5177/api/gameplay-csv`. Standalone builds still require an HTTPS backend URL.
-
-## Security note
-
-The backend keeps Gmail credentials private, but the endpoint accepts a recipient supplied by the game. Before publishing publicly, protect this endpoint with real organiser authentication (rather than a key embedded in Unity) and configure production rate limits/firewall rules appropriate for your deployment.
+Integration tests replace mail delivery in HTTP fixtures. Separate transport
+fixtures send only to an ephemeral loopback SMTP listener with synthetic .invalid
+addresses and exercise MIME attachments, rejection and cancellation. No external
+mailbox or production SMTP credentials are used.

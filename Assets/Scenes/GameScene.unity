@@ -35879,6 +35879,8 @@ MonoBehaviour:
   clueId: Syringe Trigger
   startWithClue: 0
   dontDestroyOnCompletion: 0
+  restrictToStage: 1
+  requiredStage: 10
   alreadyPlayedImage: {fileID: 321013863}
   warningMessage: {fileID: 550520579}
   showDuration: 2
@@ -58014,7 +58016,7 @@ MonoBehaviour:
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
-  m_ScreenMatchMode: 0
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -104154,6 +104156,8 @@ MonoBehaviour:
   clueUI: {fileID: 2075314858}
   clueId: phone
   startWithClue: 1
+  restrictToStage: 1
+  requiredStage: 1
   dontDestroyOnCompletion: 0
   alreadyPlayedImage: {fileID: 321013863}
   warningMessage: {fileID: 550520579}
@@ -141747,7 +141751,7 @@ MonoBehaviour:
   puzzle2Object: {fileID: 386316105}
   puzzle3Object: {fileID: 1578039490}
   puzzle4Object: {fileID: 0}
-  puzzle5Object: {fileID: 277212288}
+  puzzle5Object: {fileID: 5130600388808461207}
   delayTransition: 2
   CurrentStage: 0
   Puzzle1Panel: {fileID: 791486485}
@@ -141774,6 +141778,8 @@ MonoBehaviour:
   Puzzle9AcrossHint: {fileID: 1425878409}
   insulinPuzzleManager: {fileID: 1067863178}
   Puzzle10Panel: {fileID: 1067863174}
+  puzzle10SyringeTrigger: {fileID: 550995252}
+  puzzle10ChestLid: {fileID: 8196937307459001344}
   deathLapsesManager: {fileID: 280907649}
   Puzzle11Panel: {fileID: 280907644}
   movementTargetPuzzle11: {fileID: 5130600388808461207}
@@ -153254,6 +153260,8 @@ MonoBehaviour:
   clueUI: {fileID: 2075314858}
   clueId: Morturary Trigger
   startWithClue: 0
+  restrictToStage: 1
+  requiredStage: 11
   dontDestroyOnCompletion: 0
   alreadyPlayedImage: {fileID: 321013863}
   warningMessage: {fileID: 550520579}

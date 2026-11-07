@@ -138,6 +138,7 @@
     <Compile Include="Assets\Scripts\Puzzle\Draggable\DropSlot.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 4\Activity2DropSlot.cs" />
     <Compile Include="Assets\Scripts\Player\WaypointTrigger.cs" />
+    <Compile Include="Assets\Scripts\networking\SghPhotonEvents.cs" />
     <Compile Include="Assets\Scripts\UI\SideBarMenuManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Puzzle\PhotonSyncedUIButtonColor.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\LeanTween\Framework\LTSeq.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 9\LetterCell.cs" />
+    <Compile Include="Assets\Scripts\Puzzle\InsulinRoomState.cs" />
     <Compile Include="Assets\Scripts\Puzzle\activity 11\Activity9DropSlot.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
     <Compile Include="Assets\Scripts\Interactable\IInteractable.cs" />

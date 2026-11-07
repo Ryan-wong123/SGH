@@ -130,8 +130,9 @@ public class Activity2PuzzleManager : MonoBehaviour,IPuzzle // Declares this typ
     { // Starts this code block.
         yield return new WaitForSeconds(delaySeconds); // Pauses this coroutine until the yielded condition finishes.
 
-        foreach (Activity2DropSlot slot in Activity2DropSlot.allDropSlots) // Repeats this block for each item in a collection.
+        foreach (DropSlot slot in DropSlot.allDropSlots) // The registry contains slots from every puzzle, including hidden panels.
         { // Starts this code block.
+            if (!(slot is Activity2DropSlot)) continue;
             foreach (DraggableCard card in slot.GetCardsInSlot()) // Repeats this block for each item in a collection.
             { // Starts this code block.
                 Image img = card.GetComponent<Image>(); // Runs this line of puzzle logic.

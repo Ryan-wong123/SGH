@@ -141,6 +141,14 @@ public class PhotonSyncedTMPDropdown : MonoBehaviourPun // Declares this type.
             ApplyBackgroundColor(color); // Runs this line of puzzle logic.
     } // Ends this code block.
 
+    // Allows the master to reset the control atomically with its puzzle revision.
+    public void AddResetProperties(Hashtable properties)
+    {
+        if (photonView.ViewID <= 0) return;
+        properties[BuildValueKey()] = 0;
+        properties[BuildColorKey()] = EncodeColor(Color.white);
+    }
+
     private string BuildValueKey() => $"{ValuePropertyPrefix}{photonView.ViewID}"; // Declares a method used by this script.
     private string BuildColorKey() => $"{ColorPropertyPrefix}{photonView.ViewID}"; // Declares a method used by this script.
 

@@ -7,8 +7,16 @@ UserSettings/
 
 # Generated gameplay/data analytics exports
 outputs/
+TestResults/
+SGH.Tests.*.csproj
 obj/Debug/
 
 # .NET backend build outputs
 [Bb]in/
 backend/**/obj/
+
+# Ephemeral dedicated Photon CI application IDs, never project assets
+.sgh-ci-test-config.json
+
+# Python automation bytecode
+__pycache__/

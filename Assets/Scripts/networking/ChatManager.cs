@@ -49,6 +49,19 @@ public class ChatManager : MonoBehaviourPunCallbacks, IChatClientListener // Dec
             return; // Leaves the current method early.
         } // Ends this block.
 
+        // GameScene puts ChatManager on the same object as scene-owned gameplay
+        // managers. Persist only Chat, never that entire object and stale scene references.
+        if (GetComponents<MonoBehaviour>().Length > 1)
+        {
+            var host = new GameObject(nameof(ChatManager));
+            var persistent = host.AddComponent<ChatManager>();
+            persistent.chatAppId = chatAppId;
+            persistent.AbsorbSceneReferences(this);
+            isProxy = true;
+            enabled = false;
+            return;
+        }
+
         Instance = this; // Registers this component as the singleton instance.
         DontDestroyOnLoad(gameObject); // Keeps this manager alive when Unity changes scenes.
     } // Ends this block.

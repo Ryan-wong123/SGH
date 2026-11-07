@@ -49,19 +49,19 @@ Photon, TextMesh Pro examples, LeanTween, and Unity packages are vendor dependen
 
 `CreateRoomManager` caches discoverable rooms, checks names, creates a random six-character password from an ambiguity-reduced alphabet, and builds RoomOptions with capacity, PlayerTtl 600000 ms, EmptyRoomTtl 300000 ms, and PublishUserId. `RoomPassword` is exposed to the lobby. Failed creates retry after two seconds. This is client-managed room UX, not server access authorization.
 
-`JoinRoomManager` maintains a cached room list and instantiates entries under `contentPanel`; the selected room's password is checked locally. It populates waiting-room players and gates Start to the master. Start sets IsVisible false, IsOpen true, broadcasts loading UI, and calls `PhotonNetwork.LoadLevel("GameScene")`. `LoadingScreenManager` displays a random tip and Photon loading progress; its fade loops calculate alpha but do not apply it to a graphic.
+`JoinRoomManager` maintains a cached room list and instantiates entries under `contentPanel`; the selected waiting room's password is checked locally. It populates waiting-room players and gates Start to the master. Start publishes `GameStarted` as a lobby-visible room property, keeps IsVisible and IsOpen true, broadcasts loading UI, and calls `PhotonNetwork.LoadLevel("GameScene")`. Running rooms appear with a rejoin label. The Lobby calls `RejoinRoom` for a running room only when its name matches the local cached room; it does not use a fresh `JoinRoom` for that selection. `LoadingScreenManager` displays a random tip and Photon loading progress; its fade loops calculate alpha but do not apply it to a graphic.
 
-Its legacy OnJoinRandomFailed fallback creates an unnamed room with only MaxPlayers configured, then assigns the organiser after joining. It does not use CreateRoomManager's password/TTL options; those settings should not be assumed for every possible room-creation path.
+Its OnJoinRandomFailed fallback creates an unnamed room with the same rejoin and empty-room lifetimes but no password, then assigns the organiser after joining.
 
 `CharacterSelection.SetCharacter` writes `CharacterIndex` and colors selection buttons. GameScene prefab order is Doctor, Nurse, Therapist. `GameManager` waits 0.5 seconds, checks for an existing owned PlayerController, selects a spawn by sorted ActorNumber, and uses PhotonNetwork.Instantiate. Missing/invalid index becomes 0. Four spawn transforms are assigned; overflow uses spawn 0. No role-specific mechanics or role reservation is implemented.
 
-`PlayerController` creates a PlayerTagDisplay if needed, enables its owned camera, disables the owned PhotonTransformView component, and disables remote camera roots. Movement is camera-relative on the horizontal plane using CharacterController.SimpleMove; mouse pitch clamps to ±85 degrees; walking updates `isWalking`. Q toggles free cursor before the ownership guard in Update. This and multiple independent cursor writers are reasons to test UI/movement together rather than infer it from panel activation.
+`PlayerController` creates a PlayerTagDisplay if needed, enables its owned camera, disables the owned PhotonTransformView component, and disables remote camera roots. Movement is camera-relative on the horizontal plane using CharacterController.SimpleMove; mouse pitch clamps to ±85 degrees; walking updates `isWalking`. Only the owned avatar handles Q and writes the gameplay cursor state. Other UI systems also write cursor state, so test cursor behavior with both movement and panels.
 
 `PlayerTagDisplay` derives name from PlayerTag, NickName, then actor fallback, positions text above renderer bounds, faces an active camera, and normally hides the owned player's tag.
 
 ## Gameplay state and authority
 
-`PuzzleStateManager` is the integration point for eleven `IPuzzle` handlers and stage panels. `IPuzzle` contains only `bool IsSolved()`; reset is explicitly dispatched by the state manager, not defined by the interface. The singleton calls DontDestroyOnLoad on its GameObject. GameScene places it alongside multiple other managers, so persistence applies to that object and must be considered during scene cleanup.
+`PuzzleStateManager` is the integration point for eleven `IPuzzle` handlers and stage panels. `IPuzzle` contains only `bool IsSolved()`; reset is explicitly dispatched by the state manager, not defined by the interface. The singleton is scene-owned and clears Instance when destroyed. It must not persist its scene panel/handler references into Lobby; the next GameScene creates fresh puzzle and score managers. Temporary network disconnects leave the current scene intact.
 
 | State | Writer / transport | Reader and recovery |
 | --- | --- | --- |
@@ -72,11 +72,14 @@ Its legacy OnJoinRandomFailed fallback creates an unnamed room with only MaxPlay
 | `Round` room integer | Master | Clients reset their `PlayedRound` boolean when it changes. |
 | `PlayedRound` player boolean | Each client | Master checks all active players to advance turn round. It is not an integer round number. |
 | `PendingAdvanceStage`, `PendingAdvanceAt` | Successful submitter writes room properties | Master polls due time and executes main-stage completion; initializes/repairs on master switch. |
+| `SGH_ClueRewardGranted_{stage}` | Master writes `true` after broadcasting a completed stage's clue reward | Master skips another award when a buffered completion RPC replays or authority changes; the current master also keeps a local guard until the room update arrives. |
 | `CurrentStage` | Local field updated by buffered stage/advance RPCs | No dedicated room property storing a complete current-stage snapshot. |
 | Timer end time | StartTimer broadcasts buffered SyncTimer(float) | Clients subtract PhotonNetwork.Time; not stored in room properties. |
 | `Score_Puzzle{stageInt+1}` | Master, optionally via request RPC | Optional wrong-count summary. Stored label is offset by one from runtime stage. |
 
 Master authority is the coordination design, not a fully enforced server-validation boundary. `Submit()` evaluates locally, scheduling is written by the successful client, and managed-button visibility is not an authorization check on every method. Some all-client completion hooks emit additional shared RPCs themselves. Do not describe all global effects as executed only once by a server.
+
+Clue rewards for stages 2, 4, 5, 7, and 9 are emitted by the master after the shared completion RPC. The clue addition is buffered for rejoining players; the `Password Clue` popup is transient and sent once to current players. The room reward marker prevents normal replay from emitting the popup again, but its write and the two RPCs are not an atomic transaction.
 
 ### Attempt and main-stage transition
 
@@ -99,13 +102,13 @@ sequenceDiagram
     M->>R: Unlock and possibly advance turn round
 ```
 
-`TryBeginAttempt` allows the lock owner to re-enter, and permits cached re-entry access to the same shared attempt. New entry while another player holds the lock is denied. The local attempt flag is set optimistically while a non-master lock request is in flight; there is no atomic grant/acknowledgment protocol around panel opening.
+`TryBeginAttempt` allows the lock owner to re-enter, and permits cached re-entry access to the same shared attempt. New entry while another active player holds the lock is denied. A former owner's local flag may reacquire only when the room lock is currently free. The local attempt flag is set optimistically while a non-master lock request is in flight; there is no atomic grant/acknowledgment protocol around panel opening.
 
 `PuzzleTrigger` either opens directly or requests the master to show a configured clue. All clients receive the open/show message; the clue close callback opens the current-stage panel. Its `clueAlreadyViewed` is local, set on the handling master, and not a durable room property. OpenCurrentStagePanel records submit owner and re-entry access. Managed Submit buttons are found by name; PictureGridManager handles its own submit object and selection count.
 
 Wrong answers remain in the same stage/part, record analytics, and generally mark optional score counts; they do not release the lock. After success, DelayAndAdvance immediately schedules room properties rather than waiting locally. The master reads them in Update, clears pending fields, then sends AllBuffered completion. This is recoverable scheduling, but clearing then broadcasting is not an atomic transaction or exactly-once terminal latch.
 
-The scene delay is two seconds. Multipart changes for Puzzle 4, Diary, and Death Lapses use unbuffered all-client RPCs. Insulin part 1 waits in a local two-second coroutine before broadcasting part 2. Those pages/local flags are not covered by PendingAdvanceStage/At and can be lost during interruption/rejoin.
+The scene delay is two seconds. Multipart changes for Puzzle 4, Diary, and Death Lapses use unbuffered all-client RPCs. Those pages/local flags are not covered by PendingAdvanceStage/At and can be lost during interruption/rejoin. Insulin uses a separate durable room snapshot described below.
 
 ### Stage integrations
 
@@ -120,12 +123,12 @@ The scene delay is two seconds. Multipart changes for Puzzle 4, Diary, and Death
 | 7 | RiskTable, activity 10 | Dropdown index comparison; reset values/feedback; opens 8. |
 | 8 | PrescriptionManager, activity 7 | Trimmed string answer; reset input; Crystal4. |
 | 9 | CrosswordManager, activity 5 | Fixed solution; reset text/results and rebuild cells; switch hint objects. |
-| 10 | InsulinPuzzleManager, activity 8 | Dedicated syringe submit then nine step matches; reset cards/dropdown/part visibility. |
+| 10 | InsulinPuzzleManager, activity 8 | GameScene permits entry only through the syringe trigger after the chestbox lid has opened. Dedicated syringe submit then nine step matches; reset cards/dropdown/part visibility. |
 | 11 | DeathLapsesManager, activity 11 | Stage1Slot/Stage2Slot linked-answer matching; reset cards/unlock flags/second-stage visibility; Crystal5, world movement, CSV. |
 
 PRD.md records exact current thresholds and answers. `DropSlot.allDropSlots` registers on Start and unregisters on destruction, not disable; several validators iterate this global collection. Some reset searches only find active cards. Therefore activation order, tags, card behavior, and panel lifetime affect validation/reset; do not assume every loop is scoped to the currently visible puzzle.
 
-Reward configuration: stage 2→clue 325, 4→154, 5→477, 7→28, 9→135. Crystal rewards occur after 2, 4, 6, 8, 11. Trigger hiding honors `dontDestroyOnCompletion` and Photon view references. `puzzle4Object` is unassigned in GameScene. Stage 11 does not increment CurrentStage, stop the timer, or call ShowEndScreen.
+Reward configuration: stage 2→clue 325, 4→154, 5→477, 7→28, 9→135. Crystal rewards occur after 2, 4, 6, 8, 11. GameScene restricts the phone trigger to stage 1, the syringe trigger to stage 10, and the mortuary chest trigger to stage 11. Stage 10 also checks that its chestbox lid has received an open state; buffered door RPCs replay this history for clients that rejoin. The phone is hidden by a buffered RPC after stage 1; stage 2 still awards Time Crystal1 without hiding it a second time. Trigger hiding honors `dontDestroyOnCompletion` and Photon view references. `puzzle4Object` is unassigned in GameScene. Stage 11 does not increment CurrentStage, stop the timer, or call ShowEndScreen.
 
 ## Shared inputs, drag ownership, and event contracts
 
@@ -134,7 +137,7 @@ Reward configuration: stage 2→clue 325, 4→154, 5→477, 7→28, 9→135. Cry
 | DraggableCard | IPunObservable streams dragging/name, parent path, anchored position, and scale. Room keys `CardParentPath_`, `CardAnchoredPos_`, `CardScale_`, `CardColor_` append ViewID. Owner persists layout; feedback can be persisted separately. |
 | PhotonSyncedTMPInputField | Text to Others by RPC with per-actor sequence rejection; `TMPInputText_<ViewID>` and `TMPInputColor_<ViewID>` restore on enable. Suppression avoids feedback loops. |
 | PhotonSyncedTMPDropdown | Value/feedback RPCs to Others; `TMPDropdownValue_` and `TMPDropdownColor_` by ViewID; restores on enable. |
-| PhotonSyncedUIButtonColor | Selection/result are distinct; AllViaServer RPCs order toggles and results. `UIButtonSelected_` and `UIButtonResultState_` by ViewID persist state; StateChanged refreshes picture selection/count. Group metadata does not enforce single selection. |
+| PhotonSyncedUIButtonColor | Selection/result are distinct; AllViaServer RPCs order toggles and results. `UIButtonSelected_` and `UIButtonResultState_` by ViewID persist state; StateChanged refreshes picture selection/count. PictureGridManager also reconciles its count and Submit visibility with button state each frame while active, so a missed callback does not leave the UI stale. Group metadata does not enforce single selection. |
 | CrosswordManager | `P5CW_<x>_<y>` text; `P9CW_RESULT_<x>_<y>` feedback; events for live changes and room-state replay on enable/build. Coordinates in the solution and visual grid differ. |
 | WordSearchManager | `P5WS_<x>_<y>` packs result enum and selected bit; reliable events plus property callbacks. Target letters are fixed; filler is generated deterministically from room name (scene name offline) and grid size, giving clients matching boards. |
 | PuzzleFeedbackSyncExtensions | Routes feedback through sync components when present, otherwise falls back to local graphic color. |
@@ -143,15 +146,41 @@ A non-owner card drag starts an immediate local preview and requests ownership. 
 
 Hierarchy paths are used for parent restoration, including same-name sibling disambiguation. Preserve path roots, relevant names, PhotonView IDs, tags, and prefab references when editing assets. Crossword/word-search cell managers are responsible for dynamically generated grid state; do not assume a generated cell PhotonView alone supplies stable synchronization.
 
-### Existing event allocation conflict
+### Application event allocation
 
 | Code | Current producers | Current payload shape |
 | --- | --- | --- |
-| 41 | GameSessionCsvLogger; CrosswordManager text | Analytics: 8 fields (event kind, room, actor, name, puzzle, result, elapsed, snapshot); crossword: 5 fields (x, y, text, actor, sequence). |
-| 42 | ClueUI; WordSearchManager | Clue: close-key string, round, remaining; word search: x, y, encoded state. |
-| 43 | CrosswordManager result | x, y, result enum. |
+| 61 | GameSessionCsvLogger | 8 fields: event kind, room, actor, name, puzzle, result, elapsed, snapshot. |
+| 62 | ClueUI | close-key string, round, remaining. |
+| 63 | CrosswordManager text | x, y, text, actor, sequence. |
+| 64 | CrosswordManager result | x, y, result enum. |
+| 65 | WordSearchManager | x, y, encoded state. |
 
-These are collisions, not intentionally safe multiplexing. Some handlers check only code and minimum length before casting. Keep a central allocation inventory and migrate all producers/consumers together when fixing them; do not assign new traffic to 41–43. This documentation records the problem without changing runtime behavior.
+`SghPhotonEvents` owns this allocation and the `sgh2` protocol version. Codes 41-43
+are retired. All senders and receivers migrated together; Network appends `-sgh2`
+to the serialized game version to partition old clients/rooms. Each receiver checks
+exact array length and field types/ranges before applying data. Analytics and text
+also reject a claimed actor that differs from a positive transport sender.
+
+Insulin room keys are `SGH_Insulin_Revision` (nonnegative int),
+`SGH_Insulin_Part` (1/2), and `SGH_Insulin_AdvanceAt` (finite nonnegative double;
+zero means no deadline). PuzzleStateManager initializes and writes the snapshot;
+all clients read it to restore part visibility. A correct selection schedules
+PhotonNetwork.Time + 2 using compare-and-swap against the current
+revision/part/empty deadline. The master accepts it from the lock owner, or from any
+active player while the lock is free, in which case it takes the lock for the sender
+in the same conditional write (the lock request and the syringe request are separate
+messages and may arrive in either order). A lock held by another player is never
+taken over. A non-master client resends the request every two seconds, up to eight
+times, until the room snapshot shows a deadline; repeats cannot extend it. Every
+rejected request logs its reason with an `[Insulin]` warning. Only the master commits due part 2, also
+conditionally against that snapshot. Reset increments the revision, clears the
+deadline, sets part 1 and writes the synced dropdown reset in one property update.
+A local minimum revision rejects old requests immediately while reset is in flight.
+Master migration resumes the room deadline; leaving/disconnecting clears local
+caches. No local coroutine decides a room transition. Offline preview retains a
+cancelled, revision-checked realtime coroutine. Real server ordering and migration
+require two-client verification; offline fixtures do not prove these guarantees.
 
 ## Timer and recovery
 
@@ -159,9 +188,9 @@ These are collisions, not intentionally safe multiplexing. Some handlers check o
 
 Every client calls OnTimerExpired when its copy reaches zero. The state manager performs stage-specific local reset work; the master restarts the shared timer. Stage 0 does nothing. Completion 1→2 and 3→4 does not reset; other numbered completion hooks do, including 11. Clues set Time.timeScale to zero locally, but Photon-time countdown continues. Scaled coroutines/animations can consequently behave differently from the timer and unscaled popup/comic playback.
 
-`Network` caches `PhotonRejoinRoom` in PlayerPrefs only while another active player exists, and clears it for intentional leave. Lobby reconnection uses Reconnect/fresh connection followed by RejoinRoom. GameManager first tries ReconnectAndRejoin, then reconnect and cached-room rejoin; a failed gameplay rejoin clears state and loads Lobby.
+`Network` caches `PhotonRejoinRoom` in PlayerPrefs whenever the client is in a room, including when it is the last active player, and clears it for intentional leave. Only the standalone Network component in Lobby starts a reconnect/rejoin; the derived room-list and room-creation components also receive Photon callbacks but do not start competing attempts. GameManager first tries ReconnectAndRejoin, then reconnect and cached-room rejoin. If Photon still sees the old actor as active, the client keeps the cached room name for a later retry from Lobby; other rejoin failures clear it. A visible running-room entry does not prove the previous actor can be restored.
 
-On inactive departure the master destroys that player's Photon objects. Rejoin checks for an owned model and respawns if absent, using normal spawn selection rather than saved world coordinates. On lock-owner departure, PuzzleStateManager chooses a random active replacement or clears the lock, refreshes Submit ownership, and checks the turn round. On master switch it also initializes missing properties and processes a pending main-stage advance.
+On inactive departure the master destroys that player's Photon objects. Rejoin checks for an owned model and respawns if absent, using normal spawn selection rather than saved world coordinates. On lock-owner departure, PuzzleStateManager releases the lock and closes the abandoned puzzle panel on remaining clients so a teammate can explicitly start the attempt; it does not assign ownership to a player who never opened it. An unrelated departure does not end an active owner's attempt. On master switch the manager also initializes missing properties and processes a pending main-stage advance. The blocked-attempt warning uses unscaled time so a locally paused clue cannot leave it on screen.
 
 Recovery limitations:
 
@@ -196,7 +225,7 @@ TriggerComic is a local once-only collider script: any Player-tagged collider ca
 
 | Gate | Stored state | Closing behavior |
 | --- | --- | --- |
-| Regular clue | Room keys `ClueClose_<sanitized base+id>_Round`, `_Done`, `_Remaining`, and actor-suffixed vote keys storing round numbers | Master begins a round; clients write their votes/count, event 42 refreshes waiting UI; active-player votes determine completion. |
+| Regular clue | Room keys `ClueClose_<sanitized base+id>_Round`, `_Done`, `_Remaining`, and actor-suffixed vote keys storing round numbers | Master begins a round; clients write their votes/count, event 62 refreshes waiting UI; active-player votes determine completion. |
 | Comic | Room `ComicClose_<id-or-path>_Round` and `_Done`; player property `ComicClose_<id-or-path>` holds voted round | Local last-slide Close votes; active participants determine completion. Page index itself is local. |
 | Collected image | Local detail state | No new shared vote round. |
 
@@ -208,7 +237,7 @@ CluePopupUI queues messages FIFO, with fade/slide/hold driven by unscaled time a
 
 ## Analytics schema, lifecycle, and email
 
-GameSessionCsvLogger auto-creates after scene load and persists across scenes. It captures a local sessionPlayedAt timestamp in Awake. Event types are Enter=0, Answer=1, TimeSpent=2, PlayerInput=3. Non-masters send reliable event 41 to MasterClient; the master applies locally. No database, disk journal, server ingestion, or historic-event replay exists.
+GameSessionCsvLogger auto-creates after scene load and persists across scenes. It captures a local sessionPlayedAt timestamp in Awake. Event types are Enter=0, Answer=1, TimeSpent=2, PlayerInput=3. Non-masters send reliable event 61 to MasterClient; the master applies locally. No database, disk journal, server ingestion, or historic-event replay exists.
 
 Rows are keyed by room, actor, puzzle number, and part, in separate individual/team dictionaries. Part markers use `__PUZZLE_PART=<n>__|` for stages 4, 6, 10, 11. Untagged events for those multipart puzzles are dropped by ApplyEvent; crossword forces part 0. Stages 0/2 are excluded. Team submissions retain submitter identity, so they are not aggregated into a single actor-free row.
 
@@ -223,7 +252,7 @@ Export sections:
 
 Individual rows are omitted for 4/part2, 5, 6/parts1–3, 8, 9. Other individual counts belong to the submitter; participant rows may have zero counts. Time uses locally captured attempt intervals; multipart timers keep running across answers. Team total sums team-row times and appears only on the first row. TimeSpent/reset events are not equivalent to a full wall-clock team duration, and untagged multipart timing is discarded. Durations are formatted as spreadsheet text minutes:seconds. CSV escapes quotes, commas, and newlines; it is not a complete spreadsheet-formula sanitization layer.
 
-WriteCsvIfNeeded flushes local timers, requires nonempty individual stats, and refuses non-master export while still in a room. It sets hasWrittenCsv before file I/O, writes UTF-8 to `<UserProfile>/Downloads/gameplay_<sanitized-room>_<timestamp>.csv`, then starts asynchronous SMTP. The write flag/dictionaries/session date are not reset on new room entry. A write failure or another session in the same process therefore does not get a clean retry/session lifecycle.
+WriteCsvIfNeeded flushes local timers, requires nonempty individual stats, and refuses non-master export while still in a room. It sets hasWrittenCsv only after successful file I/O and writes UTF-8 to `<UserProfile>/Downloads/gameplay_<sanitized-room>_<timestamp>_<session-id>.csv`, then starts asynchronous SMTP. A normal OnJoinedRoom clears both row dictionaries and attempt timers and refreshes the session date/export ID/write latch. Player.HasRejoined preserves them when the same actor resumes its room. The export ID prevents rapid same-name sessions overwriting files. A failed write remains retryable.
 
 Call sites: Puzzle 11 completion, GameManager.LeaveRoomAndLoadScene, GameManager.QuitGame, and logger.OnLeftRoom. After leaving, the master guard no longer applies, although most non-masters have no aggregated rows and organiser SMTP eligibility fails outside a room. `RestartLevel` takes a separate room-leave path; the standalone QuitButton quits without explicitly requesting export. There is no universal OS-close flush guarantee.
 
@@ -249,7 +278,7 @@ There is no persistent send queue, retry/backoff, idempotency record, or awaited
 
 The code checks HasFormContentType, then ReadFormAsync; the intended successful upload is multipart. The 5 MiB check occurs after form parsing and is not a custom total-request-body limit. CSV content/schema and playedAt format are not validated. No endpoint authentication/authorization, database, job queue, or recipient parameter is implemented. Room/date strings decorate the email only. SMTP failures use the exception handler rather than recording a retry job.
 
-GmailOptions binds only SmtpHost and SmtpPort from configuration and validates them at startup. CsvEmailSender instead contains sender, app-password, and fixed recipient constants. It strips spaces from the password, attaches the incoming stream using the base filename, and sends through SMTP with TLS. Those source constants must be replaced with appropriate deployment secrets before production; never copy their values into assets or docs. The existing README incorrectly describes some integration/recipient behavior and recommends source credential entry; do not follow that guidance.
+GmailOptions validates SmtpHost, SmtpPort, SenderEmail, AppPassword and RecipientEmail at startup. Delivery credentials and the fixed recipient must come from deployment configuration/user secrets; no source credential constants remain. CsvEmailSender implements ICsvEmailSender, sanitizes the attachment base filename and propagates request cancellation into SMTP. EnableSsl defaults true; disabling it is accepted only for a loopback SMTP host, supporting the isolated fake SMTP integration tests. Backend success logs omit the recipient. HTTP contracts and real loopback SMTP success, rejection and cancellation are tested separately. The Unity direct SMTP route remains independent.
 
 `SmtpEmailSettings` validates an HTTP endpoint URL, timeout, and enable flag. HTTPS is required except Editor loopback HTTP. It is currently unused by GameSessionCsvLogger; no UnityWebRequest/HttpClient upload caller exists in project scripts. Its enable flag does not disable direct SMTP. The backend uses HTTPS redirection, but the supplied development launch profile listens on localhost HTTP port 5177; deployed TLS configuration must be supplied externally.
 
@@ -262,3 +291,20 @@ Priority follow-ups from this source review: separate conflicting event allocati
 Run the Unity C# compile and git diff checks described in AGENTS.md. Backend code changes additionally require its .NET build. Use synthetic data and explicit test recipients for delivery tests. Two-client Play Mode/build verification must cover all puzzles, timer expiry, rejoin/master switch, clue gates, keypad state, routes, final comic, and repeat sessions. Documentation-only inspection does not establish those runtime outcomes.
 
 Documentation-update verification on 8 September 2026: `dotnet build Assembly-CSharp.csproj --no-restore` passed with 35 warnings and 0 errors. Warnings include obsolete Unity lookup APIs, hidden Photon lifecycle callbacks, and unused/unassigned fields. No gameplay source was changed; generated tracked obj artifacts were restored. Unity Play Mode, two-client recovery, and live SMTP/API delivery were not exercised.
+
+
+### Automated integration coverage, 2 November 2026
+
+`Tests/AutomatedCoverage.md` records the executed offline/system/backend suites and the separately configured live Photon fixtures. Scene journey tests run the authored Lobby/GameScene and all puzzle validators, rather than substituting always-solved managers. The standalone smoke uses the same journey. Their component/event inputs do not certify two rendered clients or OS/device input.
+
+Generated controls with unassigned PhotonView IDs now retain local visuals/input and skip per-view RPC/property persistence until a valid ID exists; manager-level crossword/word-search synchronization remains authoritative for generated grids. Delayed Activity2/insulin card feedback filters the shared DropSlot registry by subtype. Highlight scaling snaps back during inactive hierarchy shutdown. GameScene's final reward reference now targets the networked stage-11 mortuary trigger (scene ViewID 45), replacing the unrelated syringe mesh; no existing Photon IDs were renumbered. These changes have focused regressions and a passing full-scene journey. Second-room reset now has passing analytics and full repeat-journey regressions. Historic master-local analytics migration and guaranteed quit-time email remain unsupported.
+
+
+The 2 November follow-up makes every extended suite a PR job without an opt-in flag. `RenderedClientHarness` and the X11 runner add two independent rendered processes, alternating puzzle turns, card ownership acquisition, scene Chat UI and native desktop input probes. Windows build verification and dedicated Linux cloud execution are recorded separately in the coverage manifest. GameScene's inspected 1920x1080 UI CanvasScaler now uses Expand, preserving the reference layout within the screen at ultrawide/portrait ratios. Viewport snapshots cover every puzzle part.
+
+
+### CI log follow-up, 2 November 2026
+
+Photon's Singapore region code is `asia`, not `sg`. Live and rendered test configuration defaults to `asia` and migrates legacy `sg` inputs without changing dedicated App IDs. Visual CI retains the 256-pixel asset-import cap while rendering all configured viewport sizes; the uncapped job was killed with exit 137 on the hosted runner.
+
+ChatManager now creates a dedicated persistent Chat-only host when first encountered on a GameObject shared with other behaviours. The authored component becomes a scene proxy and supplies its UI references; gameplay managers are no longer carried into another scene by Chat's DontDestroyOnLoad call. Offline CLI system tests fence Chat/network services before cold-start scene Start callbacks and explicitly disable the persistent Chat singleton. GameManager cancels pending spawn on disable and checks the spawn transform before dereferencing it. The scene-load assertion allows 120 seconds for cold CI loads; ordinary puzzle-transition assertions retain their existing deadlines.

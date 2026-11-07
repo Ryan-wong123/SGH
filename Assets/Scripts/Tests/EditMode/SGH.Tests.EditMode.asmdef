@@ -1,0 +1,7 @@
+{
+  "name": "SGH.Tests.EditMode",
+  "references": ["SGH.Tests.Shared", "Unity.TextMeshPro", "Unity.ugui"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "autoReferenced": false
+}

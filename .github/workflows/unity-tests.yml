@@ -1,0 +1,135 @@
+name: Unity tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unity-tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Unity ${{ matrix.testMode }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      # Avoid acquiring two seats concurrently with the same Unity license.
+      max-parallel: 1
+      matrix:
+        testMode: [EditMode, PlayMode]
+
+    steps:
+      - name: Free disk space on GitHub-hosted runner
+        shell: bash
+        env:
+          RUNNER_ENVIRONMENT: ${{ runner.environment }}
+        run: |
+          set -euo pipefail
+          if [[ "$RUNNER_ENVIRONMENT" != "github-hosted" ]]; then
+            echo "::error::Disk cleanup is restricted to disposable GitHub-hosted runners."
+            exit 1
+          fi
+          df -h /
+          # These host SDKs are unused: Unity runs with its own tools in Docker.
+          # Run before checkout; never remove project files or restored imports.
+          sudo rm -rf -- /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/local/swift
+          docker image prune --all --force
+          df -h /
+
+      - name: Check out project
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          persist-credentials: false
+
+      - name: Check Unity asset path casing
+        run: python3 Tests/Check-AssetPaths.py
+
+      - name: Check Unity licensing configuration
+        shell: bash
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        run: |
+          if [[ -z "$UNITY_EMAIL" || -z "$UNITY_PASSWORD" || ( -z "$UNITY_LICENSE" && -z "$UNITY_SERIAL" ) ]]; then
+            echo "::error::Configure UNITY_EMAIL, UNITY_PASSWORD and either UNITY_LICENSE (Personal) or UNITY_SERIAL (Pro) in repository Actions secrets. Fork PRs do not receive these secrets. See Tests/README.md."
+            exit 1
+          fi
+
+      - name: Select editor-only Unity image
+        id: editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          unity_version="$(sed -n 's/^m_EditorVersion: //p' ProjectSettings/ProjectVersion.txt | tr -d '\r')"
+          if [[ ! "$unity_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+[abfp][0-9]+$ ]]; then
+            echo "::error::Cannot determine Unity version from ProjectSettings/ProjectVersion.txt."
+            exit 1
+          fi
+          # EditMode/PlayMode do not build a player or require IL2CPP modules.
+          echo "image=unityci/editor:ubuntu-${unity_version}-base-3" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Unity imports
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: unity-base-fast-import-v3-${{ runner.os }}-${{ matrix.testMode }}-${{ hashFiles('ProjectSettings/ProjectVersion.txt', 'Packages/**', 'Assets/**') }}
+          restore-keys: |
+            unity-base-fast-import-v3-${{ runner.os }}-${{ matrix.testMode }}-
+
+      - name: Check disk space before Unity
+        shell: bash
+        run: |
+          df -h / /var/lib/docker "$GITHUB_WORKSPACE"
+          df -i /var/lib/docker
+
+      - name: Run ${{ matrix.testMode }} tests
+        # v4 now delegates to a CLI that rejects --no-coverageEnabled.
+        # Keep the Docker-based release for both matrix jobs; it has no
+        # coverageEnabled input. Upgrade only after verifying CLI compatibility.
+        uses: game-ci/unity-test-runner@v4.3.2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: .
+          unityVersion: auto
+          customImage: ${{ steps.editor.outputs.image }}
+          testMode: ${{ matrix.testMode }}
+          # Fixture/scene-wiring tests do not validate texture compression or pixels.
+          # Bypass the Linux Crunch semaphore crash during import, and bound the
+          # memory cost of uncompressed textures. Source .meta settings stay intact.
+          customParameters: >-
+            -assemblyNames SGH.Tests.${{ matrix.testMode }}
+            -testCategory !KnownGap
+            ${{ matrix.testMode == 'PlayMode' && '-sgh-disable-coverage' || '' }}
+            -overrideTextureCompression forceUncompressed
+            -overrideMaxTextureSize 256
+            -job-worker-count 2
+          artifactsPath: TestResults/${{ matrix.testMode }}
+
+      - name: Report remaining runner disk space
+        if: always()
+        shell: bash
+        run: |
+          df -h /
+          docker system df
+
+      - name: Upload test results and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-${{ matrix.testMode }}-results
+          path: TestResults/${{ matrix.testMode }}
+          if-no-files-found: warn
+          retention-days: 1

@@ -83,6 +83,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
     [Header("puzzle 10")] // Groups related fields in the Unity inspector.
     [SerializeField] private InsulinPuzzleManager insulinPuzzleManager; // Exposes this private field in the Unity inspector.
     [SerializeField] private GameObject Puzzle10Panel; // Exposes this private field in the Unity inspector.
+    [SerializeField] private PuzzleTrigger puzzle10SyringeTrigger; // The syringe box is the only world entry point for Puzzle 10.
+    [SerializeField] private DoorInteractable puzzle10ChestLid; // The chest must be opened before its contents can start Puzzle 10.
 
     [Header("puzzle 11")] // Groups related fields in the Unity inspector.
     [SerializeField] private DeathLapsesManager deathLapsesManager; // Exposes this private field in the Unity inspector.
@@ -112,7 +114,13 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
     private const string RP_ROUND = "Round";           // int; increments to signal a reset // Defines a Photon room-property key used for shared puzzle state.
     private const string RP_PENDING_ADVANCE_STAGE = "PendingAdvanceStage"; // int; stage waiting for a durable delayed transition.
     private const string RP_PENDING_ADVANCE_AT = "PendingAdvanceAt"; // double; Photon time when the pending transition should run.
+    private const string RP_CLUE_REWARD_GRANTED_PREFIX = "SGH_ClueRewardGranted_"; // bool per completed stage; prevents replayed completion RPCs from re-awarding a clue.
     private const string PP_PLAYED_ROUND = "PlayedRound";     // bool on each player // Defines a Photon player-property key used for per-player puzzle state.
+    private readonly HashSet<PuzzleStage> locallyGrantedClueRewards = new(); // Prevents a second award before the room property update arrives.
+
+    private int minimumInsulinRevision;
+    private int appliedInsulinRevision = -1;
+    private int appliedInsulinPart = -1;
 
     public enum PuzzleStage // Defines the ordered puzzle stages used by the game flow.
     { // Starts this block.
@@ -136,8 +144,13 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         else { Destroy(gameObject); return; } // Handles this part of the puzzle state flow.
 
         InitStagePanels(); // Initializes the stage panel lookup.
-        DontDestroyOnLoad(gameObject); // optional if changing scenes // Keeps this manager alive across scene loads.
+        // Scene-owned panels and handlers must be recreated for the next GameScene.
     } // Ends this block.
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
 
     private void Start() // Initializes puzzle handlers and room state after Unity startup.
     { // Starts this block.
@@ -161,12 +174,17 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
         EnsureRoomProps(); // initialize fair-turn props in room // Initializes shared Photon room puzzle properties.
         RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
+        RefreshInsulinRoomState();
     } // Ends this block.
 
     private void Update() // Lets the current master finish room-owned delayed transitions.
     { // Starts this block.
-        if (PhotonNetwork.IsMasterClient) // Only the current master may advance shared puzzle state.
-            ProcessPendingStageAdvance(); // Completes a transition even when the original submitting player disconnected.
+        if (PhotonNetwork.IsMasterClient)
+        {
+            ProcessPendingStageAdvance();
+            ProcessPendingInsulinAdvance();
+        }
+        RefreshInsulinRoomState(false);
     } // Ends this block.
 
     private void InitStagePanels() // Builds the stage-to-panel lookup table.
@@ -378,6 +396,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         Puzzle1Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
         Puzzle2Panel?.SetActive(true); // Shows or hides this puzzle-related UI object.
 
+        HidePuzzleTriggerOnCompletion(puzzle1Object); // The phone belongs to Puzzle 1 and is no longer an entry point after it.
+
         CurrentStage = PuzzleStage.Puzzle2; // Updates the current puzzle stage.
     } // Ends this block.
 
@@ -387,7 +407,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
         Puzzle2Panel?.SetActive(false); // Shows or hides this puzzle-related UI object.
 
-        GetKeyUponCompletion(puzzle1Object, "Time Crystal1"); // Handles this part of the puzzle state flow.
+        GetKeyUponCompletion(null, "Time Crystal1"); // Puzzle 2 awards the crystal without removing the already completed phone.
 
         CurrentStage = PuzzleStage.Puzzle3; // Updates the current puzzle stage.
         ResetTimer(); // Handles this part of the puzzle state flow.
@@ -445,7 +465,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
     [PunRPC] // Marks the next method as callable through Photon RPC.
     private void RPC_InsulinGoToPart2() // Runs a synchronized Photon RPC action.
     { // Starts this block.
-        insulinPuzzleManager?.GoToPart2(); // Calls this puzzle component only when it exists.
+        RefreshInsulinRoomState(); // Legacy RPC cannot bypass the durable room snapshot.
     } // Ends this block.
 
     [PunRPC] // Marks the next method as callable through Photon RPC.
@@ -454,13 +474,209 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         deathLapsesManager?.GoToStage2(); // Calls this puzzle component only when it exists.
     } // Ends this block.
 
-    public void BroadcastInsulinPart2Transition() // Handles this part of the puzzle state flow.
-    { // Starts this block.
-        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom) // Checks whether this puzzle-state condition requires action.
-            photonView.RPC(nameof(RPC_InsulinGoToPart2), RpcTarget.All); // Sends a synchronized RPC to Photon clients.
-        else // Runs when the previous condition is false.
-            insulinPuzzleManager?.GoToPart2(); // Calls this puzzle component only when it exists.
-    } // Ends this block.
+    // Retained as a public entry point for existing callers; a room transition
+    // always starts with a validated request and the shared two-second deadline.
+    public void BroadcastInsulinPart2Transition()
+    {
+        if (PhotonNetwork.InRoom && insulinPuzzleManager != null)
+            RequestInsulinPart2Transition(insulinPuzzleManager.syringeDropdown.value);
+        else
+            insulinPuzzleManager?.GoToPart2();
+    }
+
+    // Every early return below names its reason. A rejected insulin request is otherwise silent,
+    // and the only acknowledgement is the room snapshot changing.
+    private static string DescribeInsulinState(Room room)
+    {
+        if (room == null) return "no room";
+        return InsulinRoomState.TryRead(room.CustomProperties, out int revision, out int part, out double advanceAt)
+            ? $"revision={revision}, part={part}, advanceAt={advanceAt}"
+            : "snapshot missing or invalid";
+    }
+
+    private void LogInsulinRejected(string where, int selectedIndex, string reason)
+    {
+        var room = PhotonNetwork.CurrentRoom;
+        int lockOwner = room != null && room.CustomProperties.TryGetValue(RP_LOCK_OWNER, out object ownerValue) && ownerValue is int o ? o : -1;
+        bool locked = room != null && room.CustomProperties.TryGetValue(RP_PUZZLE_LOCKED, out object lockedValue) && lockedValue is bool l && l;
+        Debug.LogWarning($"[Insulin] {where} rejected: {reason} (selected={selectedIndex}, local actor={PhotonNetwork.LocalPlayer?.ActorNumber}, master={PhotonNetwork.IsMasterClient}, stage={CurrentStage}, locked={locked}, lockOwner={lockOwner}, {DescribeInsulinState(room)}, minimumRevision={minimumInsulinRevision})");
+    }
+
+    public void RequestInsulinPart2Transition(int selectedIndex)
+    {
+        var room = PhotonNetwork.CurrentRoom;
+        string reason = null;
+        int revision = 0;
+        if (CurrentStage != PuzzleStage.Puzzle10) reason = "stage is not Puzzle10";
+        else if (insulinPuzzleManager == null) reason = "insulinPuzzleManager is not assigned";
+        else if (room == null) reason = "not in a room";
+        else if (!CanLocalPlayerSubmitCurrentAttempt()) reason = $"local player is not the submit owner (submitOwner={currentSubmitOwnerActorNumber})";
+        else if (!InsulinRoomState.TryRead(room.CustomProperties, out revision, out _, out _)) reason = "insulin room snapshot is missing or invalid";
+        else if (revision < minimumInsulinRevision) reason = "snapshot revision is older than the minimum accepted revision";
+        else if (!InsulinRoomState.CanSchedule(room.CustomProperties, revision)) reason = "snapshot cannot be scheduled (not part 1 with no pending deadline)";
+        if (reason != null)
+        {
+            LogInsulinRejected("client request", selectedIndex, reason);
+            return;
+        }
+
+        bool correct = selectedIndex == insulinPuzzleManager.correctSyringeIndex;
+        RecordPuzzle10PartAnswer(correct);
+        insulinPuzzleManager.syringeDropdown.SetSyncedFeedbackColor(correct
+            ? insulinPuzzleManager.correctColor : insulinPuzzleManager.wrongColor);
+        if (!correct)
+        {
+            Debug.Log($"[Insulin] client request: selected={selectedIndex} is not the correct syringe; not sent to the master");
+            return;
+        }
+
+        if (PhotonNetwork.IsMasterClient)
+            ScheduleInsulinAdvance(selectedIndex, revision, PhotonNetwork.LocalPlayer.ActorNumber);
+        else
+        {
+            Debug.Log($"[Insulin] client request: sending advance request to the master (revision={revision}, actor={PhotonNetwork.LocalPlayer?.ActorNumber})");
+            photonView.RPC(nameof(RPC_RequestInsulinAdvance), RpcTarget.MasterClient, selectedIndex, revision);
+            if (insulinResendRoutine == null && isActiveAndEnabled) // An inactive object cannot host a coroutine.
+                insulinResendRoutine = StartCoroutine(ResendInsulinAdvanceUntilAcknowledged(selectedIndex, revision));
+        }
+    }
+
+    // A request can be rejected silently on the master. The room snapshot is the acknowledgement: it stops
+    // being "part 1 with no deadline" once the master accepts. Resend until then. Repeats are harmless because
+    // the master's conditional write never extends an existing deadline. Realtime waits are used because
+    // clues pause scaled time locally.
+    private const float InsulinResendSeconds = 2f;
+    private const int InsulinResendLimit = 8;
+    private Coroutine insulinResendRoutine;
+
+    private IEnumerator ResendInsulinAdvanceUntilAcknowledged(int selectedIndex, int revision)
+    {
+        for (int attempt = 1; attempt <= InsulinResendLimit; attempt++)
+        {
+            yield return new WaitForSecondsRealtime(InsulinResendSeconds);
+            var room = PhotonNetwork.CurrentRoom;
+            if (room == null || PhotonNetwork.IsMasterClient || CurrentStage != PuzzleStage.Puzzle10 ||
+                insulinPuzzleManager == null || insulinPuzzleManager.syringeDropdown == null ||
+                insulinPuzzleManager.syringeDropdown.value != selectedIndex ||
+                !InsulinRoomState.CanSchedule(room.CustomProperties, revision) ||
+                !CanLocalPlayerSubmitCurrentAttempt())
+                break;
+            Debug.Log($"[Insulin] no acknowledgement yet; resending the advance request (attempt {attempt}/{InsulinResendLimit})");
+            photonView.RPC(nameof(RPC_RequestInsulinAdvance), RpcTarget.MasterClient, selectedIndex, revision);
+        }
+        insulinResendRoutine = null;
+    }
+
+    [PunRPC]
+    private void RPC_RequestInsulinAdvance(int selectedIndex, int revision, PhotonMessageInfo info)
+    {
+        if (info.Sender == null)
+        {
+            Debug.LogWarning("[Insulin] master request rejected: the RPC carried no sender");
+            return;
+        }
+        ScheduleInsulinAdvance(selectedIndex, revision, info.Sender.ActorNumber);
+    }
+
+    private void ScheduleInsulinAdvance(int selectedIndex, int revision, int actorNumber)
+    {
+        var room = PhotonNetwork.CurrentRoom;
+        bool locked = room != null && room.CustomProperties.TryGetValue(RP_PUZZLE_LOCKED, out object lockedValue) && lockedValue is bool isLocked && isLocked;
+        int lockOwner = room != null && room.CustomProperties.TryGetValue(RP_LOCK_OWNER, out object ownerValue) && ownerValue is int ownerActor ? ownerActor : -1;
+
+        string reason = null;
+        if (!PhotonNetwork.IsMasterClient) reason = "this client is not the master";
+        else if (room == null) reason = "not in a room";
+        else if (CurrentStage != PuzzleStage.Puzzle10) reason = "master stage is not Puzzle10";
+        else if (insulinPuzzleManager == null) reason = "insulinPuzzleManager is not assigned on the master";
+        else if (selectedIndex != insulinPuzzleManager.correctSyringeIndex) reason = $"selected index is not the master's correct syringe index ({insulinPuzzleManager.correctSyringeIndex})";
+        else if (revision < minimumInsulinRevision) reason = $"request revision {revision} is older than the minimum accepted revision";
+        else if (!IsActorInRoom(actorNumber)) reason = $"actor {actorNumber} is not an active player";
+        else if (locked && lockOwner != actorNumber) reason = $"another player owns the lock (owner is {lockOwner}, sender is {actorNumber})";
+        else if (!InsulinRoomState.CanSchedule(room.CustomProperties, revision)) reason = "snapshot cannot be scheduled (revision mismatch, not part 1, or a deadline is already pending)";
+        if (reason != null)
+        {
+            LogInsulinRejected($"master request from actor {actorNumber}", selectedIndex, reason);
+            return;
+        }
+
+        // Compare-and-swap prevents repeated submits from extending the deadline,
+        // and rejects a delayed request from a revision that has since reset.
+        // The result of the swap is not observable here; the room snapshot changing is the acknowledgement.
+        Debug.Log($"[Insulin] master accepted the request from actor {actorNumber} (revision={revision}, lockWasFree={!locked}); requesting a 2s deadline");
+        var scheduled = InsulinRoomState.Snapshot(revision, 1, PhotonNetwork.Time + 2d);
+        if (!locked)
+        {
+            // The lock request and this request are separate messages. Accept either order: a free lock is
+            // taken for the sender in the same conditional write, as RPC_RequestLockFromMaster would.
+            // A lock held by a different player was rejected above and is never taken over.
+            scheduled[RP_PUZZLE_LOCKED] = true;
+            scheduled[RP_LOCK_OWNER] = actorNumber;
+        }
+        room.SetCustomProperties(scheduled, InsulinRoomState.Snapshot(revision, 1, 0d));
+    }
+
+    private void ProcessPendingInsulinAdvance()
+    {
+        var room = PhotonNetwork.CurrentRoom;
+        if (!PhotonNetwork.IsMasterClient || CurrentStage != PuzzleStage.Puzzle10 || room == null ||
+            !InsulinRoomState.TryRead(room.CustomProperties, out int revision, out _, out double due) ||
+            revision < minimumInsulinRevision || !InsulinRoomState.IsDue(room.CustomProperties, PhotonNetwork.Time))
+            return;
+
+        // The completed page is itself durable: rejoiners need no transient RPC.
+        Debug.Log($"[Insulin] deadline reached; publishing part 2 (revision={revision})");
+        room.SetCustomProperties(InsulinRoomState.Snapshot(revision, 2, 0d),
+            InsulinRoomState.Snapshot(revision, 1, due));
+    }
+
+    public void ResetInsulinRoomState(InsulinPuzzleManager source)
+    {
+        var room = PhotonNetwork.CurrentRoom;
+        if (!PhotonNetwork.IsMasterClient || room == null || CurrentStage != PuzzleStage.Puzzle10 ||
+            source != insulinPuzzleManager)
+            return;
+        InsulinRoomState.TryRead(room.CustomProperties, out int revision, out _, out _);
+        minimumInsulinRevision = System.Math.Max(minimumInsulinRevision, revision) + 1;
+        var reset = InsulinRoomState.Snapshot(minimumInsulinRevision, 1, 0d);
+        source.AddResetProperties(reset);
+        // A reset supersedes all older conditional completions in flight.
+        room.SetCustomProperties(reset);
+    }
+
+    public void RefreshInsulinRoomState()
+    {
+        RefreshInsulinRoomState(true);
+    }
+
+    private void RefreshInsulinRoomState(bool force)
+    {
+        var room = PhotonNetwork.CurrentRoom;
+        if (CurrentStage != PuzzleStage.Puzzle10 || insulinPuzzleManager == null || room == null ||
+            !InsulinRoomState.TryRead(room.CustomProperties, out int revision, out int part, out _) ||
+            revision < minimumInsulinRevision ||
+            (!force && revision == appliedInsulinRevision && part == appliedInsulinPart))
+            return;
+
+        bool reset = appliedInsulinRevision >= 0 && revision != appliedInsulinRevision;
+        // Cache before toggling panels: OnEnable can request a reapplication.
+        appliedInsulinRevision = revision;
+        appliedInsulinPart = part;
+        insulinPuzzleManager.ApplyRoomPart(part, reset);
+    }
+
+    private void ClearInsulinLocalState()
+    {
+        minimumInsulinRevision = 0;
+        appliedInsulinRevision = -1;
+        appliedInsulinPart = -1;
+        if (insulinResendRoutine != null)
+        {
+            StopCoroutine(insulinResendRoutine);
+            insulinResendRoutine = null;
+        }
+        insulinPuzzleManager?.CancelLocalAdvance();
+    }
 
     public void HandlePuzzle6Complete() // Handles this part of the puzzle state flow.
     { // Starts this block.
@@ -638,9 +854,20 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
         if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom) // Checks whether this puzzle-state condition requires action.
         { // Starts this block.
-            CluePopupUI.Instance?.Show(popupText); // Updates or calls this puzzle-state object.
+            if (!PhotonNetwork.IsMasterClient) // Every client handles the completion RPC, but only the master awards the shared clue.
+                return;
+
+            string grantedPropertyKey = RP_CLUE_REWARD_GRANTED_PREFIX + (int)stage;
+            if (locallyGrantedClueRewards.Contains(stage) ||
+                (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(grantedPropertyKey, out object granted) &&
+                 granted is bool wasGranted && wasGranted)) // Buffered completion RPCs can replay when a player rejoins.
+                return;
+
+            locallyGrantedClueRewards.Add(stage);
+
             photonView.RPC(nameof(RPC_AddSharedClue), RpcTarget.AllBuffered, clueId); // Sends a synchronized RPC to Photon clients.
-            photonView.RPC(nameof(RPC_ShowSharedCluePopup), RpcTarget.Others, popupText); // Sends a synchronized RPC to Photon clients.
+            photonView.RPC(nameof(RPC_ShowSharedCluePopup), RpcTarget.All, popupText); // Shows one transient popup on each current client.
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { [grantedPropertyKey] = true }); // Records the award for a replacement master and future replays.
             return; // Leaves the current method early.
         } // Ends this block.
 
@@ -1065,6 +1292,38 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         photonView.RPC(nameof(RPC_AdvanceStageForAll), RpcTarget.AllBuffered, (int)stage); // Sends a synchronized RPC to Photon clients.
     } // Ends this block.
 
+    private void HidePuzzleTriggerOnCompletion(GameObject puzzleTriggerObject)
+    {
+        if (puzzleTriggerObject == null) return;
+
+        var trigger = puzzleTriggerObject.GetComponent<PuzzleTrigger>();
+        if (trigger != null && trigger.dontDestroyOnCompletion) return;
+
+        if (PhotonNetwork.InRoom)
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+            var targetView = puzzleTriggerObject.GetComponent<PhotonView>();
+            if (targetView != null)
+                photonView.RPC(nameof(RPC_DestroyPuzzleObjectByID), RpcTarget.AllBuffered, targetView.ViewID);
+            else
+                Debug.LogError("Puzzle trigger does not have a PhotonView component!");
+        }
+        else
+            puzzleTriggerObject.SetActive(false);
+    }
+
+    public override void OnLeftRoom()
+    {
+        locallyGrantedClueRewards.Clear(); // A later room starts with its own reward history.
+        ClearInsulinLocalState();
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        locallyGrantedClueRewards.Clear(); // The room property will restore the guard if this room is rejoined.
+        ClearInsulinLocalState();
+    }
+
     private void ScheduleStageAdvance(PuzzleStage stage, float delay) // Stores a delayed puzzle completion in shared room properties.
     { // Starts this block.
         PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable // Publishes a recoverable, master-independent stage transition.
@@ -1232,6 +1491,12 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         if (!room.CustomProperties.ContainsKey(RP_PENDING_ADVANCE_STAGE)) changed[RP_PENDING_ADVANCE_STAGE] = -1; // Initializes the durable delayed-transition marker.
         if (!room.CustomProperties.ContainsKey(RP_PENDING_ADVANCE_AT)) changed[RP_PENDING_ADVANCE_AT] = 0d; // Initializes the durable delayed-transition deadline.
 
+        if (!InsulinRoomState.TryRead(room.CustomProperties, out _, out _, out _))
+        {
+            changed[InsulinRoomState.RevisionKey] = 0;
+            changed[InsulinRoomState.PartKey] = 1;
+            changed[InsulinRoomState.AdvanceAtKey] = 0d;
+        }
         if (changed.Count > 0) room.SetCustomProperties(changed); // Checks whether this puzzle-state condition requires action.
     } // Ends this block.
 
@@ -1260,7 +1525,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             ClearLocalPuzzleAccess(); // Handles this part of the puzzle state flow.
         } // Ends this block.
 
-        RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
+        RefreshSubmitButtonVisibility();
+        RefreshInsulinRoomState(false); // Refreshes submit controls for the current ownership state.
     } // Ends this block.
 
     public override void OnPlayerLeftRoom(Player otherPlayer) // Handles cleanup when another player leaves the room.
@@ -1278,6 +1544,8 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         EnsureRoomProps(); // Ensures the new master can safely read every required shared property.
         ReconcilePuzzleLockAfterMembershipChange(); // Reassigns or releases a lock owned by any inactive actor.
         ProcessPendingStageAdvance(); // Immediately resumes a due transition left by the disconnected master.
+        ProcessPendingInsulinAdvance();
+        RefreshInsulinRoomState();
     } // Ends this block.
 
     private void ReconcilePuzzleLockAfterMembershipChange() // Keeps the current puzzle lock assigned only to an active player.
@@ -1291,29 +1559,34 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             ? ownerActorNumber // Uses the valid stored owner.
             : -1; // Treats missing or invalid ownership as unassigned.
 
-        if (locked && !IsActorInRoom(owner)) // Replaces a disconnected owner without waiting for a re-login.
+        if (locked && !IsActorInRoom(owner)) // Releases an attempt whose owner disconnected so a teammate can interact again.
         { // Starts this block.
-            int replacementOwner = GetRandomActiveActorNumber(owner); // Chooses any remaining active player as the new submit owner.
-            bool hasReplacementOwner = replacementOwner > 0; // Tracks whether at least one teammate remains.
-
-            room.SetCustomProperties(new Hashtable // Updates the shared lock to an active owner or releases it when nobody remains.
+            room.SetCustomProperties(new Hashtable // Clears the stale lock without assigning it to a player who never opened the puzzle.
             { // Starts this initializer block.
-                [RP_PUZZLE_LOCKED] = hasReplacementOwner, // Keeps the attempt locked only while an active teammate can own it.
-                [RP_LOCK_OWNER] = replacementOwner // Stores the replacement owner or -1 when the room is empty.
+                [RP_PUZZLE_LOCKED] = false,
+                [RP_LOCK_OWNER] = -1
             }); // Ends and sends the ownership repair.
-            photonView.RPC(nameof(RPC_SetSubmitOwnerForAll), RpcTarget.All, replacementOwner); // Refreshes submit controls on every remaining client.
+            photonView.RPC(nameof(RPC_SetSubmitOwnerForAll), RpcTarget.All, -1); // Refreshes submit controls on every remaining client.
         } // Ends this block.
         else if (!locked && owner != -1) // Clears stale owner metadata left behind by an unlocked attempt.
         { // Starts this block.
             room.SetCustomProperties(new Hashtable { [RP_LOCK_OWNER] = -1 }); // Keeps unlocked state unowned.
         } // Ends this block.
 
-        MaybeAdvanceRoundIfEveryonePlayed(); // Excludes inactive players when deciding whether the remaining team may start a new round.
+        if (!locked || !IsActorInRoom(owner))
+            MaybeAdvanceRoundIfEveryonePlayed(); // Do not end an active player's attempt when someone else disconnects.
     } // Ends this block.
 
     [PunRPC] // Marks the next method as callable through Photon RPC.
     private void RPC_SetSubmitOwnerForAll(int actorNumber) // Runs a synchronized Photon RPC action.
     { // Starts this block.
+        if (actorNumber < 0)
+        {
+            var panel = GetPanelForStage(CurrentStage);
+            if (panel != null) panel.SetActive(false); // End the abandoned attempt before another player starts it.
+            ClearLocalPuzzleAccess();
+        }
+
         currentSubmitOwnerActorNumber = IsActorInRoom(actorNumber) ? actorNumber : -1; // Updates which actor owns submit controls.
         RefreshSubmitButtonVisibility(); // Refreshes submit controls for the current ownership state.
     } // Ends this block.
@@ -1428,9 +1701,16 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
 
     // Gate attempt; called by triggers
     // Gate attempt; called by triggers
-    public bool TryBeginAttempt(out string reason) // Handles this part of the puzzle state flow.
+    public bool TryBeginAttempt(PuzzleTrigger source, out string reason) // Handles this part of the puzzle state flow.
     { // Starts this block.
         reason = null; // Handles this part of the puzzle state flow.
+
+        if (CurrentStage == PuzzleStage.Puzzle10 &&
+            (source != puzzle10SyringeTrigger || puzzle10ChestLid == null || !puzzle10ChestLid.HasBeenOpened))
+        {
+            reason = "Open the chestbox before starting the syringe puzzle.";
+            return false;
+        }
 
         var me = PhotonNetwork.LocalPlayer; // Handles this part of the puzzle state flow.
         var room = PhotonNetwork.CurrentRoom; // Handles this part of the puzzle state flow.
@@ -1454,7 +1734,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             return true; // don't change any props; I still hold the lock // Returns the computed puzzle-state value to the caller.
         } // Ends this block.
 
-        if (localPlayerHasActivePuzzleLock && localActivePuzzleLockOwnerActorNumber == me.ActorNumber) // Checks whether this puzzle-state condition requires action.
+        if (!locked && localPlayerHasActivePuzzleLock && localActivePuzzleLockOwnerActorNumber == me.ActorNumber) // Reopens a released local attempt only while no teammate owns it.
         { // Starts this block.
             if (PhotonNetwork.IsMasterClient) // Checks whether this puzzle-state condition requires action.
             { // Starts this block.
@@ -1483,7 +1763,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         // 2) If someone else holds it, block.
         if (locked && owner != me.ActorNumber) // Checks whether this puzzle-state condition requires action.
         { // Starts this block.
-            reason = "Another player is currently holding this puzzle."; // Handles this part of the puzzle state flow.
+            reason = "A teammate is using this puzzle. Try again when they finish."; // Explains the temporary shared attempt lock.
             return false; // Reports failure to the caller.
         } // Ends this block.
 
