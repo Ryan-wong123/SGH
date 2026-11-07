@@ -536,7 +536,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         {
             Debug.Log($"[Insulin] client request: sending advance request to the master (revision={revision}, actor={PhotonNetwork.LocalPlayer?.ActorNumber})");
             photonView.RPC(nameof(RPC_RequestInsulinAdvance), RpcTarget.MasterClient, selectedIndex, revision);
-            if (insulinResendRoutine == null)
+            if (insulinResendRoutine == null && isActiveAndEnabled) // An inactive object cannot host a coroutine.
                 insulinResendRoutine = StartCoroutine(ResendInsulinAdvanceUntilAcknowledged(selectedIndex, revision));
         }
     }

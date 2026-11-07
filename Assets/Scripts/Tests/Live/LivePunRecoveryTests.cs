@@ -345,6 +345,8 @@ namespace SGH.Tests
         }
 
         // The PUN client is a non-master player here and the independent client is the (passive) master.
+        // The fixture keeps its objects inactive so no lifecycle callbacks run, so the production resend loop
+        // is stepped here directly instead of being hosted by the flow object's StartCoroutine.
         [UnityTest]
         public IEnumerator NonMasterClientResendsTheInsulinRequestUntilTheRoomAcknowledgesIt()
         {
@@ -364,16 +366,28 @@ namespace SGH.Tests
             try
             {
                 Call(flow, "RequestInsulinPart2Transition", 1);
-                // The passive master never answers, so the request must keep coming.
-                yield return Until(() => requests >= 3, "the request is resent while nothing acknowledges it", 20);
+                yield return Until(() => requests >= 1, "the first request reaches the master", 20);
 
-                // Acknowledge the way the master does: the snapshot gains a deadline.
-                var acknowledged = InsulinRoom(true, punActor, PhotonNetwork.Time + 600d);
-                peer.CurrentRoom.SetCustomProperties(acknowledged);
-                yield return Until(() => (double)PhotonNetwork.CurrentRoom.CustomProperties["SGH_Insulin_AdvanceAt"] > 0, "acknowledgement reaches the PUN client");
-                int atAcknowledgement = requests;
-                yield return Settle(5f);
-                Assert.That(requests, Is.LessThanOrEqualTo(atAcknowledgement + 1), "No resend once the room acknowledges the request");
+                // The passive master never answers, so the loop must keep resending.
+                var resend = (IEnumerator)Call(flow, "ResendInsulinAdvanceUntilAcknowledged", 1, 0);
+                bool acknowledged = false;
+                int steps = 0;
+                while (resend.MoveNext())
+                {
+                    Assert.That(++steps, Is.LessThan(20), "The resend loop must stop on its own");
+                    yield return Settle(2.1f); // one resend interval, servicing the peer
+                    if (!acknowledged && requests >= 3)
+                    {
+                        // Acknowledge the way the master does: the snapshot gains a deadline.
+                        peer.CurrentRoom.SetCustomProperties(InsulinRoom(true, punActor, PhotonNetwork.Time + 600d));
+                        yield return Until(() => (double)PhotonNetwork.CurrentRoom.CustomProperties["SGH_Insulin_AdvanceAt"] > 0, "acknowledgement reaches the PUN client");
+                        acknowledged = true;
+                    }
+                }
+                Assert.That(acknowledged, Is.True, "The request was resent until the test acknowledged it");
+                int atEnd = requests;
+                yield return Settle(2.5f);
+                Assert.That(requests, Is.EqualTo(atEnd), "No resend once the room acknowledges the request");
             }
             finally { peer.EventReceived -= observer; }
         }
