@@ -484,47 +484,99 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             insulinPuzzleManager?.GoToPart2();
     }
 
+    // Every early return below names its reason. A rejected insulin request is otherwise silent,
+    // and the only acknowledgement is the room snapshot changing.
+    private static string DescribeInsulinState(Room room)
+    {
+        if (room == null) return "no room";
+        return InsulinRoomState.TryRead(room.CustomProperties, out int revision, out int part, out double advanceAt)
+            ? $"revision={revision}, part={part}, advanceAt={advanceAt}"
+            : "snapshot missing or invalid";
+    }
+
+    private void LogInsulinRejected(string where, int selectedIndex, string reason)
+    {
+        var room = PhotonNetwork.CurrentRoom;
+        int lockOwner = room != null && room.CustomProperties.TryGetValue(RP_LOCK_OWNER, out object ownerValue) && ownerValue is int o ? o : -1;
+        bool locked = room != null && room.CustomProperties.TryGetValue(RP_PUZZLE_LOCKED, out object lockedValue) && lockedValue is bool l && l;
+        Debug.LogWarning($"[Insulin] {where} rejected: {reason} (selected={selectedIndex}, local actor={PhotonNetwork.LocalPlayer?.ActorNumber}, master={PhotonNetwork.IsMasterClient}, stage={CurrentStage}, locked={locked}, lockOwner={lockOwner}, {DescribeInsulinState(room)}, minimumRevision={minimumInsulinRevision})");
+    }
+
     public void RequestInsulinPart2Transition(int selectedIndex)
     {
         var room = PhotonNetwork.CurrentRoom;
-        if (CurrentStage != PuzzleStage.Puzzle10 || insulinPuzzleManager == null || room == null ||
-            !CanLocalPlayerSubmitCurrentAttempt() ||
-            !InsulinRoomState.TryRead(room.CustomProperties, out int revision, out _, out _) ||
-            revision < minimumInsulinRevision || !InsulinRoomState.CanSchedule(room.CustomProperties, revision))
+        string reason = null;
+        int revision = 0;
+        if (CurrentStage != PuzzleStage.Puzzle10) reason = "stage is not Puzzle10";
+        else if (insulinPuzzleManager == null) reason = "insulinPuzzleManager is not assigned";
+        else if (room == null) reason = "not in a room";
+        else if (!CanLocalPlayerSubmitCurrentAttempt()) reason = $"local player is not the submit owner (submitOwner={currentSubmitOwnerActorNumber})";
+        else if (!InsulinRoomState.TryRead(room.CustomProperties, out revision, out _, out _)) reason = "insulin room snapshot is missing or invalid";
+        else if (revision < minimumInsulinRevision) reason = "snapshot revision is older than the minimum accepted revision";
+        else if (!InsulinRoomState.CanSchedule(room.CustomProperties, revision)) reason = "snapshot cannot be scheduled (not part 1 with no pending deadline)";
+        if (reason != null)
+        {
+            LogInsulinRejected("client request", selectedIndex, reason);
             return;
+        }
 
         bool correct = selectedIndex == insulinPuzzleManager.correctSyringeIndex;
         RecordPuzzle10PartAnswer(correct);
         insulinPuzzleManager.syringeDropdown.SetSyncedFeedbackColor(correct
             ? insulinPuzzleManager.correctColor : insulinPuzzleManager.wrongColor);
-        if (!correct) return;
+        if (!correct)
+        {
+            Debug.Log($"[Insulin] client request: selected={selectedIndex} is not the correct syringe; not sent to the master");
+            return;
+        }
 
         if (PhotonNetwork.IsMasterClient)
             ScheduleInsulinAdvance(selectedIndex, revision, PhotonNetwork.LocalPlayer.ActorNumber);
         else
+        {
+            Debug.Log($"[Insulin] client request: sending advance request to the master (revision={revision}, actor={PhotonNetwork.LocalPlayer?.ActorNumber})");
             photonView.RPC(nameof(RPC_RequestInsulinAdvance), RpcTarget.MasterClient, selectedIndex, revision);
+        }
     }
 
     [PunRPC]
     private void RPC_RequestInsulinAdvance(int selectedIndex, int revision, PhotonMessageInfo info)
     {
-        if (info.Sender != null)
-            ScheduleInsulinAdvance(selectedIndex, revision, info.Sender.ActorNumber);
+        if (info.Sender == null)
+        {
+            Debug.LogWarning("[Insulin] master request rejected: the RPC carried no sender");
+            return;
+        }
+        ScheduleInsulinAdvance(selectedIndex, revision, info.Sender.ActorNumber);
     }
 
     private void ScheduleInsulinAdvance(int selectedIndex, int revision, int actorNumber)
     {
         var room = PhotonNetwork.CurrentRoom;
-        if (!PhotonNetwork.IsMasterClient || room == null || CurrentStage != PuzzleStage.Puzzle10 ||
-            insulinPuzzleManager == null || selectedIndex != insulinPuzzleManager.correctSyringeIndex ||
-            revision < minimumInsulinRevision || !IsActorInRoom(actorNumber) ||
-            !room.CustomProperties.TryGetValue(RP_PUZZLE_LOCKED, out object locked) || locked is not bool isLocked || !isLocked ||
-            !room.CustomProperties.TryGetValue(RP_LOCK_OWNER, out object owner) || owner is not int lockOwner || lockOwner != actorNumber ||
-            !InsulinRoomState.CanSchedule(room.CustomProperties, revision))
+        bool locked = room != null && room.CustomProperties.TryGetValue(RP_PUZZLE_LOCKED, out object lockedValue) && lockedValue is bool isLocked && isLocked;
+        int lockOwner = room != null && room.CustomProperties.TryGetValue(RP_LOCK_OWNER, out object ownerValue) && ownerValue is int ownerActor ? ownerActor : -1;
+
+        string reason = null;
+        if (!PhotonNetwork.IsMasterClient) reason = "this client is not the master";
+        else if (room == null) reason = "not in a room";
+        else if (CurrentStage != PuzzleStage.Puzzle10) reason = "master stage is not Puzzle10";
+        else if (insulinPuzzleManager == null) reason = "insulinPuzzleManager is not assigned on the master";
+        else if (selectedIndex != insulinPuzzleManager.correctSyringeIndex) reason = $"selected index is not the master's correct syringe index ({insulinPuzzleManager.correctSyringeIndex})";
+        else if (revision < minimumInsulinRevision) reason = $"request revision {revision} is older than the minimum accepted revision";
+        else if (!IsActorInRoom(actorNumber)) reason = $"actor {actorNumber} is not an active player";
+        else if (!locked) reason = "the puzzle is not locked";
+        else if (lockOwner != actorNumber) reason = $"actor {actorNumber} does not own the lock";
+        else if (!InsulinRoomState.CanSchedule(room.CustomProperties, revision)) reason = "snapshot cannot be scheduled (revision mismatch, not part 1, or a deadline is already pending)";
+        if (reason != null)
+        {
+            LogInsulinRejected($"master request from actor {actorNumber}", selectedIndex, reason);
             return;
+        }
 
         // Compare-and-swap prevents repeated submits from extending the deadline,
         // and rejects a delayed request from a revision that has since reset.
+        // The result of the swap is not observable here; the room snapshot changing is the acknowledgement.
+        Debug.Log($"[Insulin] master accepted the request from actor {actorNumber} (revision={revision}); requesting a 2s deadline");
         room.SetCustomProperties(InsulinRoomState.Snapshot(revision, 1, PhotonNetwork.Time + 2d),
             InsulinRoomState.Snapshot(revision, 1, 0d));
     }
@@ -538,6 +590,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
             return;
 
         // The completed page is itself durable: rejoiners need no transient RPC.
+        Debug.Log($"[Insulin] deadline reached; publishing part 2 (revision={revision})");
         room.SetCustomProperties(InsulinRoomState.Snapshot(revision, 2, 0d),
             InsulinRoomState.Snapshot(revision, 1, due));
     }
