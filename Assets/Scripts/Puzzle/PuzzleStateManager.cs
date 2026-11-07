@@ -536,7 +536,35 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         {
             Debug.Log($"[Insulin] client request: sending advance request to the master (revision={revision}, actor={PhotonNetwork.LocalPlayer?.ActorNumber})");
             photonView.RPC(nameof(RPC_RequestInsulinAdvance), RpcTarget.MasterClient, selectedIndex, revision);
+            if (insulinResendRoutine == null)
+                insulinResendRoutine = StartCoroutine(ResendInsulinAdvanceUntilAcknowledged(selectedIndex, revision));
         }
+    }
+
+    // A request can be rejected silently on the master. The room snapshot is the acknowledgement: it stops
+    // being "part 1 with no deadline" once the master accepts. Resend until then. Repeats are harmless because
+    // the master's conditional write never extends an existing deadline. Realtime waits are used because
+    // clues pause scaled time locally.
+    private const float InsulinResendSeconds = 2f;
+    private const int InsulinResendLimit = 8;
+    private Coroutine insulinResendRoutine;
+
+    private IEnumerator ResendInsulinAdvanceUntilAcknowledged(int selectedIndex, int revision)
+    {
+        for (int attempt = 1; attempt <= InsulinResendLimit; attempt++)
+        {
+            yield return new WaitForSecondsRealtime(InsulinResendSeconds);
+            var room = PhotonNetwork.CurrentRoom;
+            if (room == null || PhotonNetwork.IsMasterClient || CurrentStage != PuzzleStage.Puzzle10 ||
+                insulinPuzzleManager == null || insulinPuzzleManager.syringeDropdown == null ||
+                insulinPuzzleManager.syringeDropdown.value != selectedIndex ||
+                !InsulinRoomState.CanSchedule(room.CustomProperties, revision) ||
+                !CanLocalPlayerSubmitCurrentAttempt())
+                break;
+            Debug.Log($"[Insulin] no acknowledgement yet; resending the advance request (attempt {attempt}/{InsulinResendLimit})");
+            photonView.RPC(nameof(RPC_RequestInsulinAdvance), RpcTarget.MasterClient, selectedIndex, revision);
+        }
+        insulinResendRoutine = null;
     }
 
     [PunRPC]
@@ -564,8 +592,7 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         else if (selectedIndex != insulinPuzzleManager.correctSyringeIndex) reason = $"selected index is not the master's correct syringe index ({insulinPuzzleManager.correctSyringeIndex})";
         else if (revision < minimumInsulinRevision) reason = $"request revision {revision} is older than the minimum accepted revision";
         else if (!IsActorInRoom(actorNumber)) reason = $"actor {actorNumber} is not an active player";
-        else if (!locked) reason = "the puzzle is not locked";
-        else if (lockOwner != actorNumber) reason = $"actor {actorNumber} does not own the lock";
+        else if (locked && lockOwner != actorNumber) reason = $"another player owns the lock (owner is {lockOwner}, sender is {actorNumber})";
         else if (!InsulinRoomState.CanSchedule(room.CustomProperties, revision)) reason = "snapshot cannot be scheduled (revision mismatch, not part 1, or a deadline is already pending)";
         if (reason != null)
         {
@@ -576,9 +603,17 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         // Compare-and-swap prevents repeated submits from extending the deadline,
         // and rejects a delayed request from a revision that has since reset.
         // The result of the swap is not observable here; the room snapshot changing is the acknowledgement.
-        Debug.Log($"[Insulin] master accepted the request from actor {actorNumber} (revision={revision}); requesting a 2s deadline");
-        room.SetCustomProperties(InsulinRoomState.Snapshot(revision, 1, PhotonNetwork.Time + 2d),
-            InsulinRoomState.Snapshot(revision, 1, 0d));
+        Debug.Log($"[Insulin] master accepted the request from actor {actorNumber} (revision={revision}, lockWasFree={!locked}); requesting a 2s deadline");
+        var scheduled = InsulinRoomState.Snapshot(revision, 1, PhotonNetwork.Time + 2d);
+        if (!locked)
+        {
+            // The lock request and this request are separate messages. Accept either order: a free lock is
+            // taken for the sender in the same conditional write, as RPC_RequestLockFromMaster would.
+            // A lock held by a different player was rejected above and is never taken over.
+            scheduled[RP_PUZZLE_LOCKED] = true;
+            scheduled[RP_LOCK_OWNER] = actorNumber;
+        }
+        room.SetCustomProperties(scheduled, InsulinRoomState.Snapshot(revision, 1, 0d));
     }
 
     private void ProcessPendingInsulinAdvance()
@@ -635,6 +670,11 @@ public class PuzzleStateManager : MonoBehaviourPunCallbacks // Declares the netw
         minimumInsulinRevision = 0;
         appliedInsulinRevision = -1;
         appliedInsulinPart = -1;
+        if (insulinResendRoutine != null)
+        {
+            StopCoroutine(insulinResendRoutine);
+            insulinResendRoutine = null;
+        }
         insulinPuzzleManager?.CancelLocalAdvance();
     }
 

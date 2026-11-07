@@ -165,9 +165,15 @@ also reject a claimed actor that differs from a positive transport sender.
 Insulin room keys are `SGH_Insulin_Revision` (nonnegative int),
 `SGH_Insulin_Part` (1/2), and `SGH_Insulin_AdvanceAt` (finite nonnegative double;
 zero means no deadline). PuzzleStateManager initializes and writes the snapshot;
-all clients read it to restore part visibility. A correct selection from the active
-lock owner schedules PhotonNetwork.Time + 2 using compare-and-swap against the
-current revision/part/empty deadline. Only the master commits due part 2, also
+all clients read it to restore part visibility. A correct selection schedules
+PhotonNetwork.Time + 2 using compare-and-swap against the current
+revision/part/empty deadline. The master accepts it from the lock owner, or from any
+active player while the lock is free, in which case it takes the lock for the sender
+in the same conditional write (the lock request and the syringe request are separate
+messages and may arrive in either order). A lock held by another player is never
+taken over. A non-master client resends the request every two seconds, up to eight
+times, until the room snapshot shows a deadline; repeats cannot extend it. Every
+rejected request logs its reason with an `[Insulin]` warning. Only the master commits due part 2, also
 conditionally against that snapshot. Reset increments the revision, clears the
 deadline, sets part 1 and writes the synced dropdown reset in one property update.
 A local minimum revision rejects old requests immediately while reset is in flight.

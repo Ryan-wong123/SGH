@@ -242,5 +242,140 @@ namespace SGH.Tests
             }
             finally { PhotonNetwork.NetworkingClient.EventReceived -= observer; }
         }
+
+        // ---- Insulin hardening: real master, real second client, real RPCs ----
+
+        private void SetUpInsulin()
+        {
+            var insulin = Component("InsulinPuzzleManager");
+            Set(insulin, "syringeDropdown", Dropdown(1)); Set(insulin, "panel1", Object("Part1"));
+            var page2 = Object("Part2"); page2.SetActive(false); Set(insulin, "panel2", page2);
+            Set(flow, "insulinPuzzleManager", insulin);
+        }
+
+        // The PUN client becomes the real master and the independent client rejoins as a non-master player.
+        private IEnumerator ConnectWithPunAsMaster()
+        {
+            yield return Connect(10);
+            SetUpInsulin();
+            peer.Disconnect(); yield return Until(() => PhotonNetwork.IsMasterClient && !peer.IsConnected, "master election");
+            Assert.That(peer.ReconnectAndRejoin(), Is.True); yield return Until(() => peer.InRoom, "non-master rejoin");
+            int peerActor = peer.LocalPlayer.ActorNumber;
+            yield return Until(() => PhotonNetwork.CurrentRoom.GetPlayer(peerActor) != null && !PhotonNetwork.CurrentRoom.GetPlayer(peerActor).IsInactive,
+                "peer is an active player in the master's room view");
+        }
+
+        // PUN's actual RPC wire format, authored by the independent client.
+        private bool SendRpcFromPeer(string method, params object[] arguments)
+        {
+            var rpc = new Hashtable { [(byte)0] = 991, [(byte)2] = PhotonNetwork.ServerTimestamp,
+                [(byte)3] = method, [(byte)4] = arguments };
+            return peer.OpRaiseEvent(200, rpc, new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient },
+                ExitGames.Client.Photon.SendOptions.SendReliable);
+        }
+
+        private static Hashtable InsulinRoom(bool locked, int owner, double advanceAt)
+        {
+            return new Hashtable
+            {
+                ["PuzzleLocked"] = locked, ["LockOwner"] = owner,
+                ["SGH_Insulin_Revision"] = 0, ["SGH_Insulin_Part"] = 1, ["SGH_Insulin_AdvanceAt"] = advanceAt
+            };
+        }
+
+        private IEnumerator Settle(float seconds)
+        {
+            float until = Time.realtimeSinceStartup + seconds;
+            while (Time.realtimeSinceStartup < until) { peer?.Service(); yield return null; }
+        }
+
+        [UnityTest]
+        public IEnumerator InsulinRequestFromARealPeerOnAFreeLockIsAcceptedAndRepeatsDoNotExtendIt()
+        {
+            yield return ConnectWithPunAsMaster();
+            int peerActor = peer.LocalPlayer.ActorNumber;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(InsulinRoom(false, -1, 0d));
+            yield return Until(() => Equals(peer.CurrentRoom.CustomProperties["LockOwner"], -1), "free lock visible to the peer");
+
+            Assert.That(SendRpcFromPeer("RPC_RequestInsulinAdvance", 1, 0), Is.True);
+            yield return Until(() => Equals(PhotonNetwork.CurrentRoom.CustomProperties["LockOwner"], peerActor) &&
+                (double)PhotonNetwork.CurrentRoom.CustomProperties["SGH_Insulin_AdvanceAt"] > 0,
+                "the master takes the free lock for the peer and schedules the deadline");
+            double due = (double)PhotonNetwork.CurrentRoom.CustomProperties["SGH_Insulin_AdvanceAt"];
+
+            for (int i = 0; i < 20; i++) Assert.That(SendRpcFromPeer("RPC_RequestInsulinAdvance", 1, 0), Is.True);
+            yield return Settle(.4f);
+            var properties = PhotonNetwork.CurrentRoom.CustomProperties;
+            Assert.That(Equals(properties["SGH_Insulin_Part"], 2) || (double)properties["SGH_Insulin_AdvanceAt"] == due, Is.True,
+                "Repeated requests must not extend or replace the deadline");
+            Assert.That(properties["LockOwner"], Is.EqualTo(peerActor));
+        }
+
+        // The ordering that used to drop the request: the syringe request is handled before the lock request.
+        [UnityTest]
+        public IEnumerator InsulinRequestArrivingBeforeTheLockRequestIsNotDropped()
+        {
+            yield return ConnectWithPunAsMaster();
+            int peerActor = peer.LocalPlayer.ActorNumber;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(InsulinRoom(false, -1, 0d));
+            yield return Until(() => Equals(peer.CurrentRoom.CustomProperties["LockOwner"], -1), "free lock visible to the peer");
+
+            Assert.That(SendRpcFromPeer("RPC_RequestInsulinAdvance", 1, 0), Is.True);
+            Assert.That(SendRpcFromPeer("RPC_RequestLockFromMaster", peerActor), Is.True); // arrives second, in the same order as sent
+            yield return Until(() => Equals(PhotonNetwork.CurrentRoom.CustomProperties["LockOwner"], peerActor) &&
+                (double)PhotonNetwork.CurrentRoom.CustomProperties["SGH_Insulin_AdvanceAt"] > 0,
+                "a syringe request that beat the lock request is still accepted");
+            yield return Settle(.3f);
+            Assert.That(PhotonNetwork.CurrentRoom.CustomProperties["PuzzleLocked"], Is.EqualTo(true));
+            Assert.That(PhotonNetwork.CurrentRoom.CustomProperties["LockOwner"], Is.EqualTo(peerActor), "The late lock request must not undo the lock");
+        }
+
+        [UnityTest]
+        public IEnumerator InsulinRequestFromARealPeerIsRejectedWhileTheMasterHoldsTheLock()
+        {
+            yield return ConnectWithPunAsMaster();
+            int masterActor = PhotonNetwork.LocalPlayer.ActorNumber;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(InsulinRoom(true, masterActor, 0d));
+            yield return Until(() => Equals(peer.CurrentRoom.CustomProperties["LockOwner"], masterActor), "lock held by the master");
+
+            for (int i = 0; i < 5; i++) Assert.That(SendRpcFromPeer("RPC_RequestInsulinAdvance", 1, 0), Is.True);
+            yield return Settle(.5f);
+            Assert.That(PhotonNetwork.CurrentRoom.CustomProperties["SGH_Insulin_AdvanceAt"], Is.EqualTo(0d));
+            Assert.That(PhotonNetwork.CurrentRoom.CustomProperties["LockOwner"], Is.EqualTo(masterActor), "A held lock is never taken over");
+        }
+
+        // The PUN client is a non-master player here and the independent client is the (passive) master.
+        [UnityTest]
+        public IEnumerator NonMasterClientResendsTheInsulinRequestUntilTheRoomAcknowledgesIt()
+        {
+            yield return Connect(10);
+            SetUpInsulin();
+            int punActor = PhotonNetwork.LocalPlayer.ActorNumber;
+            peer.CurrentRoom.SetCustomProperties(InsulinRoom(true, punActor, 0d));
+            yield return Until(() => Equals(PhotonNetwork.CurrentRoom.CustomProperties["LockOwner"], punActor) &&
+                PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("SGH_Insulin_Revision"), "the PUN client sees that it owns the attempt");
+
+            int requests = 0;
+            Action<ExitGames.Client.Photon.EventData> observer = e =>
+            {
+                if (e.Code == 200 && e.CustomData is Hashtable data && data.ContainsKey((byte)0) && Equals(data[(byte)0], 991)) requests++;
+            };
+            peer.EventReceived += observer;
+            try
+            {
+                Call(flow, "RequestInsulinPart2Transition", 1);
+                // The passive master never answers, so the request must keep coming.
+                yield return Until(() => requests >= 3, "the request is resent while nothing acknowledges it", 20);
+
+                // Acknowledge the way the master does: the snapshot gains a deadline.
+                var acknowledged = InsulinRoom(true, punActor, PhotonNetwork.Time + 600d);
+                peer.CurrentRoom.SetCustomProperties(acknowledged);
+                yield return Until(() => (double)PhotonNetwork.CurrentRoom.CustomProperties["SGH_Insulin_AdvanceAt"] > 0, "acknowledgement reaches the PUN client");
+                int atAcknowledgement = requests;
+                yield return Settle(5f);
+                Assert.That(requests, Is.LessThanOrEqualTo(atAcknowledgement + 1), "No resend once the room acknowledges the request");
+            }
+            finally { peer.EventReceived -= observer; }
+        }
     }
 }

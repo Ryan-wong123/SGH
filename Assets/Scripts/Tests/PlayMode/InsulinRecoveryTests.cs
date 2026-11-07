@@ -177,5 +177,87 @@ namespace SGH.Tests
             Assert.That(((IDictionary)Get(room, "CustomProperties"))["SGH_Insulin_AdvanceAt"], Is.EqualTo(0d));
             yield return null;
         }
+
+        private IDictionary Properties() { return (IDictionary)Get(room, "CustomProperties"); }
+        private int LocalActor() { return (int)Get(Get(network, "LocalPlayer"), "ActorNumber"); }
+
+        private void ReleaseLock()
+        {
+            IDictionary properties = Properties();
+            properties["PuzzleLocked"] = false;
+            properties["LockOwner"] = -1;
+        }
+
+        // The lock request and the syringe request are separate messages. If the syringe request is handled
+        // first, the master must not drop it: it takes the free lock for the sender and schedules the deadline.
+        [UnityTest]
+        public IEnumerator RequestOnAFreeLockIsAcceptedAndTakesTheLockForTheSender()
+        {
+            yield return CreateOfflineRoom();
+            ReleaseLock();
+            int actor = LocalActor();
+            Call(flow, "ScheduleInsulinAdvance", 1, 0, actor);
+            IDictionary properties = Properties();
+            Assert.That((double)properties["SGH_Insulin_AdvanceAt"], Is.GreaterThan((double)Get(network, "Time")));
+            Assert.That(properties["PuzzleLocked"], Is.EqualTo(true));
+            Assert.That(properties["LockOwner"], Is.EqualTo(actor));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator SubmitFromTheUiOnAFreeLockSchedulesTheDeadline()
+        {
+            yield return CreateOfflineRoom();
+            ReleaseLock();
+            Call(insulin, "SubmitSyringeAnswer");
+            IDictionary properties = Properties();
+            Assert.That((double)properties["SGH_Insulin_AdvanceAt"], Is.GreaterThan((double)Get(network, "Time")));
+            Assert.That(properties["LockOwner"], Is.EqualTo(LocalActor()));
+            Assert.That(Get(insulin, "CurrentPart"), Is.EqualTo(1), "Part 2 only appears after the deadline");
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator RepeatedRequestsOnAFreeLockScheduleExactlyOneDeadline()
+        {
+            yield return CreateOfflineRoom();
+            ReleaseLock();
+            int actor = LocalActor();
+            Call(flow, "ScheduleInsulinAdvance", 1, 0, actor);
+            double due = (double)Properties()["SGH_Insulin_AdvanceAt"];
+            for (int i = 0; i < 10; i++) Call(flow, "ScheduleInsulinAdvance", 1, 0, actor);
+            Assert.That((double)Properties()["SGH_Insulin_AdvanceAt"], Is.EqualTo(due), "Repeats must not extend the deadline");
+            Assert.That(Properties()["LockOwner"], Is.EqualTo(actor));
+            yield return null;
+        }
+
+        // Taking a free lock must never become taking over someone else's attempt.
+        [UnityTest]
+        public IEnumerator RequestWhileAnotherPlayerHoldsTheLockIsRejectedAndLeavesTheLockAlone()
+        {
+            yield return CreateOfflineRoom();
+            int actor = LocalActor();
+            IDictionary properties = Properties();
+            properties["PuzzleLocked"] = true;
+            properties["LockOwner"] = actor + 100;
+            Call(flow, "ScheduleInsulinAdvance", 1, 0, actor);
+            Assert.That(properties["SGH_Insulin_AdvanceAt"], Is.EqualTo(0d));
+            Assert.That(properties["PuzzleLocked"], Is.EqualTo(true));
+            Assert.That(properties["LockOwner"], Is.EqualTo(actor + 100));
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator WrongSelectionOnAFreeLockDoesNotTakeTheLock()
+        {
+            yield return CreateOfflineRoom();
+            ReleaseLock();
+            Call(flow, "ScheduleInsulinAdvance", 0, 0, LocalActor());
+            IDictionary properties = Properties();
+            Assert.That(properties["SGH_Insulin_AdvanceAt"], Is.EqualTo(0d));
+            Assert.That(properties["PuzzleLocked"], Is.EqualTo(false));
+            Assert.That(properties["LockOwner"], Is.EqualTo(-1));
+            yield return null;
+        }
     }
 }
